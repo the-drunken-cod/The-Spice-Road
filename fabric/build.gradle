@@ -1,0 +1,52 @@
+plugins {
+    id 'multiloader-loader'
+    id 'fabric-loom'
+}
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.layered {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${parchment_minecraft}:${parchment_version}@zip")
+    }
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    modImplementation "me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version}"
+}
+
+loom {
+    def aw = project(':common').file("src/main/resources/${mod_id}.accesswidener")
+    if (aw.exists()) {
+        accessWidenerPath.set(aw)
+    }
+    mixin {
+        defaultRefmapName.set("${mod_id}.refmap.json")
+    }
+    runs {
+        client {
+            client()
+            setConfigName('Fabric Client')
+            ideConfigGenerated(true)
+            runDir('runs/client')
+            if (project.findProperty('fabric_debug') == 'true') {
+                vmArgs '-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005'
+            }
+        }
+        server {
+            server()
+            setConfigName('Fabric Server')
+            ideConfigGenerated(true)
+            runDir('runs/server')
+            if (project.findProperty('fabric_debug') == 'true') {
+                vmArgs '-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5006'
+            }
+        }
+        datagen {
+            inherit client
+            name 'Data Generation'
+            vmArg "-Dfabric-api.datagen"
+            vmArg "-Dfabric-api.datagen.output-dir=${project.file('src/generated/resources').absolutePath}"
+            vmArg "-Dfabric-api.datagen.modid=${mod_id}"
+            runDir 'build/datagen'
+        }
+    }
+}

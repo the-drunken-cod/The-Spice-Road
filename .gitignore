@@ -1,0 +1,32 @@
+# eclipse
+bin
+*.launch
+.settings
+.metadata
+.classpath
+.project
+neoforge/.eclipse/
+
+# idea
+out
+*.ipr
+*.iws
+*.iml
+.idea/*
+!.idea/scopes
+
+# gradle
+build
+.gradle
+
+# other
+.gzoltar
+eclipse
+run
+runs
+
+# local-only version overrides
+versions/*.local.properties
+
+# environment secrets
+.env

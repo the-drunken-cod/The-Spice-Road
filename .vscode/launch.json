@@ -1,0 +1,92 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "request": "attach",
+      "name": "Fabric Client (attach debug)",
+      "presentation": {
+        "group": "Mod Development - fabric",
+        "order": 0
+      },
+      "hostName": "localhost",
+      "port": 5005,
+      "preLaunchTask": "Fabric: Run Client (debug)"
+    },
+    {
+      "type": "java",
+      "request": "attach",
+      "name": "Fabric Server (attach debug)",
+      "presentation": {
+        "group": "Mod Development - fabric",
+        "order": 1
+      },
+      "hostName": "localhost",
+      "port": 5006,
+      "preLaunchTask": "Fabric: Run Server (debug)"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "NeoForge Client (:neoforge)",
+      "presentation": {
+        "group": "Mod Development - neoforge",
+        "order": 0
+      },
+      "projectName": "neoforge",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@C:\\Users\\sven1\\code\\cod\\MultiLoader-Template\\neoforge\\build\\moddev\\clientRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@C:\\Users\\sven1\\code\\cod\\MultiLoader-Template\\neoforge\\build\\moddev\\clientRunVmArgs.txt",
+        "-Dfml.modFolders\u003dfactory_symbols%%C:\\Users\\sven1\\code\\cod\\MultiLoader-Template\\neoforge\\bin\\main"
+      ],
+      "cwd": "${workspaceFolder}\\neoforge\\run",
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "NeoForge Data (:neoforge)",
+      "presentation": {
+        "group": "Mod Development - neoforge",
+        "order": 1
+      },
+      "projectName": "neoforge",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@C:\\Users\\sven1\\code\\cod\\MultiLoader-Template\\neoforge\\build\\moddev\\dataRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@C:\\Users\\sven1\\code\\cod\\MultiLoader-Template\\neoforge\\build\\moddev\\dataRunVmArgs.txt",
+        "-Dfml.modFolders\u003dfactory_symbols%%C:\\Users\\sven1\\code\\cod\\MultiLoader-Template\\neoforge\\bin\\main"
+      ],
+      "cwd": "${workspaceFolder}\\neoforge\\run",
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "NeoForge Server (:neoforge)",
+      "presentation": {
+        "group": "Mod Development - neoforge",
+        "order": 2
+      },
+      "projectName": "neoforge",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@C:\\Users\\sven1\\code\\cod\\MultiLoader-Template\\neoforge\\build\\moddev\\serverRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@C:\\Users\\sven1\\code\\cod\\MultiLoader-Template\\neoforge\\build\\moddev\\serverRunVmArgs.txt",
+        "-Dfml.modFolders\u003dfactory_symbols%%C:\\Users\\sven1\\code\\cod\\MultiLoader-Template\\neoforge\\bin\\main"
+      ],
+      "cwd": "${workspaceFolder}\\neoforge\\run",
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    }
+  ]
+}

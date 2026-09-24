@@ -1,0 +1,53 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+        exclusiveContent {
+            forRepository {
+                maven {
+                    name = 'Fabric'
+                    url = uri('https://maven.fabricmc.net')
+                }
+            }
+            filter {
+                includeGroup('net.fabricmc')
+                includeGroup('fabric-loom')
+            }
+        }
+        exclusiveContent {
+            forRepository {
+                maven {
+                    name = 'Sponge'
+                    url = uri('https://repo.spongepowered.org/repository/maven-public')
+                }
+            }
+            filter {
+                includeGroupAndSubgroups("org.spongepowered")
+            }
+        }
+    }
+}
+
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
+}
+
+// This should match the folder name of the project, or else IDEA may complain (see https://youtrack.jetbrains.com/issue/IDEA-317606)
+rootProject.name = '#REPLACE_NAME'
+include('common')
+include('fabric')
+include('neoforge')
+
+// Load version-specific properties from versions/<mc_version>.properties.
+// This allows switching the target Minecraft/loader versions without editing the main gradle.properties.
+def mcVersion = providers.gradleProperty('mc_version').getOrElse('1.21.1')
+def versionPropsFile = rootDir.toPath().resolve("versions/${mcVersion}.properties").toFile()
+if (versionPropsFile.exists()) {
+    def versionProps = new Properties()
+    versionPropsFile.withInputStream { versionProps.load(it) }
+    gradle.allprojects { proj ->
+        versionProps.each { k, v -> proj.extensions.extraProperties.set(k.toString(), v.toString()) }
+    }
+} else {
+    throw new GradleException("Version properties file not found: versions/${mcVersion}.properties")
+}

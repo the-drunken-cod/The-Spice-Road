@@ -1,0 +1,84 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Fabric: Run Client (debug)",
+      "type": "shell",
+      "command": "./gradlew :fabric:runClient -Pfabric_debug=true",
+      "windows": {
+        "command": ".\\gradlew.bat :fabric:runClient -Pfabric_debug=true"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "fabric-client",
+        "pattern": {
+          "regexp": "^$"
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Starting Gradle task",
+          "endsPattern": "Listening for transport dt_socket"
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "Mod Development - fabric"
+      }
+    },
+    {
+      "label": "Fabric: Run Server (debug)",
+      "type": "shell",
+      "command": "./gradlew :fabric:runServer -Pfabric_debug=true",
+      "windows": {
+        "command": ".\\gradlew.bat :fabric:runServer -Pfabric_debug=true"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "fabric-server",
+        "pattern": {
+          "regexp": "^$"
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Starting Gradle task",
+          "endsPattern": "Listening for transport dt_socket"
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "Mod Development - fabric"
+      }
+    },
+    {
+      "label": "Build (all loaders)",
+      "type": "shell",
+      "command": "./gradlew build",
+      "windows": {
+        "command": ".\\gradlew.bat build"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "NeoForge: Run Data Generator",
+      "type": "shell",
+      "command": "./gradlew :neoforge:runData",
+      "windows": {
+        "command": ".\\gradlew.bat :neoforge:runData"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "Mod Development - neoforge"
+      }
+    }
+  ]
+}

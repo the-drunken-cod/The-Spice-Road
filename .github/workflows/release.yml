@@ -1,0 +1,16 @@
+name: Release
+
+on:
+    workflow_dispatch:
+        inputs:
+            version_note:
+                description: "Optional release note"
+                type: string
+                required: false
+
+jobs:
+    build:
+        name: Build and upload release artifacts
+        uses: ./.github/workflows/build.yml
+        with:
+            upload_artifact: true

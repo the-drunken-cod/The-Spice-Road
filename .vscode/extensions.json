@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "vscjava.vscode-java-pack",
+    "vscjava.vscode-gradle",
+    "redhat.java",
+    "naco-siren.gradle-language"
+  ]
+}
