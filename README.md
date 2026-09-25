@@ -1,19 +1,23 @@
 <div align="center" style="text-align: center;">
 
-# #REPLACE_NAME
-#REPLACE_DESCRIPTION
+# The Spice Road
+Adds rare spices to Minecraft that can enhance existing foods with a new buff mechanic and encourages local production and trade.
 
 ![Banner](./.github/assets/banner.png)
 
 </div>
 
-## Introduction:
-#REPLACE_INTRODUCTION
+## Features:
+- <!-- TODO: -->69+ new spice plants now grow in dedicated zones (dependent on climate, but not bound to biomes).
+- New mechanic that allows spices to be mixed and matched and applied to existing foods to imbue them with beneficial effects. (Datapack friendly!)
+- Common spices may be taken back home and grown, but a good portion of them will only mature if produced locally.  
+  This incentivizes exploration, as well as establishing trade routes on servers.
+- Allows for tons of configuration. As described above, the default values might make it very hard to get specific spices or all spices, but all of that can easily be tweaked.
 
 <br>
 
 ## Installation:
-You can visit the [releases page](https://github.com/#REPLACE_REPO/releases), the [TODO: Modrinth page](), or the [TODO: CurseForge page]() to download the latest version of the mod.  
+You can visit the [releases page](https://github.com/the-drunken-cod/The-Spice-Road/releases), the [TODO: Modrinth page](), or the [TODO: CurseForge page]() to download the latest version of the mod.  
 Then simply place the downloaded JAR file into your Minecraft `mods` folder and launch the game with either NeoForge or Fabric.  
   
 > [!IMPORTANT]  

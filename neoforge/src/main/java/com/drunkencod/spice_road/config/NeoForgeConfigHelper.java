@@ -1,11 +1,11 @@
-package com.drunkencod.multi_loader_template.config;
+package com.drunkencod.spice_road.config;
 
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.drunkencod.multi_loader_template.config.IConfigHelper;
+import com.drunkencod.spice_road.config.IConfigHelper;
 
 public class NeoForgeConfigHelper implements IConfigHelper {
 

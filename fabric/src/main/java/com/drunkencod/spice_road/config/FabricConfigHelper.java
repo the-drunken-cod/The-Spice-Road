@@ -1,7 +1,7 @@
-package com.drunkencod.multi_loader_template.config;
+package com.drunkencod.spice_road.config;
 
-import com.drunkencod.multi_loader_template.Constants;
-import com.drunkencod.multi_loader_template.config.IConfigHelper;
+import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.config.IConfigHelper;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;

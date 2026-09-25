@@ -1,6 +1,6 @@
-package com.drunkencod.multi_loader_template;
+package com.drunkencod.spice_road;
 
-import com.drunkencod.multi_loader_template.datagen.FabricItemModelProvider;
+import com.drunkencod.spice_road.datagen.FabricItemModelProvider;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;

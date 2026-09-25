@@ -1,6 +1,7 @@
-package com.drunkencod.multi_loader_template.datagen;
+package com.drunkencod.spice_road.datagen;
 
-import com.drunkencod.multi_loader_template.Constants;
+import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.datagen.ItemModelHelper;
 
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;

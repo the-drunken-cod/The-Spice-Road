@@ -1,9 +1,9 @@
-package com.drunkencod.multi_loader_template.datagen;
+package com.drunkencod.spice_road.datagen;
 
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 
-import com.drunkencod.multi_loader_template.Constants;
-import com.drunkencod.multi_loader_template.datagen.ItemModelHelper;
+import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.datagen.ItemModelHelper;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.core.registries.BuiltInRegistries;

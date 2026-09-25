@@ -1,11 +1,11 @@
-package com.drunkencod.multi_loader_template;
+package com.drunkencod.spice_road;
 
-import com.drunkencod.multi_loader_template.Constants;
-import com.drunkencod.multi_loader_template.MultiLoaderTemplate;
-import com.drunkencod.multi_loader_template.config.NeoForgeConfigHelper;
-import com.drunkencod.multi_loader_template.datagen.NeoForgeItemModelProvider;
-import com.drunkencod.multi_loader_template.platform.Services;
-import com.drunkencod.multi_loader_template.registry.NeoForgeRegistryHelper;
+import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.SpiceRoad;
+import com.drunkencod.spice_road.config.NeoForgeConfigHelper;
+import com.drunkencod.spice_road.datagen.NeoForgeItemModelProvider;
+import com.drunkencod.spice_road.platform.Services;
+import com.drunkencod.spice_road.registry.NeoForgeRegistryHelper;
 
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -13,9 +13,9 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 @Mod(Constants.MOD_ID)
-public class MultiLoaderTemplateMod {
+public class SpiceRoadMod {
 
-    public MultiLoaderTemplateMod(IEventBus eventBus, ModContainer modContainer) {
+    public SpiceRoadMod(IEventBus eventBus, ModContainer modContainer) {
         // Wire DeferredRegisters
         ((NeoForgeRegistryHelper) Services.REGISTRY).initialize(eventBus);
 
@@ -24,7 +24,7 @@ public class MultiLoaderTemplateMod {
 
         eventBus.addListener(this::onGatherData);
 
-        MultiLoaderTemplate.init();
+        SpiceRoad.init();
     }
 
     private void onGatherData(GatherDataEvent event) {

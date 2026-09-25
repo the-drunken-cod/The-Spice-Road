@@ -1,4 +1,4 @@
-package com.drunkencod.multi_loader_template.registry;
+package com.drunkencod.spice_road.registry;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
@@ -8,7 +8,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
-import com.drunkencod.multi_loader_template.Constants;
+import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.registry.IRegistryHelper;
 
 public class NeoForgeRegistryHelper implements IRegistryHelper {
 

@@ -1,6 +1,6 @@
-package com.drunkencod.multi_loader_template.platform;
+package com.drunkencod.spice_road.platform;
 
-import com.drunkencod.multi_loader_template.platform.services.IPlatformHelper;
+import com.drunkencod.spice_road.platform.services.IPlatformHelper;
 
 import net.fabricmc.loader.api.FabricLoader;
 
