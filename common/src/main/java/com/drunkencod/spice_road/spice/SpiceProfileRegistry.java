@@ -37,9 +37,8 @@ public final class SpiceProfileRegistry {
      */
     static void setAll(Collection<SpiceProfileEntry> entries) {
         Map<Item, SpiceProfile> profiles = new ConcurrentHashMap<>();
-        for (SpiceProfileEntry entry : entries) {
+        for (SpiceProfileEntry entry : entries)
             profiles.put(entry.item(), entry.profile());
-        }
         PROFILES = Map.copyOf(profiles);
     }
 

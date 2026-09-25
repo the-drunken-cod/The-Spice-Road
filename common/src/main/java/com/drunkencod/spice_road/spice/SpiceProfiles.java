@@ -31,9 +31,8 @@ public final class SpiceProfiles {
      */
     public static Optional<SpiceProfile> get(ItemStack stack) {
         SpiceProfile override = stack.get(ModDataComponents.SPICE_PROFILE.get());
-        if (override != null) {
+        if (override != null)
             return Optional.of(override);
-        }
         return SpiceProfileRegistry.getDefault(stack.getItem());
     }
 }

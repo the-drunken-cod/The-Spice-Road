@@ -12,8 +12,12 @@ import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.world.item.ItemStack;
+
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.spice.Spice;
+import com.drunkencod.spice_road.spice.SpiceProfile;
+import com.drunkencod.spice_road.spice.SpiceProfileRegistry;
 
 /**
  * Central item registry.
@@ -66,11 +70,27 @@ public class ModItems {
             Item spiceSeeds = Spice.getSeedsById(spice.getId());
 
             if (spiceRaw != null)
-                output.accept(spiceRaw.getDefaultInstance());
+                output.accept(withSpiceProfile(spiceRaw));
             if (spiceDried != null)
-                output.accept(spiceDried.getDefaultInstance());
+                output.accept(withSpiceProfile(spiceDried));
             if (spiceSeeds != null)
-                output.accept(spiceSeeds.getDefaultInstance());
+                output.accept(withSpiceProfile(spiceSeeds));
         }
+    }
+
+    /**
+     * @param item An item, optionally registered as a spice.
+     * @return A default stack of {@code item} carrying the
+     *         {@code spice_road:spice_profile} data component if a
+     *         datapack-registered default {@link SpiceProfile} exists for it,
+     *         so the creative tab entry shows its flavor axis tooltip without
+     *         relying on a live datapack reload having populated
+     *         {@link SpiceProfileRegistry}.
+     */
+    private static ItemStack withSpiceProfile(Item item) {
+        ItemStack stack = item.getDefaultInstance();
+        SpiceProfileRegistry.getDefault(item)
+                .ifPresent(profile -> stack.set(ModDataComponents.SPICE_PROFILE.get(), profile));
+        return stack;
     }
 }
