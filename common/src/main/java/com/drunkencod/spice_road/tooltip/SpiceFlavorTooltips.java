@@ -3,20 +3,17 @@ package com.drunkencod.spice_road.tooltip;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
+
+import com.drunkencod.spice_road.spice.FlavorAxis;
+import com.drunkencod.spice_road.spice.SpiceProfile;
 
 /**
  * Formats a Spice's Flavor Axis scores as tooltip lines, shown while Shift is
  * held.
- * <p>
- * TODO: once {@code com.drunkencod.spice_road.spice.FlavorAxis} and
- * {@code com.drunkencod.spice_road.spice.SpiceProfile} land, add an overload
- * of {@link #formatFlavorAxes} that takes a {@code SpiceProfile} directly
- * (iterating its 8 {@code FlavorAxis} entries) instead of a
- * {@code List<FlavorValue>}, and have raw/dried Spice items call
- * {@link TooltipUtil#register} with that overload as their content provider.
- * No change to {@link TooltipUtil} itself is needed for that follow-up.
  */
 public class SpiceFlavorTooltips {
 
@@ -46,5 +43,37 @@ public class SpiceFlavorTooltips {
                 .map(v -> Component.literal(v.axisName() + ": " + Math.round(v.value() * 100))
                         .withStyle(ChatFormatting.GRAY))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Formats every {@link FlavorAxis} of a {@link SpiceProfile} as a
+     * tooltip line, in {@link FlavorAxis} enum order.
+     *
+     * @param profile The Spice Profile to format
+     * @return One tooltip line per Flavor Axis
+     */
+    public static List<Component> formatFlavorAxes(SpiceProfile profile) {
+        List<FlavorValue> values = new ArrayList<>(FlavorAxis.values().length);
+        for (FlavorAxis axis : FlavorAxis.values()) {
+            values.add(new FlavorValue(displayName(axis), profile.get(axis)));
+        }
+        return formatFlavorAxes(values);
+    }
+
+    /**
+     * Prettifies a {@link FlavorAxis} constant name for display, e.g.
+     * {@code SWEET_BITTER} -> {@code "Sweet Bitter"}.
+     */
+    private static String displayName(FlavorAxis axis) {
+        String[] words = axis.name().split("_");
+        StringBuilder result = new StringBuilder();
+        for (String word : words) {
+            if (!result.isEmpty()) {
+                result.append(' ');
+            }
+            result.append(word.substring(0, 1).toUpperCase(Locale.ROOT));
+            result.append(word.substring(1).toLowerCase(Locale.ROOT));
+        }
+        return result.toString();
     }
 }

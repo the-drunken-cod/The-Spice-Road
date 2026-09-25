@@ -10,7 +10,6 @@ bin
 .classpath
 .project
 neoforge/.eclipse/
-**/generated/resources/.cache/
 
 # idea
 out
@@ -23,6 +22,9 @@ out
 # gradle
 build
 .gradle
+**/generated/resources/.cache/
+fabric/run-data/
+neoforge/run-data/
 
 # other
 .gzoltar

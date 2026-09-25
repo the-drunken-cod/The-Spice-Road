@@ -63,7 +63,7 @@
         "@C:\\Users\\sven1\\code\\cod\\The-Spice-Road\\neoforge\\build\\moddev\\dataRunVmArgs.txt",
         "-Dfml.modFolders\u003dspice_road%%C:\\Users\\sven1\\code\\cod\\The-Spice-Road\\neoforge\\bin\\main"
       ],
-      "cwd": "${workspaceFolder}\\neoforge\\run",
+      "cwd": "${workspaceFolder}\\neoforge\\run-data",
       "console": "internalConsole",
       "shortenCommandLine": "none"
     },

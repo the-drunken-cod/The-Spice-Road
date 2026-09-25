@@ -2,8 +2,13 @@ package com.drunkencod.spice_road.block;
 
 import java.util.function.Supplier;
 
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.FarmBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
 
 /**
  * {@code FLOWER_PATCH} x {@code PICK} template. Works exactly like a
@@ -22,5 +27,16 @@ public class FlowerPatchBlock extends SpicePlantBlock {
     public FlowerPatchBlock(BlockBehaviour.Properties properties, Supplier<? extends ItemLike> seedItem) {
 
         super(properties, seedItem);
+    }
+
+    /**
+     * Widened from vanilla {@code CropBlock#mayPlaceOn} (farmland only) to
+     * also accept natural dirt-type ground. Source type flower_patch works exactly
+     * like regular flowers.
+     */
+    @Override
+    protected boolean mayPlaceOn(BlockState state, BlockGetter level, BlockPos pos) {
+
+        return state.getBlock() instanceof FarmBlock || state.is(BlockTags.DIRT);
     }
 }

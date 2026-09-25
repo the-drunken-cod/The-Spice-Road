@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import net.minecraft.world.item.Item;
 
 import com.drunkencod.spice_road.datagen.ItemModelHelper;
+import com.drunkencod.spice_road.item.RawSpiceItem;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Spice;
 import com.drunkencod.spice_road.spice.SourceType;
@@ -60,7 +61,8 @@ public final class SpicePlants {
         String seedId = id + "_seeds";
         String blockId = id + (spice.getSourceType() == SourceType.FLOWER_PATCH ? "_flower" : "_crop");
 
-        Supplier<Item> productItem = Services.REGISTRY.registerItem(id, () -> new Item(new Item.Properties()));
+        Supplier<Item> productItem = Services.REGISTRY.registerItem(id,
+                () -> new RawSpiceItem(new Item.Properties(), spice));
         Supplier<Item> seedItem = Services.REGISTRY.registerItem(seedId, () -> new Item(new Item.Properties()));
         ItemModelHelper.addFlatItem(id);
         ItemModelHelper.addFlatItem(seedId);

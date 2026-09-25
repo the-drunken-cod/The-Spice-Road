@@ -3,6 +3,7 @@ package com.drunkencod.spice_road.registry;
 import java.util.function.Supplier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.levelgen.feature.Feature;
 
 /**
  * Cross-loader service interface for registering items and blocks.
@@ -36,4 +37,21 @@ public interface IRegistryHelper {
      * @return A supplier that returns the registered block
      */
     <T extends Block> Supplier<T> registerBlock(String id, Supplier<T> factory);
+
+    /**
+     * Register a worldgen {@link Feature} type under the mod's namespace.
+     * <p>
+     * Unlike vanilla content registries like Item/Block, {@code Feature}
+     * types are frozen very early (during vanilla bootstrap, before mods
+     * even construct) - a direct {@code Registry.register} call at mod-init
+     * time throws {@code IllegalStateException: Registry is already
+     * frozen}. This must go through the same DeferredRegister-at-RegisterEvent
+     * mechanism as items/blocks on NeoForge, which does handle the timing
+     * correctly.
+     *
+     * @param id      Registry path (e.g. {@code "my_feature"})
+     * @param factory Supplier that creates the feature instance
+     * @return A supplier that returns the registered feature
+     */
+    <T extends Feature<?>> Supplier<T> registerFeature(String id, Supplier<T> factory);
 }
