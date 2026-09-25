@@ -2,15 +2,20 @@ package com.drunkencod.spice_road.block;
 
 import java.util.function.Supplier;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 
 import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Spice;
 
 /**
@@ -81,6 +86,39 @@ public abstract class SpicePlantBlock extends CropBlock {
     public int getMaxAge() {
 
         return Constants.DEFAULT_SPICE_PLANT_GROWTH_STAGES;
+    }
+
+    /**
+     * Scales vanilla's per-tick growth odds by
+     * {@code IConfigHelper#getSpicePlantGrowthSpeedMultiplier(Tier)} for this
+     * block's {@link Spice}'s {@link com.drunkencod.spice_road.spice.Tier}.
+     * <p>
+     * Unlike {@link #getMaxAge()}, this runs at genuine tick-time (not during
+     * block-state-freeze), so it's safe to read live config here. Vanilla's
+     * {@code CropBlock#getGrowthSpeed} is {@code static}, so it can't be
+     * overridden directly; instead, the multiplier is applied by rerolling
+     * vanilla's own growth check multiple times per tick - once per whole
+     * multiplier unit, plus one more with probability equal to the fractional
+     * remainder. Each reroll is an independent shot at the same age-to-age+1
+     * transition, so this raises/lowers the odds of that transition happening
+     * this tick without needing to duplicate vanilla's growth-chance formula.
+     */
+    @Override
+    protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+
+        double multiplier = Services.CONFIG.getSpicePlantGrowthSpeedMultiplier(spice.getTier());
+        if (multiplier <= 0)
+            return;
+
+        int guaranteedRolls = (int) multiplier;
+        double bonusRollChance = multiplier - guaranteedRolls;
+
+        for (int i = 0; i < guaranteedRolls; i++) {
+            super.randomTick(state, level, pos, random);
+        }
+        if (bonusRollChance > 0 && random.nextFloat() < bonusRollChance) {
+            super.randomTick(state, level, pos, random);
+        }
     }
 
     @Override

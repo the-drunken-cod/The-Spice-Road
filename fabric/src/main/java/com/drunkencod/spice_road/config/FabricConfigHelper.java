@@ -2,6 +2,7 @@ package com.drunkencod.spice_road.config;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.platform.Services;
+import com.drunkencod.spice_road.spice.Tier;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
@@ -55,6 +56,17 @@ public class FabricConfigHelper implements IConfigHelper {
         return AutoConfig.getConfigHolder(CommonConfigData.class).getConfig().spicePlantHarvestYield;
     }
 
+    @Override
+    public double getSpicePlantGrowthSpeedMultiplier(Tier tier) {
+        ServerConfigData config = AutoConfig.getConfigHolder(ServerConfigData.class).getConfig();
+        return switch (tier) {
+            case COMMON -> config.spiceGrowthSpeedCommon;
+            case UNCOMMON -> config.spiceGrowthSpeedUncommon;
+            case RARE -> config.spiceGrowthSpeedRare;
+            case EPIC -> config.spiceGrowthSpeedEpic;
+        };
+    }
+
     // -------------------------------------------------------------------------
     // Config data classes
     // -------------------------------------------------------------------------
@@ -96,6 +108,23 @@ public class FabricConfigHelper implements IConfigHelper {
         @ConfigEntry.Gui.Tooltip
         @ConfigEntry.BoundedDiscrete(min = 1, max = 5)
         public int spiceHardyHarvestDifficulty = 2;
+
+        /**
+         * Growth-speed multiplier for Spice Plants, applied on top of vanilla's
+         * farmland/light-based growth odds, per {@link Tier}. 1.0 matches vanilla
+         * speed, less than 1.0 slows growth down, greater than 1.0 speeds it up.
+         */
+        @ConfigEntry.Gui.Tooltip
+        public double spiceGrowthSpeedCommon = 1.0;
+
+        @ConfigEntry.Gui.Tooltip
+        public double spiceGrowthSpeedUncommon = 1.0;
+
+        @ConfigEntry.Gui.Tooltip
+        public double spiceGrowthSpeedRare = 1.0;
+
+        @ConfigEntry.Gui.Tooltip
+        public double spiceGrowthSpeedEpic = 1.0;
     }
 
     @Config(name = Constants.MOD_ID + "_client")

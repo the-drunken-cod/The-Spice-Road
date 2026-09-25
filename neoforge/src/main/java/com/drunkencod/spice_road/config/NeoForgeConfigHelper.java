@@ -7,6 +7,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.platform.Services;
+import com.drunkencod.spice_road.spice.Tier;
 
 public class NeoForgeConfigHelper implements IConfigHelper {
 
@@ -100,6 +101,16 @@ public class NeoForgeConfigHelper implements IConfigHelper {
         return COMMON.spicePlantHarvestYield.get();
     }
 
+    @Override
+    public double getSpicePlantGrowthSpeedMultiplier(Tier tier) {
+        return switch (tier) {
+            case COMMON -> SERVER.spiceGrowthSpeedCommon.get();
+            case UNCOMMON -> SERVER.spiceGrowthSpeedUncommon.get();
+            case RARE -> SERVER.spiceGrowthSpeedRare.get();
+            case EPIC -> SERVER.spiceGrowthSpeedEpic.get();
+        };
+    }
+
     // -------------------------------------------------------------------------
     // Inner config classes
     // -------------------------------------------------------------------------
@@ -128,6 +139,10 @@ public class NeoForgeConfigHelper implements IConfigHelper {
         public final ModConfigSpec.DoubleValue spiceRegionClusteringStrength;
         public final ModConfigSpec.BooleanValue spiceRegionPlantingRestricted;
         public final ModConfigSpec.IntValue spiceHardyHarvestDifficulty;
+        public final ModConfigSpec.DoubleValue spiceGrowthSpeedCommon;
+        public final ModConfigSpec.DoubleValue spiceGrowthSpeedUncommon;
+        public final ModConfigSpec.DoubleValue spiceGrowthSpeedRare;
+        public final ModConfigSpec.DoubleValue spiceGrowthSpeedEpic;
 
         ServerConfig(ModConfigSpec.Builder builder) {
             spiceRegionCellScale = builder
@@ -146,6 +161,20 @@ public class NeoForgeConfigHelper implements IConfigHelper {
                     .comment("Harvest/cultivation difficulty (1-5) at or below which a Spice is 'hardy' and "
                             + "can be planted anywhere the ground allows, bypassing the Spice Region check")
                     .defineInRange("spiceHardyHarvestDifficulty", 2, 1, 5);
+            spiceGrowthSpeedCommon = builder
+                    .comment("Growth-speed multiplier for COMMON-tier Spice Plants, applied on top of vanilla's "
+                            + "farmland/light-based growth odds. 1.0 matches vanilla speed, < 1.0 slows growth "
+                            + "down, > 1.0 speeds it up.")
+                    .defineInRange("spiceGrowthSpeedCommon", 1.0, 0.1, 5.0);
+            spiceGrowthSpeedUncommon = builder
+                    .comment("Growth-speed multiplier for UNCOMMON-tier Spice Plants. See spiceGrowthSpeedCommon.")
+                    .defineInRange("spiceGrowthSpeedUncommon", 1.0, 0.1, 5.0);
+            spiceGrowthSpeedRare = builder
+                    .comment("Growth-speed multiplier for RARE-tier Spice Plants. See spiceGrowthSpeedCommon.")
+                    .defineInRange("spiceGrowthSpeedRare", 1.0, 0.1, 5.0);
+            spiceGrowthSpeedEpic = builder
+                    .comment("Growth-speed multiplier for EPIC-tier Spice Plants. See spiceGrowthSpeedCommon.")
+                    .defineInRange("spiceGrowthSpeedEpic", 1.0, 0.1, 5.0);
         }
     }
 

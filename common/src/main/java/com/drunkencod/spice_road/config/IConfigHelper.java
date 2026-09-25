@@ -1,5 +1,7 @@
 package com.drunkencod.spice_road.config;
 
+import com.drunkencod.spice_road.spice.Tier;
+
 /**
  * Cross-loader config service interface.
  * <p>
@@ -89,4 +91,20 @@ public interface IConfigHelper {
      * @return The configured flat harvest yield.
      */
     int getSpicePlantHarvestYield();
+
+    /**
+     * Growth-speed multiplier for {@code FLOWER_PATCH}/{@code CROP} Spice Plants
+     * of the given {@link Tier} (see {@code Spice#getTier()}), applied on top of
+     * vanilla's farmland/light-based growth odds - {@code 1.0} matches vanilla
+     * speed, {@code < 1.0} slows growth down, {@code > 1.0} speeds it up.
+     * <p>
+     * Unlike {@link #getSpicePlantGrowthStages()}, this is read live at
+     * tick-time (see {@code SpicePlantBlock#randomTick}), not during
+     * block-state-freeze, so there is no constraint against reading it directly
+     * from live config.
+     *
+     * @param tier The Spice's {@link Tier}.
+     * @return The configured growth-speed multiplier for that tier.
+     */
+    double getSpicePlantGrowthSpeedMultiplier(Tier tier);
 }
