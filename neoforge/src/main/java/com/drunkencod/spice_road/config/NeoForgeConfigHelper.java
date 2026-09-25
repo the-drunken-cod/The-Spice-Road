@@ -81,6 +81,16 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean isSpiceRegionPlantingRestricted() {
+        return SERVER.spiceRegionPlantingRestricted.get();
+    }
+
+    @Override
+    public int getSpiceHardyHarvestDifficulty() {
+        return SERVER.spiceHardyHarvestDifficulty.get();
+    }
+
+    @Override
     public int getSpicePlantGrowthStages() {
         return COMMON.spicePlantGrowthStages.get();
     }
@@ -116,6 +126,8 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     public static class ServerConfig {
         public final ModConfigSpec.DoubleValue spiceRegionCellScale;
         public final ModConfigSpec.DoubleValue spiceRegionClusteringStrength;
+        public final ModConfigSpec.BooleanValue spiceRegionPlantingRestricted;
+        public final ModConfigSpec.IntValue spiceHardyHarvestDifficulty;
 
         ServerConfig(ModConfigSpec.Builder builder) {
             spiceRegionCellScale = builder
@@ -125,6 +137,15 @@ public class NeoForgeConfigHelper implements IConfigHelper {
                     .comment("How strongly Spice Region generation favors common Spices over rarer ones")
                     .defineInRange("spiceRegionClusteringStrength",
                             Services.PLATFORM.isDedicatedServer() ? 1.75 : 1.0, 0.0, 10.0);
+            spiceRegionPlantingRestricted = builder
+                    .comment("Whether planting a CROP Spice's seeds requires the Spice Region at that "
+                            + "position to actually support that Spice. Spices at or below "
+                            + "spiceHardyHarvestDifficulty are always exempt.")
+                    .define("spiceRegionPlantingRestricted", true);
+            spiceHardyHarvestDifficulty = builder
+                    .comment("Harvest/cultivation difficulty (1-5) at or below which a Spice is 'hardy' and "
+                            + "can be planted anywhere the ground allows, bypassing the Spice Region check")
+                    .defineInRange("spiceHardyHarvestDifficulty", 2, 1, 5);
         }
     }
 

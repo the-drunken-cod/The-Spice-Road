@@ -34,6 +34,29 @@ public interface IConfigHelper {
     double getSpiceRegionClusteringStrength();
 
     /**
+     * Whether Spice Region support gates player planting of
+     * {@code CROP} Spice Plants (see
+     * {@code com.drunkencod.spice_road.block.SpiceCropBlock#canSurvive}).
+     * When {@code false}, a Spice's seeds can be planted anywhere the ground
+     * itself allows (farmland), regardless of Spice Region/Climate. Spices at
+     * or below {@link #getSpiceHardyHarvestDifficulty()} are always exempt
+     * from this gate.
+     *
+     * @return Whether the Spice Region planting restriction is active.
+     */
+    boolean isSpiceRegionPlantingRestricted();
+
+    /**
+     * The harvest/cultivation difficulty (see {@code Spice#getHarvestDifficulty()})
+     * at or below which a Spice is considered "hardy" and can be planted
+     * anywhere the ground allows, bypassing the Spice Region check described
+     * at {@link #isSpiceRegionPlantingRestricted()}.
+     *
+     * @return The configured hardy harvest-difficulty threshold, 1-5.
+     */
+    int getSpiceHardyHarvestDifficulty();
+
+    /**
      * Configured growth stage count (highest age value, 1-7) shared by every
      * {@code FLOWER_PATCH}/{@code CROP} Spice Plant block.
      * <p>

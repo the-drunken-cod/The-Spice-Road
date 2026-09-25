@@ -1,9 +1,19 @@
 package com.drunkencod.spice_road.block;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+
+import com.drunkencod.spice_road.platform.Services;
+import com.drunkencod.spice_road.spice.Climate;
+import com.drunkencod.spice_road.spice.Spice;
+import com.drunkencod.spice_road.spice.region.SpiceRegionResolver;
 
 /**
  * {@code CROP} template, covering both the {@code PICK} (Chili-Pepper-like)
@@ -23,8 +33,54 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
  */
 public class SpiceCropBlock extends SpicePlantBlock {
 
-    public SpiceCropBlock(BlockBehaviour.Properties properties, Supplier<? extends ItemLike> seedItem) {
+    public SpiceCropBlock(BlockBehaviour.Properties properties, Supplier<? extends ItemLike> seedItem, Spice spice) {
 
-        super(properties, seedItem);
+        super(properties, seedItem, spice);
+    }
+
+    /**
+     * On top of the inherited ground-type check, gates planting by Spice
+     * Region support (see {@code SpiceRegionResolver}):
+     * <ol>
+     * <li>Hardy Spices (harvest/cultivation difficulty at or below
+     * {@code IConfigHelper#getSpiceHardyHarvestDifficulty()}) are exempt -
+     * they can be cultivated anywhere the ground allows.</li>
+     * <li>Otherwise, if the restriction is enabled
+     * ({@code IConfigHelper#isSpiceRegionPlantingRestricted()}), this Spice
+     * must be the one the position's Spice Region actually resolves to.</li>
+     * <li>If the restriction is disabled, only the ground-type check
+     * applies.</li>
+     * </ol>
+     */
+    @Override
+    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+
+        if (!super.canSurvive(state, level, pos))
+            return false;
+
+        Spice spice = getSpice();
+        if (spice.getHarvestDifficulty() <= Services.CONFIG.getSpiceHardyHarvestDifficulty())
+            return true;
+
+        if (!Services.CONFIG.isSpiceRegionPlantingRestricted())
+            return true;
+
+        // The world seed isn't exposed client-side; worldgen placement
+        // (WorldGenLevel) already resolves the correct Spice for the
+        // position itself (see SpicePlantFeature), so this extra check only
+        // needs to run on the authoritative ServerLevel (player placement, bonemeal,
+        // etc). Client-side prediction optimistically allows it; the server corrects
+        // any mismatch.
+        if (!(level instanceof ServerLevel serverLevel))
+            return true;
+
+        double cellScale = Services.CONFIG.getSpiceRegionCellScale();
+        double clusteringStrength = Services.CONFIG.getSpiceRegionClusteringStrength();
+        Climate climate = Climate.fromBiome(level.getBiome(pos), pos);
+
+        Optional<Spice> resolved = SpiceRegionResolver
+                .resolve(serverLevel.getSeed(), cellScale, clusteringStrength, climate, pos.getX(), pos.getZ())
+                .spice();
+        return resolved.isPresent() && resolved.get() == spice;
     }
 }

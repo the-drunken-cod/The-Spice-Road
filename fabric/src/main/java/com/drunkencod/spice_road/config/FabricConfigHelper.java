@@ -36,6 +36,16 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean isSpiceRegionPlantingRestricted() {
+        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceRegionPlantingRestricted;
+    }
+
+    @Override
+    public int getSpiceHardyHarvestDifficulty() {
+        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceHardyHarvestDifficulty;
+    }
+
+    @Override
     public int getSpicePlantGrowthStages() {
         return AutoConfig.getConfigHolder(CommonConfigData.class).getConfig().spicePlantGrowthStages;
     }
@@ -79,6 +89,13 @@ public class FabricConfigHelper implements IConfigHelper {
 
         @ConfigEntry.Gui.Tooltip
         public double spiceRegionClusteringStrength = Services.PLATFORM.isDedicatedServer() ? 1.75 : 1.0;
+
+        @ConfigEntry.Gui.Tooltip
+        public boolean spiceRegionPlantingRestricted = true;
+
+        @ConfigEntry.Gui.Tooltip
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 5)
+        public int spiceHardyHarvestDifficulty = 2;
     }
 
     @Config(name = Constants.MOD_ID + "_client")

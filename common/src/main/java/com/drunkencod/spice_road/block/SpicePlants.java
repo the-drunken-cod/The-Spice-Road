@@ -71,10 +71,10 @@ public final class SpicePlants {
         Supplier<? extends SpicePlantBlock> block;
         if (spice.getSourceType() == SourceType.FLOWER_PATCH) {
             block = Services.REGISTRY.registerBlock(blockId,
-                    () -> new FlowerPatchBlock(SpicePlantBlock.defaultProperties(), seedItemRef));
+                    () -> new FlowerPatchBlock(SpicePlantBlock.defaultProperties(), seedItemRef, spice));
         } else {
             block = Services.REGISTRY.registerBlock(blockId,
-                    () -> new SpiceCropBlock(SpicePlantBlock.defaultProperties(), seedItemRef));
+                    () -> new SpiceCropBlock(SpicePlantBlock.defaultProperties(), seedItemRef, spice));
         }
 
         Supplier<Item> seedItem = Services.REGISTRY.registerItem(seedId,

@@ -10,6 +10,8 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
 
+import com.drunkencod.spice_road.spice.Spice;
+
 /**
  * {@code FLOWER_PATCH} x {@code PICK} template. Works exactly like a
  * vanilla flower, but grows through stages on farmland/dirt, and breaking at
@@ -24,9 +26,10 @@ import net.minecraft.core.BlockPos;
  */
 public class FlowerPatchBlock extends SpicePlantBlock {
 
-    public FlowerPatchBlock(BlockBehaviour.Properties properties, Supplier<? extends ItemLike> seedItem) {
+    public FlowerPatchBlock(BlockBehaviour.Properties properties, Supplier<? extends ItemLike> seedItem,
+            Spice spice) {
 
-        super(properties, seedItem);
+        super(properties, seedItem, spice);
     }
 
     /**

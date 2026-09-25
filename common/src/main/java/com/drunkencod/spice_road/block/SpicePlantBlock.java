@@ -11,6 +11,7 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 
 import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.spice.Spice;
 
 /**
  * Shared growth-stage/interaction template for the {@code flower_patch} and
@@ -27,16 +28,23 @@ import com.drunkencod.spice_road.Constants;
 public abstract class SpicePlantBlock extends CropBlock {
 
     private final Supplier<? extends ItemLike> seedItem;
+    private final Spice spice;
 
     /**
      * @param properties Block properties, typically {@link #defaultProperties()}.
      * @param seedItem   Supplies the seed item this Spice Plant is grown from
      *                   and hands back when middle-clicked/cloned.
+     * @param spice      The {@link Spice} this block grows - the source of
+     *                   truth for Spice Region support (see
+     *                   {@link SpiceCropBlock#canSurvive}) and harvest
+     *                   difficulty.
      */
-    protected SpicePlantBlock(BlockBehaviour.Properties properties, Supplier<? extends ItemLike> seedItem) {
+    protected SpicePlantBlock(BlockBehaviour.Properties properties, Supplier<? extends ItemLike> seedItem,
+            Spice spice) {
 
         super(properties);
         this.seedItem = seedItem;
+        this.spice = spice;
     }
 
     /**
@@ -79,6 +87,12 @@ public abstract class SpicePlantBlock extends CropBlock {
     protected ItemLike getBaseSeedId() {
 
         return seedItem.get();
+    }
+
+    /** @return The {@link Spice} this block grows. */
+    protected Spice getSpice() {
+
+        return spice;
     }
 
     /**
