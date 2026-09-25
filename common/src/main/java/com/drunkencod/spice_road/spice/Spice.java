@@ -1,50 +1,53 @@
 package com.drunkencod.spice_road.spice;
 
-import java.util.Optional;
+import org.jetbrains.annotations.Nullable;
+
+import com.drunkencod.spice_road.registry.ModItems;
+
+import net.minecraft.world.item.Item;
 
 /**
- * One member per Spice, holding its identity, tier, and Spice Profile(s).
+ * One member per Spice, holding its identity, growth/harvest metadata, and
+ * tier.
  * <p>
  * A Spice is not itself an item or a block - it is the product-level
  * abstraction the enum system owns. Kept lean, as only
  * fields consumed downstream are stored (e.g. no free-text
  * {@code harvestedPart} description).
+ * <p>
+ * Flavor Axis data is <b>not</b> stored here - a Spice's raw/dried item(s)
+ * get their {@link SpiceProfile} from the datapack-driven
+ * {@code data/<namespace>/spice_profile/*.json} registry (see
+ * {@link SpiceProfileRegistry}), keyed by item rather than by this enum, so
+ * that any item - not just the ones this enum knows about - can be
+ * registered as a spice.
  */
 public enum Spice {
 
-    LAVENDER(
-            SourceType.FLOWER_PATCH, HarvestAction.PICK, Climate.ARID, 1, false,
-            new SpiceProfile(-0.2, 0.0, -0.2, -0.9, -0.4, 0.0, 0.4, -0.8),
-            null),
+    LAVENDER("lavender", SourceType.FLOWER_PATCH, HarvestAction.PICK, Climate.ARID, 1, false),
+    CHILI_PEPPER("chili_pepper", SourceType.CROP, HarvestAction.PICK, Climate.TEMPERATE, 2, false),
+    CUMIN("cumin", SourceType.CROP, HarvestAction.BREAK, Climate.ARID, 2, false);
 
-    CHILI_PEPPER(
-            SourceType.CROP, HarvestAction.PICK, Climate.TEMPERATE, 2, false,
-            new SpiceProfile(1.0, 0.1, 0.2, 0.2, -0.3, 0.4, -0.2, 0.3),
-            null),
-
-    CUMIN(
-            SourceType.CROP, HarvestAction.BREAK, Climate.ARID, 2, false,
-            new SpiceProfile(0.2, -0.3, -0.2, 0.9, 0.2, 0.3, 0.1, 0.6),
-            null);
-
+    private final String id;
     private final SourceType sourceType;
     private final HarvestAction harvestAction;
     private final Climate climate;
     private final int harvestDifficulty;
     private final boolean requiresCuttingTool;
-    private final SpiceProfile rawProfile;
-    private final SpiceProfile driedProfile;
 
-    Spice(SourceType sourceType, HarvestAction harvestAction, Climate climate, int harvestDifficulty,
-            boolean requiresCuttingTool, SpiceProfile rawProfile, SpiceProfile driedProfile) {
+    Spice(String id, SourceType sourceType, HarvestAction harvestAction, Climate climate, int harvestDifficulty,
+            boolean requiresCuttingTool) {
 
+        this.id = id;
         this.sourceType = sourceType;
         this.harvestAction = harvestAction;
         this.climate = climate;
         this.harvestDifficulty = harvestDifficulty;
         this.requiresCuttingTool = requiresCuttingTool;
-        this.rawProfile = rawProfile;
-        this.driedProfile = driedProfile;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public SourceType getSourceType() {
@@ -85,21 +88,22 @@ public enum Spice {
         return requiresCuttingTool;
     }
 
-    /**
-     * @return The raw item's {@link SpiceProfile}. Always present.
-     */
-    public SpiceProfile getRawProfile() {
+    // #region static
 
-        return rawProfile;
+    /** Returns the raw spice item with the given enum ID from the registry. */
+    public static @Nullable Item getRawById(String id) {
+        return ModItems.byPath(id);
     }
 
-    /**
-     * @return The dried item's {@link SpiceProfile}, if this Spice has a
-     *         beneficial dried variant. Empty if not (case-by-case, TBD per
-     *         spice).
-     */
-    public Optional<SpiceProfile> getDriedProfile() {
-
-        return Optional.ofNullable(driedProfile);
+    /** Returns the dried spice item with the given enum ID from the registry. */
+    public static @Nullable Item getDriedById(String id) {
+        return ModItems.byPath("dried_" + id);
     }
+
+    /** Returns the spice seeds item with the given enum ID from the registry. */
+    public static @Nullable Item getSeedsById(String id) {
+        return ModItems.byPath(id + "_seeds");
+    }
+
+    // #endregion
 }

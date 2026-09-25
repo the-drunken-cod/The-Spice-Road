@@ -5,6 +5,7 @@ import java.util.ServiceLoader;
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.config.IConfigHelper;
 import com.drunkencod.spice_road.platform.services.IPlatformHelper;
+import com.drunkencod.spice_road.registry.ICreativeTabHelper;
 import com.drunkencod.spice_road.registry.IRegistryHelper;
 
 public class Services {
@@ -12,6 +13,7 @@ public class Services {
     public static final IPlatformHelper PLATFORM = load(IPlatformHelper.class);
     public static final IRegistryHelper REGISTRY = load(IRegistryHelper.class);
     public static final IConfigHelper CONFIG = load(IConfigHelper.class);
+    public static final ICreativeTabHelper CREATIVE_TAB = load(ICreativeTabHelper.class);
 
     public static <T> T load(Class<T> clazz) {
 

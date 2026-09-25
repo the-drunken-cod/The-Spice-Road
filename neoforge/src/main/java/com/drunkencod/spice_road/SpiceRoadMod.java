@@ -6,6 +6,7 @@ import com.drunkencod.spice_road.config.NeoForgeConfigHelper;
 import com.drunkencod.spice_road.datagen.NeoForgeItemModelProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeSpiceLootProvider;
 import com.drunkencod.spice_road.platform.Services;
+import com.drunkencod.spice_road.registry.NeoForgeCreativeTabHelper;
 import com.drunkencod.spice_road.registry.NeoForgeRegistryHelper;
 
 import net.neoforged.bus.api.IEventBus;
@@ -20,6 +21,7 @@ public class SpiceRoadMod {
     public SpiceRoadMod(IEventBus eventBus, ModContainer modContainer) {
         // Wire DeferredRegisters
         ((NeoForgeRegistryHelper) Services.REGISTRY).initialize(eventBus);
+        ((NeoForgeCreativeTabHelper) Services.CREATIVE_TAB).initialize(eventBus);
 
         // Register configs
         ((NeoForgeConfigHelper) Services.CONFIG).register(modContainer);
