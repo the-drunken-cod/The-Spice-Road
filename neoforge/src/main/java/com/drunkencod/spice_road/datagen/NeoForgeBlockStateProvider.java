@@ -48,7 +48,8 @@ public class NeoForgeBlockStateProvider extends BlockStateProvider {
             for (int age = 0; age <= maxAge; age++) {
                 String stageId = id.getPath() + "_stage" + age;
                 stageModels[age] = models().withExistingParent(stageId, "block/crop")
-                        .texture("crop", modLoc("block/" + stageId));
+                        .texture("crop", modLoc("block/" + stageId))
+                        .renderType("minecraft:cutout");
             }
 
             getVariantBuilder(block).forAllStates(state -> ConfiguredModel.builder()
