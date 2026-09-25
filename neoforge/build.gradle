@@ -3,6 +3,11 @@ plugins {
     id 'net.neoforged.moddev'
 }
 
+// Captured at the top level: inside neoForge { runs { data { ... } } }, `project(...)`
+// resolves against a different DSL delegate and no longer refers to the Gradle Project,
+// so this path must be resolved here rather than inline in that closure.
+def commonResourcesDir = project(':common').file('src/main/resources/').getAbsolutePath()
+
 neoForge {
     version = neoforge_version
     // Automatically enable neoforge AccessTransformers if the file exists
@@ -25,9 +30,27 @@ neoForge {
         data {
             data()
 
+            // Isolated from the client/server runs' shared game directory (and therefore
+            // from run/mods/) on purpose: that folder holds whatever third-party mods are
+            // installed for actually playing/testing the game, and several of them (e.g.
+            // client-input utility mods) assume a full client environment exists and crash
+            // during headless datagen. Mirrors Fabric's equivalent 'runDir' on its datagen
+            // run config in fabric/build.gradle.
+            gameDirectory.set(file('run-data'))
+
             // DataGen can be run by - "./gradlew :neoforge:runData" in Terminal.
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+            // Two --existing roots are needed: this module's own resources, and common's
+            // (hand-authored assets like textures live in common/, but common's resources
+            // are only merged into this module's build output via processResources at build
+            // time - they are never copied into src/main/resources itself - so without this
+            // second --existing entry, ExistingFileHelper can never see them and any datagen
+            // step that references a common-sourced texture/model fails with
+            // "Texture ... does not exist in any known resource pack" even though the file
+            // is right there in common/src/main/resources).
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(),
+                    '--existing', file('src/main/resources/').getAbsolutePath(),
+                    '--existing', commonResourcesDir
 
         }
         server {
