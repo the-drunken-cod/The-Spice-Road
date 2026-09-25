@@ -80,4 +80,18 @@ public final class SpiceProfile {
 
         return values[axis.ordinal()];
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!(obj instanceof SpiceProfile other))
+            return false;
+        return Arrays.equals(values, other.values);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(values);
+    }
 }
