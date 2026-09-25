@@ -68,12 +68,10 @@ public final class SpicePlants {
         Supplier<? extends SpicePlantBlock> block;
         if (spice.getSourceType() == SourceType.FLOWER_PATCH) {
             block = Services.REGISTRY.registerBlock(blockId,
-                    () -> new FlowerPatchBlock(SpicePlantBlock.defaultProperties(),
-                            Services.CONFIG.getSpicePlantGrowthStages(), seedItem));
+                    () -> new FlowerPatchBlock(SpicePlantBlock.defaultProperties(), seedItem));
         } else {
             block = Services.REGISTRY.registerBlock(blockId,
-                    () -> new SpiceCropBlock(SpicePlantBlock.defaultProperties(),
-                            Services.CONFIG.getSpicePlantGrowthStages(), seedItem));
+                    () -> new SpiceCropBlock(SpicePlantBlock.defaultProperties(), seedItem));
         }
 
         return new RegisteredSpicePlant(spice, block, seedItem, productItem);

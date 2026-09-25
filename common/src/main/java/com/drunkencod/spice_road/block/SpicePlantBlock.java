@@ -10,6 +10,8 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 
+import com.drunkencod.spice_road.Constants;
+
 /**
  * Shared growth-stage/interaction template for the {@code flower_patch} and
  * {@code crop} {@link com.drunkencod.spice_road.spice.SourceType} Source
@@ -24,44 +26,16 @@ import net.minecraft.world.level.material.PushReaction;
  */
 public abstract class SpicePlantBlock extends CropBlock {
 
-    /**
-     * Highest age value vanilla's {@code AGE_7} blockstate property
-     * (inherited unchanged from {@link CropBlock}) supports.
-     */
-    private static final int VANILLA_AGE_PROPERTY_LIMIT = 7;
-
-    private final int maxAge;
     private final Supplier<? extends ItemLike> seedItem;
 
     /**
      * @param properties Block properties, typically {@link #defaultProperties()}.
-     * @param maxAge     Configured growth stage count's highest age value (1-7
-     *                   inclusive). Kept in the 1-7 range because this class
-     *                   reuses vanilla {@code CropBlock}'s fixed {@code AGE_7}
-     *                   blockstate property (values 0-7) rather than minting a
-     *                   custom per-instance {@code IntegerProperty} sized to
-     *                   the configured count: {@code CropBlock}'s own
-     *                   constructor resolves {@link #getAgeProperty()}
-     *                   polymorphically before this class's fields would be
-     *                   assigned, so a field-backed override of that method
-     *                   would read {@code null}/default at that point.
-     *                   Reusing the fixed property sidesteps that
-     *                   constructor-ordering hazard entirely.
      * @param seedItem   Supplies the seed item this Spice Plant is grown from
      *                   and hands back when middle-clicked/cloned.
-     * @throws IllegalArgumentException If {@code maxAge} is outside 1-7.
      */
-    protected SpicePlantBlock(BlockBehaviour.Properties properties, int maxAge, Supplier<? extends ItemLike> seedItem) {
+    protected SpicePlantBlock(BlockBehaviour.Properties properties, Supplier<? extends ItemLike> seedItem) {
 
         super(properties);
-
-        if (maxAge < 1 || maxAge > VANILLA_AGE_PROPERTY_LIMIT) {
-            throw new IllegalArgumentException(
-                    "Spice Plant growth stage count must be in range 1-" + VANILLA_AGE_PROPERTY_LIMIT
-                            + ", got " + maxAge);
-        }
-
-        this.maxAge = maxAge;
         this.seedItem = seedItem;
     }
 
@@ -81,10 +55,24 @@ public abstract class SpicePlantBlock extends CropBlock {
                 .pushReaction(PushReaction.DESTROY);
     }
 
+    /**
+     * Returns {@link Constants#DEFAULT_SPICE_PLANT_GROWTH_STAGES}, not the
+     * live {@code IConfigHelper#getSpicePlantGrowthStages()} config value.
+     * <p>
+     * Vanilla's {@code CropBlock#isRandomlyTicking()} calls {@code getMaxAge()}
+     * (via {@code isMaxAge()}) during {@code BlockStateBase#initCache()}, which
+     * runs synchronously right after registries freeze - i.e. immediately
+     * after {@code RegisterEvent}, and always before
+     * {@code ModConfigEvent.Loading} fires, in every environment. There is no safe
+     * point at which a {@code Block} override can read live config for a value that
+     * affects block-state caching. See
+     * {@code IConfigHelper#getSpicePlantGrowthStages()}'s javadoc for the
+     * same constraint from the config side.
+     */
     @Override
     public int getMaxAge() {
 
-        return maxAge;
+        return Constants.DEFAULT_SPICE_PLANT_GROWTH_STAGES;
     }
 
     @Override

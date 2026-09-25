@@ -18,9 +18,17 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
 /**
  * Datagens loot tables for every registered Spice Plant block (see
- * {@link SpicePlants}), driven entirely by each block's own growth-stage
- * configuration - see {@link SpicePlantLootTables} for the shared table
- * shape and {@code FabricSpiceLootProvider} for the Fabric counterpart.
+ * {@link SpicePlants}) - see {@link SpicePlantLootTables} for the shared
+ * table shape and {@code FabricSpiceLootProvider} for the Fabric
+ * counterpart.
+ * <p>
+ * Uses {@link Constants#DEFAULT_SPICE_PLANT_GROWTH_STAGES} rather than
+ * {@code block.getMaxAge()} for the loot condition's threshold age: a pure
+ * {@code runData} pass never loads config (see
+ * {@link com.drunkencod.spice_road.block.SpicePlantBlock#getMaxAge()}), so
+ * calling {@code getMaxAge()} here would crash datagen the same way reading
+ * config during block registration did. Re-run datagen after changing that
+ * default to regenerate the loot tables.
  */
 public class NeoForgeSpiceLootProvider extends LootTableProvider {
 
@@ -44,7 +52,7 @@ public class NeoForgeSpiceLootProvider extends LootTableProvider {
                 this.add(block, SpicePlantLootTables.create(
                         block,
                         block.getAgeProperty(),
-                        block.getMaxAge(),
+                        Constants.DEFAULT_SPICE_PLANT_GROWTH_STAGES,
                         plant.seedItem().get(),
                         plant.productItem().get(),
                         Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD));

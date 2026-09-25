@@ -35,8 +35,20 @@ public interface IConfigHelper {
 
     /**
      * Configured growth stage count (highest age value, 1-7) shared by every
-     * {@code FLOWER_PATCH}/{@code CROP} Spice Plant block. COMMON (startup)
-     * config, read once per Spice Plant block at registration time.
+     * {@code FLOWER_PATCH}/{@code CROP} Spice Plant block.
+     * <p>
+     * <b>Not currently applied by the block itself.</b> Vanilla
+     * {@code CropBlock#isRandomlyTicking()} calls {@code getMaxAge()} during
+     * block-state-freeze, which happens immediately after
+     * {@code RegisterEvent} and always before {@code ModConfigEvent.Loading}
+     * in every environment. There is no safe point at which a {@code Block} can
+     * read live config for this value, so {@code SpicePlantBlock#getMaxAge()}
+     * returns
+     * {@link com.drunkencod.spice_road.Constants#DEFAULT_SPICE_PLANT_GROWTH_STAGES}
+     * directly instead of calling this method. This accessor is kept for any
+     * future mechanic that genuinely reads it at true runtime (e.g. a
+     * growth-chance multiplier checked during {@code randomTick}), not for
+     * the stage count itself.
      *
      * @return The configured growth stage count.
      */

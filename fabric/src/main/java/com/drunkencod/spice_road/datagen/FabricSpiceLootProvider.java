@@ -12,7 +12,10 @@ import net.minecraft.core.HolderLookup;
 
 /**
  * Fabric counterpart of {@code NeoForgeSpiceLootProvider} - see that class
- * and {@link SpicePlantLootTables} for the shared loot table shape.
+ * and {@link SpicePlantLootTables} for the shared loot table shape. Also
+ * uses {@link Constants#DEFAULT_SPICE_PLANT_GROWTH_STAGES} instead of
+ * {@code block.getMaxAge()} for the same reason (config isn't loaded during
+ * {@code runData}).
  */
 public class FabricSpiceLootProvider extends FabricBlockLootTableProvider {
 
@@ -27,7 +30,7 @@ public class FabricSpiceLootProvider extends FabricBlockLootTableProvider {
             this.add(block, SpicePlantLootTables.create(
                     block,
                     block.getAgeProperty(),
-                    block.getMaxAge(),
+                    Constants.DEFAULT_SPICE_PLANT_GROWTH_STAGES,
                     plant.seedItem().get(),
                     plant.productItem().get(),
                     Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD));

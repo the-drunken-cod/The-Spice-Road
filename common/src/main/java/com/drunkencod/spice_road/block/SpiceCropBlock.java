@@ -23,8 +23,8 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
  */
 public class SpiceCropBlock extends SpicePlantBlock {
 
-    public SpiceCropBlock(BlockBehaviour.Properties properties, int maxAge, Supplier<? extends ItemLike> seedItem) {
+    public SpiceCropBlock(BlockBehaviour.Properties properties, Supplier<? extends ItemLike> seedItem) {
 
-        super(properties, maxAge, seedItem);
+        super(properties, seedItem);
     }
 }

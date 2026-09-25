@@ -19,8 +19,8 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
  */
 public class FlowerPatchBlock extends SpicePlantBlock {
 
-    public FlowerPatchBlock(BlockBehaviour.Properties properties, int maxAge, Supplier<? extends ItemLike> seedItem) {
+    public FlowerPatchBlock(BlockBehaviour.Properties properties, Supplier<? extends ItemLike> seedItem) {
 
-        super(properties, maxAge, seedItem);
+        super(properties, seedItem);
     }
 }
