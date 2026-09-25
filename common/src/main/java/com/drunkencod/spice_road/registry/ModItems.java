@@ -1,19 +1,27 @@
 package com.drunkencod.spice_road.registry;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
+import org.jetbrains.annotations.Nullable;
+
+import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.spice.Spice;
+
 /**
  * Central item registry.
  * <p>
  * Add items here using {@link IRegistryHelper#registerItem(String, Supplier)},
- * then call
- * {@link #addForBulkModel(ResourceLocation)} so the datagen helper knows to
- * generate a
- * flat item model for them automatically.
+ * then call {@link #addForBulkModel(ResourceLocation)} so the datagen helper
+ * knows to generate a flat item model for them automatically.
  */
 public class ModItems {
 
@@ -38,5 +46,26 @@ public class ModItems {
 
     public static List<ResourceLocation> getFlatItemModelIds() {
         return Collections.unmodifiableList(FLAT_ITEM_MODEL_IDS);
+    }
+
+    /** Returns the item with the given registry ID path */
+    public static @Nullable Item byPath(String path) {
+        ResourceLocation itemId = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, path);
+        return BuiltInRegistries.ITEM.getOptional(itemId).orElse(null);
+    }
+
+    // #region creative tabs
+
+    public static void populateGenericTab(CreativeModeTab.Output output) {
+        // output.accept();
+    }
+
+    public static void populateSpicesTab(CreativeModeTab.Output output) {
+        for (Spice spice : Spice.values()) {
+            String id = spice.getId();
+            ItemStack spiceRaw = Spice.getRawById(id).getDefaultInstance();
+            ItemStack spiceDried = Spice.getDriedById(id).getDefaultInstance();
+            ItemStack spiceSeeds = Spice.getSeedsById(id).getDefaultInstance();
+        }
     }
 }

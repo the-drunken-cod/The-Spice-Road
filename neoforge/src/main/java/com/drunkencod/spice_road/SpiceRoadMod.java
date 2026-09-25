@@ -1,6 +1,7 @@
 package com.drunkencod.spice_road;
 
 import com.drunkencod.spice_road.client.NeoForgeSpiceRegionDebugOverlay;
+import com.drunkencod.spice_road.client.NeoForgeSpiceTooltipHandler;
 import com.drunkencod.spice_road.config.NeoForgeConfigHelper;
 import com.drunkencod.spice_road.datagen.NeoForgeItemModelProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeSpiceLootProvider;
@@ -43,5 +44,6 @@ public class SpiceRoadMod {
         // Services.PLATFORM.isDevelopmentEnvironment(), so this is a no-op in
         // production.
         NeoForgeSpiceRegionDebugOverlay.registerIfDevelopment();
+        NeoForgeSpiceTooltipHandler.register();
     }
 }

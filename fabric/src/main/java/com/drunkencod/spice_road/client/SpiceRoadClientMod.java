@@ -14,5 +14,6 @@ public class SpiceRoadClientMod implements ClientModInitializer {
         // Services.PLATFORM.isDevelopmentEnvironment(), so this is a no-op in
         // production.
         FabricSpiceRegionDebugOverlay.registerIfDevelopment();
+        FabricSpiceTooltipHandler.register();
     }
 }

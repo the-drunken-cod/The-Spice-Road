@@ -5,14 +5,9 @@ import net.minecraft.world.level.Level;
 
 /**
  * Loader-agnostic source of Spice Region (cell) debug info, consumed by the F3
- * debug renderer.
- * <p>
- * TODO: replace {@link StubSpiceRegionDebugSource} with a real implementation
- * once the Perlin/Voronoi region (cell) system exists, e.g. delegating to
- * something like {@code SpiceRegionSystem.query(level, pos)} and mapping
- * its result (cell id, Climate Bucket, resolved Spice, raw noise value, ...)
- * onto {@link SpiceRegionDebugInfo.Line}s. Wire the replacement in via
- * {@link SpiceRegionDebugManager#setSource(SpiceRegionDebugSource)}.
+ * debug renderer. See {@link SpiceRegionDebugSourceImpl} for the real,
+ * {@code SpiceRegionResolver}-backed implementation currently wired in via
+ * {@link SpiceRegionDebugManager}.
  */
 public interface SpiceRegionDebugSource {
 

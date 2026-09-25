@@ -1,0 +1,13 @@
+{
+  "item": "spice_road:chili_pepper",
+  "profile": {
+    "heat": 1.0,
+    "sweet_bitter": 0.1,
+    "sour_mellow": 0.2,
+    "earthy_floral": 0.2,
+    "woody_green": -0.3,
+    "pungent": 0.4,
+    "resinous": -0.2,
+    "savory_delicate": 0.3
+  }
+}

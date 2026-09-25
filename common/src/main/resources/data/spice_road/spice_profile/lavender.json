@@ -1,0 +1,13 @@
+{
+  "item": "spice_road:lavender",
+  "profile": {
+    "heat": -0.2,
+    "sweet_bitter": 0.0,
+    "sour_mellow": -0.2,
+    "earthy_floral": -0.9,
+    "woody_green": -0.4,
+    "pungent": 0.0,
+    "resinous": 0.4,
+    "savory_delicate": -0.8
+  }
+}

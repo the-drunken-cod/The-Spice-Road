@@ -1,13 +1,22 @@
 package com.drunkencod.spice_road.registry;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.function.Supplier;
+
+import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.core.Registry;
-
-import java.util.function.Supplier;
 
 import com.drunkencod.spice_road.Constants;
 
@@ -32,5 +41,33 @@ public class FabricRegistryHelper implements IRegistryHelper {
         T feature = Registry.register(BuiltInRegistries.FEATURE,
                 ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id), factory.get());
         return () -> feature;
+    }
+
+    @Override
+    public <T> Supplier<DataComponentType<T>> registerDataComponentType(String id,
+            Supplier<DataComponentType<T>> factory) {
+        DataComponentType<T> type = Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE,
+                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id), factory.get());
+        return () -> type;
+    }
+
+    @Override
+    public void registerReloadListener(ResourceLocation id, PreparableReloadListener listener) {
+        ResourceManagerHelper.get(PackType.SERVER_DATA)
+                .registerReloadListener(new IdentifiableResourceReloadListener() {
+
+                    @Override
+                    public ResourceLocation getFabricId() {
+                        return id;
+                    }
+
+                    @Override
+                    public CompletableFuture<Void> reload(PreparationBarrier barrier, ResourceManager manager,
+                            ProfilerFiller prepareProfiler, ProfilerFiller applyProfiler,
+                            Executor backgroundExecutor, Executor gameExecutor) {
+                        return listener.reload(barrier, manager, prepareProfiler, applyProfiler, backgroundExecutor,
+                                gameExecutor);
+                    }
+                });
     }
 }

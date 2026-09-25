@@ -24,10 +24,7 @@ import net.minecraft.world.level.Level;
  */
 public final class SpiceRegionDebugManager {
 
-    // TODO: swap for a real implementation once the Spice Region (cell) system
-    // exists, e.g.: setSource((level, pos) -> SpiceRegionSystem.query(level,
-    // pos).toDebugInfo());
-    private static SpiceRegionDebugSource source = new StubSpiceRegionDebugSource();
+    private static SpiceRegionDebugSource source = new SpiceRegionDebugSourceImpl();
 
     private SpiceRegionDebugManager() {
     }

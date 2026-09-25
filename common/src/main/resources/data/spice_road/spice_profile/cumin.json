@@ -1,0 +1,13 @@
+{
+  "item": "spice_road:cumin",
+  "profile": {
+    "heat": 0.2,
+    "sweet_bitter": -0.3,
+    "sour_mellow": -0.2,
+    "earthy_floral": 0.9,
+    "woody_green": 0.2,
+    "pungent": 0.3,
+    "resinous": 0.1,
+    "savory_delicate": 0.6
+  }
+}

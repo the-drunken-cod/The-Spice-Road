@@ -1,6 +1,15 @@
 package com.drunkencod.spice_road.spice;
 
 import java.util.Arrays;
+import java.util.Locale;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 /**
  * A Spice's score across all {@link FlavorAxis} values, for a given item
@@ -9,6 +18,29 @@ import java.util.Arrays;
 public final class SpiceProfile {
 
     private static final FlavorAxis[] AXES = FlavorAxis.values();
+
+    /**
+     * Datapack format: one field per {@link FlavorAxis}, keyed by its
+     * lowercase enum name (e.g. {@code "sweet_bitter"}), each a double in
+     * range [-1, 1]. Field order doesn't matter.
+     */
+    public static final Codec<SpiceProfile> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            axisField(FlavorAxis.HEAT_COOLING).forGetter(p -> p.get(FlavorAxis.HEAT_COOLING)),
+            axisField(FlavorAxis.SWEET_BITTER).forGetter(p -> p.get(FlavorAxis.SWEET_BITTER)),
+            axisField(FlavorAxis.SOUR_MELLOW).forGetter(p -> p.get(FlavorAxis.SOUR_MELLOW)),
+            axisField(FlavorAxis.EARTHY_FLORAL).forGetter(p -> p.get(FlavorAxis.EARTHY_FLORAL)),
+            axisField(FlavorAxis.WOODY_GREEN).forGetter(p -> p.get(FlavorAxis.WOODY_GREEN)),
+            axisField(FlavorAxis.PUNGENT_SOFT).forGetter(p -> p.get(FlavorAxis.PUNGENT_SOFT)),
+            axisField(FlavorAxis.RESINOUS_CLEAN).forGetter(p -> p.get(FlavorAxis.RESINOUS_CLEAN)),
+            axisField(FlavorAxis.SAVORY_DELICATE).forGetter(p -> p.get(FlavorAxis.SAVORY_DELICATE)))
+            .apply(instance, SpiceProfile::new));
+
+    /** Network sync for the {@code spice_road:spice_profile} data component. */
+    public static final StreamCodec<ByteBuf, SpiceProfile> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
+
+    private static MapCodec<Double> axisField(FlavorAxis axis) {
+        return Codec.doubleRange(-1.0, 1.0).fieldOf(axis.name().toLowerCase(Locale.ROOT));
+    }
 
     private final double[] values;
 
