@@ -1,3 +1,7 @@
+# datagen (excluded until release)
+fabric/src/generated/
+neoforge/src/generated/
+
 # eclipse
 bin
 *.launch
@@ -6,6 +10,7 @@ bin
 .classpath
 .project
 neoforge/.eclipse/
+**/generated/resources/.cache/
 
 # idea
 out
