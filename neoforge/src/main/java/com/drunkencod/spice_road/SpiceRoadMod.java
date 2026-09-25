@@ -3,6 +3,7 @@ package com.drunkencod.spice_road;
 import com.drunkencod.spice_road.client.NeoForgeSpiceRegionDebugOverlay;
 import com.drunkencod.spice_road.client.NeoForgeSpiceTooltipHandler;
 import com.drunkencod.spice_road.config.NeoForgeConfigHelper;
+import com.drunkencod.spice_road.datagen.NeoForgeBlockStateProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeItemModelProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeSpiceLootProvider;
 import com.drunkencod.spice_road.platform.Services;
@@ -36,6 +37,9 @@ public class SpiceRoadMod {
         event.getGenerator().addProvider(
                 event.includeClient(),
                 new NeoForgeItemModelProvider(event.getGenerator().getPackOutput(), event.getExistingFileHelper()));
+        event.getGenerator().addProvider(
+                event.includeClient(),
+                new NeoForgeBlockStateProvider(event.getGenerator().getPackOutput(), event.getExistingFileHelper()));
         event.getGenerator().addProvider(
                 event.includeServer(),
                 new NeoForgeSpiceLootProvider(event.getGenerator().getPackOutput(), event.getLookupProvider()));
