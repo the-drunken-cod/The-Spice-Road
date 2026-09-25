@@ -1,4 +1,4 @@
-package com.drunkencod.multi_loader_template.registry;
+package com.drunkencod.spice_road.registry;
 
 /**
  * Central block registry.

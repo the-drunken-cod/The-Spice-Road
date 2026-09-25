@@ -1,11 +1,11 @@
-package com.drunkencod.multi_loader_template.platform;
+package com.drunkencod.spice_road.platform;
 
 import java.util.ServiceLoader;
 
-import com.drunkencod.multi_loader_template.Constants;
-import com.drunkencod.multi_loader_template.config.IConfigHelper;
-import com.drunkencod.multi_loader_template.platform.services.IPlatformHelper;
-import com.drunkencod.multi_loader_template.registry.IRegistryHelper;
+import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.config.IConfigHelper;
+import com.drunkencod.spice_road.platform.services.IPlatformHelper;
+import com.drunkencod.spice_road.registry.IRegistryHelper;
 
 public class Services {
 

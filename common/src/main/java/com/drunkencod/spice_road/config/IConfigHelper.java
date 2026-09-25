@@ -1,4 +1,4 @@
-package com.drunkencod.multi_loader_template.config;
+package com.drunkencod.spice_road.config;
 
 /**
  * Cross-loader config service interface.
@@ -9,28 +9,49 @@ package com.drunkencod.multi_loader_template.config;
  *
  * <p>
  * Config is loaded via
- * {@link com.drunkencod.multi_loader_template.platform.Services#CONFIG}.
+ * {@link com.drunkencod.spice_road.platform.Services#CONFIG}.
  */
 public interface IConfigHelper {
 
     /**
-     * Example startup (common) config value — read once during mod initialisation.
+     * The (approximate) edge length of a Spice Region cell, in blocks. See
+     * {@code com.drunkencod.spice_road.spice.region.SpiceRegionResolver#resolveCell}.
      *
-     * @return {@code true} if the example startup option is enabled
+     * @return The configured cell scale, in blocks.
      */
-    boolean getExampleStartupBool();
+    double getSpiceRegionCellScale();
 
     /**
-     * Example server-side config value.
+     * How strongly Spice Region generation favors common Spices over rarer
+     * ones. Defaults differ between singleplayer (integrated) and dedicated
+     * servers - see {@code IPlatformHelper#isDedicatedServer()} - since the
+     * clustering is meant to encourage travel/trade, which matters more on
+     * shared servers. See
+     * {@code com.drunkencod.spice_road.spice.region.SpiceRegionResolver#resolveSpice}.
      *
-     * @return {@code true} if the example server option is enabled
+     * @return The configured clustering strength exponent.
      */
-    boolean getExampleServerBool();
+    double getSpiceRegionClusteringStrength();
 
     /**
-     * Example client-side config value.
+     * Configured growth stage count (highest age value, 1-7) shared by every
+     * {@code FLOWER_PATCH}/{@code CROP} Spice Plant block. COMMON (startup)
+     * config, read once per Spice Plant block at registration time.
      *
-     * @return {@code true} if the example client option is enabled
+     * @return The configured growth stage count.
      */
-    boolean getExampleClientBool();
+    int getSpicePlantGrowthStages();
+
+    /**
+     * Configured flat harvest yield (item count) for
+     * {@code FLOWER_PATCH}/{@code CROP} Spice Plants. Note: loot table datagen does
+     * not call this method directly (a pure {@code runData} pass may run before
+     * config is loaded) - it bakes in
+     * {@link com.drunkencod.spice_road.Constants#DEFAULT_SPICE_PLANT_HARVEST_YIELD}
+     * instead, which is this value's default. Re-run datagen after changing that
+     * default to keep the two in sync.
+     *
+     * @return The configured flat harvest yield.
+     */
+    int getSpicePlantHarvestYield();
 }

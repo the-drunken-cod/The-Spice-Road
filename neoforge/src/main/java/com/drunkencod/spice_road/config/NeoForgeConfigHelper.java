@@ -5,7 +5,8 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.drunkencod.spice_road.config.IConfigHelper;
+import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.platform.Services;
 
 public class NeoForgeConfigHelper implements IConfigHelper {
 
@@ -52,13 +53,12 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     // -------------------------------------------------------------------------
-    // Registration — called from MultiLoaderTemplateMod constructor
+    // Registration - called from SpiceRoadMod constructor
     // -------------------------------------------------------------------------
 
     /**
      * Must be called in the NeoForge mod constructor with the injected
-     * {@link ModContainer}
-     * so that configs are registered before the world loads.
+     * {@link ModContainer} so that configs are registered before the world loads.
      */
     public void register(ModContainer modContainer) {
         modContainer.registerConfig(ModConfig.Type.COMMON, COMMON_SPEC);
@@ -71,18 +71,23 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     // -------------------------------------------------------------------------
 
     @Override
-    public boolean getExampleStartupBool() {
-        return COMMON.exampleStartupBool.get();
+    public double getSpiceRegionCellScale() {
+        return SERVER.spiceRegionCellScale.get();
     }
 
     @Override
-    public boolean getExampleServerBool() {
-        return SERVER.exampleServerBool.get();
+    public double getSpiceRegionClusteringStrength() {
+        return SERVER.spiceRegionClusteringStrength.get();
     }
 
     @Override
-    public boolean getExampleClientBool() {
-        return CLIENT.exampleClientBool.get();
+    public int getSpicePlantGrowthStages() {
+        return COMMON.spicePlantGrowthStages.get();
+    }
+
+    @Override
+    public int getSpicePlantHarvestYield() {
+        return COMMON.spicePlantHarvestYield.get();
     }
 
     // -------------------------------------------------------------------------
@@ -90,32 +95,42 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     // -------------------------------------------------------------------------
 
     public static class CommonConfig {
-        public final ModConfigSpec.BooleanValue exampleStartupBool;
+        public final ModConfigSpec.IntValue spicePlantGrowthStages;
+        public final ModConfigSpec.IntValue spicePlantHarvestYield;
 
         CommonConfig(ModConfigSpec.Builder builder) {
-            exampleStartupBool = builder
-                    .comment("Example common (startup) config boolean")
-                    .define("exampleStartupBool", false);
+            spicePlantGrowthStages = builder
+                    .comment("Growth stage count (highest age value, 1-7) shared by every "
+                            + "FLOWER_PATCH/CROP Spice Plant block. Read once per block at registration "
+                            + "time; requires a restart to take effect.")
+                    .defineInRange("spicePlantGrowthStages", Constants.DEFAULT_SPICE_PLANT_GROWTH_STAGES, 1, 7);
+            spicePlantHarvestYield = builder
+                    .comment("Flat harvest yield (item count) for FLOWER_PATCH/CROP Spice Plants. "
+                            + "Phase 1: no tier-based scaling yet. Loot tables bake in the default value "
+                            + "of this option at datagen time, not this live value; re-run datagen after "
+                            + "changing Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD to regenerate them.")
+                    .defineInRange("spicePlantHarvestYield", Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD, 1, 64);
         }
     }
 
     public static class ServerConfig {
-        public final ModConfigSpec.BooleanValue exampleServerBool;
+        public final ModConfigSpec.DoubleValue spiceRegionCellScale;
+        public final ModConfigSpec.DoubleValue spiceRegionClusteringStrength;
 
         ServerConfig(ModConfigSpec.Builder builder) {
-            exampleServerBool = builder
-                    .comment("Example server config boolean")
-                    .define("exampleServerBool", false);
+            spiceRegionCellScale = builder
+                    .comment("Approximate edge length of a Spice Region cell, in blocks")
+                    .defineInRange("spiceRegionCellScale", 1024.0, 64.0, 1_000_000.0);
+            spiceRegionClusteringStrength = builder
+                    .comment("How strongly Spice Region generation favors common Spices over rarer ones")
+                    .defineInRange("spiceRegionClusteringStrength",
+                            Services.PLATFORM.isDedicatedServer() ? 1.75 : 1.0, 0.0, 10.0);
         }
     }
 
     public static class ClientConfig {
-        public final ModConfigSpec.BooleanValue exampleClientBool;
 
         ClientConfig(ModConfigSpec.Builder builder) {
-            exampleClientBool = builder
-                    .comment("Example client config boolean")
-                    .define("exampleClientBool", false);
         }
     }
 }

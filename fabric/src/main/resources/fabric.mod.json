@@ -16,10 +16,13 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-            "com.drunkencod.multi_loader_template.MultiLoaderTemplateMod"
+            "com.drunkencod.spice_road.SpiceRoadMod"
+        ],
+        "client": [
+            "com.drunkencod.spice_road.client.SpiceRoadClientMod"
         ],
         "fabric-datagen": [
-            "com.drunkencod.multi_loader_template.ModDataGen"
+            "com.drunkencod.spice_road.ModDataGen"
         ]
     },
     "mixins": [

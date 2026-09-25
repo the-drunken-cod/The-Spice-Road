@@ -1,6 +1,7 @@
 package com.drunkencod.spice_road;
 
 import com.drunkencod.spice_road.datagen.FabricItemModelProvider;
+import com.drunkencod.spice_road.datagen.FabricSpiceLootProvider;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -11,5 +12,6 @@ public class ModDataGen implements DataGeneratorEntrypoint {
     public void onInitializeDataGenerator(FabricDataGenerator generator) {
         FabricDataGenerator.Pack pack = generator.createPack();
         pack.addProvider(FabricItemModelProvider::new);
+        pack.addProvider(FabricSpiceLootProvider::new);
     }
 }

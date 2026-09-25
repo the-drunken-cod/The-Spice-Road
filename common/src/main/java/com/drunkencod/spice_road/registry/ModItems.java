@@ -1,4 +1,4 @@
-package com.drunkencod.multi_loader_template.registry;
+package com.drunkencod.spice_road.registry;
 
 import net.minecraft.resources.ResourceLocation;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class ModItems {
      * Mark an item as needing a bulk-generated flat item model.
      *
      * @param loc The full {@link ResourceLocation} of the item (e.g.
-     *            {@code multi_loader_template:my_item})
+     *            {@code spice_road:my_item})
      */
     public static void addForBulkModel(ResourceLocation loc) {
         FLAT_ITEM_MODEL_IDS.add(loc);

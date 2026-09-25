@@ -1,4 +1,4 @@
-package com.drunkencod.multi_loader_template.datagen;
+package com.drunkencod.spice_road.datagen;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.drunkencod.multi_loader_template.Constants;
-import com.drunkencod.multi_loader_template.registry.ModItems;
+import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.registry.ModItems;
 
 /**
  * Helper for bulk item model generation.
@@ -15,10 +15,10 @@ import com.drunkencod.multi_loader_template.registry.ModItems;
  * Items added via {@link #addFlatItem(String)} automatically get a
  * {@code minecraft:item/generated} model with a single {@code layer0} texture
  * sourced from
- * {@code multi_loader_template:item/<id>}.
+ * {@code spice_road:item/<id>}.
  *
  * <p>
- * Usage in your mod init:
+ * Usage in mod init:
  * 
  * <pre>{@code
  * ItemModelHelper.addFlatItem("my_item");

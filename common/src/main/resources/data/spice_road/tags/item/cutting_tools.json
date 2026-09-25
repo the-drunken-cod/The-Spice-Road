@@ -1,0 +1,7 @@
+{
+  "_comment": "Placeholder entries only - no real Spice items exist yet. minecraft:shears and minecraft:iron_axe are vanilla stand-ins for the eventual cutting-tool roster (axe-stripping, bush harvest tools) and should be revisited once Spice items/tool tiers are defined.",
+  "values": [
+    "minecraft:shears",
+    "minecraft:iron_axe"
+  ]
+}
