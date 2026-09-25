@@ -43,6 +43,11 @@ tasks.named('compileJava', JavaCompile) {
 processResources {
     dependsOn(configurations.commonResources)
     from(configurations.commonResources)
+    // This module's own resources (including src/generated/resources) are added to the
+    // task first, so on a path collision they win and the common copy is silently
+    // skipped - without this, Gradle's default DuplicatesStrategy.INCLUDE would let
+    // whichever source happens to be processed last silently overwrite the other.
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 tasks.named('javadoc', Javadoc).configure {
