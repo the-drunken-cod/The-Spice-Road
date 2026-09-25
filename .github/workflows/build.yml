@@ -2,9 +2,16 @@ name: Build
 
 on:
   push:
-    branches: [ "**" ]
+    branches: ["**"]
   pull_request:
-    branches: [ "**" ]
+    branches: ["**"]
+  workflow_dispatch:
+    inputs:
+      upload_artifact:
+        description: "Upload build artifacts"
+        type: boolean
+        required: false
+        default: true
   # Called by other workflows (e.g. release.yml) with an optional artifact upload flag
   workflow_call:
     inputs:
