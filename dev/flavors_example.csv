@@ -1,0 +1,9 @@
+axis_id,axis_name,positive_label,negative_label,positive_examples,negative_examples
+heat,Heat,Fiery,Cooling,Chili;Black Pepper,Fennel;Anise
+sweet_bitter,Sweet-Bitter,Sweet,Bitter,Cinnamon;Licorice,Fenugreek;Nigella
+sour_mellow,Sour-Mellow,Tart,Rounded,Sumac;Caper,Vanilla;Sesame
+earthy_floral,Earthy-Floral,Earthy,Floral,Cumin;Turmeric,Saffron;Lavender
+woody_green,Woody-Green,Bark/wood,Fresh herb,Cassia;Clove,Dill;Coriander
+pungent,Pungent,Sinus-sharp,Soft,Wasabi;Mustard,Poppy Seed;Safflower
+resinous,Resinous,Resin/pine,Clean,Mastic;Juniper;Rosemary,Cardamom;Wasabi
+savory_delicate,Savory-Delicate,Umami,Airy,Asafoetida;Curry Leaf,Star Anise;Mace

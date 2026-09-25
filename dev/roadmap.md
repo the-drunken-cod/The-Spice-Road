@@ -1,6 +1,7 @@
 ### Phases
 1. **Spice Plants**
     - Uses custom perlin map, at a much larger scale than biomes (more like the "large biomes" preset).
+        - Add F3 debug info for identifying spice regions (only in a debug env).
     - Plant generation respects biome parameters like temperature.
     - Plant generation uses standard feature JSONs for base definition, and/or datagenning from an enum class' members.
     - Custom models and fancy textures.
