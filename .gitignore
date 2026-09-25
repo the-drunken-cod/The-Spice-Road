@@ -31,6 +31,7 @@ neoforge/run-data/
 eclipse
 run
 runs
+generated/
 
 # local-only version overrides
 versions/*.local.properties
