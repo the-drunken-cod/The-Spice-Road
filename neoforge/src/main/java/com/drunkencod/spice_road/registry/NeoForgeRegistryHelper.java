@@ -12,6 +12,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -55,8 +56,6 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
 
     @Override
     public void registerReloadListener(ResourceLocation id, PreparableReloadListener listener) {
-        // NeoForge's AddReloadListenerEvent doesn't take an id - the id
-        // parameter exists for Fabric's IdentifiableResourceReloadListener.
         pendingReloadListeners.add(listener);
     }
 
@@ -75,6 +74,7 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
         blocks.register(eventBus);
         features.register(eventBus);
         dataComponents.register(eventBus);
-        eventBus.addListener(this::onAddReloadListeners);
+        // AddReloadListenerEvent is a game event, not a mod-bus event.
+        NeoForge.EVENT_BUS.addListener(this::onAddReloadListeners);
     }
 }

@@ -4,7 +4,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,10 +61,16 @@ public class ModItems {
 
     public static void populateSpicesTab(CreativeModeTab.Output output) {
         for (Spice spice : Spice.values()) {
-            String id = spice.getId();
-            ItemStack spiceRaw = Spice.getRawById(id).getDefaultInstance();
-            ItemStack spiceDried = Spice.getDriedById(id).getDefaultInstance();
-            ItemStack spiceSeeds = Spice.getSeedsById(id).getDefaultInstance();
+            Item spiceRaw = Spice.getRawById(spice.getId());
+            Item spiceDried = Spice.getDriedById(spice.getId());
+            Item spiceSeeds = Spice.getSeedsById(spice.getId());
+
+            if (spiceRaw != null)
+                output.accept(spiceRaw.getDefaultInstance());
+            if (spiceDried != null)
+                output.accept(spiceDried.getDefaultInstance());
+            if (spiceSeeds != null)
+                output.accept(spiceSeeds.getDefaultInstance());
         }
     }
 }
