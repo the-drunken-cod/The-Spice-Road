@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.spice.Spice;
@@ -60,21 +61,21 @@ public class ModItems {
     // #region creative tabs
 
     public static void populateGenericTab(CreativeModeTab.Output output) {
-        // output.accept();
+        output.accept(Items.ROTTEN_FLESH.getDefaultInstance());
     }
 
     public static void populateSpicesTab(CreativeModeTab.Output output) {
         for (Spice spice : Spice.values()) {
+            Item spiceSeeds = Spice.getSeedsById(spice.getId());
             Item spiceRaw = Spice.getRawById(spice.getId());
             Item spiceDried = Spice.getDriedById(spice.getId());
-            Item spiceSeeds = Spice.getSeedsById(spice.getId());
 
+            if (spiceSeeds != null)
+                output.accept(withSpiceProfile(spiceSeeds));
             if (spiceRaw != null)
                 output.accept(withSpiceProfile(spiceRaw));
             if (spiceDried != null)
                 output.accept(withSpiceProfile(spiceDried));
-            if (spiceSeeds != null)
-                output.accept(withSpiceProfile(spiceSeeds));
         }
     }
 

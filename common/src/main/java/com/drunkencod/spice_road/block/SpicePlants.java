@@ -6,7 +6,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 
 import com.drunkencod.spice_road.datagen.ItemModelHelper;
 import com.drunkencod.spice_road.platform.Services;
@@ -61,18 +63,26 @@ public final class SpicePlants {
         String blockId = id + (spice.getSourceType() == SourceType.FLOWER_PATCH ? "_flower" : "_crop");
 
         Supplier<Item> productItem = Services.REGISTRY.registerItem(id, () -> new Item(new Item.Properties()));
-        Supplier<Item> seedItem = Services.REGISTRY.registerItem(seedId, () -> new Item(new Item.Properties()));
-        ItemModelHelper.addFlatItem(id);
-        ItemModelHelper.addFlatItem(seedId);
+
+        @SuppressWarnings("unchecked")
+        Supplier<Item>[] seedItemHolder = new Supplier[1];
+        Supplier<ItemLike> seedItemRef = () -> seedItemHolder[0].get();
 
         Supplier<? extends SpicePlantBlock> block;
         if (spice.getSourceType() == SourceType.FLOWER_PATCH) {
             block = Services.REGISTRY.registerBlock(blockId,
-                    () -> new FlowerPatchBlock(SpicePlantBlock.defaultProperties(), seedItem));
+                    () -> new FlowerPatchBlock(SpicePlantBlock.defaultProperties(), seedItemRef));
         } else {
             block = Services.REGISTRY.registerBlock(blockId,
-                    () -> new SpiceCropBlock(SpicePlantBlock.defaultProperties(), seedItem));
+                    () -> new SpiceCropBlock(SpicePlantBlock.defaultProperties(), seedItemRef));
         }
+
+        Supplier<Item> seedItem = Services.REGISTRY.registerItem(seedId,
+                () -> new BlockItem(block.get(), new Item.Properties()));
+        seedItemHolder[0] = seedItem;
+
+        ItemModelHelper.addFlatItem(id);
+        ItemModelHelper.addFlatItem(seedId);
 
         return new RegisteredSpicePlant(spice, block, seedItem, productItem);
     }
