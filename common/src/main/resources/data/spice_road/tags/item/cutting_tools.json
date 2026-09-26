@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "#c:tools/knife",
     "#c:tools/shear",
     "#minecraft:swords"
   ]
