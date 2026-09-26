@@ -39,8 +39,16 @@ public class SpiceCropBlock extends SpicePlantBlock {
     }
 
     /**
-     * On top of the inherited ground-type check, gates planting by Spice
-     * Region support (see {@code SpiceRegionResolver}):
+     * Ground-type check only - see {@link #canGrow} for Spice Region gating.
+     */
+    @Override
+    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+
+        return super.canSurvive(state, level, pos);
+    }
+
+    /**
+     * Gates growth by Spice Region support (see {@code SpiceRegionResolver}):
      * <ol>
      * <li>Hardy Spices (harvest/cultivation difficulty at or below
      * {@code IConfigHelper#getSpiceHardyHarvestDifficulty()}) are exempt -
@@ -48,15 +56,13 @@ public class SpiceCropBlock extends SpicePlantBlock {
      * <li>Otherwise, if the restriction is enabled
      * ({@code IConfigHelper#isSpiceRegionPlantingRestricted()}), this Spice
      * must be the one the position's Spice Region actually resolves to.</li>
-     * <li>If the restriction is disabled, only the ground-type check
-     * applies.</li>
+     * <li>If the restriction is disabled, growth is never gated here.</li>
      * </ol>
+     * A Spice that fails this check isn't destroyed (see {@link #canSurvive}) -
+     * it's simply never allowed to advance past stage 0.
      */
     @Override
-    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
-
-        if (!super.canSurvive(state, level, pos))
-            return false;
+    public boolean canGrow(ServerLevel level, BlockPos pos) {
 
         Spice spice = getSpice();
         if (spice.getHarvestDifficulty() <= Services.CONFIG.getSpiceHardyHarvestDifficulty())
@@ -65,21 +71,12 @@ public class SpiceCropBlock extends SpicePlantBlock {
         if (!Services.CONFIG.isSpiceRegionPlantingRestricted())
             return true;
 
-        // The world seed isn't exposed client-side; worldgen placement
-        // (WorldGenLevel) already resolves the correct Spice for the
-        // position itself (see SpicePlantFeature), so this extra check only
-        // needs to run on the authoritative ServerLevel (player placement, bonemeal,
-        // etc). Client-side prediction optimistically allows it; the server corrects
-        // any mismatch.
-        if (!(level instanceof ServerLevel serverLevel))
-            return true;
-
         double cellScale = Services.CONFIG.getSpiceRegionCellScale();
         double clusteringStrength = Services.CONFIG.getSpiceRegionClusteringStrength();
         Climate climate = Climate.fromBiome(level.getBiome(pos), pos);
 
         Optional<Spice> resolved = SpiceRegionResolver
-                .resolve(serverLevel.getSeed(), cellScale, clusteringStrength, climate, pos.getX(), pos.getZ())
+                .resolve(level.getSeed(), cellScale, clusteringStrength, climate, pos.getX(), pos.getZ())
                 .spice();
         return resolved.isPresent() && resolved.get() == spice;
     }

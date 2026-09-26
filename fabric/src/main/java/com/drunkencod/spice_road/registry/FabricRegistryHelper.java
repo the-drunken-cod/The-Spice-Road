@@ -17,6 +17,7 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 
 import com.drunkencod.spice_road.Constants;
 
@@ -47,6 +48,14 @@ public class FabricRegistryHelper implements IRegistryHelper {
     public <T> Supplier<DataComponentType<T>> registerDataComponentType(String id,
             Supplier<DataComponentType<T>> factory) {
         DataComponentType<T> type = Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE,
+                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id), factory.get());
+        return () -> type;
+    }
+
+    @Override
+    public Supplier<LootItemConditionType> registerLootConditionType(String id,
+            Supplier<LootItemConditionType> factory) {
+        LootItemConditionType type = Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE,
                 ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id), factory.get());
         return () -> type;
     }

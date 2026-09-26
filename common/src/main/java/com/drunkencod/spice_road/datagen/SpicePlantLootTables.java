@@ -11,6 +11,8 @@ import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
+import com.drunkencod.spice_road.loot.SpiceRegionSupportedCondition;
+
 /**
  * Shared loot table shape for every {@code FLOWER_PATCH}/{@code CROP} Spice
  * Plant block. Datagenned per {@link com.drunkencod.spice_road.spice.Spice}
@@ -24,11 +26,8 @@ public final class SpicePlantLootTables {
 
         /**
          * Builds the minimal Spice Plant loot table: the seed item always drops,
-         * and the raw Spice product additionally drops - at a flat, configurable
-         * count - only when the block is at its final growth stage.
-         * <p>
-         * Deliberately simpler than vanilla wheat's loot table, since every Spice has
-         * a genuinely distinct seed item, with no bonus-roll mechanics to reason about.
+         * and the raw Spice product additionally drops, at the base harvestYield
+         * multiplied by the configured harvest yield multiplier.
          *
          * @param block        The Spice Plant block this loot table is for.
          * @param ageProperty  The block's growth-stage property (its
@@ -60,6 +59,7 @@ public final class SpicePlantLootTables {
                                 .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
                                                 .setProperties(StatePropertiesPredicate.Builder.properties()
                                                                 .hasProperty(ageProperty, maxAge)))
+                                .when(SpiceRegionSupportedCondition.spiceRegionSupported())
                                 .add(LootItem.lootTableItem(productItem)
                                                 .apply(SetItemCountFunction
                                                                 .setCount(ConstantValue.exactly(harvestYield))));

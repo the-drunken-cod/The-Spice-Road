@@ -7,6 +7,7 @@ import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 
 /**
  * Cross-loader service interface for registering items and blocks.
@@ -28,7 +29,6 @@ public interface IRegistryHelper {
      *
      * @param id      Registry path (e.g. {@code "my_item"})
      * @param factory Supplier that creates the item instance
-     * @return A supplier that returns the registered item
      */
     <T extends Item> Supplier<T> registerItem(String id, Supplier<T> factory);
 
@@ -37,7 +37,6 @@ public interface IRegistryHelper {
      *
      * @param id      Registry path (e.g. {@code "my_block"})
      * @param factory Supplier that creates the block instance
-     * @return A supplier that returns the registered block
      */
     <T extends Block> Supplier<T> registerBlock(String id, Supplier<T> factory);
 
@@ -54,7 +53,6 @@ public interface IRegistryHelper {
      *
      * @param id      Registry path (e.g. {@code "my_feature"})
      * @param factory Supplier that creates the feature instance
-     * @return A supplier that returns the registered feature
      */
     <T extends Feature<?>> Supplier<T> registerFeature(String id, Supplier<T> factory);
 
@@ -63,9 +61,20 @@ public interface IRegistryHelper {
      *
      * @param id      Registry path (e.g. {@code "my_component"})
      * @param factory Supplier that creates the data component type instance
-     * @return A supplier that returns the registered data component type
      */
     <T> Supplier<DataComponentType<T>> registerDataComponentType(String id, Supplier<DataComponentType<T>> factory);
+
+    /**
+     * Register a custom {@link LootItemConditionType} under the mod's namespace.
+     * <p>
+     * Like {@link #registerFeature}, {@code BuiltInRegistries.LOOT_CONDITION_TYPE}
+     * freezes during vanilla bootstrap, before mods even construct, so this needs
+     * the same DeferredRegister-at-RegisterEvent mechanism on NeoForge.
+     *
+     * @param id      Registry path (e.g. {@code "my_condition"})
+     * @param factory Supplier that creates the loot condition type instance
+     */
+    Supplier<LootItemConditionType> registerLootConditionType(String id, Supplier<LootItemConditionType> factory);
 
     /**
      * Register a datapack JSON reload listener under the mod's namespace.

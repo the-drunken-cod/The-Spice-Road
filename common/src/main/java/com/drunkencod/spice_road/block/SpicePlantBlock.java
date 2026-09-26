@@ -106,6 +106,9 @@ public abstract class SpicePlantBlock extends CropBlock {
     @Override
     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
 
+        if (!canGrow(level, pos))
+            return;
+
         double multiplier = Services.CONFIG.getSpicePlantGrowthSpeedMultiplier(spice.getTier());
         if (multiplier <= 0)
             return;
@@ -119,6 +122,38 @@ public abstract class SpicePlantBlock extends CropBlock {
         if (bonusRollChance > 0 && random.nextFloat() < bonusRollChance) {
             super.randomTick(state, level, pos, random);
         }
+    }
+
+    /**
+     * Growth gate checked before every {@link #randomTick}, on top of
+     * vanilla's own light/farmland-fertility odds.
+     * <p>
+     * Defaults to always-growable; {@link SpiceCropBlock} overrides this to
+     * permanently stunt a planted Spice at stage 0 when Spice Region support
+     * (see {@code SpiceRegionResolver}) doesn't back it at this position.
+     *
+     * @param level The server level - growth gating only ever runs at
+     *              tick-time, so this is always authoritative, unlike
+     *              {@code canSurvive} which also runs client-side.
+     * @param pos   The position of this Spice Plant.
+     * @return Whether this Spice Plant is allowed to advance its growth stage.
+     */
+    public boolean canGrow(ServerLevel level, BlockPos pos) {
+
+        return true;
+    }
+
+    /**
+     * Gates vanilla bonemeal the same way {@link #randomTick} gates natural
+     * growth.
+     */
+    @Override
+    public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
+
+        if (!canGrow(level, pos))
+            return;
+
+        super.performBonemeal(level, random, pos, state);
     }
 
     @Override
