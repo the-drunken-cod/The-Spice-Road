@@ -2,10 +2,10 @@ package com.drunkencod.spice_road.tooltip;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 import com.drunkencod.spice_road.spice.FlavorAxis;
@@ -20,11 +20,11 @@ public class SpiceFlavorTooltips {
     /**
      * One Flavor Axis score of a Spice Profile.
      *
-     * @param axisName Display name of the axis (e.g. {@code "Heat"})
-     * @param value    Score in {@code [-1, 1]}, matching the eventual
-     *                 {@code FlavorAxis}/{@code SpiceProfile} representation
+     * @param axisLabel Display label of the axis (e.g. {@code "+Spicy / -Cooling"})
+     * @param value     Score in {@code [-1, 1]}, matching the eventual
+     *                  {@code FlavorAxis}/{@code SpiceProfile} representation
      */
-    public record FlavorValue(String axisName, double value) {
+    public record FlavorValue(Component axisLabel, double value) {
     }
 
     private SpiceFlavorTooltips() {
@@ -40,7 +40,9 @@ public class SpiceFlavorTooltips {
      */
     public static List<Component> formatFlavorAxes(List<FlavorValue> values) {
         return values.stream()
-                .map(v -> Component.literal(v.axisName() + ": " + Math.round(v.value() * 10))
+                .map(v -> Component.empty()
+                        .append(v.axisLabel())
+                        .append(": " + Math.round(v.value() * 10))
                         .withStyle(ChatFormatting.GRAY))
                 .collect(Collectors.toList());
     }
@@ -55,44 +57,30 @@ public class SpiceFlavorTooltips {
     public static List<Component> formatFlavorAxes(SpiceProfile profile) {
         List<FlavorValue> values = new ArrayList<>(FlavorAxis.values().length);
         for (FlavorAxis axis : FlavorAxis.values()) {
-            values.add(new FlavorValue(displayNameFull(axis), profile.get(axis)));
+            values.add(new FlavorValue(axisLabelFull(axis), profile.get(axis)));
         }
         return formatFlavorAxes(values);
     }
 
     /**
-     * Prettifies a {@link FlavorAxis} constant name for display, e.g.
-     * {@code SWEET_BITTER} -> {@code "+Sweet / -Bitter"}.
+     * Builds the full bipolar display label for a {@link FlavorAxis} from its
+     * translation keys, e.g. {@code SWEET_BITTER} -> {@code "+Sweet / -Bitter"}.
      */
-    public static String displayNameFull(FlavorAxis axis) {
-        return displayNameFull(axis, true);
+    public static MutableComponent axisLabelFull(FlavorAxis axis) {
+        return Component.literal("+")
+                .append(Component.translatable(axis.positiveTranslationKey()))
+                .append(" / -")
+                .append(Component.translatable(axis.negativeTranslationKey()));
     }
 
     /**
-     * Prettifies a {@link FlavorAxis} constant name for display, e.g.
-     * {@code SWEET_BITTER} -> {@code "Sweet"}. {@code posNegPrefix} affects
-     * whether the bipolar axis labels get a {@code +} and {@code -} prefix.
+     * Returns the display label of a {@link FlavorAxis} matching the sign of the
+     * given spice profile's value on that axis, e.g. {@code SWEET_BITTER} ->
+     * {@code "Sweet"}.
      */
-    public static String displayNameFull(FlavorAxis axis, boolean posNegPrefix) {
-        String[] words = axis.name().split("_");
-        StringBuilder result = new StringBuilder();
-        for (String word : words) {
-            if (!result.isEmpty()) // before second word:
-                result.append(posNegPrefix ? " / -" : "/");
-            else if (posNegPrefix) // before first word:
-                result.append("+");
-            result.append(word.substring(0, 1).toUpperCase(Locale.ROOT));
-            result.append(word.substring(1).toLowerCase(Locale.ROOT));
-        }
-        return result.toString();
-    }
-
-    /**
-     * Prettifies a {@link FlavorAxis} constant name for display depending on the
-     * given spice profile values, e.g. {@code SWEET_BITTER} -> {@code "Sweet"}.
-     */
-    public static String displayNameShort(FlavorAxis axis, SpiceProfile profile) {
-        String[] words = axis.name().split("_");
-        return words[profile.get(axis) >= 0D ? 0 : 1];
+    public static Component axisLabelShort(FlavorAxis axis, SpiceProfile profile) {
+        return Component.translatable(profile.get(axis) >= 0D
+                ? axis.positiveTranslationKey()
+                : axis.negativeTranslationKey());
     }
 }

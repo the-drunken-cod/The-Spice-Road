@@ -1,5 +1,7 @@
 package com.drunkencod.spice_road.spice;
 
+import com.drunkencod.spice_road.Constants;
+
 /**
  * One of a fixed, closed set of 8 bipolar spectrums a {@link SpiceProfile} is
  * scored on, each a single value from +1 (its positive pole) to -1 (its
@@ -32,5 +34,15 @@ public enum FlavorAxis {
 
     public String getId() {
         return this.axisId;
+    }
+
+    /** Translation key for this axis' positive-pole (+1) display name. */
+    public String positiveTranslationKey() {
+        return Constants.MOD_ID + ".spice_axis.name." + this.axisId + ".positive";
+    }
+
+    /** Translation key for this axis' negative-pole (-1) display name. */
+    public String negativeTranslationKey() {
+        return Constants.MOD_ID + ".spice_axis.name." + this.axisId + ".negative";
     }
 }
