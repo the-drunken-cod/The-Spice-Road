@@ -19,11 +19,11 @@ public class Constants {
     public static final int DEFAULT_SPICE_PLANT_GROWTH_STAGES = 7;
 
     /**
-     * Default flat harvest yield (item count) for {@code FLOWER_PATCH}/{@code CROP}
+     * Default harvest yield multiplier for {@code FLOWER_PATCH}/{@code CROP}
      * Spice Plants. Loot table datagen bakes this value in directly rather than
      * reading it from {@code IConfigHelper} at datagen time, since a pure
      * {@code runData} pass may run before the mod's config file is actually loaded.
      * Re-run datagen after changing this default to regenerate the loot tables.
      */
-    public static final int DEFAULT_SPICE_PLANT_HARVEST_YIELD = 1;
+    public static final double DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER = 1.0D;
 }

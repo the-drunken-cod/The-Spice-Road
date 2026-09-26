@@ -16,6 +16,8 @@ import net.minecraft.network.codec.StreamCodec;
  */
 public final class SpiceProfile {
 
+    private static final double AXIS_RANGE = 10.0;
+
     private static final FlavorAxis[] AXES = FlavorAxis.values();
 
     /**
@@ -38,7 +40,7 @@ public final class SpiceProfile {
     public static final StreamCodec<ByteBuf, SpiceProfile> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 
     private static MapCodec<Double> axisField(FlavorAxis axis) {
-        return Codec.doubleRange(-1.0, 1.0).fieldOf(axis.getId());
+        return Codec.doubleRange(-AXIS_RANGE, AXIS_RANGE).fieldOf(axis.getId());
     }
 
     private final double[] values;
@@ -47,9 +49,10 @@ public final class SpiceProfile {
      * Creates a profile from values given in {@link FlavorAxis} enum order.
      *
      * @param values One value per {@link FlavorAxis}, in enum order, each in range
-     *               [-1, 1].
+     *               [-AXIS_RANGE, +AXIS_RANGE].
      * @throws IllegalArgumentException If the number of values doesn't match the
-     *                                  number of axes, or is outside [-1, 1].
+     *                                  number of axes, or is outside
+     *                                  [-AXIS_RANGE, +AXIS_RANGE].
      */
     public SpiceProfile(double... values) {
 
@@ -60,9 +63,10 @@ public final class SpiceProfile {
 
         for (int i = 0; i < values.length; i++) {
             double value = values[i];
-            if (value < -1.0 || value > 1.0) {
+            if (value < -AXIS_RANGE || value > AXIS_RANGE) {
                 throw new IllegalArgumentException(
-                        "Flavor axis value for " + AXES[i] + " must be in range [-1, 1], got " + value);
+                        "Flavor axis value for " + AXES[i] + " must be in range [" + AXIS_RANGE + ", " + (-AXIS_RANGE)
+                                + "], got " + value);
             }
         }
 
@@ -73,7 +77,7 @@ public final class SpiceProfile {
      * Gets this profile's value for the given axis.
      *
      * @param axis The flavor axis to look up.
-     * @return The axis value, in range [-1, 1].
+     * @return The axis value, in range [-AXIS_RANGE, +AXIS_RANGE].
      */
     public double get(FlavorAxis axis) {
 

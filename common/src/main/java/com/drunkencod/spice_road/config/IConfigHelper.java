@@ -80,17 +80,17 @@ public interface IConfigHelper {
     int getSpicePlantGrowthStages();
 
     /**
-     * Configured flat harvest yield (item count) for
+     * Configured harvest yield multiplier for
      * {@code FLOWER_PATCH}/{@code CROP} Spice Plants. Note: loot table datagen does
      * not call this method directly (a pure {@code runData} pass may run before
      * config is loaded) - it bakes in
-     * {@link com.drunkencod.spice_road.Constants#DEFAULT_SPICE_PLANT_HARVEST_YIELD}
+     * {@link com.drunkencod.spice_road.Constants#DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER}
      * instead, which is this value's default. Re-run datagen after changing that
      * default to keep the two in sync.
      *
      * @return The configured flat harvest yield.
      */
-    int getSpicePlantHarvestYield();
+    double getSpicePlantHarvestYieldMultiplier();
 
     /**
      * Growth-speed multiplier for {@code FLOWER_PATCH}/{@code CROP} Spice Plants

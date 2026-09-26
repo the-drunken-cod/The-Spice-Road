@@ -52,8 +52,8 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
-    public int getSpicePlantHarvestYield() {
-        return AutoConfig.getConfigHolder(CommonConfigData.class).getConfig().spicePlantHarvestYield;
+    public double getSpicePlantHarvestYieldMultiplier() {
+        return AutoConfig.getConfigHolder(CommonConfigData.class).getConfig().spicePlantHarvestYieldMultiplier;
     }
 
     @Override
@@ -91,7 +91,7 @@ public class FabricConfigHelper implements IConfigHelper {
          */
         @ConfigEntry.Gui.Tooltip
         @ConfigEntry.BoundedDiscrete(min = 1, max = 64)
-        public int spicePlantHarvestYield = Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD;
+        public double spicePlantHarvestYieldMultiplier = Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER;
     }
 
     @Config(name = Constants.MOD_ID + "_server")

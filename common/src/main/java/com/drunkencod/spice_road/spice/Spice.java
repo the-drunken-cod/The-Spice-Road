@@ -24,9 +24,9 @@ import net.minecraft.world.item.Item;
  */
 public enum Spice {
 
-    LAVENDER("lavender", SourceType.FLOWER_PATCH, HarvestAction.PICK, Climate.ARID, 1, false),
-    CHILI_PEPPER("chili_pepper", SourceType.CROP, HarvestAction.PICK, Climate.TEMPERATE, 2, false),
-    CUMIN("cumin", SourceType.CROP, HarvestAction.BREAK, Climate.ARID, 2, false);
+    LAVENDER("lavender", SourceType.FLOWER_PATCH, HarvestAction.PICK, Climate.ARID, 1, false, 2),
+    CHILI_PEPPER("chili_pepper", SourceType.CROP, HarvestAction.PICK, Climate.TEMPERATE, 2, false, 2),
+    CUMIN("cumin", SourceType.CROP, HarvestAction.BREAK, Climate.ARID, 5, false, 2);
 
     private final String id;
     private final SourceType sourceType;
@@ -34,9 +34,10 @@ public enum Spice {
     private final Climate climate;
     private final int harvestDifficulty;
     private final boolean requiresCuttingTool;
+    private final int dropAmount;
 
     Spice(String id, SourceType sourceType, HarvestAction harvestAction, Climate climate, int harvestDifficulty,
-            boolean requiresCuttingTool) {
+            boolean requiresCuttingTool, int dropAmount) {
 
         this.id = id;
         this.sourceType = sourceType;
@@ -44,6 +45,7 @@ public enum Spice {
         this.climate = climate;
         this.harvestDifficulty = harvestDifficulty;
         this.requiresCuttingTool = requiresCuttingTool;
+        this.dropAmount = dropAmount;
     }
 
     public String getId() {
@@ -86,6 +88,11 @@ public enum Spice {
     public boolean requiresCuttingTool() {
 
         return requiresCuttingTool;
+    }
+
+    public int getDropAmount() {
+
+        return dropAmount;
     }
 
     // #region static

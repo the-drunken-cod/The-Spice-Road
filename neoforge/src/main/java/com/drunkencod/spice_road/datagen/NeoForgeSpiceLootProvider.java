@@ -55,7 +55,8 @@ public class NeoForgeSpiceLootProvider extends LootTableProvider {
                         Constants.DEFAULT_SPICE_PLANT_GROWTH_STAGES,
                         plant.seedItem().get(),
                         plant.productItem().get(),
-                        Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD));
+                        (int) Math.floor(
+                                spice.getDropAmount() * Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER)));
             });
         }
 

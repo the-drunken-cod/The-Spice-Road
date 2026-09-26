@@ -97,8 +97,8 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
-    public int getSpicePlantHarvestYield() {
-        return COMMON.spicePlantHarvestYield.get();
+    public double getSpicePlantHarvestYieldMultiplier() {
+        return COMMON.spicePlantHarvestYieldMultiplier.get();
     }
 
     @Override
@@ -117,7 +117,7 @@ public class NeoForgeConfigHelper implements IConfigHelper {
 
     public static class CommonConfig {
         public final ModConfigSpec.IntValue spicePlantGrowthStages;
-        public final ModConfigSpec.IntValue spicePlantHarvestYield;
+        public final ModConfigSpec.DoubleValue spicePlantHarvestYieldMultiplier;
 
         CommonConfig(ModConfigSpec.Builder builder) {
             spicePlantGrowthStages = builder
@@ -125,12 +125,13 @@ public class NeoForgeConfigHelper implements IConfigHelper {
                             + "FLOWER_PATCH/CROP Spice Plant block. Read once per block at registration "
                             + "time; requires a restart to take effect.")
                     .defineInRange("spicePlantGrowthStages", Constants.DEFAULT_SPICE_PLANT_GROWTH_STAGES, 1, 7);
-            spicePlantHarvestYield = builder
-                    .comment("Flat harvest yield (item count) for FLOWER_PATCH/CROP Spice Plants. "
-                            + "Phase 1: no tier-based scaling yet. Loot tables bake in the default value "
-                            + "of this option at datagen time, not this live value; re-run datagen after "
-                            + "changing Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD to regenerate them.")
-                    .defineInRange("spicePlantHarvestYield", Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD, 1, 64);
+            spicePlantHarvestYieldMultiplier = builder
+                    .comment("Harvest yield multiplier for all FLOWER_PATCH/CROP Spice Plants. "
+                            + "Loot tables bake in the default value of this option at datagen "
+                            + "time, not this live value, so re-run datagen after changing "
+                            + "Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER.")
+                    .defineInRange("spicePlantHarvestYieldMultiplier",
+                            Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER, 0.0D, Double.MAX_VALUE);
         }
     }
 
