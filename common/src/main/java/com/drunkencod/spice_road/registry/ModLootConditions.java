@@ -12,6 +12,7 @@ import com.drunkencod.spice_road.platform.Services;
  */
 public final class ModLootConditions {
 
+    /** {@code spice_road:spice_region_supported} - see {@link SpiceRegionSupportedCondition}. */
     public static final Supplier<LootItemConditionType> SPICE_REGION_SUPPORTED = Services.REGISTRY
             .registerLootConditionType("spice_region_supported",
                     () -> new LootItemConditionType(SpiceRegionSupportedCondition.CODEC));

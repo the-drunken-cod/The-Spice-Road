@@ -22,7 +22,6 @@ public enum Tier {
      *                                  range 1-5.
      */
     public static Tier fromHarvestDifficulty(int harvestDifficulty) {
-
         return switch (harvestDifficulty) {
             case 1 -> COMMON;
             case 2, 3 -> UNCOMMON;

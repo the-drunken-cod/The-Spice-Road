@@ -9,12 +9,17 @@ import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Tier;
 
+/**
+ * NeoForge implementation of {@link IConfigHelper}, backed by
+ * {@link ModConfigSpec}s for the common, server, and client configs.
+ */
 public class NeoForgeConfigHelper implements IConfigHelper {
 
     // -------------------------------------------------------------------------
     // Common (startup) config
     // -------------------------------------------------------------------------
 
+    /** Common config values, loaded on both physical sides. */
     public static final CommonConfig COMMON;
     private static final ModConfigSpec COMMON_SPEC;
 
@@ -29,6 +34,7 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     // Server config
     // -------------------------------------------------------------------------
 
+    /** Gameplay config values, synced from the logical server. */
     public static final ServerConfig SERVER;
     private static final ModConfigSpec SERVER_SPEC;
 
@@ -43,6 +49,7 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     // Client config
     // -------------------------------------------------------------------------
 
+    /** Client-only display config values. */
     public static final ClientConfig CLIENT;
     private static final ModConfigSpec CLIENT_SPEC;
 
@@ -126,10 +133,21 @@ public class NeoForgeConfigHelper implements IConfigHelper {
         };
     }
 
+    @Override
+    public boolean isTooltipBothAxisLabelsShown() {
+        return CLIENT.tooltipShowBothAxisLabels.get();
+    }
+
+    @Override
+    public boolean isTooltipShiftBypassed() {
+        return CLIENT.tooltipAlwaysShowShiftContent.get();
+    }
+
     // -------------------------------------------------------------------------
     // Inner config classes
     // -------------------------------------------------------------------------
 
+    /** Spec entries of the common config. */
     public static class CommonConfig {
         public final ModConfigSpec.IntValue spicePlantGrowthStages;
         public final ModConfigSpec.DoubleValue spicePlantHarvestYieldMultiplier;
@@ -150,6 +168,7 @@ public class NeoForgeConfigHelper implements IConfigHelper {
         }
     }
 
+    /** Spec entries of the server config. */
     public static class ServerConfig {
         public final ModConfigSpec.DoubleValue spiceRegionCellScale;
         public final ModConfigSpec.DoubleValue spiceRegionClusteringStrength;
@@ -217,9 +236,21 @@ public class NeoForgeConfigHelper implements IConfigHelper {
         }
     }
 
+    /** Spec entries of the client config. */
     public static class ClientConfig {
+        public final ModConfigSpec.BooleanValue tooltipShowBothAxisLabels;
+        public final ModConfigSpec.BooleanValue tooltipAlwaysShowShiftContent;
 
         ClientConfig(ModConfigSpec.Builder builder) {
+            tooltipShowBothAxisLabels = builder
+                    .comment("Whether Flavor Axis tooltips show both labels of each axis (e.g. [Spicy / Cooling]), "
+                            + "emphasizing the one matching the value, instead of only the matching one.")
+                    .define("tooltipShowBothAxisLabels", false);
+            tooltipAlwaysShowShiftContent = builder
+                    .comment("Whether all of this mod's tooltip content that normally requires holding Shift is "
+                            + "always shown instead. Can help with finding specific items in JEI/EMI, since "
+                            + "their search can then match this content.")
+                    .define("tooltipAlwaysShowShiftContent", false);
         }
     }
 }

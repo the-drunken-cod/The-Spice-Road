@@ -94,7 +94,6 @@ public final class SpiceRegionResolver {
      * @throws IllegalArgumentException If {@code cellScale} is not positive.
      */
     public static SpiceCell resolveCell(long worldSeed, double cellScale, int x, int z) {
-
         if (cellScale <= 0)
             throw new IllegalArgumentException("cellScale must be positive, got " + cellScale);
 
@@ -171,7 +170,6 @@ public final class SpiceRegionResolver {
      *         belongs to {@code climate}'s Climate Bucket.
      */
     public static Optional<Spice> resolveSpice(SpiceCell cell, Climate climate, double clusteringStrength) {
-
         List<Spice> bucket = CLIMATE_BUCKETS.getOrDefault(climate, List.of());
         if (bucket.isEmpty())
             return Optional.empty();
@@ -215,7 +213,6 @@ public final class SpiceRegionResolver {
      */
     public static SpiceRegionResult resolve(long worldSeed, double cellScale, double clusteringStrength,
             Climate climate, int x, int z) {
-
         SpiceCell cell = resolveCell(worldSeed, cellScale, x, z);
         Optional<Spice> spice = resolveSpice(cell, climate, clusteringStrength);
         return new SpiceRegionResult(cell, climate, spice);

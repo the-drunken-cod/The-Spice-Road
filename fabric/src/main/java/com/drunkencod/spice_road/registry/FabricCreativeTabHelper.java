@@ -8,6 +8,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 
+/**
+ * Fabric implementation of {@link ICreativeTabHelper}, registering the tabs
+ * eagerly.
+ */
 public class FabricCreativeTabHelper implements ICreativeTabHelper {
 
     @Override

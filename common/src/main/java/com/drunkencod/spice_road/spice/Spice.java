@@ -45,7 +45,6 @@ public enum Spice {
 
     Spice(String id, SourceType sourceType, HarvestAction harvestAction, Climate climate, int harvestDifficulty,
             boolean requiresCuttingTool, int dropAmount) {
-
         this.id = id;
         this.sourceType = sourceType;
         this.harvestAction = harvestAction;
@@ -55,22 +54,26 @@ public enum Spice {
         this.dropAmount = dropAmount;
     }
 
+    /**
+     * @return This Spice's ID, used as the registry path of its product item
+     *         and as the base of its other blocks' and items' IDs.
+     */
     public String getId() {
         return id;
     }
 
+    /** @return How this Spice grows. */
     public SourceType getSourceType() {
-
         return sourceType;
     }
 
+    /** @return How this Spice is harvested once mature. */
     public HarvestAction getHarvestAction() {
-
         return harvestAction;
     }
 
+    /** @return The {@link Climate} this Spice naturally occurs in. */
     public Climate getClimate() {
-
         return climate;
     }
 
@@ -78,7 +81,6 @@ public enum Spice {
      * @return The 1-5 Harvest Difficulty value of this Spice.
      */
     public int getHarvestDifficulty() {
-
         return harvestDifficulty;
     }
 
@@ -88,17 +90,22 @@ public enum Spice {
      *         never drift out of sync.
      */
     public Tier getTier() {
-
         return Tier.fromHarvestDifficulty(harvestDifficulty);
     }
 
+    /**
+     * @return Whether harvesting this Spice requires an item from the
+     *         {@code spice_road:cutting_tools} tag.
+     */
     public boolean requiresCuttingTool() {
-
         return requiresCuttingTool;
     }
 
+    /**
+     * @return The base number of product items per harvest, before any
+     *         configured yield multiplier.
+     */
     public int getDropAmount() {
-
         return dropAmount;
     }
 

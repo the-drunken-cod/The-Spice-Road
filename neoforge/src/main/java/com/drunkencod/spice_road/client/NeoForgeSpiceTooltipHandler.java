@@ -1,9 +1,11 @@
 package com.drunkencod.spice_road.client;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
+import com.drunkencod.spice_road.tooltip.SpiceFlavorTooltips;
 import com.drunkencod.spice_road.tooltip.SpiceProfileTooltips;
 import com.drunkencod.spice_road.tooltip.TooltipUtil;
 
@@ -19,6 +21,7 @@ public final class NeoForgeSpiceTooltipHandler {
 
     /** Registers the tooltip listener. Must be called once during client setup. */
     public static void register() {
+        SpiceFlavorTooltips.setTextWidthMeasurer(text -> Minecraft.getInstance().font.width(text));
         NeoForge.EVENT_BUS.addListener(NeoForgeSpiceTooltipHandler::onItemTooltip);
     }
 

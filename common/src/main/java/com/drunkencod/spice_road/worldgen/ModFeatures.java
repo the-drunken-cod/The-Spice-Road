@@ -24,6 +24,7 @@ import com.drunkencod.spice_road.platform.Services;
  */
 public final class ModFeatures {
 
+    /** {@code spice_road:spice_plant} - see {@link SpicePlantFeature}. */
     public static final Supplier<Feature<NoneFeatureConfiguration>> SPICE_PLANT = Services.REGISTRY
             .registerFeature("spice_plant", () -> new SpicePlantFeature(NoneFeatureConfiguration.CODEC));
 

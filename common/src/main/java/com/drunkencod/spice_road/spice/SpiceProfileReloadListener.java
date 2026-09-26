@@ -30,9 +30,12 @@ import com.drunkencod.spice_road.Constants;
  */
 public class SpiceProfileReloadListener extends SimpleJsonResourceReloadListener {
 
+    /** Datapack directory the Spice Profile files are loaded from. */
     public static final String DIRECTORY = "spice_profile";
+    /** ID of this reload listener. */
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, DIRECTORY);
 
+    /** Creates the listener for the {@link #DIRECTORY} directory. */
     public SpiceProfileReloadListener() {
         super(new Gson(), DIRECTORY);
     }
@@ -40,7 +43,6 @@ public class SpiceProfileReloadListener extends SimpleJsonResourceReloadListener
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager,
             ProfilerFiller profiler) {
-
         List<SpiceProfileEntry> entries = new ArrayList<>(object.size());
         object.forEach((id, json) -> SpiceProfileEntry.CODEC.parse(JsonOps.INSTANCE, json)
                 .resultOrPartial(error -> Constants.LOG.error("Couldn't load Spice Profile {}: {}", id, error))

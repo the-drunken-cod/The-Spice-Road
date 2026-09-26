@@ -35,7 +35,6 @@ public enum Climate {
      * @return The derived {@link Climate}.
      */
     public static Climate fromBiome(Holder<Biome> biome, BlockPos pos) {
-
         Biome value = biome.value();
         float temperature = value.getBaseTemperature();
 

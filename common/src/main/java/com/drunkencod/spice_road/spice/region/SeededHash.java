@@ -25,7 +25,6 @@ public final class SeededHash {
      * @return A well-mixed 64-bit hash of {@code z}.
      */
     public static long mix64(long z) {
-
         z = (z ^ (z >>> 30)) * 0xBF58476D1CE4E5B9L;
         z = (z ^ (z >>> 27)) * 0x94D049BB133111EBL;
         return z ^ (z >>> 31);
@@ -41,7 +40,6 @@ public final class SeededHash {
      * @param b        Second coordinate/tag.
      */
     public static long hash(long baseSeed, long a, long b) {
-
         long h = mix64(baseSeed);
         h = mix64(h ^ (a * GOLDEN_GAMMA));
         h = mix64(h ^ (b * GOLDEN_GAMMA));
@@ -56,7 +54,6 @@ public final class SeededHash {
      * @return A pseudo-random double uniformly distributed in {@code [0, 1)}.
      */
     public static double toUnitDouble(long seed) {
-
         // Top 53 bits, matching java.util.Random/SplittableRandom's approach
         // to generating doubles with full mantissa precision.
         return (mix64(seed) >>> 11) * 0x1.0p-53;

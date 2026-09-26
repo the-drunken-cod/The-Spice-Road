@@ -39,7 +39,6 @@ public class SpiceRegionDebugSourceImpl implements SpiceRegionDebugSource {
 
     @Override
     public SpiceRegionDebugInfo getDebugInfo(Level level, BlockPos pos) {
-
         Long worldSeed = resolveWorldSeed(level);
         if (worldSeed == null) {
             return new SpiceRegionDebugInfo(List.of(
@@ -68,7 +67,6 @@ public class SpiceRegionDebugSourceImpl implements SpiceRegionDebugSource {
     }
 
     private static Long resolveWorldSeed(Level level) {
-
         MinecraftServer server = Minecraft.getInstance().getSingleplayerServer();
         if (server == null) {
             return null;

@@ -27,23 +27,21 @@ public enum SpiceRegionSupportedCondition implements LootItemCondition {
 
     INSTANCE;
 
+    /** Codec of this parameterless condition. */
     public static final MapCodec<SpiceRegionSupportedCondition> CODEC = MapCodec.unit(INSTANCE);
 
     @Override
     public LootItemConditionType getType() {
-
         return ModLootConditions.SPICE_REGION_SUPPORTED.get();
     }
 
     @Override
     public Set<LootContextParam<?>> getReferencedContextParams() {
-
         return ImmutableSet.of(LootContextParams.ORIGIN, LootContextParams.BLOCK_STATE);
     }
 
     @Override
     public boolean test(LootContext lootContext) {
-
         BlockState state = lootContext.getParamOrNull(LootContextParams.BLOCK_STATE);
         if (!(state.getBlock() instanceof SpicePlantBlock block))
             return true;
@@ -58,7 +56,6 @@ public enum SpiceRegionSupportedCondition implements LootItemCondition {
      *         {@code LootPool.Builder#when}.
      */
     public static LootItemCondition.Builder spiceRegionSupported() {
-
         return () -> INSTANCE;
     }
 }

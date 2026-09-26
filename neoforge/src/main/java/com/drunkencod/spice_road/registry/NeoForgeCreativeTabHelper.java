@@ -8,6 +8,10 @@ import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+/**
+ * NeoForge implementation of {@link ICreativeTabHelper}, registering the tabs
+ * through a {@link DeferredRegister} wired up by {@link #initialize}.
+ */
 public class NeoForgeCreativeTabHelper implements ICreativeTabHelper {
 
         private final DeferredRegister<CreativeModeTab> creativeTabs = DeferredRegister.create(
@@ -31,6 +35,12 @@ public class NeoForgeCreativeTabHelper implements ICreativeTabHelper {
         public void register() {
         }
 
+        /**
+         * Must be called in the NeoForge mod constructor with the mod event bus so
+         * the creative tabs get registered.
+         *
+         * @param eventBus The mod event bus.
+         */
         public void initialize(IEventBus eventBus) {
                 creativeTabs.register(eventBus);
         }

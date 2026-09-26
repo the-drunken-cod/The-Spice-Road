@@ -10,12 +10,20 @@ import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 
+/**
+ * Fabric implementation of {@link IConfigHelper}, backed by Cloth Config's
+ * AutoConfig with separate common, server, and client config files.
+ */
 public class FabricConfigHelper implements IConfigHelper {
 
     // -------------------------------------------------------------------------
     // Registration - called during mod initialization
     // -------------------------------------------------------------------------
 
+    /**
+     * Registers all config files with AutoConfig. Must be called during mod
+     * initialization, before any config value is read.
+     */
     public void register() {
         AutoConfig.register(CommonConfigData.class, GsonConfigSerializer::new);
         AutoConfig.register(ServerConfigData.class, GsonConfigSerializer::new);
@@ -83,10 +91,21 @@ public class FabricConfigHelper implements IConfigHelper {
         };
     }
 
+    @Override
+    public boolean isTooltipBothAxisLabelsShown() {
+        return AutoConfig.getConfigHolder(ClientConfigData.class).getConfig().tooltipShowBothAxisLabels;
+    }
+
+    @Override
+    public boolean isTooltipShiftBypassed() {
+        return AutoConfig.getConfigHolder(ClientConfigData.class).getConfig().tooltipAlwaysShowShiftContent;
+    }
+
     // -------------------------------------------------------------------------
     // Config data classes
     // -------------------------------------------------------------------------
 
+    /** Common config, loaded on both physical sides. */
     @Config(name = Constants.MOD_ID + "_common")
     public static class CommonConfigData implements ConfigData {
         /**
@@ -103,13 +122,14 @@ public class FabricConfigHelper implements IConfigHelper {
          * Plants. TODO: add tier-based scaling.
          * Loot tables bake in the default value of this option at datagen time, not
          * this live value; re-run datagen after changing
-         * {@link Constants#DEFAULT_SPICE_PLANT_HARVEST_YIELD} to regenerate them.
+         * {@link Constants#DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER} to regenerate them.
          */
         @ConfigEntry.Gui.Tooltip
         @ConfigEntry.BoundedDiscrete(min = 1, max = 64)
         public double spicePlantHarvestYieldMultiplier = Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER;
     }
 
+    /** Gameplay config read by the logical server. */
     @Config(name = Constants.MOD_ID + "_server")
     public static class ServerConfigData implements ConfigData {
         @ConfigEntry.Gui.Tooltip
@@ -166,7 +186,23 @@ public class FabricConfigHelper implements IConfigHelper {
         public double spiceTreeFruitingLeavesEpic = 0.1;
     }
 
+    /** Client-only display config. */
     @Config(name = Constants.MOD_ID + "_client")
     public static class ClientConfigData implements ConfigData {
+        /**
+         * Whether Flavor Axis tooltips show both labels of each axis (e.g.
+         * [Spicy / Cooling]), emphasizing the one matching the value, instead
+         * of only the matching one.
+         */
+        @ConfigEntry.Gui.Tooltip
+        public boolean tooltipShowBothAxisLabels = false;
+
+        /**
+         * Whether all of this mod's tooltip content that normally requires
+         * holding Shift is always shown instead. Can help with finding specific
+         * items in JEI/EMI, since their search can then match this content.
+         */
+        @ConfigEntry.Gui.Tooltip
+        public boolean tooltipAlwaysShowShiftContent = false;
     }
 }

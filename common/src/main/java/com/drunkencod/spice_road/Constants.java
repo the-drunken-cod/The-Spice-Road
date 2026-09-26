@@ -3,10 +3,17 @@ package com.drunkencod.spice_road;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Mod-wide constants, including config defaults that code needs before the
+ * config itself is loaded.
+ */
 public class Constants {
 
+    /** The mod ID, also used as the registry and resource namespace. */
     public static final String MOD_ID = "spice_road";
+    /** The mod's display name. */
     public static final String MOD_NAME = "The Spice Road";
+    /** The mod's shared logger. */
     public static final Logger LOG = LoggerFactory.getLogger(MOD_NAME);
 
     /**
@@ -14,7 +21,7 @@ public class Constants {
      * {@code FLOWER_PATCH}/{@code CROP} Spice Plants. Shared source of truth
      * between {@code IConfigHelper}'s config spec definitions and code that
      * needs the default without reading a possibly-unloaded config (see
-     * {@link #DEFAULT_SPICE_PLANT_HARVEST_YIELD}).
+     * {@link #DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER}).
      */
     public static final int DEFAULT_SPICE_PLANT_GROWTH_STAGES = 4;
 

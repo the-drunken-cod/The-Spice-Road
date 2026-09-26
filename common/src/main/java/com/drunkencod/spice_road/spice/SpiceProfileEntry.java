@@ -14,6 +14,7 @@ import net.minecraft.world.item.Item;
  */
 public record SpiceProfileEntry(Item item, SpiceProfile profile) {
 
+    /** Codec of a single {@code spice_profile/*.json} file. */
     public static final Codec<SpiceProfileEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(SpiceProfileEntry::item),
             SpiceProfile.CODEC.fieldOf("profile").forGetter(SpiceProfileEntry::profile))

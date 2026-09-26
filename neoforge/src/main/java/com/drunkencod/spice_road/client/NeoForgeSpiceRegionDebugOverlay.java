@@ -33,7 +33,6 @@ public final class NeoForgeSpiceRegionDebugOverlay {
      * environment. Must be called only once during client setup.
      */
     public static void registerIfDevelopment() {
-
         if (!Services.PLATFORM.isDevelopmentEnvironment())
             return;
 
@@ -42,7 +41,6 @@ public final class NeoForgeSpiceRegionDebugOverlay {
     }
 
     private static void onDebugText(CustomizeGuiOverlayEvent.DebugText event) {
-
         final Minecraft minecraft = Minecraft.getInstance();
         final LocalPlayer player = minecraft.player;
         final Level level = minecraft.level;

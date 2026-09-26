@@ -55,7 +55,6 @@ public final class SpiceProfile {
      *                                  [-AXIS_RANGE, +AXIS_RANGE].
      */
     public SpiceProfile(double... values) {
-
         if (values.length != AXES.length) {
             throw new IllegalArgumentException(
                     "Expected " + AXES.length + " flavor axis values, got " + values.length);
@@ -80,7 +79,6 @@ public final class SpiceProfile {
      * @return The axis value, in range [-AXIS_RANGE, +AXIS_RANGE].
      */
     public double get(FlavorAxis axis) {
-
         return values[axis.ordinal()];
     }
 

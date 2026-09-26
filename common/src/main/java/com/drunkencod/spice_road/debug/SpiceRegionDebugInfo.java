@@ -21,7 +21,6 @@ public record SpiceRegionDebugInfo(List<Line> lines) {
 
         @Override
         public String toString() {
-
             return label + ": " + value;
         }
     }

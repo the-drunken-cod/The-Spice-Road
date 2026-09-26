@@ -50,16 +50,28 @@ public class ModItems {
         FLAT_ITEM_MODEL_IDS.add(loc);
     }
 
+    /** @return Unmodifiable view of the items queued for flat model generation. */
     public static List<ResourceLocation> getFlatItemModelIds() {
         return Collections.unmodifiableList(FLAT_ITEM_MODEL_IDS);
     }
 
     // #region creative tabs
 
+    /**
+     * Fills the generic creative tab.
+     *
+     * @param output The tab's item output.
+     */
     public static void populateGenericTab(CreativeModeTab.Output output) {
         output.accept(Items.ROTTEN_FLESH.getDefaultInstance());
     }
 
+    /**
+     * Fills the spices creative tab with every {@link Spice}'s seeds, tree
+     * blocks, and raw/dried items, in enum order.
+     *
+     * @param output The tab's item output.
+     */
     public static void populateSpicesTab(CreativeModeTab.Output output) {
         for (Spice spice : Spice.values()) {
             Item spiceSeeds = Spice.getSeedsById(spice.getId());

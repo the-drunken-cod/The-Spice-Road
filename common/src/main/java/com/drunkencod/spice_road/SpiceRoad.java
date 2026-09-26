@@ -9,8 +9,17 @@ import com.drunkencod.spice_road.spice.SpiceProfileReloadListener;
 import com.drunkencod.spice_road.tooltip.SpiceProfileTooltips;
 import com.drunkencod.spice_road.worldgen.ModFeatures;
 
+/**
+ * Loader-independent mod initialization, called from each loader's entry
+ * point.
+ */
 public class SpiceRoad {
 
+    /**
+     * Registers all blocks, items, and other registry entries, plus the
+     * datapack reload listeners and tooltips. Called from each loader's mod
+     * constructor/initializer.
+     */
     public static void init() {
         ModDataComponents.register();
         Services.REGISTRY.registerReloadListener(SpiceProfileReloadListener.ID, new SpiceProfileReloadListener());

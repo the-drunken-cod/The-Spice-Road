@@ -37,7 +37,6 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 public class NeoForgeSpiceLootProvider extends LootTableProvider {
 
     public NeoForgeSpiceLootProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-
         super(output, Set.of(), List.of(
                 new LootTableProvider.SubProviderEntry(SpicePlantBlockLoot::new, LootContextParamSets.BLOCK)),
                 registries);

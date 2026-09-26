@@ -56,7 +56,6 @@ public class SpicePlantFeature extends Feature<NoneFeatureConfiguration> {
 
     @Override
     public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
-
         WorldGenLevel level = context.level();
         RandomSource random = context.random();
         BlockPos origin = context.origin();
@@ -108,7 +107,6 @@ public class SpicePlantFeature extends Feature<NoneFeatureConfiguration> {
 
     private boolean tryPlaceOne(WorldGenLevel level, RandomSource random, BlockPos surfacePos, long worldSeed,
             double cellScale, double clusteringStrength) {
-
         Holder<Biome> biome = level.getBiome(surfacePos);
         Climate climate = Climate.fromBiome(biome, surfacePos);
 

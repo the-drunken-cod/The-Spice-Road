@@ -3,7 +3,6 @@ package com.drunkencod.spice_road.datagen;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 
 import com.drunkencod.spice_road.Constants;
-import com.drunkencod.spice_road.datagen.ItemModelHelper;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -12,6 +11,11 @@ import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.data.models.model.ModelTemplates;
 import net.minecraft.resources.ResourceLocation;
 
+/**
+ * Datagens flat {@code minecraft:item/generated} item models for every item
+ * queued via {@link ItemModelHelper#addFlatItem(String)}. See
+ * {@code NeoForgeItemModelProvider} for the NeoForge counterpart.
+ */
 public class FabricItemModelProvider extends FabricModelProvider {
 
     public FabricItemModelProvider(FabricDataOutput output) {

@@ -38,7 +38,6 @@ public final class SpiceRegionDebugManager {
      * @param newSource The new source to use.
      */
     public static void setSource(SpiceRegionDebugSource newSource) {
-
         source = newSource;
     }
 
@@ -51,7 +50,6 @@ public final class SpiceRegionDebugManager {
      * @return The formatted debug lines; empty if no info is available.
      */
     public static List<String> getDebugLines(Level level, BlockPos pos) {
-
         final List<String> result = new ArrayList<>();
         final SpiceRegionDebugInfo info = source.getDebugInfo(level, pos);
         if (info == null) {

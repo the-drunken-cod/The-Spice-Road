@@ -21,6 +21,10 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 
 import com.drunkencod.spice_road.Constants;
 
+/**
+ * Fabric implementation of {@link IRegistryHelper}. Registers everything
+ * eagerly, so the returned suppliers are usable immediately.
+ */
 public class FabricRegistryHelper implements IRegistryHelper {
 
     @Override
@@ -64,7 +68,6 @@ public class FabricRegistryHelper implements IRegistryHelper {
     public void registerReloadListener(ResourceLocation id, PreparableReloadListener listener) {
         ResourceManagerHelper.get(PackType.SERVER_DATA)
                 .registerReloadListener(new IdentifiableResourceReloadListener() {
-
                     @Override
                     public ResourceLocation getFabricId() {
                         return id;

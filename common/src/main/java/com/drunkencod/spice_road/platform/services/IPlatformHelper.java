@@ -1,9 +1,12 @@
 package com.drunkencod.spice_road.platform.services;
 
+/**
+ * Cross-loader service interface for platform and environment queries.
+ */
 public interface IPlatformHelper {
 
     /**
-     * Gets the name of the current platform
+     * @return The name of the current platform (mod loader).
      */
     String getPlatformName();
 
@@ -11,26 +14,27 @@ public interface IPlatformHelper {
      * Checks if a mod with the given id is loaded.
      *
      * @param modId The mod to check if it is loaded.
+     * @return Whether the mod is loaded.
      */
     boolean isModLoaded(String modId);
 
     /**
-     * Check if the game is currently in a development environment.
+     * @return Whether the game is currently in a development environment.
      */
     boolean isDevelopmentEnvironment();
 
     /**
-     * Check if the current physical distribution is a dedicated server, as
-     * opposed to a client (which also hosts integrated/singleplayer servers).
+     * @return Whether the current physical distribution is a dedicated server,
+     *         as opposed to a client (which also hosts integrated/singleplayer
+     *         servers).
      */
     boolean isDedicatedServer();
 
     /**
-     * Gets the name of the environment type as a string. Can be "development" or
-     * "production".
+     * @return The name of the environment type, either {@code "development"}
+     *         or {@code "production"}.
      */
     default String getEnvironmentName() {
-
         return isDevelopmentEnvironment() ? "development" : "production";
     }
 }

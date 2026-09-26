@@ -42,7 +42,6 @@ public final class FabricSpiceRegionDebugOverlay {
      * environment. Must be called only once during client init.
      */
     public static void registerIfDevelopment() {
-
         if (!Services.PLATFORM.isDevelopmentEnvironment())
             return;
 
@@ -51,7 +50,6 @@ public final class FabricSpiceRegionDebugOverlay {
     }
 
     private static void onHudRender(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
-
         final Minecraft minecraft = Minecraft.getInstance();
         if (!isDebugScreenShown(minecraft))
             return;
@@ -70,7 +68,6 @@ public final class FabricSpiceRegionDebugOverlay {
     }
 
     private static boolean isDebugScreenShown(Minecraft minecraft) {
-
         return minecraft.gui.getDebugOverlay().showDebugScreen();
     }
 }

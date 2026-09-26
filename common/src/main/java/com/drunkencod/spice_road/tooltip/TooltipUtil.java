@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import com.drunkencod.spice_road.platform.Services;
+
 /**
  * Generic registry for item tooltip content that should render either always
  * or only while the player holds Shift.
@@ -35,7 +37,10 @@ public class TooltipUtil {
     public enum Visibility {
         /** Always appended, regardless of Shift state. */
         ALWAYS,
-        /** Only appended while Shift is held. */
+        /**
+         * Only appended while Shift is held, unless
+         * {@code IConfigHelper#isTooltipShiftBypassed()} is enabled.
+         */
         SHIFT_ONLY
     }
 
@@ -89,8 +94,9 @@ public class TooltipUtil {
      *                  utility must not depend on client-only classes
      */
     public static void append(ItemStack stack, List<Component> tooltip, boolean shiftDown) {
+        boolean showShiftContent = shiftDown || Services.CONFIG.isTooltipShiftBypassed();
         for (Entry entry : ENTRIES) {
-            if (entry.visibility() == Visibility.SHIFT_ONLY && !shiftDown) {
+            if (entry.visibility() == Visibility.SHIFT_ONLY && !showShiftContent) {
                 continue;
             }
             if (!entry.matcher().test(stack)) {

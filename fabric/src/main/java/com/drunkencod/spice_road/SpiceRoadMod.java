@@ -14,6 +14,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
+/**
+ * Fabric main entry point.
+ */
 public class SpiceRoadMod implements ModInitializer {
 
     @Override

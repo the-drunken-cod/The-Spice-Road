@@ -10,6 +10,9 @@ import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
+/**
+ * Fabric datagen entry point, registering all data providers.
+ */
 public class ModDataGen implements DataGeneratorEntrypoint {
 
     @Override

@@ -129,4 +129,21 @@ public interface IConfigHelper {
      * @return The configured fruiting leaves fraction for that tier.
      */
     double getSpiceTreeFruitingLeavesChance(Tier tier);
+
+    /**
+     * Client-side. Whether Flavor Axis tooltips show both pole labels of each
+     * axis (e.g. {@code [Spicy / Cooling]}), emphasizing the one matching the
+     * value's sign, instead of only the matching one.
+     *
+     * @return Whether both Flavor Axis labels are shown.
+     */
+    boolean isTooltipBothAxisLabelsShown();
+
+    /**
+     * Client-side. Whether tooltip content that normally requires holding
+     * Shift is always shown instead.
+     *
+     * @return Whether Shift-gated tooltips are always shown.
+     */
+    boolean isTooltipShiftBypassed();
 }

@@ -19,6 +19,11 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import com.drunkencod.spice_road.Constants;
 
+/**
+ * NeoForge implementation of {@link IRegistryHelper}. Registers everything
+ * through {@link DeferredRegister}s wired up by {@link #initialize}, so the
+ * returned suppliers are only usable once registration has run.
+ */
 public class NeoForgeRegistryHelper implements IRegistryHelper {
 
     private final DeferredRegister<Item> items = DeferredRegister.create(BuiltInRegistries.ITEM, Constants.MOD_ID);

@@ -82,7 +82,7 @@ public interface IRegistryHelper {
      * On NeoForge this is necessarily deferred until
      * {@code AddServerReloadListenersEvent} fires, since that's the earliest
      * point the listener list can be appended to; calling this before
-     * {@link #initialize} has wired that event up is safe, the registration
+     * {@code NeoForgeRegistryHelper#initialize} has wired that event up is safe, the registration
      * is just queued.
      *
      * @param id       Unique id for the listener (used for reload

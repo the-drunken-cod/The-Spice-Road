@@ -19,9 +19,19 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
+/**
+ * NeoForge mod entry point.
+ */
 @Mod(Constants.MOD_ID)
 public class SpiceRoadMod {
 
+    /**
+     * Wires up registries, configs, and lifecycle/datagen listeners, then runs
+     * the shared {@link SpiceRoad#init()}.
+     *
+     * @param eventBus     The mod event bus.
+     * @param modContainer This mod's container, used to register configs.
+     */
     public SpiceRoadMod(IEventBus eventBus, ModContainer modContainer) {
         // Wire DeferredRegisters
         ((NeoForgeRegistryHelper) Services.REGISTRY).initialize(eventBus);
