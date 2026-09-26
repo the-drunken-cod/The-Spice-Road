@@ -1,49 +1,49 @@
-source_type,spice,harvested_part,harvest_method,difficulty,climate,heat,sweet_bitter,sour_mellow,earthy_floral,woody_green,pungent,resinous,savory_delicate
-tree,Cinnamon,Bark,Strip with axe,4,tropical,0.3,0.8,-0.3,0.1,0.9,0.1,0.2,-0.2
-tree,Cassia,Bark,Strip with axe,3,tropical,0.4,0.6,-0.2,0.2,1.0,0.3,0.2,0.0
-tree,Nutmeg,Seed,Pick,5,tropical,0.2,0.4,-0.5,0.3,0.5,0.1,0.3,0.1
-tree,Mace,Seed aril (from nutmeg fruit),Pick,5,tropical,0.2,0.3,-0.4,-0.3,0.3,0.1,0.2,-0.5
-tree,Clove,Flower buds,Pick before bloom,5,tropical,0.5,0.2,-0.2,0.3,0.8,0.6,0.4,0.1
-tree,Allspice,Berries,Pick,3,tropical,0.4,0.4,-0.3,0.2,0.6,0.3,0.2,0.1
-tree,Star Anise,Star-shaped fruit,Pick,4,temperate,-0.3,0.7,-0.3,-0.2,0.4,0.0,0.1,-0.5
-tree,Bay Laurel,Leaves,Shears,2,temperate,0.0,-0.3,-0.2,0.3,0.2,0.0,0.5,0.5
-tree,Mastic,Resin tears,Strip with axe,4,arid,-0.1,-0.2,-0.3,-0.2,0.3,0.0,1.0,-0.4
-tree,Pink Peppercorn,Berries,Pick,2,arid,0.3,0.5,0.3,-0.4,-0.1,0.2,0.4,-0.4
-tree,Sassafras (Filé),Leaves,Shears,2,temperate,0.0,0.2,-0.1,0.5,0.3,0.0,0.2,0.7
-tree,Curry Leaf,Leaves,Shears,2,tropical,0.1,-0.1,0.1,0.3,-0.6,0.1,0.2,0.7
-bush,Sumac,Berry clusters,Shears,2,arid,0.0,0.0,1.0,0.1,-0.2,0.0,0.0,0.3
-bush,Juniper,Berries,Shears,1,cold,0.0,-0.2,0.2,-0.1,0.2,0.2,0.9,-0.3
-bush,Rosemary,Sprigs,Shears,1,arid,0.0,-0.4,-0.1,0.2,-0.3,0.2,0.8,0.3
-bush,Sage,Leaves,Shears,1,temperate,0.0,-0.4,-0.2,0.3,-0.5,0.1,0.5,0.5
-bush,Thyme,Sprigs,Shears,1,arid,0.1,-0.3,0.0,0.3,-0.6,0.2,0.4,0.4
-bush,Caper,Flower buds,Shears,3,arid,0.0,-0.3,0.8,0.2,-0.4,0.3,0.0,0.6
-bush,Sichuan Pepper,Seed husks,Shears,3,temperate,0.4,0.0,0.3,-0.2,0.2,0.7,0.3,0.2
-bush,Annatto,Seeds,Shears,3,tropical,0.0,0.1,-0.3,0.6,0.1,-0.3,0.0,0.3
-vine,Black Pepper,Berries,Pick,4,tropical,0.6,-0.2,0.0,0.3,0.3,0.6,0.3,0.3
-vine,Long Pepper,Flower spikes,Pick,4,tropical,0.7,0.2,-0.1,0.2,0.4,0.6,0.2,0.2
-vine,Cubeb,Berries,Pick,4,tropical,0.5,-0.4,0.0,0.2,0.3,0.5,0.6,0.1
-vine,Vanilla,Seed pods,Pick,5,tropical,-0.2,1.0,-1.0,-0.6,0.3,-0.8,-0.2,-0.3
-flower_patch,Saffron,Stigmas,Pick flowers,5,arid,0.0,-0.1,-0.3,-1.0,-0.2,-0.4,-0.3,-0.6
-flower_patch,Nigella,Seeds,Break mature plant,2,temperate,0.2,-0.7,0.0,0.5,0.2,0.3,0.1,0.3
-flower_patch,Safflower,Petals,Pick flowers,2,arid,0.0,0.1,-0.2,-0.6,-0.3,-0.5,-0.4,-0.7
-flower_patch,Poppy Seed,Seed pods,Break mature plant,2,temperate,0.0,0.4,-0.6,0.4,0.1,-0.7,-0.3,0.1
-flower_patch,Lavender,Flower buds,Shears,1,arid,-0.2,0.0,-0.2,-0.9,-0.4,0.0,0.4,-0.8
-crop,Cumin,Seeds,Break mature crop,2,arid,0.2,-0.3,-0.2,0.9,0.2,0.3,0.1,0.6
-crop,Coriander,Seeds/leaves,Break mature crop,1,temperate,-0.1,0.3,0.3,-0.4,-0.7,0.0,-0.2,-0.3
-crop,Fennel,Seeds,Break mature crop,1,temperate,-0.7,0.6,-0.2,-0.3,-0.4,-0.2,-0.3,-0.4
-crop,Caraway,Seeds,Break mature crop,2,cold,0.0,-0.2,-0.1,0.4,-0.2,0.3,0.1,0.4
-crop,Dill,Seeds/leaves,Break mature crop,1,cold,-0.3,0.1,0.2,-0.2,-0.9,0.0,-0.3,-0.2
-crop,Fenugreek,Seeds,Break mature crop,2,arid,0.0,-0.8,-0.3,0.6,0.1,0.1,0.0,0.7
-crop,Mustard,Seeds,Break mature crop,1,cold,0.5,-0.4,0.2,0.3,-0.1,0.9,0.0,0.4
-crop,Anise,Seeds,Break mature crop,2,temperate,-0.5,0.8,-0.3,-0.3,-0.1,0.0,0.0,-0.4
-crop,Chili Pepper,Fruit,Pick,2,temperate,1.0,0.1,0.2,0.2,-0.3,0.4,-0.2,0.3
-crop,Sesame,Seeds,Break mature crop,2,arid,0.0,0.3,-0.8,0.6,0.2,-0.6,-0.2,0.5
-rhizome,Ginger,Rhizome,Break mature crop,3,tropical,0.6,0.2,0.3,0.2,-0.2,0.6,0.1,0.0
-rhizome,Turmeric,Rhizome,Break mature crop,3,tropical,0.1,-0.5,-0.2,0.9,0.0,0.1,0.0,0.3
-rhizome,Galangal,Rhizome,Break mature crop,3,tropical,0.5,-0.1,0.4,-0.1,0.1,0.5,0.4,-0.1
-rhizome,Cardamom,Pods at plant base,Pick,4,tropical,-0.4,0.4,0.1,-0.5,-0.2,0.1,-0.4,-0.6
-rhizome,Grains of Paradise,Seed pods at plant base,Pick,4,tropical,0.5,-0.1,0.3,-0.3,0.1,0.4,0.2,-0.2
-rhizome,Licorice,Root,Break mature crop,3,temperate,-0.6,1.0,-0.6,0.2,0.3,-0.3,0.0,0.0
-rhizome,Horseradish,Root,Break mature crop,1,cold,0.3,-0.3,0.1,0.4,-0.3,1.0,-0.4,0.2
-rhizome,Asafoetida,Root resin,Pick with cutting tool,5,arid,0.1,-0.4,-0.4,0.7,0.0,0.5,0.0,1.0
-rhizome,Wasabi,Rhizome (grows in running water),Break mature crop,5,cold,0.2,-0.1,0.1,-0.1,-0.6,1.0,-0.6,-0.1
+source_type,spice,harvested_part,harvest_method,difficulty,climate,season,heat,sweet_bitter,sour_mellow,earthy_floral,woody_green,pungent,resinous,savory_delicate
+tree,Cinnamon,Bark,Strip with axe,4,tropical,spring;summer,0.3,0.8,-0.3,0.1,0.9,0.1,0.2,-0.2
+tree,Cassia,Bark,Strip with axe,3,tropical,spring;summer,0.4,0.6,-0.2,0.2,1.0,0.3,0.2,0.0
+tree,Nutmeg,Seed,Pick,5,tropical,summer;autumn,0.2,0.4,-0.5,0.3,0.5,0.1,0.3,0.1
+tree,Mace,Seed aril (from nutmeg fruit),Pick,5,tropical,summer;autumn,0.2,0.3,-0.4,-0.3,0.3,0.1,0.2,-0.5
+tree,Clove,Flower buds,Pick before bloom,5,tropical,summer;autumn,0.5,0.2,-0.2,0.3,0.8,0.6,0.4,0.1
+tree,Allspice,Berries,Pick,3,tropical,summer,0.4,0.4,-0.3,0.2,0.6,0.3,0.2,0.1
+tree,Star Anise,Star-shaped fruit,Pick,4,temperate,spring;autumn,-0.3,0.7,-0.3,-0.2,0.4,0.0,0.1,-0.5
+tree,Bay Laurel,Leaves,Shears,2,temperate,spring;summer;autumn,0.0,-0.3,-0.2,0.3,0.2,0.0,0.5,0.5
+tree,Mastic,Resin tears,Strip with axe,4,arid,summer,-0.1,-0.2,-0.3,-0.2,0.3,0.0,1.0,-0.4
+tree,Pink Peppercorn,Berries,Pick,2,arid,autumn;winter,0.3,0.5,0.3,-0.4,-0.1,0.2,0.4,-0.4
+tree,Sassafras (Filé),Leaves,Shears,2,temperate,spring;summer,0.0,0.2,-0.1,0.5,0.3,0.0,0.2,0.7
+tree,Curry Leaf,Leaves,Shears,2,tropical,spring;summer,0.1,-0.1,0.1,0.3,-0.6,0.1,0.2,0.7
+bush,Sumac,Berry clusters,Shears,2,arid,summer;autumn,0.0,0.0,1.0,0.1,-0.2,0.0,0.0,0.3
+bush,Juniper,Berries,Shears,1,cold,autumn;winter,0.0,-0.2,0.2,-0.1,0.2,0.2,0.9,-0.3
+bush,Rosemary,Sprigs,Shears,1,arid,winter;spring;summer,0.0,-0.4,-0.1,0.2,-0.3,0.2,0.8,0.3
+bush,Sage,Leaves,Shears,1,temperate,spring;summer,0.0,-0.4,-0.2,0.3,-0.5,0.1,0.5,0.5
+bush,Thyme,Sprigs,Shears,1,arid,spring;summer,0.1,-0.3,0.0,0.3,-0.6,0.2,0.4,0.4
+bush,Caper,Flower buds,Shears,3,arid,summer,0.0,-0.3,0.8,0.2,-0.4,0.3,0.0,0.6
+bush,Sichuan Pepper,Seed husks,Shears,3,temperate,summer;autumn,0.4,0.0,0.3,-0.2,0.2,0.7,0.3,0.2
+bush,Annatto,Seeds,Shears,3,tropical,summer;autumn,0.0,0.1,-0.3,0.6,0.1,-0.3,0.0,0.3
+vine,Black Pepper,Berries,Pick,4,tropical,summer;autumn,0.6,-0.2,0.0,0.3,0.3,0.6,0.3,0.3
+vine,Long Pepper,Flower spikes,Pick,4,tropical,summer;autumn,0.7,0.2,-0.1,0.2,0.4,0.6,0.2,0.2
+vine,Cubeb,Berries,Pick,4,tropical,summer;autumn,0.5,-0.4,0.0,0.2,0.3,0.5,0.6,0.1
+vine,Vanilla,Seed pods,Pick,5,tropical,spring;summer,-0.2,1.0,-1.0,-0.6,0.3,-0.8,-0.2,-0.3
+flower_patch,Saffron,Stigmas,Pick flowers,5,arid,autumn,0.0,-0.1,-0.3,-1.0,-0.2,-0.4,-0.3,-0.6
+flower_patch,Nigella,Seeds,Break mature plant,2,temperate,spring;summer,0.2,-0.7,0.0,0.5,0.2,0.3,0.1,0.3
+flower_patch,Safflower,Petals,Pick flowers,2,arid,summer,0.0,0.1,-0.2,-0.6,-0.3,-0.5,-0.4,-0.7
+flower_patch,Poppy Seed,Seed pods,Break mature plant,2,temperate,spring;summer,0.0,0.4,-0.6,0.4,0.1,-0.7,-0.3,0.1
+flower_patch,Lavender,Flower buds,Shears,1,arid,summer,-0.2,0.0,-0.2,-0.9,-0.4,0.0,0.4,-0.8
+crop,Cumin,Seeds,Break mature crop,2,arid,spring;summer,0.2,-0.3,-0.2,0.9,0.2,0.3,0.1,0.6
+crop,Coriander,Seeds/leaves,Break mature crop,1,temperate,spring;autumn,-0.1,0.3,0.3,-0.4,-0.7,0.0,-0.2,-0.3
+crop,Fennel,Seeds,Break mature crop,1,temperate,spring;summer;autumn,-0.7,0.6,-0.2,-0.3,-0.4,-0.2,-0.3,-0.4
+crop,Caraway,Seeds,Break mature crop,2,cold,spring;autumn,0.0,-0.2,-0.1,0.4,-0.2,0.3,0.1,0.4
+crop,Dill,Seeds/leaves,Break mature crop,1,cold,spring;summer,-0.3,0.1,0.2,-0.2,-0.9,0.0,-0.3,-0.2
+crop,Fenugreek,Seeds,Break mature crop,2,arid,spring;autumn,0.0,-0.8,-0.3,0.6,0.1,0.1,0.0,0.7
+crop,Mustard,Seeds,Break mature crop,1,cold,autumn;winter;spring,0.5,-0.4,0.2,0.3,-0.1,0.9,0.0,0.4
+crop,Anise,Seeds,Break mature crop,2,temperate,spring;summer,-0.5,0.8,-0.3,-0.3,-0.1,0.0,0.0,-0.4
+crop,Chili Pepper,Fruit,Pick,2,temperate,summer,1.0,0.1,0.2,0.2,-0.3,0.4,-0.2,0.3
+crop,Sesame,Seeds,Break mature crop,2,arid,summer,0.0,0.3,-0.8,0.6,0.2,-0.6,-0.2,0.5
+rhizome,Ginger,Rhizome,Break mature crop,3,tropical,summer;autumn,0.6,0.2,0.3,0.2,-0.2,0.6,0.1,0.0
+rhizome,Turmeric,Rhizome,Break mature crop,3,tropical,summer;autumn,0.1,-0.5,-0.2,0.9,0.0,0.1,0.0,0.3
+rhizome,Galangal,Rhizome,Break mature crop,3,tropical,summer;autumn,0.5,-0.1,0.4,-0.1,0.1,0.5,0.4,-0.1
+rhizome,Cardamom,Pods at plant base,Pick,4,tropical,spring;summer,-0.4,0.4,0.1,-0.5,-0.2,0.1,-0.4,-0.6
+rhizome,Grains of Paradise,Seed pods at plant base,Pick,4,tropical,summer,0.5,-0.1,0.3,-0.3,0.1,0.4,0.2,-0.2
+rhizome,Licorice,Root,Break mature crop,3,temperate,spring;summer;autumn,-0.6,1.0,-0.6,0.2,0.3,-0.3,0.0,0.0
+rhizome,Horseradish,Root,Break mature crop,1,cold,autumn;winter,0.3,-0.3,0.1,0.4,-0.3,1.0,-0.4,0.2
+rhizome,Asafoetida,Root resin,Pick with cutting tool,5,arid,spring,0.1,-0.4,-0.4,0.7,0.0,0.5,0.0,1.0
+rhizome,Wasabi,Rhizome (grows in running water),Break mature crop,5,cold,autumn;winter;spring,0.2,-0.1,0.1,-0.1,-0.6,1.0,-0.6,-0.1
