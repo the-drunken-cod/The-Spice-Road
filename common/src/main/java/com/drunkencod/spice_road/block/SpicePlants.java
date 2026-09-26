@@ -5,8 +5,8 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemNameBlockItem;
 import net.minecraft.world.level.ItemLike;
 
 import com.drunkencod.spice_road.datagen.ItemModelHelper;
@@ -77,7 +77,7 @@ public final class SpicePlants {
         }
 
         Supplier<Item> seedItem = Services.REGISTRY.registerItem(seedId,
-                () -> new BlockItem(block.get(), new Item.Properties()));
+                () -> new ItemNameBlockItem(block.get(), new Item.Properties()));
         seedItemHolder[0] = seedItem;
 
         ItemModelHelper.addFlatItem(id);
