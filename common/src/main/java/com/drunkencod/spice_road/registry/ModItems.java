@@ -29,18 +29,18 @@ import com.drunkencod.spice_road.spice.SpiceProfileRegistry;
  */
 public class ModItems {
 
+    // #region model genning
+
     /**
      * Resource locations of items that should receive an auto-generated flat item
-     * model
-     * (i.e. {@code minecraft:item/generated} parent with a single {@code layer0}
-     * texture).
-     * Populated by the loader-specific entry point during mod initialisation.
+     * model (i.e. {@code minecraft:item/generated} parent with a single
+     * {@code layer0} texture).
      */
     public static final List<ResourceLocation> FLAT_ITEM_MODEL_IDS = new ArrayList<>();
 
     /**
      * Mark an item as needing a bulk-generated flat item model.
-     *
+     * 
      * @param loc The full {@link ResourceLocation} of the item (e.g.
      *            {@code spice_road:my_item})
      */
@@ -50,12 +50,6 @@ public class ModItems {
 
     public static List<ResourceLocation> getFlatItemModelIds() {
         return Collections.unmodifiableList(FLAT_ITEM_MODEL_IDS);
-    }
-
-    /** Returns the item with the given registry ID path */
-    public static @Nullable Item byPath(String path) {
-        ResourceLocation itemId = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, path);
-        return BuiltInRegistries.ITEM.getOptional(itemId).orElse(null);
     }
 
     // #region creative tabs
@@ -71,12 +65,37 @@ public class ModItems {
             Item spiceDried = Spice.getDriedById(spice.getId());
 
             if (spiceSeeds != null)
-                output.accept(withSpiceProfile(spiceSeeds));
+                output.accept(spiceSeeds.getDefaultInstance());
             if (spiceRaw != null)
                 output.accept(withSpiceProfile(spiceRaw));
             if (spiceDried != null)
                 output.accept(withSpiceProfile(spiceDried));
         }
+    }
+
+    // #region Item byPath
+
+    /** Returns the item with the given registry ID path */
+    public static @Nullable Item byPath(String path) {
+        ResourceLocation itemId = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, path);
+        return BuiltInRegistries.ITEM.getOptional(itemId).orElse(null);
+    }
+
+    // #region ItemStack withSpiceProfile
+
+    /**
+     * @param itemStack An ItemStack; its item optionally registered as a spice.
+     * @return A default stack of {@code item} carrying the
+     *         {@code spice_road:spice_profile} data component if a
+     *         datapack-registered default {@link SpiceProfile} exists for it,
+     *         so the creative tab entry shows its flavor axis tooltip without
+     *         relying on a live datapack reload having populated
+     *         {@link SpiceProfileRegistry}.
+     */
+    public static ItemStack withSpiceProfile(ItemStack itemStack) {
+        SpiceProfileRegistry.getDefault(itemStack.getItem())
+                .ifPresent(profile -> itemStack.set(ModDataComponents.SPICE_PROFILE.get(), profile));
+        return itemStack;
     }
 
     /**
@@ -88,10 +107,7 @@ public class ModItems {
      *         relying on a live datapack reload having populated
      *         {@link SpiceProfileRegistry}.
      */
-    private static ItemStack withSpiceProfile(Item item) {
-        ItemStack stack = item.getDefaultInstance();
-        SpiceProfileRegistry.getDefault(item)
-                .ifPresent(profile -> stack.set(ModDataComponents.SPICE_PROFILE.get(), profile));
-        return stack;
+    public static ItemStack withSpiceProfile(Item item) {
+        return ModItems.withSpiceProfile(item.getDefaultInstance());
     }
 }

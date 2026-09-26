@@ -8,19 +8,29 @@ package com.drunkencod.spice_road.spice;
 public enum FlavorAxis {
 
     /** Fiery (+1) / cooling (-1). */
-    HEAT_COOLING,
+    HEAT_COOLING("heat_cooling"),
     /** Sweet (+1) / bitter (-1). */
-    SWEET_BITTER,
+    SWEET_BITTER("sweet_bitter"),
     /** Tart (+1) / rounded (-1). */
-    SOUR_MELLOW,
+    SOUR_MELLOW("sour_mellow"),
     /** Earthy (+1) / floral (-1). */
-    EARTHY_FLORAL,
+    EARTHY_FLORAL("earthy_floral"),
     /** Bark/wood (+1) / fresh herb (-1). */
-    WOODY_GREEN,
+    WOODY_GREEN("woody_green"),
     /** Sinus-sharp (+1) / soft (-1). */
-    PUNGENT_SOFT,
+    PUNGENT_SOFT("pungent_soft"),
     /** Resin/pine (+1) / clean (-1). */
-    RESINOUS_CLEAN,
+    RESINOUS_CLEAN("resinous_clean"),
     /** Umami (+1) / airy (-1). */
-    SAVORY_DELICATE
+    SAVORY_DELICATE("savory_delicate");
+
+    protected String axisId;
+
+    FlavorAxis(String id) {
+        this.axisId = id;
+    }
+
+    public String getId() {
+        return this.axisId;
+    }
 }

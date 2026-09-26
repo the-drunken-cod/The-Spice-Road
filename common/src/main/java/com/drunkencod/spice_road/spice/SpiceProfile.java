@@ -1,7 +1,6 @@
 package com.drunkencod.spice_road.spice;
 
 import java.util.Arrays;
-import java.util.Locale;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -39,7 +38,7 @@ public final class SpiceProfile {
     public static final StreamCodec<ByteBuf, SpiceProfile> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 
     private static MapCodec<Double> axisField(FlavorAxis axis) {
-        return Codec.doubleRange(-1.0, 1.0).fieldOf(axis.name().toLowerCase(Locale.ROOT));
+        return Codec.doubleRange(-1.0, 1.0).fieldOf(axis.getId());
     }
 
     private final double[] values;

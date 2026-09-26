@@ -40,7 +40,7 @@ public class SpiceFlavorTooltips {
      */
     public static List<Component> formatFlavorAxes(List<FlavorValue> values) {
         return values.stream()
-                .map(v -> Component.literal(v.axisName() + ": " + Math.round(v.value() * 100))
+                .map(v -> Component.literal(v.axisName() + ": " + Math.round(v.value() * 10))
                         .withStyle(ChatFormatting.GRAY))
                 .collect(Collectors.toList());
     }
@@ -55,25 +55,44 @@ public class SpiceFlavorTooltips {
     public static List<Component> formatFlavorAxes(SpiceProfile profile) {
         List<FlavorValue> values = new ArrayList<>(FlavorAxis.values().length);
         for (FlavorAxis axis : FlavorAxis.values()) {
-            values.add(new FlavorValue(displayName(axis), profile.get(axis)));
+            values.add(new FlavorValue(displayNameFull(axis), profile.get(axis)));
         }
         return formatFlavorAxes(values);
     }
 
     /**
      * Prettifies a {@link FlavorAxis} constant name for display, e.g.
-     * {@code SWEET_BITTER} -> {@code "Sweet Bitter"}.
+     * {@code SWEET_BITTER} -> {@code "+Sweet / -Bitter"}.
      */
-    private static String displayName(FlavorAxis axis) {
+    public static String displayNameFull(FlavorAxis axis) {
+        return displayNameFull(axis, true);
+    }
+
+    /**
+     * Prettifies a {@link FlavorAxis} constant name for display, e.g.
+     * {@code SWEET_BITTER} -> {@code "Sweet"}. {@code posNegPrefix} affects
+     * whether the bipolar axis labels get a {@code +} and {@code -} prefix.
+     */
+    public static String displayNameFull(FlavorAxis axis, boolean posNegPrefix) {
         String[] words = axis.name().split("_");
         StringBuilder result = new StringBuilder();
         for (String word : words) {
-            if (!result.isEmpty()) {
-                result.append(' ');
-            }
+            if (!result.isEmpty()) // before second word:
+                result.append(posNegPrefix ? " / -" : "/");
+            else if (posNegPrefix) // before first word:
+                result.append("+");
             result.append(word.substring(0, 1).toUpperCase(Locale.ROOT));
             result.append(word.substring(1).toLowerCase(Locale.ROOT));
         }
         return result.toString();
+    }
+
+    /**
+     * Prettifies a {@link FlavorAxis} constant name for display depending on the
+     * given spice profile values, e.g. {@code SWEET_BITTER} -> {@code "Sweet"}.
+     */
+    public static String displayNameShort(FlavorAxis axis, SpiceProfile profile) {
+        String[] words = axis.name().split("_");
+        return words[profile.get(axis) >= 0D ? 0 : 1];
     }
 }

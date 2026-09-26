@@ -2,7 +2,6 @@ package com.drunkencod.spice_road.block;
 
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -58,7 +57,7 @@ public final class SpicePlants {
 
     private static RegisteredSpicePlant register(Spice spice) {
 
-        String id = spice.name().toLowerCase(Locale.ROOT);
+        String id = spice.getId();
         String seedId = id + "_seeds";
         String blockId = id + (spice.getSourceType() == SourceType.FLOWER_PATCH ? "_flower" : "_crop");
 
