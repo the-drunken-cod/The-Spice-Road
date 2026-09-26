@@ -24,10 +24,10 @@ import com.drunkencod.spice_road.Constants;
 public class SpiceItemTags {
 
     /** All raw (freshly harvested) Spice items. */
-    public static final TagKey<Item> RAW_SPICES = create("raw_spices");
+    public static final TagKey<Item> RAW_SPICES = create("spices/raw");
 
     /** All dried Spice items (produced by the Drying Rack). */
-    public static final TagKey<Item> DRIED_SPICES = create("dried_spices");
+    public static final TagKey<Item> DRIED_SPICES = create("spices/dried");
 
     /**
      * Tools that count as a "cutting tool" for harvest-tool-requirement checks
