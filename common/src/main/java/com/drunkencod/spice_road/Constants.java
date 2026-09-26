@@ -16,7 +16,7 @@ public class Constants {
      * needs the default without reading a possibly-unloaded config (see
      * {@link #DEFAULT_SPICE_PLANT_HARVEST_YIELD}).
      */
-    public static final int DEFAULT_SPICE_PLANT_GROWTH_STAGES = 7;
+    public static final int DEFAULT_SPICE_PLANT_GROWTH_STAGES = 4;
 
     /**
      * Default harvest yield multiplier for {@code FLOWER_PATCH}/{@code CROP}

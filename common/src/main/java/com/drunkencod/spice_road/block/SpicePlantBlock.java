@@ -5,7 +5,9 @@ import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -13,6 +15,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.platform.Services;
@@ -31,6 +35,19 @@ import com.drunkencod.spice_road.spice.Spice;
  * item to hand back when the block is middle-clicked/cloned.
  */
 public abstract class SpicePlantBlock extends CropBlock {
+
+    /**
+     * Per-age outline shapes, indexed by {@code age} (0-7, matching vanilla's
+     * fixed {@code CropBlock.AGE} property range - see {@link #getAgeProperty()}).
+     */
+    private static final VoxelShape[] SHAPE_BY_AGE = new VoxelShape[8];
+
+    static {
+        for (int age = 0; age < SHAPE_BY_AGE.length; age++) {
+            double height = Math.min(16.0D, (age + 1) * 3.0D);
+            SHAPE_BY_AGE[age] = Block.box(0.0D, 0.0D, 0.0D, 16.0D, height, 16.0D);
+        }
+    }
 
     private final Supplier<? extends ItemLike> seedItem;
     private final Spice spice;
@@ -86,6 +103,17 @@ public abstract class SpicePlantBlock extends CropBlock {
     public int getMaxAge() {
 
         return Constants.DEFAULT_SPICE_PLANT_GROWTH_STAGES;
+    }
+
+    /**
+     * Reimplements {@code CropBlock#getShape} against {@link #SHAPE_BY_AGE}
+     * instead of vanilla's {@code SHAPE_BY_AGE}, since Spice Plants use a
+     * steeper per-age height formula.
+     */
+    @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+
+        return SHAPE_BY_AGE[getAge(state)];
     }
 
     /**
