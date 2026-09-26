@@ -32,6 +32,8 @@ eclipse
 run
 runs
 generated/
+*.ignore.*
+*.ignore
 
 # local-only version overrides
 versions/*.local.properties
