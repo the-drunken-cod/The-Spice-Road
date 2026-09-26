@@ -56,9 +56,8 @@ public class SpiceFlavorTooltips {
      */
     public static List<Component> formatFlavorAxes(SpiceProfile profile) {
         List<FlavorValue> values = new ArrayList<>(FlavorAxis.values().length);
-        for (FlavorAxis axis : FlavorAxis.values()) {
-            values.add(new FlavorValue(axisLabelFull(axis), profile.get(axis)));
-        }
+        for (FlavorAxis axis : FlavorAxis.values())
+            values.add(new FlavorValue(axisLabelShort(axis, profile), profile.get(axis)));
         return formatFlavorAxes(values);
     }
 
@@ -79,7 +78,15 @@ public class SpiceFlavorTooltips {
      * {@code "Sweet"}.
      */
     public static Component axisLabelShort(FlavorAxis axis, SpiceProfile profile) {
-        return Component.translatable(profile.get(axis) >= 0D
+        return axisLabelShort(axis, profile.get(axis) >= 0D);
+    }
+
+    /**
+     * Returns the display label of a {@link FlavorAxis} matching the sign given via
+     * {@link isPositive}, e.g. {@code SWEET_BITTER} -> {@code "Sweet"}.
+     */
+    public static Component axisLabelShort(FlavorAxis axis, boolean isPositive) {
+        return Component.translatable(isPositive
                 ? axis.positiveTranslationKey()
                 : axis.negativeTranslationKey());
     }

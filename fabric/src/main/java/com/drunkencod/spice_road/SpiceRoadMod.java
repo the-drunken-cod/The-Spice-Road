@@ -1,9 +1,11 @@
 package com.drunkencod.spice_road;
 
+import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.config.FabricConfigHelper;
 import com.drunkencod.spice_road.platform.Services;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.core.registries.Registries;
@@ -20,6 +22,11 @@ public class SpiceRoadMod implements ModInitializer {
         ((FabricConfigHelper) Services.CONFIG).register();
 
         SpiceRoad.init();
+        SpiceRoad.commonSetup();
+
+        // NeoForge gets this mapping from the datagenned neoforge:strippables data map.
+        SpiceTrees.getRegistered().values().forEach(
+                tree -> StrippableBlockRegistry.register(tree.getLog().get(), tree.getStrippedLog().get()));
 
         // NeoForge does the equivalent via the data-driven biome_modifier JSON
         // (neoforge/src/main/resources/data/spice_road/neoforge/biome_modifier/);

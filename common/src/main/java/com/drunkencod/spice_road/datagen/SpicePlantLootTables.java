@@ -49,7 +49,6 @@ public final class SpicePlantLootTables {
                         ItemLike seedItem,
                         ItemLike productItem,
                         int harvestYield) {
-
                 LootPool.Builder seedPool = LootPool.lootPool()
                                 .setRolls(ConstantValue.exactly(1.0F))
                                 .add(LootItem.lootTableItem(seedItem));

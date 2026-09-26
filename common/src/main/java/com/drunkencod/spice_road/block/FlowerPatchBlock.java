@@ -28,7 +28,6 @@ public class FlowerPatchBlock extends SpicePlantBlock {
 
     public FlowerPatchBlock(BlockBehaviour.Properties properties, Supplier<? extends ItemLike> seedItem,
             Spice spice) {
-
         super(properties, seedItem, spice);
     }
 
@@ -39,7 +38,6 @@ public class FlowerPatchBlock extends SpicePlantBlock {
      */
     @Override
     protected boolean mayPlaceOn(BlockState state, BlockGetter level, BlockPos pos) {
-
         return state.getBlock() instanceof FarmBlock || state.is(BlockTags.DIRT);
     }
 }

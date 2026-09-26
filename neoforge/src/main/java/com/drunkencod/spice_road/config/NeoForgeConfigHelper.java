@@ -111,6 +111,21 @@ public class NeoForgeConfigHelper implements IConfigHelper {
         };
     }
 
+    @Override
+    public double getSpiceTreeHarvestYieldMultiplier() {
+        return SERVER.spiceTreeHarvestYieldMultiplier.get();
+    }
+
+    @Override
+    public double getSpiceTreeFruitingLeavesChance(Tier tier) {
+        return switch (tier) {
+            case COMMON -> SERVER.spiceTreeFruitingLeavesCommon.get();
+            case UNCOMMON -> SERVER.spiceTreeFruitingLeavesUncommon.get();
+            case RARE -> SERVER.spiceTreeFruitingLeavesRare.get();
+            case EPIC -> SERVER.spiceTreeFruitingLeavesEpic.get();
+        };
+    }
+
     // -------------------------------------------------------------------------
     // Inner config classes
     // -------------------------------------------------------------------------
@@ -144,6 +159,11 @@ public class NeoForgeConfigHelper implements IConfigHelper {
         public final ModConfigSpec.DoubleValue spiceGrowthSpeedUncommon;
         public final ModConfigSpec.DoubleValue spiceGrowthSpeedRare;
         public final ModConfigSpec.DoubleValue spiceGrowthSpeedEpic;
+        public final ModConfigSpec.DoubleValue spiceTreeHarvestYieldMultiplier;
+        public final ModConfigSpec.DoubleValue spiceTreeFruitingLeavesCommon;
+        public final ModConfigSpec.DoubleValue spiceTreeFruitingLeavesUncommon;
+        public final ModConfigSpec.DoubleValue spiceTreeFruitingLeavesRare;
+        public final ModConfigSpec.DoubleValue spiceTreeFruitingLeavesEpic;
 
         ServerConfig(ModConfigSpec.Builder builder) {
             spiceRegionCellScale = builder
@@ -176,6 +196,24 @@ public class NeoForgeConfigHelper implements IConfigHelper {
             spiceGrowthSpeedEpic = builder
                     .comment("Growth-speed multiplier for EPIC-tier Spice Plants. See spiceGrowthSpeedCommon.")
                     .defineInRange("spiceGrowthSpeedEpic", 1.0, 0.1, 5.0);
+            spiceTreeHarvestYieldMultiplier = builder
+                    .comment("Harvest yield multiplier for Spice Trees, applied when stripping bark or picking "
+                            + "fruiting leaves. Fractional results are rounded up or down at random.")
+                    .defineInRange("spiceTreeHarvestYieldMultiplier",
+                            Constants.DEFAULT_SPICE_TREE_HARVEST_YIELD_MULTIPLIER, 0.0, 64.0);
+            spiceTreeFruitingLeavesCommon = builder
+                    .comment("Fraction (0.0-1.0) of air-exposed, naturally grown leaves of COMMON-tier fruiting "
+                            + "Spice Trees that can bear fruit.")
+                    .defineInRange("spiceTreeFruitingLeavesCommon", 0.3, 0.0, 1.0);
+            spiceTreeFruitingLeavesUncommon = builder
+                    .comment("Fruiting leaves fraction for UNCOMMON-tier Spice Trees. See spiceTreeFruitingLeavesCommon.")
+                    .defineInRange("spiceTreeFruitingLeavesUncommon", 0.2, 0.0, 1.0);
+            spiceTreeFruitingLeavesRare = builder
+                    .comment("Fruiting leaves fraction for RARE-tier Spice Trees. See spiceTreeFruitingLeavesCommon.")
+                    .defineInRange("spiceTreeFruitingLeavesRare", 0.15, 0.0, 1.0);
+            spiceTreeFruitingLeavesEpic = builder
+                    .comment("Fruiting leaves fraction for EPIC-tier Spice Trees. See spiceTreeFruitingLeavesCommon.")
+                    .defineInRange("spiceTreeFruitingLeavesEpic", 0.1, 0.0, 1.0);
         }
     }
 

@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.minecraft.client.renderer.RenderType;
 
 import com.drunkencod.spice_road.block.SpicePlants;
+import com.drunkencod.spice_road.block.SpiceTrees;
 
 /**
  * Fabric client-only entry point. Keep this limited to client-only setup that
@@ -33,5 +34,9 @@ public class SpiceRoadClientMod implements ClientModInitializer {
     private static void registerSpicePlantRenderLayers() {
         SpicePlants.getRegistered().values()
                 .forEach(plant -> BlockRenderLayerMap.INSTANCE.putBlock(plant.block().get(), RenderType.cutout()));
+        SpiceTrees.getRegistered().values().forEach(tree -> {
+            BlockRenderLayerMap.INSTANCE.putBlock(tree.getSapling().get(), RenderType.cutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(tree.getLeaves().get(), RenderType.cutoutMipped());
+        });
     }
 }

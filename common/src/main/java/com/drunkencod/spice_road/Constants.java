@@ -26,4 +26,18 @@ public class Constants {
      * Re-run datagen after changing this default to regenerate the loot tables.
      */
     public static final double DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER = 1.0D;
+
+    /**
+     * Highest growth stage (age value, starting at 0) of fruiting Spice Tree
+     * leaves. Fixed rather than configurable, since it defines the leaves'
+     * blockstate property range, which is frozen at block registration.
+     */
+    public static final int SPICE_TREE_LEAF_GROWTH_STAGES = 2;
+
+    /**
+     * Default harvest yield multiplier for Spice Trees, applied to
+     * {@code Spice#getDropAmount()} when stripping bark or picking fruiting
+     * leaves.
+     */
+    public static final double DEFAULT_SPICE_TREE_HARVEST_YIELD_MULTIPLIER = 1.0D;
 }

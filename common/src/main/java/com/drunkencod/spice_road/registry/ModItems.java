@@ -16,6 +16,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.block.SpiceTree;
+import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.spice.Spice;
 import com.drunkencod.spice_road.spice.SpiceProfile;
 import com.drunkencod.spice_road.spice.SpiceProfileRegistry;
@@ -66,6 +68,11 @@ public class ModItems {
 
             if (spiceSeeds != null)
                 output.accept(spiceSeeds.getDefaultInstance());
+
+            SpiceTree tree = SpiceTrees.getRegistered().get(spice);
+            if (tree != null)
+                tree.getBlockItems().forEach(item -> output.accept(item.getDefaultInstance()));
+
             if (spiceRaw != null)
                 output.accept(withSpiceProfile(spiceRaw));
             if (spiceDried != null)

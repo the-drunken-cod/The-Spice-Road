@@ -3,10 +3,12 @@ package com.drunkencod.spice_road.datagen;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.SpicePlantBlock;
 import com.drunkencod.spice_road.block.SpicePlants;
+import com.drunkencod.spice_road.block.SpiceTrees;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -20,7 +22,9 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
  * Datagens loot tables for every registered Spice Plant block (see
  * {@link SpicePlants}) - see {@link SpicePlantLootTables} for the shared
  * table shape and {@code FabricSpiceLootProvider} for the Fabric
- * counterpart.
+ * counterpart. Spice Tree blocks (see {@link SpiceTrees}) use vanilla's
+ * log/sapling self-drops and leaves drops (sapling chance, sticks, and the
+ * leaves themselves with shears/Silk Touch).
  * <p>
  * Uses {@link Constants#DEFAULT_SPICE_PLANT_GROWTH_STAGES} rather than
  * {@code block.getMaxAge()} for the loot condition's threshold age: a pure
@@ -58,12 +62,21 @@ public class NeoForgeSpiceLootProvider extends LootTableProvider {
                         (int) Math.floor(
                                 spice.getDropAmount() * Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER)));
             });
+
+            SpiceTrees.getRegistered().values().forEach(tree -> {
+                dropSelf(tree.getLog().get());
+                dropSelf(tree.getStrippedLog().get());
+                dropSelf(tree.getSapling().get());
+                add(tree.getLeaves().get(), createLeavesDrops(tree.getLeaves().get(), tree.getSapling().get(),
+                        NORMAL_LEAVES_SAPLING_CHANCES));
+            });
         }
 
         @Override
         protected Iterable<Block> getKnownBlocks() {
-            return SpicePlants.getRegistered().values().stream()
-                    .map(plant -> (Block) plant.block().get())
+            return Stream.concat(
+                    SpicePlants.getRegistered().values().stream().map(plant -> (Block) plant.block().get()),
+                    SpiceTrees.getRegistered().values().stream().flatMap(tree -> tree.getBlocks().stream()))
                     .toList();
         }
     }

@@ -67,6 +67,22 @@ public class FabricConfigHelper implements IConfigHelper {
         };
     }
 
+    @Override
+    public double getSpiceTreeHarvestYieldMultiplier() {
+        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceTreeHarvestYieldMultiplier;
+    }
+
+    @Override
+    public double getSpiceTreeFruitingLeavesChance(Tier tier) {
+        ServerConfigData config = AutoConfig.getConfigHolder(ServerConfigData.class).getConfig();
+        return switch (tier) {
+            case COMMON -> config.spiceTreeFruitingLeavesCommon;
+            case UNCOMMON -> config.spiceTreeFruitingLeavesUncommon;
+            case RARE -> config.spiceTreeFruitingLeavesRare;
+            case EPIC -> config.spiceTreeFruitingLeavesEpic;
+        };
+    }
+
     // -------------------------------------------------------------------------
     // Config data classes
     // -------------------------------------------------------------------------
@@ -125,6 +141,29 @@ public class FabricConfigHelper implements IConfigHelper {
 
         @ConfigEntry.Gui.Tooltip
         public double spiceGrowthSpeedEpic = 1.0;
+
+        /**
+         * Harvest yield multiplier for Spice Trees, applied when stripping bark
+         * or picking fruiting leaves.
+         */
+        @ConfigEntry.Gui.Tooltip
+        public double spiceTreeHarvestYieldMultiplier = Constants.DEFAULT_SPICE_TREE_HARVEST_YIELD_MULTIPLIER;
+
+        /**
+         * Fraction (0.0-1.0) of air-exposed, naturally grown leaves of
+         * fruiting Spice Trees that can bear fruit, per {@link Tier}.
+         */
+        @ConfigEntry.Gui.Tooltip
+        public double spiceTreeFruitingLeavesCommon = 0.3;
+
+        @ConfigEntry.Gui.Tooltip
+        public double spiceTreeFruitingLeavesUncommon = 0.2;
+
+        @ConfigEntry.Gui.Tooltip
+        public double spiceTreeFruitingLeavesRare = 0.15;
+
+        @ConfigEntry.Gui.Tooltip
+        public double spiceTreeFruitingLeavesEpic = 0.1;
     }
 
     @Config(name = Constants.MOD_ID + "_client")

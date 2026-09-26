@@ -107,4 +107,26 @@ public interface IConfigHelper {
      * @return The configured growth-speed multiplier for that tier.
      */
     double getSpicePlantGrowthSpeedMultiplier(Tier tier);
+
+    /**
+     * Harvest yield multiplier for Spice Trees, applied to
+     * {@code Spice#getDropAmount()} whenever bark is stripped or fruiting
+     * leaves are picked. Read live at harvest time. A fractional result is
+     * rounded up or down at random, weighted by its fractional part.
+     *
+     * @return The configured Spice Tree harvest yield multiplier.
+     */
+    double getSpiceTreeHarvestYieldMultiplier();
+
+    /**
+     * Fraction ({@code 0.0}-{@code 1.0}) of air-exposed, naturally grown
+     * leaves of a fruiting Spice Tree of the given {@link Tier} that are able
+     * to bear fruit. Which leaves are fruit-bearing is a deterministic
+     * function of world seed and position, so changing this value takes
+     * effect live without re-growing trees.
+     *
+     * @param tier The Spice's {@link Tier}.
+     * @return The configured fruiting leaves fraction for that tier.
+     */
+    double getSpiceTreeFruitingLeavesChance(Tier tier);
 }

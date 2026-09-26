@@ -63,7 +63,6 @@ public abstract class SpicePlantBlock extends CropBlock {
      */
     protected SpicePlantBlock(BlockBehaviour.Properties properties, Supplier<? extends ItemLike> seedItem,
             Spice spice) {
-
         super(properties);
         this.seedItem = seedItem;
         this.spice = spice;
@@ -75,7 +74,6 @@ public abstract class SpicePlantBlock extends CropBlock {
      * crop sound, destroyed by pistons.
      */
     public static BlockBehaviour.Properties defaultProperties() {
-
         return BlockBehaviour.Properties.of()
                 .mapColor(MapColor.PLANT)
                 .noCollission()
@@ -88,20 +86,9 @@ public abstract class SpicePlantBlock extends CropBlock {
     /**
      * Returns {@link Constants#DEFAULT_SPICE_PLANT_GROWTH_STAGES}, not the
      * live {@code IConfigHelper#getSpicePlantGrowthStages()} config value.
-     * <p>
-     * Vanilla's {@code CropBlock#isRandomlyTicking()} calls {@code getMaxAge()}
-     * (via {@code isMaxAge()}) during {@code BlockStateBase#initCache()}, which
-     * runs synchronously right after registries freeze - i.e. immediately
-     * after {@code RegisterEvent}, and always before
-     * {@code ModConfigEvent.Loading} fires, in every environment. There is no safe
-     * point at which a {@code Block} override can read live config for a value that
-     * affects block-state caching. See
-     * {@code IConfigHelper#getSpicePlantGrowthStages()}'s javadoc for the
-     * same constraint from the config side.
      */
     @Override
     public int getMaxAge() {
-
         return Constants.DEFAULT_SPICE_PLANT_GROWTH_STAGES;
     }
 
@@ -112,7 +99,6 @@ public abstract class SpicePlantBlock extends CropBlock {
      */
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-
         return SHAPE_BY_AGE[getAge(state)];
     }
 
@@ -122,34 +108,15 @@ public abstract class SpicePlantBlock extends CropBlock {
      * block's {@link Spice}'s {@link com.drunkencod.spice_road.spice.Tier}.
      * <p>
      * Unlike {@link #getMaxAge()}, this runs at genuine tick-time (not during
-     * block-state-freeze), so it's safe to read live config here. Vanilla's
-     * {@code CropBlock#getGrowthSpeed} is {@code static}, so it can't be
-     * overridden directly; instead, the multiplier is applied by rerolling
-     * vanilla's own growth check multiple times per tick - once per whole
-     * multiplier unit, plus one more with probability equal to the fractional
-     * remainder. Each reroll is an independent shot at the same age-to-age+1
-     * transition, so this raises/lowers the odds of that transition happening
-     * this tick without needing to duplicate vanilla's growth-chance formula.
+     * block-state-freeze), so it's safe to read live config here.
      */
     @Override
     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-
         if (!canGrow(level, pos))
             return;
 
-        double multiplier = Services.CONFIG.getSpicePlantGrowthSpeedMultiplier(spice.getTier());
-        if (multiplier <= 0)
-            return;
-
-        int guaranteedRolls = (int) multiplier;
-        double bonusRollChance = multiplier - guaranteedRolls;
-
-        for (int i = 0; i < guaranteedRolls; i++) {
-            super.randomTick(state, level, pos, random);
-        }
-        if (bonusRollChance > 0 && random.nextFloat() < bonusRollChance) {
-            super.randomTick(state, level, pos, random);
-        }
+        SpiceGrowth.rollScaled(Services.CONFIG.getSpicePlantGrowthSpeedMultiplier(spice.getTier()), random,
+                () -> super.randomTick(state, level, pos, random));
     }
 
     /**
@@ -167,7 +134,6 @@ public abstract class SpicePlantBlock extends CropBlock {
      * @return Whether this Spice Plant is allowed to advance its growth stage.
      */
     public boolean canGrow(ServerLevel level, BlockPos pos) {
-
         return true;
     }
 
@@ -177,7 +143,6 @@ public abstract class SpicePlantBlock extends CropBlock {
      */
     @Override
     public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
-
         if (!canGrow(level, pos))
             return;
 
@@ -186,13 +151,11 @@ public abstract class SpicePlantBlock extends CropBlock {
 
     @Override
     protected ItemLike getBaseSeedId() {
-
         return seedItem.get();
     }
 
     /** @return The {@link Spice} this block grows. */
     protected Spice getSpice() {
-
         return spice;
     }
 
@@ -203,7 +166,6 @@ public abstract class SpicePlantBlock extends CropBlock {
      */
     @Override
     public IntegerProperty getAgeProperty() {
-
         return super.getAgeProperty();
     }
 }

@@ -46,7 +46,6 @@ public final class SpicePlants {
      * called during mod initialization (see {@code SpiceRoad#init()}).
      */
     public static void bootstrap() {
-
         for (Spice spice : Spice.values()) {
             if (spice.getSourceType() != SourceType.FLOWER_PATCH && spice.getSourceType() != SourceType.CROP)
                 continue;
@@ -56,7 +55,6 @@ public final class SpicePlants {
     }
 
     private static RegisteredSpicePlant register(Spice spice) {
-
         String id = spice.getId();
         String seedId = id + "_seeds";
         String blockId = id + (spice.getSourceType() == SourceType.FLOWER_PATCH ? "_flower" : "_crop");
@@ -92,7 +90,6 @@ public final class SpicePlants {
      *         once built, harvest/interaction logic.
      */
     public static Map<Spice, RegisteredSpicePlant> getRegistered() {
-
         return Collections.unmodifiableMap(REGISTERED);
     }
 }

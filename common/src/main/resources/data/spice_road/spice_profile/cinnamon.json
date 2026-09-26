@@ -1,0 +1,13 @@
+{
+  "item": "spice_road:cinnamon",
+  "profile": {
+    "heat_cooling": 0.3,
+    "sweet_bitter": 0.8,
+    "sour_mellow": -0.3,
+    "earthy_floral": 0.1,
+    "woody_green": 0.9,
+    "pungent_soft": 0.1,
+    "resinous_clean": 0.2,
+    "savory_delicate": -0.2
+  }
+}

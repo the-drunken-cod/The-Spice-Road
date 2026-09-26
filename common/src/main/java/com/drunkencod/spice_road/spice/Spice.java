@@ -1,9 +1,15 @@
 package com.drunkencod.spice_road.spice;
 
+import java.util.Optional;
+
 import org.jetbrains.annotations.Nullable;
 
+import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.ModItems;
+import com.drunkencod.spice_road.spice.region.SpiceRegionResolver;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 
 /**
@@ -26,7 +32,8 @@ public enum Spice {
 
     LAVENDER("lavender", SourceType.FLOWER_PATCH, HarvestAction.PICK, Climate.ARID, 1, false, 2),
     CHILI_PEPPER("chili_pepper", SourceType.CROP, HarvestAction.PICK, Climate.TEMPERATE, 2, false, 2),
-    CUMIN("cumin", SourceType.CROP, HarvestAction.BREAK, Climate.ARID, 5, false, 2);
+    CUMIN("cumin", SourceType.CROP, HarvestAction.BREAK, Climate.ARID, 5, false, 2),
+    CINNAMON("cinnamon", SourceType.TREE, HarvestAction.STRIP, Climate.TROPICAL, 4, false, 2);
 
     private final String id;
     private final SourceType sourceType;
@@ -93,6 +100,39 @@ public enum Spice {
     public int getDropAmount() {
 
         return dropAmount;
+    }
+
+    /**
+     * Checks whether this Spice may grow (or bear fruit) at the given
+     * position, based on Spice Region support:
+     * <ol>
+     * <li>Hardy Spices (harvest difficulty at or below
+     * {@code IConfigHelper#getSpiceHardyHarvestDifficulty()}) can be
+     * cultivated anywhere.</li>
+     * <li>Otherwise, if {@code IConfigHelper#isSpiceRegionPlantingRestricted()}
+     * is enabled, the position's Spice Region must resolve to this Spice.</li>
+     * <li>If the restriction is disabled, cultivation is never gated.</li>
+     * </ol>
+     *
+     * @param level The server level.
+     * @param pos   The position to check.
+     * @return Whether this Spice is allowed to grow at {@code pos}.
+     */
+    public boolean canBeCultivatedAt(ServerLevel level, BlockPos pos) {
+        if (harvestDifficulty <= Services.CONFIG.getSpiceHardyHarvestDifficulty())
+            return true;
+
+        if (!Services.CONFIG.isSpiceRegionPlantingRestricted())
+            return true;
+
+        double cellScale = Services.CONFIG.getSpiceRegionCellScale();
+        double clusteringStrength = Services.CONFIG.getSpiceRegionClusteringStrength();
+        Climate climate = Climate.fromBiome(level.getBiome(pos), pos);
+
+        Optional<Spice> resolved = SpiceRegionResolver
+                .resolve(level.getSeed(), cellScale, clusteringStrength, climate, pos.getX(), pos.getZ())
+                .spice();
+        return resolved.isPresent() && resolved.get() == this;
     }
 
     // #region static
