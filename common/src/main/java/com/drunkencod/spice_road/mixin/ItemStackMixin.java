@@ -12,20 +12,20 @@ import net.minecraft.world.item.context.UseOnContext;
 import com.drunkencod.spice_road.block.StrippedSpiceLogBlock;
 
 /**
- * Exposes the player using an item on a block to
+ * Exposes the ongoing item-on-block use (player and clicked face) to
  * {@link StrippedSpiceLogBlock}, whose bark drop happens in {@code onPlace},
- * where that player isn't otherwise known.
+ * where neither is otherwise known.
  */
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin {
 
     @Inject(method = "useOn", at = @At("HEAD"))
-    private void spice_road$trackItemUser(UseOnContext context, CallbackInfoReturnable<InteractionResult> cir) {
-        StrippedSpiceLogBlock.setItemUser(context.getPlayer());
+    private void spice_road$trackItemUse(UseOnContext context, CallbackInfoReturnable<InteractionResult> cir) {
+        StrippedSpiceLogBlock.setItemUse(context);
     }
 
     @Inject(method = "useOn", at = @At("RETURN"))
-    private void spice_road$clearItemUser(UseOnContext context, CallbackInfoReturnable<InteractionResult> cir) {
-        StrippedSpiceLogBlock.setItemUser(null);
+    private void spice_road$clearItemUse(UseOnContext context, CallbackInfoReturnable<InteractionResult> cir) {
+        StrippedSpiceLogBlock.setItemUse(null);
     }
 }
