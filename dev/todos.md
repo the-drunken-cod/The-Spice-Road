@@ -2,7 +2,6 @@
 - [ ] Transmute spice profiles:
     - [ ] When crafting, any ingredients with the spice profile component add up together for the crafting output.
     - [ ] When cooking in a furnace, the spice profile values get multiplied with a set of randomly generated double values in the range of 0.85 to 1.15 (configurable), seeded by the current profile values, to yield reproducible results.
-- [ ] Add list of added spices to tooltip, via NBT component
 - [ ] Diminishing returns:
-    - [ ] When adding many spices, multiply the added spice profile's values by a set of doubles that starts at 1.0, then exponentially approaches 0. Should make it so ~10 spices is the "average maximum".
+    - [ ] Apply a per-axis soft cap when reading a profile for effects/tooltips (e.g. `C * tanh(raw / C)`, `C` configurable, default 10), so ~10 spices is the "average maximum". Stored values stay uncapped.
 - [ ] Add full tree spice wood sets.
