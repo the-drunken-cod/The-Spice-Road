@@ -13,6 +13,8 @@ import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.placement.PlacementModifier;
+import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraft.world.level.saveddata.maps.MapDecorationType;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
@@ -46,6 +48,9 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
 
     private final DeferredRegister<LootItemFunctionType<?>> lootFunctionTypes = DeferredRegister
             .create(BuiltInRegistries.LOOT_FUNCTION_TYPE, Constants.MOD_ID);
+
+    private final DeferredRegister<PlacementModifierType<?>> placementModifierTypes = DeferredRegister
+            .create(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, Constants.MOD_ID);
 
     private final DeferredRegister<MapDecorationType> mapDecorationTypes = DeferredRegister
             .create(Registries.MAP_DECORATION_TYPE, Constants.MOD_ID);
@@ -88,6 +93,13 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public <T extends PlacementModifier> Supplier<PlacementModifierType<T>> registerPlacementModifierType(String id,
+            Supplier<PlacementModifierType<T>> factory) {
+        return (Supplier<PlacementModifierType<T>>) (Supplier<?>) placementModifierTypes.register(id, factory::get);
+    }
+
+    @Override
     public Holder<MapDecorationType> registerMapDecorationType(String id, Supplier<MapDecorationType> factory) {
         return mapDecorationTypes.register(id, factory);
     }
@@ -115,6 +127,7 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
         lootConditionTypes.register(eventBus);
         lootFunctionTypes.register(eventBus);
         mapDecorationTypes.register(eventBus);
+        placementModifierTypes.register(eventBus);
         // AddReloadListenerEvent is a game event, not a mod-bus event.
         NeoForge.EVENT_BUS.addListener(this::onAddReloadListeners);
     }

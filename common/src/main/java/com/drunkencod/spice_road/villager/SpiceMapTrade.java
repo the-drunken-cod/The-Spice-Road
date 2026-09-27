@@ -1,6 +1,5 @@
 package com.drunkencod.spice_road.villager;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -19,6 +18,7 @@ import net.minecraft.world.item.trading.MerchantOffer;
 import com.drunkencod.spice_road.map.SpiceMaps;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Tier;
+import com.drunkencod.spice_road.spice.region.RegionHeartSearch;
 
 /**
  * Cartographer offer selling a Spice Map for a random Spice of one
@@ -29,14 +29,14 @@ import com.drunkencod.spice_road.spice.Tier;
 public class SpiceMapTrade implements VillagerTrades.ItemListing {
 
     /**
-     * Tiers of the Spice Map listings added to each cartographer level's
-     * pool. Novices get none, and EPIC maps are loot-only.
+     * Tier of the Spice Map listing added to each cartographer level's pool.
+     * One tier per level, so the same map is never offered at two prices.
+     * Novices and apprentices get none, and EPIC maps are loot-only.
      */
-    public static final Map<Integer, List<Tier>> TIERS_BY_LEVEL = Map.of(
-            2, List.of(Tier.COMMON),
-            3, List.of(Tier.COMMON, Tier.UNCOMMON),
-            4, List.of(Tier.UNCOMMON, Tier.RARE),
-            5, List.of(Tier.RARE));
+    public static final Map<Integer, Tier> TIER_BY_LEVEL = Map.of(
+            3, Tier.COMMON,
+            4, Tier.UNCOMMON,
+            5, Tier.RARE);
 
     /** Highest total emerald price, i.e. two full stacks. */
     private static final int MAX_PRICE = 128;
@@ -59,7 +59,8 @@ public class SpiceMapTrade implements VillagerTrades.ItemListing {
             return null;
 
         Optional<ItemStack> map = SpiceMaps.createForTier(level, trader.blockPosition(),
-                Services.CONFIG.getSpiceMapVillagerSearchRadius(), tier, random, SpiceMaps.DEFAULT_ZOOM, null);
+                RegionHeartSearch.cellsToBlocks(Services.CONFIG.getSpiceMapVillagerSearchRadiusCells()), tier, random,
+                SpiceMaps.DEFAULT_ZOOM, null);
         if (map.isEmpty())
             return null;
 

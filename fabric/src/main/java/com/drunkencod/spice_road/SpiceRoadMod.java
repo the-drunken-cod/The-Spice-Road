@@ -49,12 +49,17 @@ public class SpiceRoadMod implements ModInitializer {
         // NeoForge does the equivalent via the data-driven biome_modifier JSON
         // (neoforge/src/main/resources/data/spice_road/neoforge/biome_modifier/);
         // Fabric has no JSON-based equivalent, so this is done in code instead.
-        ResourceKey<PlacedFeature> spicePlant = ResourceKey.create(Registries.PLACED_FEATURE,
-                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "spice_plant"));
         BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
-                GenerationStep.Decoration.VEGETAL_DECORATION, spicePlant);
+                GenerationStep.Decoration.VEGETAL_DECORATION, placedFeature("spice_plant"));
+        // Before any vegetation, so Heart Groves find bare ground instead of forest canopies.
+        BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
+                GenerationStep.Decoration.LOCAL_MODIFICATIONS, placedFeature("spice_heart_grove"));
 
         registerSpiceMaps();
+    }
+
+    private static ResourceKey<PlacedFeature> placedFeature(String id) {
+        return ResourceKey.create(Registries.PLACED_FEATURE, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id));
     }
 
     /**
@@ -65,9 +70,8 @@ public class SpiceRoadMod implements ModInitializer {
     private static void registerSpiceMaps() {
         CommandRegistrationCallback.EVENT
                 .register((dispatcher, registryAccess, environment) -> SpiceLocateCommand.register(dispatcher));
-        SpiceMapTrade.TIERS_BY_LEVEL.forEach((level, tiers) -> TradeOfferHelper.registerVillagerOffers(
-                VillagerProfession.CARTOGRAPHER, level,
-                factories -> tiers.forEach(tier -> factories.add(new SpiceMapTrade(tier)))));
+        SpiceMapTrade.TIER_BY_LEVEL.forEach((level, tier) -> TradeOfferHelper.registerVillagerOffers(
+                VillagerProfession.CARTOGRAPHER, level, factories -> factories.add(new SpiceMapTrade(tier))));
         LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> LootInjections
                 .poolFor(key.location()).ifPresent(tableBuilder::pool));
     }

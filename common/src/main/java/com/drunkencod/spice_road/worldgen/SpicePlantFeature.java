@@ -5,7 +5,6 @@ import java.util.Optional;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
@@ -14,8 +13,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraft.world.level.biome.Biome;
 
 import com.drunkencod.spice_road.block.SpicePlantBlock;
 import com.drunkencod.spice_road.block.SpicePlants;
@@ -24,69 +21,75 @@ import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Climate;
 import com.drunkencod.spice_road.spice.Spice;
+import com.drunkencod.spice_road.spice.region.RegionHeart;
+import com.drunkencod.spice_road.spice.region.RegionHeartSearch;
 import com.drunkencod.spice_road.spice.region.SpiceRegionResolver;
 
 /**
- * Places a small patch of one {@link Spice}'s plant block, chosen by
- * {@link SpiceRegionResolver} rather than a fixed per-biome roster.
+ * Places a patch of Spice Plants, shaped by a {@link SpicePlantConfiguration}.
+ * Which Spice appears is chosen by {@link SpiceRegionResolver} rather than a
+ * fixed per-biome roster.
  * <p>
- * {@link SpiceRegionResolver} always resolves to <i>some</i>
- * Spice for any populated Climate Bucket, so frequency must come from the
- * placement modifiers, not from this class. This class only decides
- * <b>which</b> Spice appears, consistently within a Spice Region.
+ * By default each attempt resolves the Spice at its own position, and
+ * frequency comes from the placement modifiers, not from this class. With
+ * {@link SpicePlantConfiguration#heartSpiceOnly()}, every plant is the Heart
+ * Spice of the origin's Spice Region instead, which is how Heart Groves are
+ * generated.
  * <p>
- * {@code FLOWER_PATCH}/{@code CROP} Spices are placed as a small patch. If the
- * origin resolves to a {@code TREE} Spice, a single tree is placed instead,
- * using that tree's datapack-defined configured feature.
+ * If the patch's Spice grows as a tree, up to
+ * {@link SpicePlantConfiguration#maxTrees()} trees are placed instead, using
+ * that tree's datapack-defined configured feature.
  */
-public class SpicePlantFeature extends Feature<NoneFeatureConfiguration> {
+public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
 
-    /**
-     * Placement attempts per feature invocation, spread around the chosen origin -
-     * a small "patch", like vanilla's flower/patch features.
-     */
-    private static final int PATCH_TRIES = 6;
-
-    /** Horizontal spread, in blocks, of patch attempts around the origin. */
-    private static final int PATCH_RADIUS = 3;
-
-    public SpicePlantFeature(Codec<NoneFeatureConfiguration> codec) {
+    public SpicePlantFeature(Codec<SpicePlantConfiguration> codec) {
         super(codec);
     }
 
     @Override
-    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+    public boolean place(FeaturePlaceContext<SpicePlantConfiguration> context) {
         WorldGenLevel level = context.level();
         RandomSource random = context.random();
-        BlockPos origin = context.origin();
-        long worldSeed = level.getSeed();
+        SpicePlantConfiguration config = context.config();
+        BlockPos originSurface = level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE_WG, context.origin());
 
-        long salt = Services.CONFIG.getSpiceRegionSalt();
-        double cellScale = Services.CONFIG.getSpiceRegionCellScale();
-        double clusteringStrength = Services.CONFIG.getSpiceRegionClusteringStrength();
+        Optional<Spice> heartSpice = Optional.empty();
+        if (config.heartSpiceOnly()) {
+            heartSpice = RegionHeartSearch.heartAt(level.getLevel(), originSurface).map(RegionHeart::spice);
+            if (heartSpice.isEmpty())
+                return false;
+        }
 
-        BlockPos originSurface = level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE_WG, origin);
-        Optional<Spice> originSpice = SpiceRegionResolver
-                .resolve(worldSeed, salt, cellScale, clusteringStrength,
-                        Climate.fromBiome(level.getBiome(originSurface), originSurface),
-                        originSurface.getX(), originSurface.getZ())
-                .spice();
+        Optional<Spice> originSpice = heartSpice.isPresent() ? heartSpice : resolveSpiceAt(level, originSurface);
         SpiceTree tree = originSpice.map(SpiceTrees.getRegistered()::get).orElse(null);
         if (tree != null)
-            return tryPlaceTree(context, tree, originSurface);
+            return placeTrees(context, tree, originSurface);
 
         boolean placedAny = false;
-        for (int i = 0; i < PATCH_TRIES; i++) {
-            int dx = random.nextInt(PATCH_RADIUS * 2 + 1) - PATCH_RADIUS;
-            int dz = random.nextInt(PATCH_RADIUS * 2 + 1) - PATCH_RADIUS;
-            BlockPos columnPos = origin.offset(dx, 0, dz);
-            BlockPos surfacePos = level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE_WG, columnPos);
-
-            if (tryPlaceOne(level, random, surfacePos, worldSeed, salt, cellScale, clusteringStrength)) {
+        for (int i = 0; i < config.tries(); i++) {
+            BlockPos surfacePos = randomSurfacePos(level, random, context.origin(), config.xzSpread());
+            Optional<Spice> spice = heartSpice.isPresent() ? heartSpice : resolveSpiceAt(level, surfacePos);
+            if (spice.isPresent() && tryPlaceOne(level, random, surfacePos, spice.get()))
                 placedAny = true;
-            }
         }
         return placedAny;
+    }
+
+    /**
+     * Places up to {@link SpicePlantConfiguration#maxTrees()} trees, trying
+     * the origin first and random positions around it after that.
+     */
+    private boolean placeTrees(FeaturePlaceContext<SpicePlantConfiguration> context, SpiceTree tree,
+            BlockPos originSurface) {
+        SpicePlantConfiguration config = context.config();
+        int placed = 0;
+        for (int i = 0; i < config.tries() && placed < config.maxTrees(); i++) {
+            BlockPos surfacePos = i == 0 ? originSurface
+                    : randomSurfacePos(context.level(), context.random(), context.origin(), config.xzSpread());
+            if (tryPlaceTree(context, tree, surfacePos))
+                placed++;
+        }
+        return placed > 0;
     }
 
     /**
@@ -94,7 +97,7 @@ public class SpicePlantFeature extends Feature<NoneFeatureConfiguration> {
      * (see {@link SpiceTree#getTreeFeature()}), if its sapling could survive at
      * {@code surfacePos}.
      */
-    private boolean tryPlaceTree(FeaturePlaceContext<NoneFeatureConfiguration> context, SpiceTree tree,
+    private boolean tryPlaceTree(FeaturePlaceContext<SpicePlantConfiguration> context, SpiceTree tree,
             BlockPos surfacePos) {
         WorldGenLevel level = context.level();
         if (!level.isEmptyBlock(surfacePos) || !tree.getSapling().get().defaultBlockState().canSurvive(level, surfacePos))
@@ -106,19 +109,9 @@ public class SpicePlantFeature extends Feature<NoneFeatureConfiguration> {
                 .orElse(false);
     }
 
-    private boolean tryPlaceOne(WorldGenLevel level, RandomSource random, BlockPos surfacePos, long worldSeed,
-            long salt, double cellScale, double clusteringStrength) {
-        Holder<Biome> biome = level.getBiome(surfacePos);
-        Climate climate = Climate.fromBiome(biome, surfacePos);
-
-        Optional<Spice> resolved = SpiceRegionResolver
-                .resolve(worldSeed, salt, cellScale, clusteringStrength, climate, surfacePos.getX(), surfacePos.getZ())
-                .spice();
-        if (resolved.isEmpty()) {
-            return false;
-        }
-
-        SpicePlants.RegisteredSpicePlant plant = SpicePlants.getRegistered().get(resolved.get());
+    /** Places one {@code spice} plant at a random growth stage, if it can survive at {@code surfacePos}. */
+    private boolean tryPlaceOne(WorldGenLevel level, RandomSource random, BlockPos surfacePos, Spice spice) {
+        SpicePlants.RegisteredSpicePlant plant = SpicePlants.getRegistered().get(spice);
         if (plant == null) {
             // Resolved Spice isn't a patch/crop plant (trees are placed
             // separately, BUSH/VINE/RHIZOME have no block yet) - nothing to place.
@@ -126,16 +119,32 @@ public class SpicePlantFeature extends Feature<NoneFeatureConfiguration> {
         }
 
         SpicePlantBlock block = plant.block().get();
-        if (!level.isEmptyBlock(surfacePos)) {
+        if (!level.isEmptyBlock(surfacePos))
             return false;
-        }
+
         BlockState defaultState = block.defaultBlockState();
-        if (!defaultState.canSurvive(level, surfacePos)) {
+        if (!defaultState.canSurvive(level, surfacePos))
             return false;
-        }
 
         int age = random.nextInt(block.getMaxAge() + 1);
         BlockState state = defaultState.setValue(block.getAgeProperty(), age);
         return level.setBlock(surfacePos, state, Block.UPDATE_CLIENTS);
+    }
+
+    /** @return The Spice the Spice Region resolves to at {@code pos}, using the climate found there. */
+    private static Optional<Spice> resolveSpiceAt(WorldGenLevel level, BlockPos pos) {
+        return SpiceRegionResolver
+                .resolve(level.getSeed(), Services.CONFIG.getSpiceRegionSalt(),
+                        Services.CONFIG.getSpiceRegionCellScale(),
+                        Services.CONFIG.getSpiceRegionClusteringStrength(),
+                        Climate.fromBiome(level.getBiome(pos), pos), pos.getX(), pos.getZ())
+                .spice();
+    }
+
+    /** @return The surface position of a random column within {@code spread} blocks of {@code origin}. */
+    private static BlockPos randomSurfacePos(WorldGenLevel level, RandomSource random, BlockPos origin, int spread) {
+        int dx = random.nextInt(spread * 2 + 1) - spread;
+        int dz = random.nextInt(spread * 2 + 1) - spread;
+        return level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE_WG, origin.offset(dx, 0, dz));
     }
 }

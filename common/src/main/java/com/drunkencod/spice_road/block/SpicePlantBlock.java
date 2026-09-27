@@ -3,12 +3,16 @@ package com.drunkencod.spice_road.block;
 import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.FarmBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -35,6 +39,14 @@ import com.drunkencod.spice_road.spice.Spice;
  * item to hand back when the block is middle-clicked/cloned.
  */
 public abstract class SpicePlantBlock extends CropBlock {
+
+    /**
+     * Natural ground Spice Plants survive on besides farmland, like mushrooms
+     * on mycelium. Seeds can still only be planted on farmland (see
+     * {@link SpiceSeedItem}).
+     */
+    public static final TagKey<Block> SPICE_GROWABLE = TagKey.create(Registries.BLOCK,
+            ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "spice_growable"));
 
     /**
      * Per-age outline shapes, indexed by {@code age} (0-7, matching vanilla's
@@ -81,6 +93,16 @@ public abstract class SpicePlantBlock extends CropBlock {
                 .instabreak()
                 .sound(SoundType.CROP)
                 .pushReaction(PushReaction.DESTROY);
+    }
+
+    /**
+     * Widened from vanilla's farmland-only check to also accept
+     * {@link #SPICE_GROWABLE} ground, so wild Spice Plants can generate and
+     * survive outside of farms.
+     */
+    @Override
+    protected boolean mayPlaceOn(BlockState state, BlockGetter level, BlockPos pos) {
+        return state.getBlock() instanceof FarmBlock || state.is(SPICE_GROWABLE);
     }
 
     /**

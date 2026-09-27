@@ -96,13 +96,13 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
-    public int getSpiceMapSearchRadius() {
-        return SERVER.spiceMapSearchRadius.get();
+    public int getSpiceMapSearchRadiusCells() {
+        return SERVER.spiceMapSearchRadiusCells.get();
     }
 
     @Override
-    public int getSpiceMapVillagerSearchRadius() {
-        return SERVER.spiceMapVillagerSearchRadius.get();
+    public int getSpiceMapVillagerSearchRadiusCells() {
+        return SERVER.spiceMapVillagerSearchRadiusCells.get();
     }
 
     @Override
@@ -253,8 +253,8 @@ public class NeoForgeConfigHelper implements IConfigHelper {
         public final ModConfigSpec.DoubleValue spiceRegionCellScale;
         public final ModConfigSpec.LongValue spiceRegionSalt;
         public final ModConfigSpec.DoubleValue spiceRegionClusteringStrength;
-        public final ModConfigSpec.IntValue spiceMapSearchRadius;
-        public final ModConfigSpec.IntValue spiceMapVillagerSearchRadius;
+        public final ModConfigSpec.IntValue spiceMapSearchRadiusCells;
+        public final ModConfigSpec.IntValue spiceMapVillagerSearchRadiusCells;
         public final ModConfigSpec.BooleanValue spiceMapTradesEnabled;
         public final ModConfigSpec.IntValue spiceMapBasePrice;
         public final ModConfigSpec.DoubleValue spiceMapPriceMultiplierCommon;
@@ -293,14 +293,16 @@ public class NeoForgeConfigHelper implements IConfigHelper {
                     .comment("How strongly Spice Region generation favors common Spices over rarer ones")
                     .defineInRange("spiceRegionClusteringStrength",
                             Services.PLATFORM.isDedicatedServer() ? 1.75 : 1.0, 0.0, 10.0);
-            spiceMapSearchRadius = builder
-                    .comment("Maximum distance, in blocks, searched for a Spice Region's heart by "
-                            + "/locate spice and by Spice Map chest loot.")
-                    .defineInRange("spiceMapSearchRadius", 6400, 256, 100_000);
-            spiceMapVillagerSearchRadius = builder
-                    .comment("Maximum distance, in blocks, a cartographer searches for a Spice Region's heart when "
-                            + "offering a Spice Map. Lower values keep trading halls from reaching every Spice.")
-                    .defineInRange("spiceMapVillagerSearchRadius", 3200, 256, 100_000);
+            spiceMapSearchRadiusCells = builder
+                    .comment("Maximum distance, in Spice Region cells, searched for a Spice Region's heart by "
+                            + "/locate spice and by Spice Map chest loot. Measured in cells, so changing the cell "
+                            + "scale doesn't change how many regions are within reach.")
+                    .defineInRange("spiceMapSearchRadiusCells", 25, 1, 1000);
+            spiceMapVillagerSearchRadiusCells = builder
+                    .comment("Maximum distance, in Spice Region cells, a cartographer searches for a Spice Region's "
+                            + "heart when offering a Spice Map. Lower values keep trading halls from reaching every "
+                            + "Spice.")
+                    .defineInRange("spiceMapVillagerSearchRadiusCells", 12, 1, 1000);
             spiceMapTradesEnabled = builder
                     .comment("Whether cartographers offer Spice Map trades. Only affects newly generated offers.")
                     .define("spiceMapTradesEnabled", true);

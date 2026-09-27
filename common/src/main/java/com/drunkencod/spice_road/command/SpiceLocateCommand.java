@@ -66,7 +66,7 @@ public final class SpiceLocateCommand {
         BlockPos origin = BlockPos.containing(source.getPosition());
         Stopwatch stopwatch = Stopwatch.createStarted();
         Optional<RegionHeart> heart = RegionHeartSearch.findNearest(source.getLevel(), origin,
-                Services.CONFIG.getSpiceMapSearchRadius(), spice);
+                RegionHeartSearch.cellsToBlocks(Services.CONFIG.getSpiceMapSearchRadiusCells()), spice);
         stopwatch.stop();
         if (heart.isEmpty())
             throw ERROR_NOT_FOUND.create(spice.getDisplayName());

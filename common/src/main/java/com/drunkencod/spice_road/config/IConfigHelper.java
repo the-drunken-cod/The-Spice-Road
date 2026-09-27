@@ -48,22 +48,24 @@ public interface IConfigHelper {
     double getSpiceRegionClusteringStrength();
 
     /**
-     * Maximum distance, in blocks, searched for a Region Heart by
-     * {@code /locate spice} and by Spice Map loot.
+     * Maximum distance, in Spice Region cells, searched for a Region Heart by
+     * {@code /locate spice} and by Spice Map loot. Measured in cells so
+     * changing {@link #getSpiceRegionCellScale()} doesn't change how many
+     * hearts are within reach.
      *
-     * @return The configured search radius, in blocks.
+     * @return The configured search radius, in cells.
      */
-    int getSpiceMapSearchRadius();
+    int getSpiceMapSearchRadiusCells();
 
     /**
-     * Maximum distance, in blocks, a cartographer searches for a Region Heart
-     * when offering a Spice Map. Kept separate from
-     * {@link #getSpiceMapSearchRadius()} so trading halls can be balanced on
-     * their own.
+     * Maximum distance, in Spice Region cells, a cartographer searches for a
+     * Region Heart when offering a Spice Map. Kept separate from
+     * {@link #getSpiceMapSearchRadiusCells()} so trading halls can be balanced
+     * on their own.
      *
-     * @return The configured villager search radius, in blocks.
+     * @return The configured villager search radius, in cells.
      */
-    int getSpiceMapVillagerSearchRadius();
+    int getSpiceMapVillagerSearchRadiusCells();
 
     /**
      * Whether cartographers offer Spice Map trades. Only affects offers

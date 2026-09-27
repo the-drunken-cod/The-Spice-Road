@@ -10,6 +10,7 @@ import com.drunkencod.spice_road.registry.ModMapDecorations;
 import com.drunkencod.spice_road.spice.SpiceProfileReloadListener;
 import com.drunkencod.spice_road.tooltip.SpiceProfileTooltips;
 import com.drunkencod.spice_road.worldgen.ModFeatures;
+import com.drunkencod.spice_road.worldgen.ModPlacementModifiers;
 
 /**
  * Loader-independent mod initialization, called from each loader's entry
@@ -29,6 +30,7 @@ public class SpiceRoad {
         SpicePlants.bootstrap();
         SpiceTrees.bootstrap();
         ModFeatures.register();
+        ModPlacementModifiers.register();
         ModLootConditions.register();
         ModLootFunctions.register();
         ModMapDecorations.register();

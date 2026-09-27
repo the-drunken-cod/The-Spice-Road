@@ -1,0 +1,6 @@
+{
+  "feature": "spice_road:spice_heart_grove",
+  "placement": [
+    { "type": "spice_road:region_heart", "max_shift": 16 }
+  ]
+}

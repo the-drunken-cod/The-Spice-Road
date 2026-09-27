@@ -1,8 +1,10 @@
 package com.drunkencod.spice_road.spice.region;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -27,6 +29,8 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.RandomState;
 
 import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.block.SpicePlants;
+import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Climate;
 import com.drunkencod.spice_road.spice.Spice;
@@ -38,7 +42,9 @@ import com.drunkencod.spice_road.spice.Spice;
  * generator.
  * <p>
  * Only the Overworld has Spice Regions. Hearts in biomes tagged
- * {@link #NO_REGION_HEART} are barren and never returned.
+ * {@link #NO_REGION_HEART} are barren and never returned, and neither are
+ * hearts whose Heart Spice has no worldgen plant, since no Heart Grove could
+ * generate there.
  */
 public final class RegionHeartSearch {
 
@@ -77,6 +83,71 @@ public final class RegionHeartSearch {
         SpiceCell cell = SpiceRegionResolver.cellAtGrid(level.getSeed(), Services.CONFIG.getSpiceRegionSalt(),
                 Services.CONFIG.getSpiceRegionCellScale(), gridX, gridZ, origin.getX(), origin.getZ());
         return heartOf(level, cell);
+    }
+
+    /**
+     * Resolves the heart of the Spice Region cell {@code pos} falls into.
+     *
+     * @param level The level to resolve in.
+     * @param pos   Any position within the cell.
+     * @return The heart, or empty if it's barren, has no Heart Spice, or
+     *         {@code level} has no Spice Regions.
+     */
+    public static Optional<RegionHeart> heartAt(ServerLevel level, BlockPos pos) {
+        if (!hasSpiceRegions(level))
+            return Optional.empty();
+
+        SpiceCell cell = SpiceRegionResolver.resolveCell(level.getSeed(), Services.CONFIG.getSpiceRegionSalt(),
+                Services.CONFIG.getSpiceRegionCellScale(), pos.getX(), pos.getZ());
+        return heartOf(level, cell);
+    }
+
+    /**
+     * Resolves every Region Heart whose position lies within {@code chunk}.
+     * Cheap for chunks without one, which is almost all of them.
+     *
+     * @param level The level to resolve in.
+     * @param chunk The chunk to check.
+     * @return The hearts in {@code chunk}; usually none, at most one unless
+     *         cells are smaller than a chunk.
+     */
+    public static List<RegionHeart> heartsInChunk(ServerLevel level, ChunkPos chunk) {
+        List<RegionHeart> hearts = new ArrayList<>();
+        if (!hasSpiceRegions(level))
+            return hearts;
+
+        long worldSeed = level.getSeed();
+        long salt = Services.CONFIG.getSpiceRegionSalt();
+        double cellScale = Services.CONFIG.getSpiceRegionCellScale();
+        int minX = chunk.getMinBlockX();
+        int minZ = chunk.getMinBlockZ();
+        int maxX = chunk.getMaxBlockX();
+        int maxZ = chunk.getMaxBlockZ();
+
+        // A feature point never leaves its own square, so only squares overlapping the chunk can hold one.
+        for (int gridX = (int) Math.floor(minX / cellScale); gridX <= (int) Math.floor(maxX / cellScale); gridX++) {
+            for (int gridZ = (int) Math.floor(minZ / cellScale); gridZ <= (int) Math.floor(maxZ / cellScale);
+                    gridZ++) {
+                SpiceCell cell = SpiceRegionResolver.cellAtGrid(worldSeed, salt, cellScale, gridX, gridZ, minX, minZ);
+                int x = (int) Math.floor(cell.centerX());
+                int z = (int) Math.floor(cell.centerZ());
+                if (x >= minX && x <= maxX && z >= minZ && z <= maxZ)
+                    heartOf(level, cell).ifPresent(hearts::add);
+            }
+        }
+        return hearts;
+    }
+
+    /**
+     * Converts a search radius in cells into blocks, using the configured
+     * cell scale. Radii are configured in cells, so changing the region size
+     * doesn't change how many hearts are within reach.
+     *
+     * @param cells The radius, in cells.
+     * @return The radius, in blocks.
+     */
+    public static int cellsToBlocks(int cells) {
+        return (int) Math.min(Integer.MAX_VALUE, Math.round(cells * Services.CONFIG.getSpiceRegionCellScale()));
     }
 
     /**
@@ -205,7 +276,13 @@ public final class RegionHeartSearch {
         BlockPos pos = new BlockPos(x, sample.surfaceY(), z);
         Climate climate = Climate.fromBiome(sample.biome(), pos);
         return SpiceRegionResolver.resolveSpice(cell, climate, Services.CONFIG.getSpiceRegionClusteringStrength())
+                .filter(RegionHeartSearch::hasWorldgenPlant)
                 .map(spice -> new RegionHeart(cell, pos, climate, spice));
+    }
+
+    /** @return Whether {@code spice} has a plant or tree worldgen can place. */
+    private static boolean hasWorldgenPlant(Spice spice) {
+        return SpicePlants.getRegistered().containsKey(spice) || SpiceTrees.getRegistered().containsKey(spice);
     }
 
     /** Estimates surface height and biome at {@code (x, z)} without generating chunks. Cached. */

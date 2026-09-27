@@ -40,7 +40,7 @@ Warning: may contain outdated information, and is only to be used as a guideline
         - Sells common spices and some less common ones, few rare ones and none of the epic ones.
         - Buys all tiers of spices.
         - Datagen the trades from the enums.
-    - Make cartographer sell Spice Maps (Apprentice to Master levels, common to rare tiers); epic Spice Maps are chest loot only (see `dev/todos.md`).
+    - Make cartographer sell Spice Maps (Journeyman common, Expert uncommon, Master rare); epic Spice Maps are chest loot only (see `dev/todos.md`).
 7. **Fermentation Jar**
     - Note: model already implemented in Mycomancy, needs to be ported.
     - Small 1x1 blockentity that can be used to produce up to 2 (configurable) fermented items at a time.

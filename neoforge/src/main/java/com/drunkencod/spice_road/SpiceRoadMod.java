@@ -121,8 +121,8 @@ public class SpiceRoadMod {
         if (event.getType() != VillagerProfession.CARTOGRAPHER)
             return;
 
-        SpiceMapTrade.TIERS_BY_LEVEL.forEach((level, tiers) -> tiers
-                .forEach(tier -> event.getTrades().get(level.intValue()).add(new SpiceMapTrade(tier))));
+        SpiceMapTrade.TIER_BY_LEVEL
+                .forEach((level, tier) -> event.getTrades().get(level.intValue()).add(new SpiceMapTrade(tier)));
     }
 
     /** Appends the matching inject table, if any, to each loaded loot table. */

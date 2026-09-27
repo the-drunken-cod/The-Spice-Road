@@ -8,6 +8,8 @@ import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.placement.PlacementModifier;
+import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraft.world.level.saveddata.maps.MapDecorationType;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
@@ -90,6 +92,17 @@ public interface IRegistryHelper {
      */
     <T extends LootItemFunction> Supplier<LootItemFunctionType<T>> registerLootFunctionType(String id,
             Supplier<LootItemFunctionType<T>> factory);
+
+    /**
+     * Register a custom {@link PlacementModifierType} under the mod's
+     * namespace. Frozen as early as {@link #registerFeature}, with the same
+     * consequences.
+     *
+     * @param id      Registry path (e.g. {@code "my_modifier"})
+     * @param factory Supplier that creates the placement modifier type instance
+     */
+    <T extends PlacementModifier> Supplier<PlacementModifierType<T>> registerPlacementModifierType(String id,
+            Supplier<PlacementModifierType<T>> factory);
 
     /**
      * Register a custom {@link MapDecorationType} under the mod's namespace.

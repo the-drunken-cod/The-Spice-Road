@@ -1,4 +1,8 @@
 {
   "type": "spice_road:spice_plant",
-  "config": {}
+  "config": {
+    "tries": 6,
+    "xz_spread": 3,
+    "max_trees": 1
+  }
 }

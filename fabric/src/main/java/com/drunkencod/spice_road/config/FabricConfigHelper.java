@@ -52,13 +52,13 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
-    public int getSpiceMapSearchRadius() {
-        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceMapSearchRadius;
+    public int getSpiceMapSearchRadiusCells() {
+        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceMapSearchRadiusCells;
     }
 
     @Override
-    public int getSpiceMapVillagerSearchRadius() {
-        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceMapVillagerSearchRadius;
+    public int getSpiceMapVillagerSearchRadiusCells() {
+        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceMapVillagerSearchRadiusCells;
     }
 
     @Override
@@ -233,20 +233,20 @@ public class FabricConfigHelper implements IConfigHelper {
         public double spiceRegionClusteringStrength = Services.PLATFORM.isDedicatedServer() ? 1.75 : 1.0;
 
         /**
-         * Maximum distance, in blocks, searched for a Spice Region's heart by
-         * /locate spice and by Spice Map chest loot.
+         * Maximum distance, in Spice Region cells, searched for a Spice
+         * Region's heart by /locate spice and by Spice Map chest loot.
          */
         @ConfigEntry.Gui.Tooltip
-        @ConfigEntry.BoundedDiscrete(min = 256, max = 100_000)
-        public int spiceMapSearchRadius = 6400;
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 1000)
+        public int spiceMapSearchRadiusCells = 25;
 
         /**
-         * Maximum distance, in blocks, a cartographer searches for a Spice
-         * Region's heart when offering a Spice Map.
+         * Maximum distance, in Spice Region cells, a cartographer searches for
+         * a Spice Region's heart when offering a Spice Map.
          */
         @ConfigEntry.Gui.Tooltip
-        @ConfigEntry.BoundedDiscrete(min = 256, max = 100_000)
-        public int spiceMapVillagerSearchRadius = 3200;
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 1000)
+        public int spiceMapVillagerSearchRadiusCells = 12;
 
         /** Whether cartographers offer Spice Map trades. */
         @ConfigEntry.Gui.Tooltip

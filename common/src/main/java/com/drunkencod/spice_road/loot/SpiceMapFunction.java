@@ -29,6 +29,7 @@ import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.ModLootFunctions;
 import com.drunkencod.spice_road.spice.Spice;
 import com.drunkencod.spice_road.spice.Tier;
+import com.drunkencod.spice_road.spice.region.RegionHeartSearch;
 
 /**
  * Loot function turning an empty {@code minecraft:map} into a Spice Map,
@@ -37,7 +38,7 @@ import com.drunkencod.spice_road.spice.Tier;
  * <p>
  * Takes exactly one of {@code spice} (map that Spice) or {@code tier} (map a
  * random Spice of that tier which has a Region Heart in range), plus
- * optional {@code zoom}, {@code decoration} and {@code search_radius}
+ * optional {@code zoom}, {@code decoration} and {@code search_radius_cells}
  * (defaults to the configured search radius). Yields nothing if no matching
  * heart is in range, so no blank map is left behind.
  */
@@ -50,8 +51,8 @@ public class SpiceMapFunction extends LootItemConditionalFunction {
                     Tier.CODEC.optionalFieldOf("tier").forGetter(function -> function.tier),
                     MapDecorationType.CODEC.optionalFieldOf("decoration").forGetter(function -> function.decoration),
                     Codec.BYTE.optionalFieldOf("zoom", SpiceMaps.DEFAULT_ZOOM).forGetter(function -> function.zoom),
-                    Codec.intRange(1, 100_000).optionalFieldOf("search_radius")
-                            .forGetter(function -> function.searchRadius)))
+                    Codec.intRange(1, 1000).optionalFieldOf("search_radius_cells")
+                            .forGetter(function -> function.searchRadiusCells)))
                     .apply(instance, SpiceMapFunction::new))
             .validate(function -> function.spice.isPresent() == function.tier.isPresent()
                     ? DataResult.error(() -> "Exactly one of 'spice' or 'tier' must be set")
@@ -61,16 +62,16 @@ public class SpiceMapFunction extends LootItemConditionalFunction {
     private final Optional<Tier> tier;
     private final Optional<Holder<MapDecorationType>> decoration;
     private final byte zoom;
-    private final Optional<Integer> searchRadius;
+    private final Optional<Integer> searchRadiusCells;
 
     private SpiceMapFunction(List<LootItemCondition> conditions, Optional<Spice> spice, Optional<Tier> tier,
-            Optional<Holder<MapDecorationType>> decoration, byte zoom, Optional<Integer> searchRadius) {
+            Optional<Holder<MapDecorationType>> decoration, byte zoom, Optional<Integer> searchRadiusCells) {
         super(conditions);
         this.spice = spice;
         this.tier = tier;
         this.decoration = decoration;
         this.zoom = zoom;
-        this.searchRadius = searchRadius;
+        this.searchRadiusCells = searchRadiusCells;
     }
 
     @Override
@@ -94,7 +95,8 @@ public class SpiceMapFunction extends LootItemConditionalFunction {
 
         ServerLevel level = context.getLevel();
         BlockPos originPos = BlockPos.containing(origin);
-        int radius = searchRadius.orElseGet(Services.CONFIG::getSpiceMapSearchRadius);
+        int radius = RegionHeartSearch
+                .cellsToBlocks(searchRadiusCells.orElseGet(Services.CONFIG::getSpiceMapSearchRadiusCells));
         Optional<ItemStack> map = spice.isPresent()
                 ? SpiceMaps.createForSpice(level, originPos, radius, spice.get(), zoom, decoration.orElse(null))
                 : SpiceMaps.createForTier(level, originPos, radius, tier.orElseThrow(), context.getRandom(), zoom,
