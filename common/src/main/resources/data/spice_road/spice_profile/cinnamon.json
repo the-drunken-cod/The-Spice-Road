@@ -1,5 +1,5 @@
 {
-  "item": "spice_road:cinnamon",
+  "items": "spice_road:cinnamon",
   "profile": {
     "heat_cooling": 0.3,
     "sweet_bitter": 0.8,

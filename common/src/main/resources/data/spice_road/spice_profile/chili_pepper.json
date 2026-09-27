@@ -1,5 +1,5 @@
 {
-  "item": "spice_road:chili_pepper",
+  "items": "spice_road:chili_pepper",
   "profile": {
     "heat_cooling": 1.0,
     "sweet_bitter": 0.1,

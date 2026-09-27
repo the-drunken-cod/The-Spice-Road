@@ -2,10 +2,12 @@ package com.drunkencod.spice_road.client;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.renderer.RenderType;
 
 import com.drunkencod.spice_road.block.SpicePlants;
 import com.drunkencod.spice_road.block.SpiceTrees;
+import com.drunkencod.spice_road.spice.SpiceProfileSync;
 
 /**
  * Fabric client-only entry point. Keep this limited to client-only setup that
@@ -20,6 +22,7 @@ public class SpiceRoadClientMod implements ClientModInitializer {
         // production.
         FabricSpiceRegionDebugOverlay.registerIfDevelopment();
         FabricSpiceTooltipHandler.register();
+        ClientPlayNetworking.registerGlobalReceiver(SpiceProfileSync.TYPE, (payload, context) -> payload.handle());
 
         registerSpicePlantRenderLayers();
     }

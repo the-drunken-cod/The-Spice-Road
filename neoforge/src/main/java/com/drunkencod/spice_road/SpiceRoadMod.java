@@ -7,17 +7,25 @@ import com.drunkencod.spice_road.datagen.NeoForgeBlockStateProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeItemModelProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeSpiceDataMapProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeSpiceLootProvider;
+import com.drunkencod.spice_road.datagen.SpiceItemTagProvider;
 import com.drunkencod.spice_road.datagen.SpiceTreeCompatRecipeProvider;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.NeoForgeCreativeTabHelper;
 import com.drunkencod.spice_road.registry.NeoForgeRegistryHelper;
+import com.drunkencod.spice_road.spice.SpiceProfileRegistry;
+import com.drunkencod.spice_road.spice.SpiceProfileSync;
 
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.event.TagsUpdatedEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 /**
  * NeoForge mod entry point.
@@ -43,6 +51,9 @@ public class SpiceRoadMod {
         eventBus.addListener(this::onGatherData);
         eventBus.addListener(this::onCommonSetup);
         eventBus.addListener(this::onClientSetup);
+        eventBus.addListener(SpiceRoadMod::onRegisterPayloadHandlers);
+        NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onTagsUpdated);
+        NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onDatapackSync);
 
         SpiceRoad.init();
     }
@@ -67,6 +78,9 @@ public class SpiceRoadMod {
         event.getGenerator().addProvider(
                 event.includeServer(),
                 new SpiceTreeCompatRecipeProvider(event.getGenerator().getPackOutput()));
+        event.getGenerator().addProvider(
+                event.includeServer(),
+                new SpiceItemTagProvider(event.getGenerator().getPackOutput()));
     }
 
     private void onClientSetup(FMLClientSetupEvent event) {
@@ -75,5 +89,22 @@ public class SpiceRoadMod {
         // production.
         NeoForgeSpiceRegionDebugOverlay.registerIfDevelopment();
         NeoForgeSpiceTooltipHandler.register();
+    }
+
+    private static void onRegisterPayloadHandlers(RegisterPayloadHandlersEvent event) {
+        event.registrar("1").playToClient(SpiceProfileSync.TYPE, SpiceProfileSync.STREAM_CODEC,
+                (payload, context) -> payload.handle());
+    }
+
+    /** Resolves Default Profiles once the server's item tags are bound. */
+    private static void onTagsUpdated(TagsUpdatedEvent event) {
+        if (event.getUpdateCause() == TagsUpdatedEvent.UpdateCause.SERVER_DATA_LOAD)
+            SpiceProfileRegistry.resolve();
+    }
+
+    /** Syncs Default Profiles to each player on join and to everyone after {@code /reload}. */
+    private static void onDatapackSync(OnDatapackSyncEvent event) {
+        SpiceProfileSync payload = SpiceProfileSync.current();
+        event.getRelevantPlayers().forEach(player -> PacketDistributor.sendToPlayer(player, payload));
     }
 }

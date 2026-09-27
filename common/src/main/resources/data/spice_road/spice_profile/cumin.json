@@ -1,5 +1,5 @@
 {
-  "item": "spice_road:cumin",
+  "items": "spice_road:cumin",
   "profile": {
     "heat_cooling": 0.2,
     "sweet_bitter": -0.3,

@@ -1,5 +1,5 @@
 {
-  "item": "spice_road:lavender",
+  "items": "spice_road:lavender",
   "profile": {
     "heat_cooling": -0.2,
     "sweet_bitter": 0.0,

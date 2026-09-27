@@ -12,15 +12,12 @@ import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.SpiceTree;
 import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.spice.Spice;
-import com.drunkencod.spice_road.spice.SpiceProfile;
-import com.drunkencod.spice_road.spice.SpiceProfileRegistry;
 
 /**
  * Central item registry.
@@ -86,9 +83,9 @@ public class ModItems {
                 tree.getBlockItems().forEach(item -> output.accept(item.getDefaultInstance()));
 
             if (spiceRaw != null)
-                output.accept(withSpiceProfile(spiceRaw));
+                output.accept(spiceRaw.getDefaultInstance());
             if (spiceDried != null)
-                output.accept(withSpiceProfile(spiceDried));
+                output.accept(spiceDried.getDefaultInstance());
         }
     }
 
@@ -98,35 +95,5 @@ public class ModItems {
     public static @Nullable Item byPath(String path) {
         ResourceLocation itemId = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, path);
         return BuiltInRegistries.ITEM.getOptional(itemId).orElse(null);
-    }
-
-    // #region ItemStack withSpiceProfile
-
-    /**
-     * @param itemStack An ItemStack; its item optionally registered as a spice.
-     * @return A default stack of {@code item} carrying the
-     *         {@code spice_road:spice_profile} data component if a
-     *         datapack-registered default {@link SpiceProfile} exists for it,
-     *         so the creative tab entry shows its flavor axis tooltip without
-     *         relying on a live datapack reload having populated
-     *         {@link SpiceProfileRegistry}.
-     */
-    public static ItemStack withSpiceProfile(ItemStack itemStack) {
-        SpiceProfileRegistry.getDefault(itemStack.getItem())
-                .ifPresent(profile -> itemStack.set(ModDataComponents.SPICE_PROFILE.get(), profile));
-        return itemStack;
-    }
-
-    /**
-     * @param item An item, optionally registered as a spice.
-     * @return A default stack of {@code item} carrying the
-     *         {@code spice_road:spice_profile} data component if a
-     *         datapack-registered default {@link SpiceProfile} exists for it,
-     *         so the creative tab entry shows its flavor axis tooltip without
-     *         relying on a live datapack reload having populated
-     *         {@link SpiceProfileRegistry}.
-     */
-    public static ItemStack withSpiceProfile(Item item) {
-        return ModItems.withSpiceProfile(item.getDefaultInstance());
     }
 }
