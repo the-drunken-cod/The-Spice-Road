@@ -43,6 +43,7 @@
         "-Dfml.modFolders\u003dspice_road%%C:\\Users\\sven1\\code\\cod\\The-Spice-Road\\neoforge\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\neoforge\\run",
+      "env": {},
       "console": "internalConsole",
       "shortenCommandLine": "none"
     },
@@ -64,6 +65,7 @@
         "-Dfml.modFolders\u003dspice_road%%C:\\Users\\sven1\\code\\cod\\The-Spice-Road\\neoforge\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\neoforge\\run-data",
+      "env": {},
       "console": "internalConsole",
       "shortenCommandLine": "none"
     },
@@ -85,6 +87,7 @@
         "-Dfml.modFolders\u003dspice_road%%C:\\Users\\sven1\\code\\cod\\The-Spice-Road\\neoforge\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\neoforge\\run",
+      "env": {},
       "console": "internalConsole",
       "shortenCommandLine": "none"
     }
