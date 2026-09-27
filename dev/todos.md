@@ -19,7 +19,15 @@
         - Server config toggle to disable all Spice Map trades.
     - [x] EPIC Spice Map chest loot via hand-written inject tables (see ADR 0004): `shipwreck_map` 5%, `woodland_mansion` 10%, `pillager_outpost` 5%, `desert_pyramid` 3%. Gated by a `spice_road:spice_map_loot_enabled` loot condition backed by a server config toggle.
     - [x] Asset BOM for the marker sprites and any other placeholder assets (`dev/asset_bom.md`).
-    - [ ] Test in-game on both loaders: `/locate spice`, cartographer trades, chest loot, marker rendering.
+    - [ ] Heart Groves: guaranteed patch of the Heart Spice at every non-barren Region Heart.
+        - `spice_road:spice_plant` gets a real config (`tries`, `xz_spread`, `max_trees`, `heart_spice_only`); the hardcoded scattered-patch numbers move into `spice_plant.json`.
+        - New `spice_road:region_heart` placement modifier (only fires in the chunk containing a non-barren Heart, moves origin onto it); `spice_heart_grove` configured + placed feature JSONs, added via the NeoForge biome modifier and Fabric `BiomeModifications`.
+    - [ ] `#spice_road:spice_growable` block tag (default `#minecraft:dirt`, `#minecraft:sand`, `#minecraft:terracotta`): Spice Plants survive on it (like mushrooms), but seeds can still only be planted on farmland. Fixes CROP Spices never generating and ARID Spices failing on sand.
+    - [ ] Search skips Hearts whose Heart Spice has no worldgen plant (currently BUSH / VINE / RHIZOME).
+    - [ ] Add `stony_peaks`, `jagged_peaks`, `frozen_peaks`, `ice_spikes` to `#spice_road:no_region_heart`.
+    - [ ] Search radii in cells instead of blocks: `spiceMapSearchRadiusCells` (25) and `spiceMapVillagerSearchRadiusCells` (12).
+    - [ ] Test in-game on both loaders: `/locate spice`, cartographer trades, chest loot, marker rendering, Heart Groves.
     - [ ] Replace the placeholder marker sprites.
 - [ ] Add full tree spice wood sets.
 - [ ] Make plains biome not count as TROPICAL climate anymore.
+- [ ] Investigate potential issues with Sable sublevels and spice regions.
