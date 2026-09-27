@@ -137,7 +137,7 @@ public enum Spice {
         Climate climate = Climate.fromBiome(level.getBiome(pos), pos);
 
         Optional<Spice> resolved = SpiceRegionResolver
-                .resolve(level.getSeed(), cellScale, clusteringStrength, climate, pos.getX(), pos.getZ())
+                .resolve(level.getSeed(), Services.CONFIG.getSpiceRegionSalt(), cellScale, clusteringStrength, climate, pos.getX(), pos.getZ())
                 .spice();
         return resolved.isPresent() && resolved.get() == this;
     }

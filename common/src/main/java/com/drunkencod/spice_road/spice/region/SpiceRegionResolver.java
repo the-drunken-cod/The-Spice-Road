@@ -16,7 +16,7 @@ import com.drunkencod.spice_road.spice.Tier;
  * {@link #resolve} combining both) so a debug renderer or tests can inspect
  * intermediate results without re-deriving them:
  * <ul>
- * <li>{@link #resolveCell(long, double, int, int)} - a jittered,
+ * <li>{@link #resolveCell(long, long, double, int, int)} - a jittered,
  * Voronoi-style grid that assigns every world position to a cell with a
  * static, world-seed-dependent identity ({@link SpiceCell#seed()}).</li>
  * <li>{@link #resolveSpice(SpiceCell, Climate, double)} - a deterministic,
@@ -86,6 +86,9 @@ public final class SpiceRegionResolver {
      * point.
      *
      * @param worldSeed The world seed, so cell layout is unique per world.
+     * @param salt      Salt mixed into {@code worldSeed}; {@code 0} leaves it
+     *                  unchanged. Configurable; see
+     *                  {@code IConfigHelper#getSpiceRegionSalt()}.
      * @param cellScale The (approximate) edge length of a cell, in blocks.
      *                  Configurable; see
      *                  {@code IConfigHelper#getSpiceRegionCellScale()}.
@@ -93,9 +96,12 @@ public final class SpiceRegionResolver {
      * @param z         World-space Z coordinate to resolve.
      * @throws IllegalArgumentException If {@code cellScale} is not positive.
      */
-    public static SpiceCell resolveCell(long worldSeed, double cellScale, int x, int z) {
+    public static SpiceCell resolveCell(long worldSeed, long salt, double cellScale, int x, int z) {
         if (cellScale <= 0)
             throw new IllegalArgumentException("cellScale must be positive, got " + cellScale);
+
+        // mix64(0) == 0, so a salt of 0 keeps the unsalted layout
+        worldSeed ^= SeededHash.mix64(salt);
 
         int originGridX = (int) Math.floor(x / cellScale);
         int originGridZ = (int) Math.floor(z / cellScale);
@@ -158,7 +164,7 @@ public final class SpiceRegionResolver {
      * stable, repeatable pick for any given point.
      *
      * @param cell               The {@link SpiceCell} to pick within (see
-     *                           {@link #resolveCell(long, double, int, int)}).
+     *                           {@link #resolveCell(long, long, double, int, int)}).
      * @param climate            The {@link Climate} to pick from - the
      *                           caller's responsibility to derive, see this
      *                           class's TODO.
@@ -203,7 +209,8 @@ public final class SpiceRegionResolver {
      * the F3 debug renderer needs.
      *
      * @param worldSeed          The world seed.
-     * @param cellScale          See {@link #resolveCell(long, double, int, int)}.
+     * @param salt               See {@link #resolveCell(long, long, double, int, int)}.
+     * @param cellScale          See {@link #resolveCell(long, long, double, int, int)}.
      * @param clusteringStrength See
      *                           {@link #resolveSpice(SpiceCell, Climate, double)}.
      * @param climate            The {@link Climate} to pick from.
@@ -211,9 +218,9 @@ public final class SpiceRegionResolver {
      * @param z                  World-space Z coordinate to resolve.
      * @return The full {@link SpiceRegionResult} for this query.
      */
-    public static SpiceRegionResult resolve(long worldSeed, double cellScale, double clusteringStrength,
+    public static SpiceRegionResult resolve(long worldSeed, long salt, double cellScale, double clusteringStrength,
             Climate climate, int x, int z) {
-        SpiceCell cell = resolveCell(worldSeed, cellScale, x, z);
+        SpiceCell cell = resolveCell(worldSeed, salt, cellScale, x, z);
         Optional<Spice> spice = resolveSpice(cell, climate, clusteringStrength);
         return new SpiceRegionResult(cell, climate, spice);
     }

@@ -1,13 +1,13 @@
 ### Phases
 1. **Spice Plants**
-    - Uses custom perlin map, at a much larger scale than biomes (more like the "large biomes" preset).
+    - [x] Uses custom perlin map, at a much larger scale than biomes (more like the "large biomes" preset).
         - Add F3 debug info for identifying spice regions (only in a debug env).
-    - Plant generation respects biome parameters like temperature.
-    - Plant generation uses standard feature JSONs for base definition, and/or datagenning from an enum class' members.
-    - Custom models and fancy textures.
-    - Tiers: common, uncommon, rare, epic.
-    - Spice Profiles contain an assortment of double values of certain "flavor components" (like spicy, sweet, umami, but also fresh, strong, persistent, etc.).  
-    The range of the values is -1 to +1, which allows spices to negatively stack. In order to do this in an intuitive way, spice profiles need to correspond to how the spices would interact in real life. TODO: find an easy way of creating this system, i.e. a geometrical diagram or tree that will be traversed by the mechanic's algorithm.
+        - Plant generation respects biome parameters like temperature.
+        - Plant generation uses standard feature JSONs for base definition, and/or datagenning from an enum class' members.
+    - [x] Tiers: common, uncommon, rare, epic.
+    - [x] Spice Profiles contain an assortment of double values of certain "flavor components" (like spicy, sweet, umami, but also fresh, strong, persistent, etc.).  
+    The range of the values is -1 to +1, which allows spices to negatively stack. In order to do this in an intuitive way, spice profiles need to correspond to how the spices would interact in real life.
+        - [ ] TODO: find an easy way of creating this system, i.e. a geometrical diagram or tree that will be traversed by the mechanic's algorithm.
 2. **Drying Rack**
     - Note: mostly already implemented in Mycomancy, needs to be ported, except for the model, since it's limited to 2 inputs and outputs.
     - Dries 2 (configurable) items at the same time.

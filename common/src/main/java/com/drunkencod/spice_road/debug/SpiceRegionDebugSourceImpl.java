@@ -48,10 +48,11 @@ public class SpiceRegionDebugSourceImpl implements SpiceRegionDebugSource {
         Holder<Biome> biome = level.getBiome(pos);
         Climate climate = Climate.fromBiome(biome, pos);
 
+        long salt = Services.CONFIG.getSpiceRegionSalt();
         double cellScale = Services.CONFIG.getSpiceRegionCellScale();
         double clusteringStrength = Services.CONFIG.getSpiceRegionClusteringStrength();
 
-        SpiceRegionResult result = SpiceRegionResolver.resolve(worldSeed, cellScale, clusteringStrength, climate,
+        SpiceRegionResult result = SpiceRegionResolver.resolve(worldSeed, salt, cellScale, clusteringStrength, climate,
                 pos.getX(), pos.getZ());
 
         List<SpiceRegionDebugInfo.Line> lines = new ArrayList<>();

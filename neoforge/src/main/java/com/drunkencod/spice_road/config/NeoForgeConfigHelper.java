@@ -1,5 +1,7 @@
 package com.drunkencod.spice_road.config;
 
+import java.util.Random;
+
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.neoforge.common.ModConfigSpec;
@@ -84,6 +86,11 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public long getSpiceRegionSalt() {
+        return SERVER.spiceRegionSalt.get();
+    }
+
+    @Override
     public double getSpiceRegionClusteringStrength() {
         return SERVER.spiceRegionClusteringStrength.get();
     }
@@ -162,20 +169,23 @@ public class NeoForgeConfigHelper implements IConfigHelper {
                     .comment("Growth stage count (highest age value, 1-7) shared by every "
                             + "FLOWER_PATCH/CROP Spice Plant block. Read once per block at registration "
                             + "time; requires a restart to take effect.")
-                    .defineInRange("spicePlantGrowthStages", Constants.DEFAULT_SPICE_PLANT_GROWTH_STAGES, 1, 7);
+                    .defineInRange("spicePlantGrowthStages",
+                            Constants.DEFAULT_SPICE_PLANT_GROWTH_STAGES, 1, 7);
             spicePlantHarvestYieldMultiplier = builder
                     .comment("Harvest yield multiplier for all FLOWER_PATCH/CROP Spice Plants. "
                             + "Loot tables bake in the default value of this option at datagen "
                             + "time, not this live value, so re-run datagen after changing "
                             + "Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER.")
                     .defineInRange("spicePlantHarvestYieldMultiplier",
-                            Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER, 0.0D, Double.MAX_VALUE);
+                            Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER, 0.0D,
+                            Double.MAX_VALUE);
         }
     }
 
     /** Spec entries of the server config. */
     public static class ServerConfig {
         public final ModConfigSpec.DoubleValue spiceRegionCellScale;
+        public final ModConfigSpec.LongValue spiceRegionSalt;
         public final ModConfigSpec.DoubleValue spiceRegionClusteringStrength;
         public final ModConfigSpec.BooleanValue spiceRegionPlantingRestricted;
         public final ModConfigSpec.IntValue spiceHardyHarvestDifficulty;
@@ -193,6 +203,14 @@ public class NeoForgeConfigHelper implements IConfigHelper {
             spiceRegionCellScale = builder
                     .comment("Approximate edge length of a Spice Region cell, in blocks")
                     .defineInRange("spiceRegionCellScale", 1024.0, 64.0, 1_000_000.0);
+            spiceRegionSalt = builder
+                    .comment("Salt mixed into the world seed when resolving Spice Regions. Change this to "
+                            + "any random value to shuffle spice regions.",
+                            "WARNING: This affects existing worlds! Changing this will regenerate all Spice Regions, "
+                                    + "including in already generated chunks.")
+                    .worldRestart()
+                    .defineInRange("spiceRegionSalt", new Random().nextLong(), Long.MIN_VALUE,
+                            Long.MAX_VALUE);
             spiceRegionClusteringStrength = builder
                     .comment("How strongly Spice Region generation favors common Spices over rarer ones")
                     .defineInRange("spiceRegionClusteringStrength",
@@ -224,7 +242,8 @@ public class NeoForgeConfigHelper implements IConfigHelper {
                     .comment("Harvest yield multiplier for Spice Trees, applied when stripping bark or picking "
                             + "fruiting leaves. Fractional results are rounded up or down at random.")
                     .defineInRange("spiceTreeHarvestYieldMultiplier",
-                            Constants.DEFAULT_SPICE_TREE_HARVEST_YIELD_MULTIPLIER, 0.0, 64.0);
+                            Constants.DEFAULT_SPICE_TREE_HARVEST_YIELD_MULTIPLIER, 0.0,
+                            64.0);
             spiceTreeFruitingLeavesCommon = builder
                     .comment("Fraction (0.0-1.0) of air-exposed, naturally grown leaves of COMMON-tier fruiting "
                             + "Spice Trees that can bear fruit.")

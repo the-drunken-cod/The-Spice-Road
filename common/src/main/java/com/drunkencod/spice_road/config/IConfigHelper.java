@@ -24,6 +24,18 @@ public interface IConfigHelper {
     double getSpiceRegionCellScale();
 
     /**
+     * Salt mixed into the world seed when resolving Spice Regions, so region
+     * layout can differ between worlds sharing the same seed. Defaults to a
+     * random value when the config is first created.
+     * <p>
+     * <b>Affects world generation:</b> changing it reshuffles every Spice
+     * Region, including in already generated chunks.
+     *
+     * @return The configured Spice Region salt.
+     */
+    long getSpiceRegionSalt();
+
+    /**
      * How strongly Spice Region generation favors common Spices over rarer
      * ones. Defaults differ between singleplayer (integrated) and dedicated
      * servers - see {@code IPlatformHelper#isDedicatedServer()} - since the

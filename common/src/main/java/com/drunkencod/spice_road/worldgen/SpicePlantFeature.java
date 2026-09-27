@@ -61,12 +61,13 @@ public class SpicePlantFeature extends Feature<NoneFeatureConfiguration> {
         BlockPos origin = context.origin();
         long worldSeed = level.getSeed();
 
+        long salt = Services.CONFIG.getSpiceRegionSalt();
         double cellScale = Services.CONFIG.getSpiceRegionCellScale();
         double clusteringStrength = Services.CONFIG.getSpiceRegionClusteringStrength();
 
         BlockPos originSurface = level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE_WG, origin);
         Optional<Spice> originSpice = SpiceRegionResolver
-                .resolve(worldSeed, cellScale, clusteringStrength,
+                .resolve(worldSeed, salt, cellScale, clusteringStrength,
                         Climate.fromBiome(level.getBiome(originSurface), originSurface),
                         originSurface.getX(), originSurface.getZ())
                 .spice();
@@ -81,7 +82,7 @@ public class SpicePlantFeature extends Feature<NoneFeatureConfiguration> {
             BlockPos columnPos = origin.offset(dx, 0, dz);
             BlockPos surfacePos = level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE_WG, columnPos);
 
-            if (tryPlaceOne(level, random, surfacePos, worldSeed, cellScale, clusteringStrength)) {
+            if (tryPlaceOne(level, random, surfacePos, worldSeed, salt, cellScale, clusteringStrength)) {
                 placedAny = true;
             }
         }
@@ -106,12 +107,12 @@ public class SpicePlantFeature extends Feature<NoneFeatureConfiguration> {
     }
 
     private boolean tryPlaceOne(WorldGenLevel level, RandomSource random, BlockPos surfacePos, long worldSeed,
-            double cellScale, double clusteringStrength) {
+            long salt, double cellScale, double clusteringStrength) {
         Holder<Biome> biome = level.getBiome(surfacePos);
         Climate climate = Climate.fromBiome(biome, surfacePos);
 
         Optional<Spice> resolved = SpiceRegionResolver
-                .resolve(worldSeed, cellScale, clusteringStrength, climate, surfacePos.getX(), surfacePos.getZ())
+                .resolve(worldSeed, salt, cellScale, clusteringStrength, climate, surfacePos.getX(), surfacePos.getZ())
                 .spice();
         if (resolved.isEmpty()) {
             return false;

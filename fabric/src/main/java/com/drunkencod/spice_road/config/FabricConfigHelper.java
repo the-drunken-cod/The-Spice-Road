@@ -1,5 +1,7 @@
 package com.drunkencod.spice_road.config;
 
+import java.util.Random;
+
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Tier;
@@ -37,6 +39,11 @@ public class FabricConfigHelper implements IConfigHelper {
     @Override
     public double getSpiceRegionCellScale() {
         return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceRegionCellScale;
+    }
+
+    @Override
+    public long getSpiceRegionSalt() {
+        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceRegionSalt;
     }
 
     @Override
@@ -139,6 +146,15 @@ public class FabricConfigHelper implements IConfigHelper {
     public static class ServerConfigData implements ConfigData {
         @ConfigEntry.Gui.Tooltip
         public double spiceRegionCellScale = 1024.0;
+
+        /**
+         * Salt mixed into the world seed when resolving Spice Regions. Defaults
+         * to a random value when this config is first created. WARNING: affects
+         * world generation - changing it reshuffles every Spice Region,
+         * including in already generated chunks.
+         */
+        @ConfigEntry.Gui.Tooltip
+        public long spiceRegionSalt = new Random().nextLong();
 
         @ConfigEntry.Gui.Tooltip
         public double spiceRegionClusteringStrength = Services.PLATFORM.isDedicatedServer() ? 1.75 : 1.0;

@@ -1,4 +1,4 @@
-- [ ] Configurable region seed salt - defaults to a random long, can be changed to edit spice regions. Add a warning that worldgen is affected by this setting.
+- [x] Configurable region seed salt - defaults to a random long, can be changed to edit spice regions. Add a warning that worldgen is affected by this setting.
 - [ ] Transmute spice profiles:
     - [ ] When crafting, any ingredients with the spice profile component add up together for the crafting output.
     - [ ] When cooking in a furnace, the spice profile values get multiplied with a set of randomly generated double values in the range of 0.85 to 1.15 (configurable), seeded by the current profile values, to yield reproducible results.
