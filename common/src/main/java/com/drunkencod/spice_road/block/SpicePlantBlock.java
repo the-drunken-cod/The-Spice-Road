@@ -7,9 +7,12 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.FarmBlock;
@@ -169,6 +172,13 @@ public abstract class SpicePlantBlock extends CropBlock {
             return;
 
         super.performBonemeal(level, random, pos, state);
+    }
+
+    @Override
+    protected int getBonemealAgeIncrease(Level level) {
+        if (getSpice().getTier().getRarity() == Rarity.EPIC)
+            return Mth.nextInt(level.random, 0, 2);
+        return Mth.nextInt(level.random, 1, 2);
     }
 
     @Override
