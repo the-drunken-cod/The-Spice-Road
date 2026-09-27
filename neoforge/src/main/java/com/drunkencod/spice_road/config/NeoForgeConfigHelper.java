@@ -139,6 +139,11 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean isTooltipAxisValueShown() {
+        return CLIENT.tooltipShowAxisValues.get();
+    }
+
+    @Override
     public boolean isTooltipShiftBypassed() {
         return CLIENT.tooltipAlwaysShowShiftContent.get();
     }
@@ -225,7 +230,8 @@ public class NeoForgeConfigHelper implements IConfigHelper {
                             + "Spice Trees that can bear fruit.")
                     .defineInRange("spiceTreeFruitingLeavesCommon", 0.3, 0.0, 1.0);
             spiceTreeFruitingLeavesUncommon = builder
-                    .comment("Fruiting leaves fraction for UNCOMMON-tier Spice Trees. See spiceTreeFruitingLeavesCommon.")
+                    .comment(
+                            "Fruiting leaves fraction for UNCOMMON-tier Spice Trees. See spiceTreeFruitingLeavesCommon.")
                     .defineInRange("spiceTreeFruitingLeavesUncommon", 0.2, 0.0, 1.0);
             spiceTreeFruitingLeavesRare = builder
                     .comment("Fruiting leaves fraction for RARE-tier Spice Trees. See spiceTreeFruitingLeavesCommon.")
@@ -239,6 +245,7 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     /** Spec entries of the client config. */
     public static class ClientConfig {
         public final ModConfigSpec.BooleanValue tooltipShowBothAxisLabels;
+        public final ModConfigSpec.BooleanValue tooltipShowAxisValues;
         public final ModConfigSpec.BooleanValue tooltipAlwaysShowShiftContent;
 
         ClientConfig(ModConfigSpec.Builder builder) {
@@ -246,10 +253,13 @@ public class NeoForgeConfigHelper implements IConfigHelper {
                     .comment("Whether Flavor Axis tooltips show both labels of each axis (e.g. [Spicy / Cooling]), "
                             + "emphasizing the one matching the value, instead of only the matching one.")
                     .define("tooltipShowBothAxisLabels", false);
+            tooltipShowAxisValues = builder
+                    .comment("Whether Flavor Axis tooltips show each axis' value, multiplied by 10, after its label "
+                            + "(e.g. [Spicy: 5]).")
+                    .define("tooltipShowAxisValues", false);
             tooltipAlwaysShowShiftContent = builder
                     .comment("Whether all of this mod's tooltip content that normally requires holding Shift is "
-                            + "always shown instead. Can help with finding specific items in JEI/EMI, since "
-                            + "their search can then match this content.")
+                            + "always shown instead.")
                     .define("tooltipAlwaysShowShiftContent", false);
         }
     }

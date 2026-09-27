@@ -140,6 +140,14 @@ public interface IConfigHelper {
     boolean isTooltipBothAxisLabelsShown();
 
     /**
+     * Client-side. Whether Flavor Axis tooltips show each axis' score,
+     * multiplied by 10, after its label (e.g. {@code [Spicy: 5]}).
+     *
+     * @return Whether Flavor Axis values are shown.
+     */
+    boolean isTooltipAxisValueShown();
+
+    /**
      * Client-side. Whether tooltip content that normally requires holding
      * Shift is always shown instead.
      *

@@ -21,8 +21,12 @@ import com.drunkencod.spice_road.spice.SpiceProfile;
  *
  * <pre>
  *      [ Spicy ]+++++
- *  ++++[Mellow ]
+ *      [Sweet  ]++-
+ *  -+++[Mellow ]
  * </pre>
+ *
+ * The outermost bar character is a {@link #HALF_BAR_CHAR} for odd multiples of
+ * half a {@link #BAR_CHAR}, doubling the bar's resolution.
  *
  * Padding is measured in pixels (see {@link #setTextWidthMeasurer}), so the
  * bars line up despite the proportional font and adapt to the current locale.
@@ -33,6 +37,15 @@ public class SpiceFlavorTooltips {
     public static final int BAR_LENGTH = 5;
     /** Character progress bars are drawn with. */
     public static final String BAR_CHAR = "+";
+    /**
+     * Outermost bar character, when the score ends halfway through a
+     * {@link #BAR_CHAR}.
+     */
+    public static final String HALF_BAR_CHAR = "-";
+    /**
+     * Factor scores are multiplied by when shown as a number inside the brackets.
+     */
+    public static final int VALUE_SCALE = 10;
     /** Color ({@code 0xRRGGBB}) of the label brackets and label separator. */
     public static final int BRACKET_COLOR = 0x777777;
 
@@ -64,24 +77,38 @@ public class SpiceFlavorTooltips {
      */
     public static List<Component> formatFlavorAxes(SpiceProfile profile) {
         boolean bothLabels = Services.CONFIG.isTooltipBothAxisLabelsShown();
+        boolean showValues = Services.CONFIG.isTooltipAxisValueShown();
         Padder padder = Padder.measure();
 
-        // Sized over every label any axis could show, so the layout stays the same across Spices
-        List<Integer> labelWidths = new ArrayList<>();
-        for (FlavorAxis axis : FlavorAxis.values()) {
-            labelWidths.add(width(axisLabel(axis, true, bothLabels)));
-            labelWidths.add(width(axisLabel(axis, false, bothLabels)));
+        int labelWidth;
+        if (showValues) {
+            // Sized over the shown rows only, since sizing for every possible value would
+            // leave most rows with a wide gap. All padding goes between label and number,
+            // at least about a space wide
+            List<Integer> rowWidths = new ArrayList<>();
+            for (FlavorAxis axis : FlavorAxis.values())
+                rowWidths.add(valueRowWidth(axis, profile.get(axis), bothLabels));
+            int minGap = Math.max(1, padder.space() - 1);
+            labelWidth = padder.alignedWidth(rowWidths, px -> px >= minGap && padder.isPaddable(px));
+        } else {
+            // Sized over every label any axis could show, so the layout stays the same
+            // across Spices
+            List<Integer> labelWidths = new ArrayList<>();
+            for (FlavorAxis axis : FlavorAxis.values()) {
+                labelWidths.add(width(axisLabel(axis, true, bothLabels)));
+                labelWidths.add(width(axisLabel(axis, false, bothLabels)));
+            }
+            labelWidth = padder.alignedWidth(labelWidths, padder::isSplittable);
         }
-        int labelWidth = padder.alignedWidth(labelWidths, padder::isSplittable);
 
         List<Integer> barWidths = new ArrayList<>();
-        for (int i = 0; i <= BAR_LENGTH; i++)
-            barWidths.add(width(Component.literal(BAR_CHAR.repeat(i))));
+        for (int halfSteps = 0; halfSteps <= BAR_LENGTH * 2; halfSteps++)
+            barWidths.add(width(Component.literal(barText(halfSteps, false))));
         int barWidth = padder.alignedWidth(barWidths, padder::isPaddable);
 
         List<Component> lines = new ArrayList<>(FlavorAxis.values().length);
         for (FlavorAxis axis : FlavorAxis.values())
-            lines.add(formatLine(axis, profile.get(axis), bothLabels, padder, labelWidth, barWidth));
+            lines.add(formatLine(axis, profile.get(axis), bothLabels, showValues, padder, labelWidth, barWidth));
         return lines;
     }
 
@@ -91,33 +118,84 @@ public class SpiceFlavorTooltips {
      * @param axis       The Flavor Axis
      * @param value      Score in {@code [-1, 1]}
      * @param bothLabels Whether to show both pole labels
+     * @param showValues Whether to show the scaled value after the label
      * @param padder     Builds the padding
      * @param labelWidth Common width of the space between the brackets
      * @param barWidth   Common width of the space left of the opening bracket
      * @return The formatted tooltip line
      */
-    private static Component formatLine(FlavorAxis axis, double value, boolean bothLabels, Padder padder,
-            int labelWidth, int barWidth) {
+    private static Component formatLine(FlavorAxis axis, double value, boolean bothLabels, boolean showValues,
+            Padder padder, int labelWidth, int barWidth) {
+        // Exactly 0 is labeled as positive with an empty bar, any other score shows at
+        // least a half step
         boolean positive = value >= 0D;
-        int filled = (int) Math.round(Math.min(Math.abs(value), 1D) * BAR_LENGTH);
-        Component bar = Component.literal(BAR_CHAR.repeat(filled)).withColor(axis.getColor(positive));
+        int halfSteps = value == 0D ? 0
+                : Math.max(1, (int) Math.round(Math.min(Math.abs(value), 1D) * BAR_LENGTH * 2));
+        Component bar = Component.literal(barText(halfSteps, positive)).withColor(axis.getColor(positive));
         Component leftBar = positive ? Component.empty() : bar;
 
-        Component label = axisLabel(axis, positive, bothLabels);
-        int labelPadding = labelWidth - width(label);
-        int labelPaddingLeft = padder.split(labelPadding);
-
+        MutableComponent label = axisLabel(axis, positive, bothLabels);
         MutableComponent line = Component.empty()
                 .append(padder.build(barWidth - width(leftBar)))
                 .append(leftBar)
-                .append(Component.literal("[").withColor(BRACKET_COLOR))
-                .append(padder.build(labelPaddingLeft))
-                .append(label)
-                .append(padder.build(labelPadding - labelPaddingLeft))
-                .append(Component.literal("]").withColor(BRACKET_COLOR));
+                .append(Component.literal("[").withColor(BRACKET_COLOR));
+        if (showValues) {
+            line.append(label)
+                    .append(valueSeparator())
+                    .append(padder.build(labelWidth - valueRowWidth(axis, value, bothLabels)))
+                    .append(valueNumber(axis, value));
+        } else {
+            int labelPadding = labelWidth - width(label);
+            int labelPaddingLeft = padder.split(labelPadding);
+            line.append(padder.build(labelPaddingLeft))
+                    .append(label)
+                    .append(padder.build(labelPadding - labelPaddingLeft));
+        }
+        line.append(Component.literal("]").withColor(BRACKET_COLOR));
         if (positive)
             line.append(bar);
         return line;
+    }
+
+    /**
+     * @param axis       The Flavor Axis
+     * @param value      Score in {@code [-1, 1]}
+     * @param bothLabels Whether to show both pole labels
+     * @return Width of a value row's label, separator and number, without
+     *         the padding between them
+     */
+    private static int valueRowWidth(FlavorAxis axis, double value, boolean bothLabels) {
+        return width(axisLabel(axis, value >= 0D, bothLabels)) + width(valueSeparator())
+                + width(valueNumber(axis, value));
+    }
+
+    /** @return The separator between a label and its value, {@code ":"} */
+    private static Component valueSeparator() {
+        return Component.literal(":").withColor(BRACKET_COLOR);
+    }
+
+    /**
+     * @param axis  The Flavor Axis, whose pole color is used
+     * @param value Score in {@code [-1, 1]}
+     * @return The score multiplied by {@link #VALUE_SCALE}, e.g. {@code "5"}
+     */
+    private static Component valueNumber(FlavorAxis axis, double value) {
+        return Component.literal(String.valueOf(Math.round(value * VALUE_SCALE)))
+                .withColor(axis.getColor(value >= 0D));
+    }
+
+    /**
+     * @param halfSteps Bar length, in halves of a {@link #BAR_CHAR}
+     * @param positive  Whether the bar extends to the right, putting its
+     *                  outermost character last instead of first
+     * @return The bar's text, ending in a {@link #HALF_BAR_CHAR} on odd
+     *         {@code halfSteps}
+     */
+    private static String barText(int halfSteps, boolean positive) {
+        String full = BAR_CHAR.repeat(halfSteps / 2);
+        if (halfSteps % 2 == 0)
+            return full;
+        return positive ? full + HALF_BAR_CHAR : HALF_BAR_CHAR + full;
     }
 
     /**
@@ -193,7 +271,10 @@ public class SpiceFlavorTooltips {
             return this.boldSpaceCount(px) >= 0;
         }
 
-        /** @return Whether {@code px} pixels of padding can be split into two paddable shares. */
+        /**
+         * @return Whether {@code px} pixels of padding can be split into two paddable
+         *         shares.
+         */
         boolean isSplittable(int px) {
             int left = this.split(px);
             return this.isPaddable(left) && this.isPaddable(px - left);

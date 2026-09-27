@@ -19,7 +19,9 @@
     "itemGroup.spice_road.generic": "Spice Road",
     "itemGroup.spice_road.spices": "Spice Road Crops",
     "spice_road.configuration.tooltipAlwaysShowShiftContent": "Always Show Shift Tooltips",
-    "spice_road.configuration.tooltipAlwaysShowShiftContent.tooltip": "Always show tooltip content that normally requires holding Shift. Can help with finding specific items in JEI/EMI.",
+    "spice_road.configuration.tooltipAlwaysShowShiftContent.tooltip": "Always show tooltip content that normally requires holding Shift.",
+    "spice_road.configuration.tooltipShowAxisValues": "Show Flavor Values",
+    "spice_road.configuration.tooltipShowAxisValues.tooltip": "Show each Flavor Axis' value, multiplied by 10, after its label (e.g. [Spicy: 5]).",
     "spice_road.configuration.tooltipShowBothAxisLabels": "Show Both Flavor Labels",
     "spice_road.configuration.tooltipShowBothAxisLabels.tooltip": "Show both labels of each Flavor Axis (e.g. [Spicy / Cooling]), emphasizing the one matching the value.",
     "spice_road.spice_axis.name.earthy_floral.negative": "Floral",
@@ -38,6 +40,8 @@
     "spice_road.spice_axis.name.sweet_bitter.positive": "Sweet",
     "spice_road.spice_axis.name.woody_green.negative": "Green",
     "spice_road.spice_axis.name.woody_green.positive": "Woody",
+    "spice_road.tooltip.shift_hint.spice": "Hold %s for spice information",
+    "spice_road.tooltip.shift_key": "Shift",
     "tag.block.spice_road.spice_crops": "Spice Crops",
     "tag.block.spice_road.spice_tree_leaves": "Spice Tree Leaves",
     "tag.block.spice_road.spice_tree_logs": "Spice Tree Logs",
@@ -52,6 +56,8 @@
     "tag.item.spice_road.spices": "Spices",
     "text.autoconfig.spice_road_client.option.tooltipAlwaysShowShiftContent": "Always Show Shift Tooltips",
     "text.autoconfig.spice_road_client.option.tooltipAlwaysShowShiftContent.@Tooltip": "Always show tooltip content that normally requires holding Shift. Can help with finding specific items in JEI/EMI.",
+    "text.autoconfig.spice_road_client.option.tooltipShowAxisValues": "Show Flavor Values",
+    "text.autoconfig.spice_road_client.option.tooltipShowAxisValues.@Tooltip": "Show each Flavor Axis' value, multiplied by 10, after its label (e.g. [Spicy: 5]).",
     "text.autoconfig.spice_road_client.option.tooltipShowBothAxisLabels": "Show Both Flavor Labels",
     "text.autoconfig.spice_road_client.option.tooltipShowBothAxisLabels.@Tooltip": "Show both labels of each Flavor Axis (e.g. [Spicy / Cooling]), emphasizing the one matching the value."
 }

@@ -97,6 +97,11 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean isTooltipAxisValueShown() {
+        return AutoConfig.getConfigHolder(ClientConfigData.class).getConfig().tooltipShowAxisValues;
+    }
+
+    @Override
     public boolean isTooltipShiftBypassed() {
         return AutoConfig.getConfigHolder(ClientConfigData.class).getConfig().tooltipAlwaysShowShiftContent;
     }
@@ -196,6 +201,13 @@ public class FabricConfigHelper implements IConfigHelper {
          */
         @ConfigEntry.Gui.Tooltip
         public boolean tooltipShowBothAxisLabels = false;
+
+        /**
+         * Whether Flavor Axis tooltips show each axis' value, multiplied by
+         * 10, after its label (e.g. [Spicy: 5]).
+         */
+        @ConfigEntry.Gui.Tooltip
+        public boolean tooltipShowAxisValues = false;
 
         /**
          * Whether all of this mod's tooltip content that normally requires

@@ -2,6 +2,7 @@ package com.drunkencod.spice_road.tooltip;
 
 import java.util.List;
 
+import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.spice.SpiceProfiles;
 
 /**
@@ -31,6 +32,7 @@ public final class SpiceProfileTooltips {
         TooltipUtil.register(stack -> SpiceProfiles.get(stack).isPresent(), TooltipUtil.Visibility.SHIFT_ONLY,
                 stack -> SpiceProfiles.get(stack)
                         .map(SpiceFlavorTooltips::formatFlavorAxes)
-                        .orElse(List.of()));
+                        .orElse(List.of()),
+                TooltipUtil.shiftHint(Constants.MOD_ID + ".tooltip.shift_hint.spice"));
     }
 }
