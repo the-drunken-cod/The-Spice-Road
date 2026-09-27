@@ -8,11 +8,27 @@ Adds rare spices to Minecraft that can enhance existing foods with a new buff me
 </div>
 
 ## Features:
-- <!-- TODO: -->69+ new spice plants now grow in dedicated zones (dependent on climate, but not bound to biomes).
-- New mechanic that allows spices to be mixed and matched and applied to existing foods to imbue them with beneficial effects. (Datapack friendly!)
+- TODO: 69+ new spice plants now grow in dedicated zones (dependent on climate, but not bound to biomes).
+- New mechanic that allows spices to be mixed and matched and applied to existing foods of any mod to imbue them with beneficial effects.
 - Common spices may be taken back home and grown, but a good portion of them will only mature if produced locally.  
-  This incentivizes exploration, as well as establishing trade routes on servers.
-- Allows for tons of configuration. As described above, the default values might make it very hard to get specific spices or all spices, but all of that can easily be tweaked.
+  This incentivizes exploration, as well as establishing trade routes on servers. Maps can be traded for or found to help find certain spices.
+- Incredibly modpack-, datapack- and server admin friendly.
+  - Allows for tons of configuration for any play style and player base.
+  - Spice profiles and items can easily be added by datapack makers, and any mod's food item is supported out of the box. Note: some mods' crafting stations might erase spice profiles. In that case, please [open an issue](https://github.com/the-drunken-cod/The-Spice-Road/issues) so we can add compatibility.
+  - Commands for finding (`/locate spice`) and utilities for shuffling spice regions for balancing or setting up scenarios.
+
+<br>
+
+## Integrations:
+- [Farmer's Delight](https://modrinth.com/mod/farmers-delight)
+  - Recipe compatibility for the cooking pot and cutting board (meaning spice values carry over).
+  - Tag-level compatibility (knives as cutting tool, etc.).
+- [Cooking For Blockheads](https://modrinth.com/mod/cooking-for-blockheads)
+  - Recipe compatibility for the toaster and oven (meaning spice values carry over).
+- [Serene Seasons](https://modrinth.com/mod/serene-seasons)
+  - Spice crops have realistic season data attached to them (with none growing in winter).
+- [Create]()
+  - Spices can be harvested via deployers.
 
 <br>
 
