@@ -234,8 +234,9 @@ public class NeoForgeConfigHelper implements IConfigHelper {
 
         ServerConfig(ModConfigSpec.Builder builder) {
             spiceRegionCellScale = builder
-                    .comment("Approximate edge length of a Spice Region cell, in blocks")
-                    .defineInRange("spiceRegionCellScale", 1024.0, 64.0, 1_000_000.0);
+                    .comment("Approximate edge length of a Spice Region cell, in blocks. Should only be increased "
+                            + "on Multiplayer servers, to encourage lots of travel and specialization. ")
+                    .defineInRange("spiceRegionCellScale", 256.0, 64.0, 1_000_000.0);
             spiceRegionSalt = builder
                     .comment("Salt mixed into the world seed when resolving Spice Regions. Change this to "
                             + "any random value to shuffle spice regions.",

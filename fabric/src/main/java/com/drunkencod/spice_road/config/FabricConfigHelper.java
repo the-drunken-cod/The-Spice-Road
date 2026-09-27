@@ -154,7 +154,8 @@ public class FabricConfigHelper implements IConfigHelper {
          * Plants. TODO: add tier-based scaling.
          * Loot tables bake in the default value of this option at datagen time, not
          * this live value; re-run datagen after changing
-         * {@link Constants#DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER} to regenerate them.
+         * {@link Constants#DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER} to regenerate
+         * them.
          */
         @ConfigEntry.Gui.Tooltip
         @ConfigEntry.BoundedDiscrete(min = 1, max = 64)
@@ -180,7 +181,7 @@ public class FabricConfigHelper implements IConfigHelper {
     @Config(name = Constants.MOD_ID + "_server")
     public static class ServerConfigData implements ConfigData {
         @ConfigEntry.Gui.Tooltip
-        public double spiceRegionCellScale = 1024.0;
+        public double spiceRegionCellScale = 256.0;
 
         /**
          * Salt mixed into the world seed when resolving Spice Regions. Defaults
