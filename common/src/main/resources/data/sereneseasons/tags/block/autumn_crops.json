@@ -1,4 +1,6 @@
 {
   "replace": false,
-  "values": []
+  "values": [
+    "spice_road:nutmeg_sapling"
+  ]
 }

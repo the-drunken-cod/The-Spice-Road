@@ -9,20 +9,20 @@
       }
     },
     "foliage_placer": {
-      "type": "minecraft:fancy_foliage_placer",
-      "height": 4,
+      "type": "minecraft:random_spread_foliage_placer",
+      "foliage_height": {
+        "type": "minecraft:constant",
+        "value": 4
+      },
+      "leaf_placement_attempts": 32,
       "offset": 0,
       "radius": 2
     },
     "foliage_provider": {
       "type": "minecraft:simple_state_provider",
       "state": {
-        "Name": "spice_road:cinnamon_leaves",
-        "Properties": {
-          "distance": "7",
-          "persistent": "false",
-          "waterlogged": "false"
-        }
+        "Name": "spice_road:nutmeg_leaves",
+        "Properties": { "age": "0", "distance": "7", "persistent": "false", "waterlogged": "false" }
       }
     },
     "force_dirt": false,
@@ -42,7 +42,7 @@
     "trunk_provider": {
       "type": "minecraft:simple_state_provider",
       "state": {
-        "Name": "spice_road:cinnamon_log",
+        "Name": "spice_road:nutmeg_log",
         "Properties": {
           "axis": "y"
         }

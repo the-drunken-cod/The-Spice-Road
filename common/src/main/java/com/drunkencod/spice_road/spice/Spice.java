@@ -30,10 +30,13 @@ import net.minecraft.world.item.Item;
  */
 public enum Spice {
 
+    // crops
     LAVENDER("lavender", SourceType.FLOWER_PATCH, HarvestAction.PICK, Climate.ARID, 1, false, 2),
     CHILI_PEPPER("chili_pepper", SourceType.CROP, HarvestAction.PICK, Climate.TEMPERATE, 2, false, 2),
-    CUMIN("cumin", SourceType.CROP, HarvestAction.BREAK, Climate.ARID, 5, false, 2),
-    CINNAMON("cinnamon", SourceType.TREE, HarvestAction.STRIP, Climate.TROPICAL, 4, false, 2);
+    CUMIN("cumin", SourceType.CROP, HarvestAction.BREAK, Climate.ARID, 5, false, 1),
+    // trees
+    CINNAMON("cinnamon", SourceType.TREE, HarvestAction.STRIP, Climate.TROPICAL, 4, false, 1),
+    NUTMEG("nutmeg", SourceType.TREE, HarvestAction.SHEAR, Climate.TROPICAL, 5, true, 1);
 
     private final String id;
     private final SourceType sourceType;
@@ -137,7 +140,8 @@ public enum Spice {
         Climate climate = Climate.fromBiome(level.getBiome(pos), pos);
 
         Optional<Spice> resolved = SpiceRegionResolver
-                .resolve(level.getSeed(), Services.CONFIG.getSpiceRegionSalt(), cellScale, clusteringStrength, climate, pos.getX(), pos.getZ())
+                .resolve(level.getSeed(), Services.CONFIG.getSpiceRegionSalt(), cellScale, clusteringStrength, climate,
+                        pos.getX(), pos.getZ())
                 .spice();
         return resolved.isPresent() && resolved.get() == this;
     }
