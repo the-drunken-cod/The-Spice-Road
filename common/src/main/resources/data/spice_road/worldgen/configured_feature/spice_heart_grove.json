@@ -3,7 +3,16 @@
   "config": {
     "tries": 48,
     "xz_spread": 7,
-    "max_trees": 3,
-    "heart_spice_only": true
+    "heart_spice_only": true,
+    "trees": {
+      "default": 1,
+      "spacing": 4,
+      "rules": [
+        {
+          "biomes": "#spice_road:dense_grove_trees",
+          "count": { "type": "minecraft:uniform", "min_inclusive": 2, "max_inclusive": 3 }
+        }
+      ]
+    }
   }
 }

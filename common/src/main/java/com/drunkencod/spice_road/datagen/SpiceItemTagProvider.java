@@ -53,7 +53,9 @@ public class SpiceItemTagProvider implements DataProvider {
         futures.add(save(cachedOutput, SpiceItemTags.SPICES, List.of(
                 "#" + SpiceItemTags.RAW_SPICES.location(),
                 "#" + SpiceItemTags.DRIED_SPICES.location())));
-        futures.add(save(cachedOutput, SpiceItemTags.RETAINS_FLAVOR, List.of()));
+        futures.add(save(cachedOutput, SpiceItemTags.RETAINS_FLAVOR, List.of(
+                "#c:mushrooms",
+                "#c:crops/grain")));
         futures.add(save(cachedOutput, SpiceItemTags.UNSEASONABLE, List.of()));
         for (Tier tier : Tier.values())
             futures.add(save(cachedOutput, tier.getItemTag(), tierItems(tier)));

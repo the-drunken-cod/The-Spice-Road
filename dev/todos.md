@@ -18,17 +18,19 @@
     - [x] EPIC Spice Map chest loot via hand-written inject tables: `shipwreck_map` 5%, `woodland_mansion` 10%, `pillager_outpost` 5%, `desert_pyramid` 3%. Gated by a `spice_road:spice_map_loot_enabled` loot condition backed by a server config toggle.
     - [x] Asset BOM for the marker sprites and any other placeholder assets (`dev/asset_bom.md`).
     - [x] Heart Groves: guaranteed patch of the Heart Spice at every non-barren Region Heart.
-        - `spice_road:spice_plant` gets a real config (`tries`, `xz_spread`, `max_trees`, `heart_spice_only`); the hardcoded scattered-patch numbers move into `spice_plant.json`.
+        - `spice_road:spice_plant` gets a real config (`tries`, `xz_spread`, `trees`, `heart_spice_only`); the hardcoded scattered-patch numbers move into `spice_plant.json`.
+        - Tree count per biome: `trees` has a `default` count, biome-tag `rules` (first match wins) and a trunk `spacing`. Groves: 2-3 trees in `#spice_road:dense_grove_trees` (forests, taigas, jungle, bamboo jungle), 1 elsewhere, 4 blocks apart.
         - New `spice_road:region_heart` placement modifier (only fires in the chunk containing a non-barren Heart, moves origin onto the nearest dry spice-growable column within `max_shift` = 16 blocks, staying inside the Heart's region); `spice_heart_grove` configured + placed feature JSONs, added in the `local_modifications` step (before trees) via the NeoForge biome modifier and Fabric `BiomeModifications`.
     - [x] `#spice_road:spice_growable` block tag (default `#minecraft:dirt`, `#minecraft:sand`, `#minecraft:terracotta`): Spice Plants survive on it (like mushrooms), but seeds can still only be planted on farmland. Fixes CROP Spices never generating and ARID Spices failing on sand.
     - [x] Search skips Hearts whose Heart Spice has no worldgen plant (currently BUSH / VINE / RHIZOME).
+    - [x] Search skips Hearts without dry land (terrain floor = surface) at the Heart or 8 points around it within the grove's shift range, e.g. in rivers.
     - [x] Add `stony_peaks`, `jagged_peaks`, `frozen_peaks`, `ice_spikes` to `#spice_road:no_region_heart`.
     - [x] Search radii in cells instead of blocks: `spiceMapSearchRadiusCells` (25) and `spiceMapVillagerSearchRadiusCells` (12).
     - [x] Replace the placeholder marker sprites.
 - [x] Add tooltip (and item name color rarity) to spices and spice seeds/saplings indicating their rarity.
     - [x] Embed spice rarity tier icon as text component (and add to spice tooltips).
 - [x] Make plains biome not count as TROPICAL climate anymore.
+- [x] Decide spice tree heart cluster spawn attempts by whether the biome is forested.
 - [ ] Add full tree spice wood sets.
 - [ ] Investigate potential issues with Sable sublevels and spice regions.
 - [ ] Nerf bonemeal for spice crops, since their age range is reduced. Prevent bone mealing on higher tier crops by default (configurable per-tier).
-- [ ] Decide spice tree heart cluster spawn attempts by whether the biome is forested.

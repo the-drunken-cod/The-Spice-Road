@@ -109,6 +109,7 @@
     "tag.item.spice_road.spices.raw": "Raw Spices",
     "tag.item.spice_road.spices": "Spices",
     "tag.item.spice_road.unseasonable": "Unseasonable",
+    "tag.worldgen.biome.spice_road.dense_grove_trees": "Dense Grove Trees",
     "tag.worldgen.biome.spice_road.no_region_heart": "No Region Heart",
     "text.autoconfig.spice_road_client.option.tooltipAlwaysShowShiftContent.@Tooltip": "Always show tooltip content that normally requires holding Shift. Can help with finding specific items in JEI/EMI.",
     "text.autoconfig.spice_road_client.option.tooltipAlwaysShowShiftContent": "Always Show Shift Tooltips",

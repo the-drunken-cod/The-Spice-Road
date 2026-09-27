@@ -1,5 +1,7 @@
 package com.drunkencod.spice_road.worldgen;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import com.mojang.serialization.Codec;
@@ -36,8 +38,8 @@ import com.drunkencod.spice_road.spice.region.SpiceRegionResolver;
  * Spice of the origin's Spice Region instead, which is how Heart Groves are
  * generated.
  * <p>
- * If the patch's Spice grows as a tree, up to
- * {@link SpicePlantConfiguration#maxTrees()} trees are placed instead, using
+ * If the patch's Spice grows as a tree, trees are placed instead, as many as
+ * {@link SpicePlantConfiguration#trees()} rolls for the origin's biome, using
  * that tree's datapack-defined configured feature.
  */
 public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
@@ -76,20 +78,33 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
     }
 
     /**
-     * Places up to {@link SpicePlantConfiguration#maxTrees()} trees, trying
-     * the origin first and random positions around it after that.
+     * Places as many trees as {@link SpicePlantConfiguration#trees()} rolls
+     * for the origin's biome, trying the origin first and random positions
+     * around it after that. Positions closer than the configured spacing to
+     * an already placed trunk are skipped.
      */
     private boolean placeTrees(FeaturePlaceContext<SpicePlantConfiguration> context, SpiceTree tree,
             BlockPos originSurface) {
         SpicePlantConfiguration config = context.config();
-        int placed = 0;
-        for (int i = 0; i < config.tries() && placed < config.maxTrees(); i++) {
+        SpicePlantTreeSettings trees = config.trees();
+        int maxTrees = trees.sampleCount(context.level().getBiome(originSurface), context.random());
+        int minDistanceSq = trees.spacing() * trees.spacing();
+
+        List<BlockPos> trunks = new ArrayList<>();
+        for (int i = 0; i < config.tries() && trunks.size() < maxTrees; i++) {
             BlockPos surfacePos = i == 0 ? originSurface
                     : randomSurfacePos(context.level(), context.random(), context.origin(), config.xzSpread());
-            if (tryPlaceTree(context, tree, surfacePos))
-                placed++;
+            boolean tooClose = trunks.stream().anyMatch(trunk -> horizontalDistanceSq(trunk, surfacePos) < minDistanceSq);
+            if (!tooClose && tryPlaceTree(context, tree, surfacePos))
+                trunks.add(surfacePos);
         }
-        return placed > 0;
+        return !trunks.isEmpty();
+    }
+
+    private static int horizontalDistanceSq(BlockPos a, BlockPos b) {
+        int dx = a.getX() - b.getX();
+        int dz = a.getZ() - b.getZ();
+        return (dx * dx) + (dz * dz);
     }
 
     /**

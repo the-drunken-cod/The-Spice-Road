@@ -52,6 +52,14 @@ public final class RegionHeartSearch {
     public static final TagKey<Biome> NO_REGION_HEART = TagKey.create(Registries.BIOME,
             ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "no_region_heart"));
 
+    /**
+     * Horizontal offsets checked around a heart for dry land, besides the
+     * heart itself. Within reach of the Heart Grove's shift, so dry land found
+     * here is dry land the grove can move onto.
+     */
+    private static final int[][] DRY_LAND_OFFSETS = {
+            { 12, 0 }, { -12, 0 }, { 0, 12 }, { 0, -12 }, { 8, 8 }, { 8, -8 }, { -8, 8 }, { -8, -8 } };
+
     /** Maximum number of cached heart samples per chunk generator. */
     private static final int SAMPLE_CACHE_SIZE = 4096;
 
@@ -254,7 +262,7 @@ public final class RegionHeartSearch {
                     continue;
 
                 K key = keyOf.apply(heart.get());
-                if (key == null)
+                if (key == null || !hasDryLandNear(level, heart.get()))
                     continue;
 
                 RegionHeart previous = nearest.get(key);
@@ -285,7 +293,25 @@ public final class RegionHeartSearch {
         return SpicePlants.getRegistered().containsKey(spice) || SpiceTrees.getRegistered().containsKey(spice);
     }
 
-    /** Estimates surface height and biome at {@code (x, z)} without generating chunks. Cached. */
+    /**
+     * Checks whether there's dry land at or around {@code heart}, so it isn't
+     * mapped when it sits in a river or wide lake the Heart Grove couldn't
+     * escape. Based on the terrain estimate, so features like ponds are
+     * invisible to it; the grove's own placement handles those.
+     */
+    private static boolean hasDryLandNear(ServerLevel level, RegionHeart heart) {
+        int x = heart.pos().getX();
+        int z = heart.pos().getZ();
+        if (sample(level, x, z).isDry())
+            return true;
+        for (int[] offset : DRY_LAND_OFFSETS) {
+            if (sample(level, x + offset[0], z + offset[1]).isDry())
+                return true;
+        }
+        return false;
+    }
+
+    /** Estimates surface height, floor height and biome at {@code (x, z)} without generating chunks. Cached. */
     private static HeartSample sample(ServerLevel level, int x, int z) {
         ChunkGenerator generator = level.getChunkSource().getGenerator();
         long key = ChunkPos.asLong(x, z);
@@ -297,9 +323,10 @@ public final class RegionHeartSearch {
 
         RandomState randomState = level.getChunkSource().randomState();
         int y = generator.getBaseHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, level, randomState);
+        int floorY = generator.getBaseHeight(x, z, Heightmap.Types.OCEAN_FLOOR_WG, level, randomState);
         Holder<Biome> biome = generator.getBiomeSource().getNoiseBiome(QuartPos.fromBlock(x), QuartPos.fromBlock(y),
                 QuartPos.fromBlock(z), randomState.sampler());
-        HeartSample sample = new HeartSample(y, biome);
+        HeartSample sample = new HeartSample(y, floorY, biome);
 
         synchronized (SAMPLE_CACHE) {
             SAMPLE_CACHE.computeIfAbsent(generator, g -> newLruMap()).put(key, sample);
@@ -341,7 +368,12 @@ public final class RegionHeartSearch {
         return farthest;
     }
 
-    /** Surface height and biome at a heart's position. */
-    private record HeartSample(int surfaceY, Holder<Biome> biome) {
+    /** Surface height (including fluids), floor height (excluding fluids) and biome at a position. */
+    private record HeartSample(int surfaceY, int floorY, Holder<Biome> biome) {
+
+        /** @return Whether no fluid sits on top of the ground here. */
+        boolean isDry() {
+            return floorY >= surfaceY;
+        }
     }
 }
