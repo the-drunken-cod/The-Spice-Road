@@ -31,6 +31,7 @@
     - [x] Embed spice rarity tier icon as text component (and add to spice tooltips).
 - [x] Make plains biome not count as TROPICAL climate anymore.
 - [x] Decide spice tree heart cluster spawn attempts by whether the biome is forested.
+- [x] Nerf bonemeal for spice crops, since their age range is reduced. Prevent bone mealing on higher tier crops by default (configurable per-tier).
 - [ ] Add full tree spice wood sets.
 - [ ] Investigate potential issues with Sable sublevels and spice regions.
-- [ ] Nerf bonemeal for spice crops, since their age range is reduced. Prevent bone mealing on higher tier crops by default (configurable per-tier).
+- [ ] Refactor config to use toml `[sections]`
