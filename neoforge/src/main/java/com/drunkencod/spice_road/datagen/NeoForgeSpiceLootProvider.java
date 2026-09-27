@@ -24,7 +24,8 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
  * table shape and {@code FabricSpiceLootProvider} for the Fabric
  * counterpart. Spice Tree blocks (see {@link SpiceTrees}) use vanilla's
  * log/sapling self-drops and leaves drops (sapling chance, sticks, and the
- * leaves themselves with shears/Silk Touch).
+ * leaves themselves with shears/Silk Touch), plus the Spice from ripe
+ * fruiting leaves (see {@link SpiceTreeLootTables}).
  * <p>
  * Uses {@link Constants#DEFAULT_SPICE_PLANT_GROWTH_STAGES} rather than
  * {@code block.getMaxAge()} for the loot condition's threshold age: a pure
@@ -66,8 +67,9 @@ public class NeoForgeSpiceLootProvider extends LootTableProvider {
                 dropSelf(tree.getLog().get());
                 dropSelf(tree.getStrippedLog().get());
                 dropSelf(tree.getSapling().get());
-                add(tree.getLeaves().get(), createLeavesDrops(tree.getLeaves().get(), tree.getSapling().get(),
-                        NORMAL_LEAVES_SAPLING_CHANCES));
+                add(tree.getLeaves().get(), SpiceTreeLootTables.withRipeLeavesHarvest(tree,
+                        createLeavesDrops(tree.getLeaves().get(), tree.getSapling().get(),
+                                NORMAL_LEAVES_SAPLING_CHANCES)));
             });
         }
 

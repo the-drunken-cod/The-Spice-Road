@@ -17,7 +17,8 @@ import net.minecraft.core.HolderLookup;
  * uses {@link Constants#DEFAULT_SPICE_PLANT_GROWTH_STAGES} instead of
  * {@code block.getMaxAge()} for the same reason (config isn't loaded during
  * {@code runData}). Spice Tree blocks use vanilla's log/sapling self-drops and
- * leaves drops.
+ * leaves drops, plus the Spice from ripe fruiting leaves (see
+ * {@link SpiceTreeLootTables}).
  */
 public class FabricSpiceLootProvider extends FabricBlockLootTableProvider {
 
@@ -42,8 +43,9 @@ public class FabricSpiceLootProvider extends FabricBlockLootTableProvider {
             dropSelf(tree.getLog().get());
             dropSelf(tree.getStrippedLog().get());
             dropSelf(tree.getSapling().get());
-            add(tree.getLeaves().get(), createLeavesDrops(tree.getLeaves().get(), tree.getSapling().get(),
-                    NORMAL_LEAVES_SAPLING_CHANCES));
+            add(tree.getLeaves().get(), SpiceTreeLootTables.withRipeLeavesHarvest(tree,
+                    createLeavesDrops(tree.getLeaves().get(), tree.getSapling().get(),
+                            NORMAL_LEAVES_SAPLING_CHANCES)));
         });
     }
 }
