@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -17,15 +18,20 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
+import com.drunkencod.spice_road.block.SpiceTree;
+import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.item.SpiceItemTags;
 import com.drunkencod.spice_road.spice.Spice;
+import com.drunkencod.spice_road.spice.Tier;
 
 /**
  * Datagens the Spice item tags from the {@link Spice} enum:
  * {@link SpiceItemTags#RAW_SPICES} and {@link SpiceItemTags#DRIED_SPICES}
  * from each Spice's raw/dried item (skipping missing ones), plus
- * {@link SpiceItemTags#SPICES} including both. Also writes the (initially
- * empty) {@link SpiceItemTags#RETAINS_FLAVOR} and
+ * {@link SpiceItemTags#SPICES} including both, and each
+ * {@link Tier#getItemTag() tier tag} from its Spices' raw, dried, seeds and
+ * sapling items. Also writes the (initially empty)
+ * {@link SpiceItemTags#RETAINS_FLAVOR} and
  * {@link SpiceItemTags#UNSEASONABLE} tags so they exist for datapacks to
  * add to. Plain {@link DataProvider} writing raw JSON, so it runs unchanged
  * on both loaders.
@@ -49,6 +55,8 @@ public class SpiceItemTagProvider implements DataProvider {
                 "#" + SpiceItemTags.DRIED_SPICES.location())));
         futures.add(save(cachedOutput, SpiceItemTags.RETAINS_FLAVOR, List.of()));
         futures.add(save(cachedOutput, SpiceItemTags.UNSEASONABLE, List.of()));
+        for (Tier tier : Tier.values())
+            futures.add(save(cachedOutput, tier.getItemTag(), tierItems(tier)));
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
@@ -60,6 +68,24 @@ public class SpiceItemTagProvider implements DataProvider {
     private static List<String> spiceItems(Function<Spice, Item> itemGetter) {
         return Arrays.stream(Spice.values())
                 .map(itemGetter)
+                .filter(Objects::nonNull)
+                .map(item -> BuiltInRegistries.ITEM.getKey(item).toString())
+                .toList();
+    }
+
+    /**
+     * @param tier The tier to collect items for.
+     * @return The IDs of the raw, dried, seeds and sapling items of every
+     *         Spice of {@code tier}, in enum order.
+     */
+    private static List<String> tierItems(Tier tier) {
+        return Arrays.stream(Spice.values())
+                .filter(spice -> spice.getTier() == tier)
+                .flatMap(spice -> {
+                    SpiceTree tree = SpiceTrees.getRegistered().get(spice);
+                    return Stream.of(Spice.getRawById(spice.getId()), Spice.getDriedById(spice.getId()),
+                            Spice.getSeedsById(spice.getId()), tree != null ? tree.getSaplingItem().get() : null);
+                })
                 .filter(Objects::nonNull)
                 .map(item -> BuiltInRegistries.ITEM.getKey(item).toString())
                 .toList();

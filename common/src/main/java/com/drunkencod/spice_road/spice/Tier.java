@@ -4,8 +4,14 @@ import java.util.Locale;
 
 import com.mojang.serialization.Codec;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
+
+import com.drunkencod.spice_road.Constants;
 
 /**
  * A rarity classification for a Spice, derived from harvest and cultivation
@@ -30,6 +36,16 @@ public enum Tier implements StringRepresentable {
     /** @return The vanilla item {@link Rarity} matching this tier, which colors item names. */
     public Rarity getRarity() {
         return rarity;
+    }
+
+    /**
+     * @return The item tag of every item belonging to a Spice of this tier
+     *         (Spice Items, seeds and saplings), e.g.
+     *         {@code #spice_road:spice_tiers/epic}.
+     */
+    public TagKey<Item> getItemTag() {
+        return TagKey.create(Registries.ITEM,
+                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "spice_tiers/" + getSerializedName()));
     }
 
     @Override
