@@ -64,4 +64,10 @@ neoForge {
     }
 }
 
+dependencies {
+    // Optional compat targets, only needed to compile the compat mixins
+    compileOnly "maven.modrinth:farmers-delight:${farmers_delight_neoforge_version}"
+    compileOnly "maven.modrinth:cooking-for-blockheads:${cooking_for_blockheads_neoforge_version}"
+}
+
 sourceSets.main.resources { srcDir 'src/generated/resources' }

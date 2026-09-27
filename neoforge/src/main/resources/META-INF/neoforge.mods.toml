@@ -16,6 +16,8 @@ description = '''${description}''' #mandatory (Supports multiline text)
 config = "${mod_id}.mixins.json"
 [[mixins]]
 config = "${mod_id}.neoforge.mixins.json"
+[[mixins]]
+config = "${mod_id}.compat.mixins.json"
 [[dependencies.${mod_id}]] #optional
 modId = "neoforge" #mandatory
 type="required" #mandatory (Can be one of "required", "optional", "incompatible" or "discouraged")
@@ -26,6 +28,19 @@ side = "BOTH" # Side this dependency is applied on - 'BOTH', 'CLIENT' or 'SERVER
 modId = "minecraft"
 type="required" #mandatory (Can be one of "required", "optional", "incompatible" or "discouraged")
 versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "BOTH"
+# Optional compat: carries spice flavor through these mods' recipes
+[[dependencies.${mod_id}]]
+modId = "farmersdelight"
+type = "optional"
+versionRange = "[${farmers_delight_min_version},)"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.${mod_id}]]
+modId = "cookingforblockheads"
+type = "optional"
+versionRange = "[${cooking_for_blockheads_min_version},)"
 ordering = "NONE"
 side = "BOTH"
 

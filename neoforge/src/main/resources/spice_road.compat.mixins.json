@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.drunkencod.spice_road.mixin.compat",
+  "plugin": "com.drunkencod.spice_road.mixin.compat.NeoForgeCompatMixinPlugin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "cookingforblockheads.OvenRecipeMixin",
+    "cookingforblockheads.ToasterRecipeMixin",
+    "farmersdelight.CookingPotRecipeMixin",
+    "farmersdelight.CuttingBoardRecipeMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

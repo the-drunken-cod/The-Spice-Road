@@ -27,12 +27,19 @@
     },
     "mixins": [
         "${mod_id}.mixins.json",
-        "${mod_id}.fabric.mixins.json"
+        "${mod_id}.fabric.mixins.json",
+        "${mod_id}.compat.mixins.json"
     ],
     "depends": {
         "fabricloader": ">=${fabric_loader_version}",
         "fabric-api": "*",
         "minecraft": "${minecraft_version}",
         "java": ">=${java_version}"
+    },
+    "suggests": {
+        "cookingforblockheads": ">=${cooking_for_blockheads_min_version}"
+    },
+    "breaks": {
+        "cookingforblockheads": "<${cooking_for_blockheads_min_version}"
     }
 }

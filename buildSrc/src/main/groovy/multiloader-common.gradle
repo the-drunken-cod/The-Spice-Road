@@ -38,6 +38,15 @@ repositories {
         )
         filter { includeGroup('org.parchmentmc.data') }
     }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Modrinth'
+                url = 'https://api.modrinth.com/maven'
+            }
+        }
+        filter { includeGroup('maven.modrinth') }
+    }
     maven {
         name = 'BlameJared'
         url = 'https://maven.blamejared.com'
@@ -102,7 +111,9 @@ processResources {
             'neoforge_version'             : neoforge_version,
             'neoforge_loader_version_range': neoforge_loader_version_range,
             'credits'                      : credits,
-            'java_version'                 : java_version
+            'java_version'                 : java_version,
+            'farmers_delight_min_version'  : farmers_delight_min_version,
+            'cooking_for_blockheads_min_version': cooking_for_blockheads_min_version
     ]
 
     filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/neoforge.mods.toml', '*.mixins.json']) {
