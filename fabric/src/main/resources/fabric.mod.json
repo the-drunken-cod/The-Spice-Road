@@ -37,9 +37,11 @@
         "java": ">=${java_version}"
     },
     "suggests": {
-        "cookingforblockheads": ">=${cooking_for_blockheads_min_version}"
+        "cookingforblockheads": ">=${cooking_for_blockheads_min_version}",
+        "farmersdelight": ">=${farmers_delight_refabricated_min_version}"
     },
     "breaks": {
-        "cookingforblockheads": "<${cooking_for_blockheads_min_version}"
+        "cookingforblockheads": "<${cooking_for_blockheads_min_version}",
+        "farmersdelight": "<${farmers_delight_refabricated_min_version}"
     }
 }

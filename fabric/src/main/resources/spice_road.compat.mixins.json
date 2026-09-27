@@ -7,7 +7,9 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "cookingforblockheads.OvenRecipeMixin",
-    "cookingforblockheads.ToasterRecipeMixin"
+    "cookingforblockheads.ToasterRecipeMixin",
+    "farmersdelight.CookingPotRecipeMixin",
+    "farmersdelight.CuttingBoardRecipeMixin"
   ],
   "injectors": {
     "defaultRequire": 1
