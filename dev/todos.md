@@ -9,15 +9,17 @@
     - [x] Apply a per-axis soft cap when reading a profile for effects/tooltips (e.g. `C * tanh(raw / C)`, `C` configurable, default 10), so ~10 spices is the "average maximum". Stored values stay uncapped.
 - [ ] Add tooltip (and item name color rarity) to spices and spice seeds/saplings indicating their rarity.
 - [ ] Locate Spice Regions via their Region Heart (see ADR 0003) - no vanilla POIs.
-    - [ ] Reusable Heart search: ring-walk the cell grid, skip barren Hearts (`#spice_road:no_region_heart`, default oceans + rivers), match on Heart Spice via a predicate. Climate sampled from the `BiomeSource` at noise-estimated surface height. Overworld only.
-    - [ ] Config: general search radius (default 6400 blocks, `/locate` + loot) and a separate villager search radius (default 3200).
-    - [ ] `/locate spice <spice>` merged into vanilla `/locate` (permission level 2), vanilla-style clickable result and translated "not found" message.
-    - [ ] `spice_road:spice_map` loot function (`spice` or `tier`, `zoom` default 2, optional `search_radius`). `tier` redraws across that tier's Spices; returns nothing if no Heart in range. Never skips explored Hearts.
-    - [ ] Spice Map styling: vanilla `filled_map`, name `"filled_map.spice_road.spice": "%1$s Map"`, `minecraft:rarity` + `map_color` per Tier, one map decoration type per Tier (black placeholder sprites for now).
-    - [ ] Cartographer trades (added to level pools, Novice gets none): Apprentice COMMON; Journeyman COMMON, UNCOMMON; Expert UNCOMMON, RARE; Master RARE. EPIC is loot-only.
+    - [x] Reusable Heart search: ring-walk the cell grid, skip barren Hearts (`#spice_road:no_region_heart`, default oceans + rivers), match on Heart Spice via a predicate. Climate sampled from the `BiomeSource` at noise-estimated surface height. Overworld only.
+    - [x] Config: general search radius (default 6400 blocks, `/locate` + loot) and a separate villager search radius (default 3200).
+    - [x] `/locate spice <spice>` merged into vanilla `/locate` (permission level 2), vanilla-style clickable result and translated "not found" message.
+    - [x] `spice_road:spice_map` loot function (`spice` or `tier`, `zoom` default 2, optional `search_radius`). `tier` redraws across that tier's Spices; returns nothing if no Heart in range. Never skips explored Hearts.
+    - [x] Spice Map styling: vanilla `filled_map`, name `"filled_map.spice_road.spice": "%1$s Map"`, `minecraft:rarity` + `map_color` per Tier, one map decoration type per Tier (black placeholder sprites for now).
+    - [x] Cartographer trades (added to level pools, Novice gets none): Apprentice COMMON; Journeyman COMMON, UNCOMMON; Expert UNCOMMON, RARE; Master RARE. EPIC is loot-only.
         - Price = base (default 16) × per-tier multiplier (defaults 1.0 / 1.33 / 1.67 / 2.0) + compass; capped at 128, above 64 the compass is replaced by a 2nd emerald stack. 12 uses, XP 5 / 10 / 15 / 20.
         - Server config toggle to disable all Spice Map trades.
-    - [ ] EPIC Spice Map chest loot via hand-written inject tables (see ADR 0004): `shipwreck_map` 5%, `woodland_mansion` 10%, `pillager_outpost` 5%, `desert_pyramid` 3%. Gated by a `spice_road:spice_map_loot_enabled` loot condition backed by a server config toggle.
-    - [ ] Asset BOM for the marker sprites and any other placeholder assets.
+    - [x] EPIC Spice Map chest loot via hand-written inject tables (see ADR 0004): `shipwreck_map` 5%, `woodland_mansion` 10%, `pillager_outpost` 5%, `desert_pyramid` 3%. Gated by a `spice_road:spice_map_loot_enabled` loot condition backed by a server config toggle.
+    - [x] Asset BOM for the marker sprites and any other placeholder assets (`dev/asset_bom.md`).
+    - [ ] Test in-game on both loaders: `/locate spice`, cartographer trades, chest loot, marker rendering.
+    - [ ] Replace the placeholder marker sprites.
 - [ ] Add full tree spice wood sets.
 - [ ] Make plains biome not count as TROPICAL climate anymore.

@@ -6,9 +6,12 @@ import java.util.function.Supplier;
 
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -17,6 +20,9 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.saveddata.maps.MapDecorationType;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 
 import com.drunkencod.spice_road.Constants;
@@ -62,6 +68,22 @@ public class FabricRegistryHelper implements IRegistryHelper {
         LootItemConditionType type = Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE,
                 ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id), factory.get());
         return () -> type;
+    }
+
+    @Override
+    public <T extends LootItemFunction> Supplier<LootItemFunctionType<T>> registerLootFunctionType(String id,
+            Supplier<LootItemFunctionType<T>> factory) {
+        LootItemFunctionType<T> type = Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE,
+                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id), factory.get());
+        return () -> type;
+    }
+
+    @Override
+    public Holder<MapDecorationType> registerMapDecorationType(String id, Supplier<MapDecorationType> factory) {
+        return Registry.registerForHolder(BuiltInRegistries.MAP_DECORATION_TYPE,
+                ResourceKey.create(Registries.MAP_DECORATION_TYPE,
+                        ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id)),
+                factory.get());
     }
 
     @Override

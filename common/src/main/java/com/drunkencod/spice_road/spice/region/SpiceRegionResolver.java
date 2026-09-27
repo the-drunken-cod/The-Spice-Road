@@ -100,47 +100,59 @@ public final class SpiceRegionResolver {
         if (cellScale <= 0)
             throw new IllegalArgumentException("cellScale must be positive, got " + cellScale);
 
-        // mix64(0) == 0, so a salt of 0 keeps the unsalted layout
-        worldSeed ^= SeededHash.mix64(salt);
-
         int originGridX = (int) Math.floor(x / cellScale);
         int originGridZ = (int) Math.floor(z / cellScale);
 
-        int bestGridX = originGridX;
-        int bestGridZ = originGridZ;
-        double bestCenterX = 0;
-        double bestCenterZ = 0;
-        double bestDistanceSq = Double.MAX_VALUE;
-
+        SpiceCell best = null;
         for (int dx = -1; dx <= 1; dx++) {
             for (int dz = -1; dz <= 1; dz++) {
-
-                int gridX = originGridX + dx;
-                int gridZ = originGridZ + dz;
-
-                long pointSeed = SeededHash.hash(worldSeed, gridX, gridZ);
-                double jitterX = SeededHash.toUnitDouble(pointSeed);
-                double jitterZ = SeededHash.toUnitDouble(SeededHash.mix64(pointSeed));
-
-                double centerX = (gridX + jitterX) * cellScale;
-                double centerZ = (gridZ + jitterZ) * cellScale;
-
-                double deltaX = centerX - x;
-                double deltaZ = centerZ - z;
-                double distanceSq = (deltaX * deltaX) + (deltaZ * deltaZ);
-
-                if (distanceSq < bestDistanceSq) {
-                    bestDistanceSq = distanceSq;
-                    bestGridX = gridX;
-                    bestGridZ = gridZ;
-                    bestCenterX = centerX;
-                    bestCenterZ = centerZ;
-                }
+                SpiceCell candidate = cellAtGrid(worldSeed, salt, cellScale, originGridX + dx, originGridZ + dz, x, z);
+                if (best == null || candidate.distance() < best.distance())
+                    best = candidate;
             }
         }
+        return best;
+    }
 
-        long cellSeed = SeededHash.hash(worldSeed ^ CELL_SEED_TAG, bestGridX, bestGridZ);
-        return new SpiceCell(bestGridX, bestGridZ, cellSeed, bestCenterX, bestCenterZ, Math.sqrt(bestDistanceSq));
+    /**
+     * Resolves the {@link SpiceCell} of one specific square of the jittered
+     * grid, regardless of whether {@code (x, z)} actually falls into it.
+     * Lets callers walk the grid cell by cell (e.g. when searching for a
+     * Region Heart) instead of sampling world positions.
+     *
+     * @param worldSeed The world seed.
+     * @param salt      See {@link #resolveCell(long, long, double, int, int)}.
+     * @param cellScale See {@link #resolveCell(long, long, double, int, int)}.
+     * @param gridX     Grid-space X coordinate of the cell.
+     * @param gridZ     Grid-space Z coordinate of the cell.
+     * @param x         World-space X coordinate {@link SpiceCell#distance()} is
+     *                  measured from.
+     * @param z         World-space Z coordinate {@link SpiceCell#distance()} is
+     *                  measured from.
+     * @return The cell at {@code (gridX, gridZ)}.
+     * @throws IllegalArgumentException If {@code cellScale} is not positive.
+     */
+    public static SpiceCell cellAtGrid(long worldSeed, long salt, double cellScale, int gridX, int gridZ, int x,
+            int z) {
+        if (cellScale <= 0)
+            throw new IllegalArgumentException("cellScale must be positive, got " + cellScale);
+
+        // mix64(0) == 0, so a salt of 0 keeps the unsalted layout
+        worldSeed ^= SeededHash.mix64(salt);
+
+        long pointSeed = SeededHash.hash(worldSeed, gridX, gridZ);
+        double jitterX = SeededHash.toUnitDouble(pointSeed);
+        double jitterZ = SeededHash.toUnitDouble(SeededHash.mix64(pointSeed));
+
+        double centerX = (gridX + jitterX) * cellScale;
+        double centerZ = (gridZ + jitterZ) * cellScale;
+
+        double deltaX = centerX - x;
+        double deltaZ = centerZ - z;
+
+        long cellSeed = SeededHash.hash(worldSeed ^ CELL_SEED_TAG, gridX, gridZ);
+        return new SpiceCell(gridX, gridZ, cellSeed, centerX, centerZ,
+                Math.sqrt((deltaX * deltaX) + (deltaZ * deltaZ)));
     }
 
     /**

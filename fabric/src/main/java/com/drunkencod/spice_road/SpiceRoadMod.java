@@ -1,22 +1,29 @@
 package com.drunkencod.spice_road;
 
 import com.drunkencod.spice_road.block.SpiceTrees;
+import com.drunkencod.spice_road.command.SpiceLocateCommand;
 import com.drunkencod.spice_road.config.FabricConfigHelper;
+import com.drunkencod.spice_road.loot.LootInjections;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.SpiceProfileRegistry;
 import com.drunkencod.spice_road.spice.SpiceProfileSync;
+import com.drunkencod.spice_road.villager.SpiceMapTrade;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
@@ -46,6 +53,23 @@ public class SpiceRoadMod implements ModInitializer {
                 ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "spice_plant"));
         BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
                 GenerationStep.Decoration.VEGETAL_DECORATION, spicePlant);
+
+        registerSpiceMaps();
+    }
+
+    /**
+     * Registers {@code /locate spice}, the cartographer's Spice Map trades,
+     * and the loot table injections. NeoForge does the same through its own
+     * events.
+     */
+    private static void registerSpiceMaps() {
+        CommandRegistrationCallback.EVENT
+                .register((dispatcher, registryAccess, environment) -> SpiceLocateCommand.register(dispatcher));
+        SpiceMapTrade.TIERS_BY_LEVEL.forEach((level, tiers) -> TradeOfferHelper.registerVillagerOffers(
+                VillagerProfession.CARTOGRAPHER, level,
+                factories -> tiers.forEach(tier -> factories.add(new SpiceMapTrade(tier)))));
+        LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> LootInjections
+                .poolFor(key.location()).ifPresent(tableBuilder::pool));
     }
 
     /**

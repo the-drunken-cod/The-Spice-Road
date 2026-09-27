@@ -8,8 +8,12 @@ import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.ModItems;
 import com.drunkencod.spice_road.spice.region.SpiceRegionResolver;
 
+import com.mojang.serialization.Codec;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
 
 /**
@@ -28,7 +32,7 @@ import net.minecraft.world.item.Item;
  * that any item - not just the ones this enum knows about - can be
  * registered as a spice.
  */
-public enum Spice {
+public enum Spice implements StringRepresentable {
 
     // crops
     LAVENDER("lavender", SourceType.FLOWER_PATCH, HarvestAction.PICK, Climate.ARID, 1, false, 2),
@@ -37,6 +41,9 @@ public enum Spice {
     // trees
     CINNAMON("cinnamon", SourceType.TREE, HarvestAction.STRIP, Climate.TROPICAL, 4, false, 1),
     NUTMEG("nutmeg", SourceType.TREE, HarvestAction.SHEAR, Climate.TROPICAL, 5, true, 1);
+
+    /** Codec reading and writing a {@link Spice} by its {@link #getId() ID}, e.g. {@code "cinnamon"}. */
+    public static final Codec<Spice> CODEC = StringRepresentable.fromEnum(Spice::values);
 
     private final String id;
     private final SourceType sourceType;
@@ -112,6 +119,24 @@ public enum Spice {
         return dropAmount;
     }
 
+    @Override
+    public String getSerializedName() {
+        return id;
+    }
+
+    /**
+     * @return The translation key of this Spice's plain name (e.g.
+     *         {@code "Cinnamon"}), independent of any item state.
+     */
+    public String getTranslationKey() {
+        return "spice.spice_road." + id;
+    }
+
+    /** @return This Spice's translatable plain name. See {@link #getTranslationKey()}. */
+    public Component getDisplayName() {
+        return Component.translatable(getTranslationKey());
+    }
+
     /**
      * Checks whether this Spice may grow (or bear fruit) at the given
      * position, based on Spice Region support:
@@ -147,6 +172,20 @@ public enum Spice {
     }
 
     // #region static
+
+    /**
+     * Looks up a Spice by its {@link #getId() ID}.
+     *
+     * @param id The Spice's ID, e.g. {@code "cinnamon"}.
+     * @return The matching Spice, or {@code null} if there is none.
+     */
+    public static @Nullable Spice byId(String id) {
+        for (Spice spice : values()) {
+            if (spice.id.equals(id))
+                return spice;
+        }
+        return null;
+    }
 
     /** Returns the raw spice item with the given enum ID from the registry. */
     public static @Nullable Item getRawById(String id) {

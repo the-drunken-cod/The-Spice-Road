@@ -52,6 +52,43 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public int getSpiceMapSearchRadius() {
+        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceMapSearchRadius;
+    }
+
+    @Override
+    public int getSpiceMapVillagerSearchRadius() {
+        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceMapVillagerSearchRadius;
+    }
+
+    @Override
+    public boolean isSpiceMapTradesEnabled() {
+        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceMapTradesEnabled;
+    }
+
+    @Override
+    public int getSpiceMapBasePrice() {
+        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceMapBasePrice;
+    }
+
+    @Override
+    public double getSpiceMapPriceMultiplier(Tier tier) {
+        ServerConfigData config = AutoConfig.getConfigHolder(ServerConfigData.class).getConfig();
+        double multiplier = switch (tier) {
+            case COMMON -> config.spiceMapPriceMultiplierCommon;
+            case UNCOMMON -> config.spiceMapPriceMultiplierUncommon;
+            case RARE -> config.spiceMapPriceMultiplierRare;
+            case EPIC -> config.spiceMapPriceMultiplierEpic;
+        };
+        return Math.clamp(multiplier, 1.0, 2.0);
+    }
+
+    @Override
+    public boolean isSpiceMapLootEnabled() {
+        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceMapLootEnabled;
+    }
+
+    @Override
     public boolean isSpiceRegionPlantingRestricted() {
         return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceRegionPlantingRestricted;
     }
@@ -194,6 +231,52 @@ public class FabricConfigHelper implements IConfigHelper {
 
         @ConfigEntry.Gui.Tooltip
         public double spiceRegionClusteringStrength = Services.PLATFORM.isDedicatedServer() ? 1.75 : 1.0;
+
+        /**
+         * Maximum distance, in blocks, searched for a Spice Region's heart by
+         * /locate spice and by Spice Map chest loot.
+         */
+        @ConfigEntry.Gui.Tooltip
+        @ConfigEntry.BoundedDiscrete(min = 256, max = 100_000)
+        public int spiceMapSearchRadius = 6400;
+
+        /**
+         * Maximum distance, in blocks, a cartographer searches for a Spice
+         * Region's heart when offering a Spice Map.
+         */
+        @ConfigEntry.Gui.Tooltip
+        @ConfigEntry.BoundedDiscrete(min = 256, max = 100_000)
+        public int spiceMapVillagerSearchRadius = 3200;
+
+        /** Whether cartographers offer Spice Map trades. */
+        @ConfigEntry.Gui.Tooltip
+        public boolean spiceMapTradesEnabled = true;
+
+        /**
+         * Base emerald price of a Spice Map trade, multiplied by the Spice's
+         * tier multiplier. Capped at 128; above 64, the compass is replaced by
+         * a second stack of emeralds.
+         */
+        @ConfigEntry.Gui.Tooltip
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 128)
+        public int spiceMapBasePrice = 16;
+
+        /** Spice Map price multiplier (1.0-2.0) per {@link Tier}. */
+        @ConfigEntry.Gui.Tooltip
+        public double spiceMapPriceMultiplierCommon = 1.0;
+
+        @ConfigEntry.Gui.Tooltip
+        public double spiceMapPriceMultiplierUncommon = 1.33;
+
+        @ConfigEntry.Gui.Tooltip
+        public double spiceMapPriceMultiplierRare = 1.67;
+
+        @ConfigEntry.Gui.Tooltip
+        public double spiceMapPriceMultiplierEpic = 2.0;
+
+        /** Whether Spice Maps can generate as chest loot. */
+        @ConfigEntry.Gui.Tooltip
+        public boolean spiceMapLootEnabled = true;
 
         @ConfigEntry.Gui.Tooltip
         public boolean spiceRegionPlantingRestricted = true;

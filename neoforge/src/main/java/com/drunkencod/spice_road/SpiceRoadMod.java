@@ -1,6 +1,7 @@
 package com.drunkencod.spice_road;
 
 import com.drunkencod.spice_road.client.NeoForgeSpiceRegionDebugOverlay;
+import com.drunkencod.spice_road.command.SpiceLocateCommand;
 import com.drunkencod.spice_road.client.NeoForgeSpiceTooltipHandler;
 import com.drunkencod.spice_road.config.NeoForgeConfigHelper;
 import com.drunkencod.spice_road.datagen.NeoForgeBlockStateProvider;
@@ -9,11 +10,13 @@ import com.drunkencod.spice_road.datagen.NeoForgeSpiceDataMapProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeSpiceLootProvider;
 import com.drunkencod.spice_road.datagen.SpiceItemTagProvider;
 import com.drunkencod.spice_road.datagen.SpiceTreeCompatRecipeProvider;
+import com.drunkencod.spice_road.loot.LootInjections;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.NeoForgeCreativeTabHelper;
 import com.drunkencod.spice_road.registry.NeoForgeRegistryHelper;
 import com.drunkencod.spice_road.spice.SpiceProfileRegistry;
 import com.drunkencod.spice_road.spice.SpiceProfileSync;
+import com.drunkencod.spice_road.villager.SpiceMapTrade;
 
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -21,9 +24,13 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.minecraft.world.entity.npc.VillagerProfession;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.event.LootTableLoadEvent;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
+import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
@@ -54,6 +61,9 @@ public class SpiceRoadMod {
         eventBus.addListener(SpiceRoadMod::onRegisterPayloadHandlers);
         NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onTagsUpdated);
         NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onDatapackSync);
+        NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onRegisterCommands);
+        NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onVillagerTrades);
+        NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onLootTableLoad);
 
         SpiceRoad.init();
     }
@@ -100,6 +110,24 @@ public class SpiceRoadMod {
     private static void onTagsUpdated(TagsUpdatedEvent event) {
         if (event.getUpdateCause() == TagsUpdatedEvent.UpdateCause.SERVER_DATA_LOAD)
             SpiceProfileRegistry.resolve();
+    }
+
+    private static void onRegisterCommands(RegisterCommandsEvent event) {
+        SpiceLocateCommand.register(event.getDispatcher());
+    }
+
+    /** Adds the Spice Map listings to the cartographer's level pools. */
+    private static void onVillagerTrades(VillagerTradesEvent event) {
+        if (event.getType() != VillagerProfession.CARTOGRAPHER)
+            return;
+
+        SpiceMapTrade.TIERS_BY_LEVEL.forEach((level, tiers) -> tiers
+                .forEach(tier -> event.getTrades().get(level.intValue()).add(new SpiceMapTrade(tier))));
+    }
+
+    /** Appends the matching inject table, if any, to each loaded loot table. */
+    private static void onLootTableLoad(LootTableLoadEvent event) {
+        LootInjections.poolFor(event.getName()).ifPresent(event.getTable()::addPool);
     }
 
     /** Syncs Default Profiles to each player on join and to everyone after {@code /reload}. */

@@ -1,15 +1,41 @@
 package com.drunkencod.spice_road.spice;
 
+import java.util.Locale;
+
+import com.mojang.serialization.Codec;
+
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.Rarity;
+
 /**
  * A rarity classification for a Spice, derived from harvest and cultivation
  * difficulty.
  */
-public enum Tier {
+public enum Tier implements StringRepresentable {
 
-    COMMON,
-    UNCOMMON,
-    RARE,
-    EPIC;
+    COMMON(Rarity.COMMON),
+    UNCOMMON(Rarity.UNCOMMON),
+    RARE(Rarity.RARE),
+    EPIC(Rarity.EPIC);
+
+    /** Codec reading and writing a {@link Tier} by its lowercase name, e.g. {@code "epic"}. */
+    public static final Codec<Tier> CODEC = StringRepresentable.fromEnum(Tier::values);
+
+    private final Rarity rarity;
+
+    Tier(Rarity rarity) {
+        this.rarity = rarity;
+    }
+
+    /** @return The vanilla item {@link Rarity} matching this tier, which colors item names. */
+    public Rarity getRarity() {
+        return rarity;
+    }
+
+    @Override
+    public String getSerializedName() {
+        return name().toLowerCase(Locale.ROOT);
+    }
 
     /**
      * Derives a {@link Tier} from a 1-5 harvest and cultivation difficulty value.

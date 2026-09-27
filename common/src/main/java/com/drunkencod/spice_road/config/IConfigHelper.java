@@ -48,6 +48,57 @@ public interface IConfigHelper {
     double getSpiceRegionClusteringStrength();
 
     /**
+     * Maximum distance, in blocks, searched for a Region Heart by
+     * {@code /locate spice} and by Spice Map loot.
+     *
+     * @return The configured search radius, in blocks.
+     */
+    int getSpiceMapSearchRadius();
+
+    /**
+     * Maximum distance, in blocks, a cartographer searches for a Region Heart
+     * when offering a Spice Map. Kept separate from
+     * {@link #getSpiceMapSearchRadius()} so trading halls can be balanced on
+     * their own.
+     *
+     * @return The configured villager search radius, in blocks.
+     */
+    int getSpiceMapVillagerSearchRadius();
+
+    /**
+     * Whether cartographers offer Spice Map trades. Only affects offers
+     * generated from now on.
+     *
+     * @return Whether Spice Map trades are enabled.
+     */
+    boolean isSpiceMapTradesEnabled();
+
+    /**
+     * Base emerald price of a Spice Map trade, before the per-{@link Tier}
+     * multiplier (see {@link #getSpiceMapPriceMultiplier(Tier)}).
+     *
+     * @return The configured base price, in emeralds.
+     */
+    int getSpiceMapBasePrice();
+
+    /**
+     * Multiplier applied to {@link #getSpiceMapBasePrice()} for Spice Maps of
+     * the given {@link Tier}, between {@code 1.0} and {@code 2.0}.
+     *
+     * @param tier The mapped Spice's {@link Tier}.
+     * @return The configured price multiplier for that tier.
+     */
+    double getSpiceMapPriceMultiplier(Tier tier);
+
+    /**
+     * Whether Spice Maps can generate as chest loot. Read whenever loot is
+     * rolled, so toggling it needs no {@code /reload}.
+     *
+     * @return Whether Spice Map loot is enabled.
+     */
+    boolean isSpiceMapLootEnabled();
+
+    /**
      * Whether Spice Region support gates player planting of
      * {@code CROP} Spice Plants (see
      * {@code com.drunkencod.spice_road.block.SpiceCropBlock#canSurvive}).

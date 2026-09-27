@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 
+import com.drunkencod.spice_road.loot.SpiceMapLootEnabledCondition;
 import com.drunkencod.spice_road.loot.SpiceRegionSupportedCondition;
 import com.drunkencod.spice_road.platform.Services;
 
@@ -16,6 +17,11 @@ public final class ModLootConditions {
     public static final Supplier<LootItemConditionType> SPICE_REGION_SUPPORTED = Services.REGISTRY
             .registerLootConditionType("spice_region_supported",
                     () -> new LootItemConditionType(SpiceRegionSupportedCondition.CODEC));
+
+    /** {@code spice_road:spice_map_loot_enabled} - see {@link SpiceMapLootEnabledCondition}. */
+    public static final Supplier<LootItemConditionType> SPICE_MAP_LOOT_ENABLED = Services.REGISTRY
+            .registerLootConditionType("spice_map_loot_enabled",
+                    () -> new LootItemConditionType(SpiceMapLootEnabledCondition.CODEC));
 
     private ModLootConditions() {
     }

@@ -96,6 +96,41 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public int getSpiceMapSearchRadius() {
+        return SERVER.spiceMapSearchRadius.get();
+    }
+
+    @Override
+    public int getSpiceMapVillagerSearchRadius() {
+        return SERVER.spiceMapVillagerSearchRadius.get();
+    }
+
+    @Override
+    public boolean isSpiceMapTradesEnabled() {
+        return SERVER.spiceMapTradesEnabled.get();
+    }
+
+    @Override
+    public int getSpiceMapBasePrice() {
+        return SERVER.spiceMapBasePrice.get();
+    }
+
+    @Override
+    public double getSpiceMapPriceMultiplier(Tier tier) {
+        return switch (tier) {
+            case COMMON -> SERVER.spiceMapPriceMultiplierCommon.get();
+            case UNCOMMON -> SERVER.spiceMapPriceMultiplierUncommon.get();
+            case RARE -> SERVER.spiceMapPriceMultiplierRare.get();
+            case EPIC -> SERVER.spiceMapPriceMultiplierEpic.get();
+        };
+    }
+
+    @Override
+    public boolean isSpiceMapLootEnabled() {
+        return SERVER.spiceMapLootEnabled.get();
+    }
+
+    @Override
     public boolean isSpiceRegionPlantingRestricted() {
         return SERVER.spiceRegionPlantingRestricted.get();
     }
@@ -218,6 +253,15 @@ public class NeoForgeConfigHelper implements IConfigHelper {
         public final ModConfigSpec.DoubleValue spiceRegionCellScale;
         public final ModConfigSpec.LongValue spiceRegionSalt;
         public final ModConfigSpec.DoubleValue spiceRegionClusteringStrength;
+        public final ModConfigSpec.IntValue spiceMapSearchRadius;
+        public final ModConfigSpec.IntValue spiceMapVillagerSearchRadius;
+        public final ModConfigSpec.BooleanValue spiceMapTradesEnabled;
+        public final ModConfigSpec.IntValue spiceMapBasePrice;
+        public final ModConfigSpec.DoubleValue spiceMapPriceMultiplierCommon;
+        public final ModConfigSpec.DoubleValue spiceMapPriceMultiplierUncommon;
+        public final ModConfigSpec.DoubleValue spiceMapPriceMultiplierRare;
+        public final ModConfigSpec.DoubleValue spiceMapPriceMultiplierEpic;
+        public final ModConfigSpec.BooleanValue spiceMapLootEnabled;
         public final ModConfigSpec.BooleanValue spiceRegionPlantingRestricted;
         public final ModConfigSpec.IntValue spiceHardyHarvestDifficulty;
         public final ModConfigSpec.DoubleValue spiceGrowthSpeedCommon;
@@ -249,6 +293,38 @@ public class NeoForgeConfigHelper implements IConfigHelper {
                     .comment("How strongly Spice Region generation favors common Spices over rarer ones")
                     .defineInRange("spiceRegionClusteringStrength",
                             Services.PLATFORM.isDedicatedServer() ? 1.75 : 1.0, 0.0, 10.0);
+            spiceMapSearchRadius = builder
+                    .comment("Maximum distance, in blocks, searched for a Spice Region's heart by "
+                            + "/locate spice and by Spice Map chest loot.")
+                    .defineInRange("spiceMapSearchRadius", 6400, 256, 100_000);
+            spiceMapVillagerSearchRadius = builder
+                    .comment("Maximum distance, in blocks, a cartographer searches for a Spice Region's heart when "
+                            + "offering a Spice Map. Lower values keep trading halls from reaching every Spice.")
+                    .defineInRange("spiceMapVillagerSearchRadius", 3200, 256, 100_000);
+            spiceMapTradesEnabled = builder
+                    .comment("Whether cartographers offer Spice Map trades. Only affects newly generated offers.")
+                    .define("spiceMapTradesEnabled", true);
+            spiceMapBasePrice = builder
+                    .comment("Base emerald price of a Spice Map trade, multiplied by the Spice's tier multiplier. "
+                            + "The final price is capped at 128; above 64, the compass is replaced by a second "
+                            + "stack of emeralds.")
+                    .defineInRange("spiceMapBasePrice", 16, 1, 128);
+            spiceMapPriceMultiplierCommon = builder
+                    .comment("Spice Map price multiplier for COMMON-tier Spices.")
+                    .defineInRange("spiceMapPriceMultiplierCommon", 1.0, 1.0, 2.0);
+            spiceMapPriceMultiplierUncommon = builder
+                    .comment("Spice Map price multiplier for UNCOMMON-tier Spices.")
+                    .defineInRange("spiceMapPriceMultiplierUncommon", 1.33, 1.0, 2.0);
+            spiceMapPriceMultiplierRare = builder
+                    .comment("Spice Map price multiplier for RARE-tier Spices.")
+                    .defineInRange("spiceMapPriceMultiplierRare", 1.67, 1.0, 2.0);
+            spiceMapPriceMultiplierEpic = builder
+                    .comment("Spice Map price multiplier for EPIC-tier Spices. Cartographers don't sell these by "
+                            + "default, but datapacks and other mods may.")
+                    .defineInRange("spiceMapPriceMultiplierEpic", 2.0, 1.0, 2.0);
+            spiceMapLootEnabled = builder
+                    .comment("Whether Spice Maps can generate as chest loot.")
+                    .define("spiceMapLootEnabled", true);
             spiceRegionPlantingRestricted = builder
                     .comment("Whether planting a CROP Spice's seeds requires the Spice Region at that "
                             + "position to actually support that Spice. Spices at or below "

@@ -1,12 +1,16 @@
 package com.drunkencod.spice_road.registry;
 
 import java.util.function.Supplier;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.saveddata.maps.MapDecorationType;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 
 /**
@@ -77,12 +81,36 @@ public interface IRegistryHelper {
     Supplier<LootItemConditionType> registerLootConditionType(String id, Supplier<LootItemConditionType> factory);
 
     /**
+     * Register a custom {@link LootItemFunctionType} under the mod's namespace.
+     * Frozen as early as {@link #registerLootConditionType}, with the same
+     * consequences.
+     *
+     * @param id      Registry path (e.g. {@code "my_function"})
+     * @param factory Supplier that creates the loot function type instance
+     */
+    <T extends LootItemFunction> Supplier<LootItemFunctionType<T>> registerLootFunctionType(String id,
+            Supplier<LootItemFunctionType<T>> factory);
+
+    /**
+     * Register a custom {@link MapDecorationType} under the mod's namespace.
+     * Its sprite is read from
+     * {@code assets/<namespace>/textures/map/decorations/<asset path>.png}.
+     *
+     * @param id      Registry path (e.g. {@code "my_marker"})
+     * @param factory Supplier that creates the decoration type instance
+     * @return A holder of the registered type, only resolvable once
+     *         registration has run.
+     */
+    Holder<MapDecorationType> registerMapDecorationType(String id, Supplier<MapDecorationType> factory);
+
+    /**
      * Register a datapack JSON reload listener under the mod's namespace.
      * <p>
      * On NeoForge this is necessarily deferred until
      * {@code AddServerReloadListenersEvent} fires, since that's the earliest
      * point the listener list can be appended to; calling this before
-     * {@code NeoForgeRegistryHelper#initialize} has wired that event up is safe, the registration
+     * {@code NeoForgeRegistryHelper#initialize} has wired that event up is safe,
+     * the registration
      * is just queued.
      *
      * @param id       Unique id for the listener (used for reload

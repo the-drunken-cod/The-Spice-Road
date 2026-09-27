@@ -5,6 +5,8 @@ import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.ModDataComponents;
 import com.drunkencod.spice_road.registry.ModLootConditions;
+import com.drunkencod.spice_road.registry.ModLootFunctions;
+import com.drunkencod.spice_road.registry.ModMapDecorations;
 import com.drunkencod.spice_road.spice.SpiceProfileReloadListener;
 import com.drunkencod.spice_road.tooltip.SpiceProfileTooltips;
 import com.drunkencod.spice_road.worldgen.ModFeatures;
@@ -28,6 +30,8 @@ public class SpiceRoad {
         SpiceTrees.bootstrap();
         ModFeatures.register();
         ModLootConditions.register();
+        ModLootFunctions.register();
+        ModMapDecorations.register();
     }
 
     /**

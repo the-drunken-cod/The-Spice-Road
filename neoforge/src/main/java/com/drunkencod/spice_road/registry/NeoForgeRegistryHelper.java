@@ -4,13 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.saveddata.maps.MapDecorationType;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.NeoForge;
@@ -38,6 +43,12 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
 
     private final DeferredRegister<LootItemConditionType> lootConditionTypes = DeferredRegister
             .create(BuiltInRegistries.LOOT_CONDITION_TYPE, Constants.MOD_ID);
+
+    private final DeferredRegister<LootItemFunctionType<?>> lootFunctionTypes = DeferredRegister
+            .create(BuiltInRegistries.LOOT_FUNCTION_TYPE, Constants.MOD_ID);
+
+    private final DeferredRegister<MapDecorationType> mapDecorationTypes = DeferredRegister
+            .create(Registries.MAP_DECORATION_TYPE, Constants.MOD_ID);
 
     private final List<PreparableReloadListener> pendingReloadListeners = new ArrayList<>();
 
@@ -70,6 +81,18 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public <T extends LootItemFunction> Supplier<LootItemFunctionType<T>> registerLootFunctionType(String id,
+            Supplier<LootItemFunctionType<T>> factory) {
+        return (Supplier<LootItemFunctionType<T>>) (Supplier<?>) lootFunctionTypes.register(id, factory::get);
+    }
+
+    @Override
+    public Holder<MapDecorationType> registerMapDecorationType(String id, Supplier<MapDecorationType> factory) {
+        return mapDecorationTypes.register(id, factory);
+    }
+
+    @Override
     public void registerReloadListener(ResourceLocation id, PreparableReloadListener listener) {
         pendingReloadListeners.add(listener);
     }
@@ -90,6 +113,8 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
         features.register(eventBus);
         dataComponents.register(eventBus);
         lootConditionTypes.register(eventBus);
+        lootFunctionTypes.register(eventBus);
+        mapDecorationTypes.register(eventBus);
         // AddReloadListenerEvent is a game event, not a mod-bus event.
         NeoForge.EVENT_BUS.addListener(this::onAddReloadListeners);
     }

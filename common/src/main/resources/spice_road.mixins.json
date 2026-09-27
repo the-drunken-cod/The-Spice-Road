@@ -6,6 +6,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "ItemStackMixin",
+    "ReloadableServerRegistriesMixin",
     "flavor.AbstractCookingRecipeMixin",
     "flavor.ShapedRecipeMixin",
     "flavor.ShapelessRecipeMixin"
