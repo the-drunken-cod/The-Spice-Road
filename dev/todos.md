@@ -27,8 +27,8 @@
     - [x] Replace the placeholder marker sprites.
 - [x] Add tooltip (and item name color rarity) to spices and spice seeds/saplings indicating their rarity.
     - [x] Embed spice rarity tier icon as text component (and add to spice tooltips).
+- [x] Make plains biome not count as TROPICAL climate anymore.
 - [ ] Add full tree spice wood sets.
-- [ ] Make plains biome not count as TROPICAL climate anymore.
 - [ ] Investigate potential issues with Sable sublevels and spice regions.
 - [ ] Nerf bonemeal for spice crops, since their age range is reduced. Prevent bone mealing on higher tier crops by default (configurable per-tier).
 - [ ] Decide spice tree heart cluster spawn attempts by whether the biome is forested.

@@ -11,9 +11,13 @@ import net.minecraft.world.level.biome.Biome;
  */
 public enum Climate {
 
+    // temp > 0.8, precip > 0:
     TROPICAL,
+    // temp <= 0.7, precip > 0:
     TEMPERATE,
+    // temp >= 0.15, precip = 0:
     ARID,
+    // temp < 0.15, precip >= 0:
     COLD;
 
     /**
@@ -38,12 +42,10 @@ public enum Climate {
         Biome value = biome.value();
         float temperature = value.getBaseTemperature();
 
-        if (temperature < 0.15F) {
+        if (temperature < 0.15F)
             return COLD;
-        }
-        if (value.getPrecipitationAt(pos) == Biome.Precipitation.NONE) {
+        if (value.getPrecipitationAt(pos) == Biome.Precipitation.NONE)
             return ARID;
-        }
-        return temperature < 0.8F ? TEMPERATE : TROPICAL;
+        return temperature <= 0.8F ? TEMPERATE : TROPICAL;
     }
 }
