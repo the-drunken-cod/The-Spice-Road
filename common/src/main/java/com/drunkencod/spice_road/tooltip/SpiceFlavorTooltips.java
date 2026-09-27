@@ -33,7 +33,7 @@ import com.drunkencod.spice_road.spice.SpiceProfile;
  */
 public class SpiceFlavorTooltips {
 
-    /** Number of bar characters on either side of the label at a score of ±1. */
+    /** Number of bar characters on either side of the label at a full-scale score. */
     public static final int BAR_LENGTH = 5;
     /** Character progress bars are drawn with. */
     public static final String BAR_CHAR = "+";
@@ -72,10 +72,12 @@ public class SpiceFlavorTooltips {
      * Formats every {@link FlavorAxis} of a {@link SpiceProfile} as a
      * tooltip line, in {@link FlavorAxis} enum order.
      *
-     * @param profile The Spice Profile to format
+     * @param profile  The Spice Profile to format
+     * @param barScale Score magnitude at which a bar is full, e.g. {@code 1}
+     *                 for a single spice
      * @return One tooltip line per Flavor Axis
      */
-    public static List<Component> formatFlavorAxes(SpiceProfile profile) {
+    public static List<Component> formatFlavorAxes(SpiceProfile profile, double barScale) {
         boolean bothLabels = Services.CONFIG.isTooltipBothAxisLabelsShown();
         boolean showValues = Services.CONFIG.isTooltipAxisValueShown();
         Padder padder = Padder.measure();
@@ -108,7 +110,8 @@ public class SpiceFlavorTooltips {
 
         List<Component> lines = new ArrayList<>(FlavorAxis.values().length);
         for (FlavorAxis axis : FlavorAxis.values())
-            lines.add(formatLine(axis, profile.get(axis), bothLabels, showValues, padder, labelWidth, barWidth));
+            lines.add(formatLine(axis, profile.get(axis), barScale, bothLabels, showValues, padder, labelWidth,
+                    barWidth));
         return lines;
     }
 
@@ -116,7 +119,8 @@ public class SpiceFlavorTooltips {
      * Formats a single Flavor Axis score as a tooltip line.
      *
      * @param axis       The Flavor Axis
-     * @param value      Score in {@code [-1, 1]}
+     * @param value      Score
+     * @param barScale   Score magnitude at which the bar is full
      * @param bothLabels Whether to show both pole labels
      * @param showValues Whether to show the scaled value after the label
      * @param padder     Builds the padding
@@ -124,13 +128,13 @@ public class SpiceFlavorTooltips {
      * @param barWidth   Common width of the space left of the opening bracket
      * @return The formatted tooltip line
      */
-    private static Component formatLine(FlavorAxis axis, double value, boolean bothLabels, boolean showValues,
-            Padder padder, int labelWidth, int barWidth) {
+    private static Component formatLine(FlavorAxis axis, double value, double barScale, boolean bothLabels,
+            boolean showValues, Padder padder, int labelWidth, int barWidth) {
         // Exactly 0 is labeled as positive with an empty bar, any other score shows at
         // least a half step
         boolean positive = value >= 0D;
         int halfSteps = value == 0D ? 0
-                : Math.max(1, (int) Math.round(Math.min(Math.abs(value), 1D) * BAR_LENGTH * 2));
+                : Math.max(1, (int) Math.round(Math.min(Math.abs(value) / barScale, 1D) * BAR_LENGTH * 2));
         Component bar = Component.literal(barText(halfSteps, positive)).withColor(axis.getColor(positive));
         Component leftBar = positive ? Component.empty() : bar;
 
@@ -159,7 +163,7 @@ public class SpiceFlavorTooltips {
 
     /**
      * @param axis       The Flavor Axis
-     * @param value      Score in {@code [-1, 1]}
+     * @param value      Score
      * @param bothLabels Whether to show both pole labels
      * @return Width of a value row's label, separator and number, without
      *         the padding between them
@@ -176,7 +180,7 @@ public class SpiceFlavorTooltips {
 
     /**
      * @param axis  The Flavor Axis, whose pole color is used
-     * @param value Score in {@code [-1, 1]}
+     * @param value Score
      * @return The score multiplied by {@link #VALUE_SCALE}, e.g. {@code "5"}
      */
     private static Component valueNumber(FlavorAxis axis, double value) {

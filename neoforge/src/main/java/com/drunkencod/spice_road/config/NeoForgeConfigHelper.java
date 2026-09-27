@@ -141,6 +141,26 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public double getCookingVarianceMin() {
+        return SERVER.cookingVarianceMin.get();
+    }
+
+    @Override
+    public double getCookingVarianceMax() {
+        return SERVER.cookingVarianceMax.get();
+    }
+
+    @Override
+    public double getFlavorSoftCap() {
+        return COMMON.flavorSoftCap.get();
+    }
+
+    @Override
+    public double getFlavorMinimumAxisValue() {
+        return COMMON.flavorMinimumAxisValue.get();
+    }
+
+    @Override
     public boolean isTooltipBothAxisLabelsShown() {
         return CLIENT.tooltipShowBothAxisLabels.get();
     }
@@ -163,6 +183,8 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     public static class CommonConfig {
         public final ModConfigSpec.IntValue spicePlantGrowthStages;
         public final ModConfigSpec.DoubleValue spicePlantHarvestYieldMultiplier;
+        public final ModConfigSpec.DoubleValue flavorSoftCap;
+        public final ModConfigSpec.DoubleValue flavorMinimumAxisValue;
 
         CommonConfig(ModConfigSpec.Builder builder) {
             spicePlantGrowthStages = builder
@@ -179,6 +201,15 @@ public class NeoForgeConfigHelper implements IConfigHelper {
                     .defineInRange("spicePlantHarvestYieldMultiplier",
                             Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER, 0.0D,
                             Double.MAX_VALUE);
+            flavorSoftCap = builder
+                    .comment("Magnitude each flavor axis saturates towards when a profile is read for effects and "
+                            + "tooltips, giving diminishing returns when stacking many spices. Stored values are "
+                            + "never capped.")
+                    .defineInRange("flavorSoftCap", 10.0, 0.1, 1000.0);
+            flavorMinimumAxisValue = builder
+                    .comment("Magnitude any non-zero flavor axis counts as at least when a profile is read for "
+                            + "effects and tooltips.")
+                    .defineInRange("flavorMinimumAxisValue", 0.05, 0.0, 1.0);
         }
     }
 
@@ -198,6 +229,8 @@ public class NeoForgeConfigHelper implements IConfigHelper {
         public final ModConfigSpec.DoubleValue spiceTreeFruitingLeavesUncommon;
         public final ModConfigSpec.DoubleValue spiceTreeFruitingLeavesRare;
         public final ModConfigSpec.DoubleValue spiceTreeFruitingLeavesEpic;
+        public final ModConfigSpec.DoubleValue cookingVarianceMin;
+        public final ModConfigSpec.DoubleValue cookingVarianceMax;
 
         ServerConfig(ModConfigSpec.Builder builder) {
             spiceRegionCellScale = builder
@@ -258,6 +291,15 @@ public class NeoForgeConfigHelper implements IConfigHelper {
             spiceTreeFruitingLeavesEpic = builder
                     .comment("Fruiting leaves fraction for EPIC-tier Spice Trees. See spiceTreeFruitingLeavesCommon.")
                     .defineInRange("spiceTreeFruitingLeavesEpic", 0.1, 0.0, 1.0);
+            cookingVarianceMin = builder
+                    .comment("Lower bound of the per-flavor-axis multipliers applied to inherited flavor when "
+                            + "cooking. Results are reproducible: the same ingredients always cook into the same "
+                            + "flavor.")
+                    .defineInRange("cookingVarianceMin", 0.85, 0.0, 10.0);
+            cookingVarianceMax = builder
+                    .comment("Upper bound of the per-flavor-axis multipliers applied to inherited flavor when "
+                            + "cooking.")
+                    .defineInRange("cookingVarianceMax", 1.15, 0.0, 10.0);
         }
     }
 

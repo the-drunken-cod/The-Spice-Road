@@ -1,7 +1,10 @@
 - [x] Configurable region seed salt - defaults to a random long, can be changed to edit spice regions. Add a warning that worldgen is affected by this setting.
-- [ ] Transmute spice profiles:
-    - [ ] When crafting, any ingredients with the spice profile component add up together for the crafting output.
-    - [ ] When cooking in a furnace, the spice profile values get multiplied with a set of randomly generated double values in the range of 0.85 to 1.15 (configurable), seeded by the current profile values, to yield reproducible results.
-- [ ] Diminishing returns:
-    - [ ] Apply a per-axis soft cap when reading a profile for effects/tooltips (e.g. `C * tanh(raw / C)`, `C` configurable, default 10), so ~10 spices is the "average maximum". Stored values stay uncapped.
+- [x] Transmute spice profiles (see ADR 0002):
+    - [x] When crafting, any ingredients with the spice profile component add up together for the crafting output.
+    - [x] When cooking in a furnace, the spice profile values get multiplied with a set of randomly generated double values in the range of 0.85 to 1.15 (configurable), seeded by the current profile values, to yield reproducible results.
+    - [x] Compat: Farmer's Delight (cooking pot, cutting board; skillet via vanilla campfire recipes), Cooking for Blockheads (oven, toaster; kitchen crafting via vanilla recipes).
+    - [ ] Test in-game on both loaders, with and without the compat mods.
+    - [x] Tooltip bars scale to the flavor soft cap for Profile Overrides (seasoned food), and to ±1 for plain Spice Items.
+- [x] Diminishing returns:
+    - [x] Apply a per-axis soft cap when reading a profile for effects/tooltips (e.g. `C * tanh(raw / C)`, `C` configurable, default 10), so ~10 spices is the "average maximum". Stored values stay uncapped.
 - [ ] Add full tree spice wood sets.

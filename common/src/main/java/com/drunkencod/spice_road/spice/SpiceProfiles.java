@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import net.minecraft.world.item.ItemStack;
 
+import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.ModDataComponents;
 
 /**
@@ -34,5 +35,35 @@ public final class SpiceProfiles {
         if (override != null)
             return Optional.of(override);
         return SpiceProfileRegistry.getDefault(stack.getItem());
+    }
+
+    /**
+     * @param stack The stack to look up.
+     * @return The Effective Profile of {@code stack}'s {@link #get stored
+     *         profile}, which is what effects and tooltips should use.
+     */
+    public static Optional<SpiceProfile> getEffective(ItemStack stack) {
+        return get(stack).map(SpiceProfiles::effective);
+    }
+
+    /**
+     * Derives an Effective Profile: each axis saturates towards the
+     * configured soft cap ({@code cap * tanh(value / cap)}), giving
+     * diminishing returns, and any non-zero axis counts as at least the
+     * configured minimum magnitude. Never stored, so it can't feed back into
+     * crafting.
+     *
+     * @param profile A stored profile.
+     * @return The corresponding Effective Profile.
+     */
+    public static SpiceProfile effective(SpiceProfile profile) {
+        double cap = Services.CONFIG.getFlavorSoftCap();
+        double minimum = Services.CONFIG.getFlavorMinimumAxisValue();
+        return profile.map(value -> {
+            if (value == 0D)
+                return 0D;
+            double capped = cap * Math.tanh(value / cap);
+            return Math.copySign(Math.max(Math.abs(capped), minimum), value);
+        });
     }
 }

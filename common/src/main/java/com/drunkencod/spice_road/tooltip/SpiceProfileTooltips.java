@@ -2,7 +2,11 @@ package com.drunkencod.spice_road.tooltip;
 
 import java.util.List;
 
+import net.minecraft.world.item.ItemStack;
+
 import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.platform.Services;
+import com.drunkencod.spice_road.registry.ModDataComponents;
 import com.drunkencod.spice_road.spice.SpiceProfiles;
 
 /**
@@ -30,9 +34,19 @@ public final class SpiceProfileTooltips {
      */
     public static void register() {
         TooltipUtil.register(stack -> SpiceProfiles.get(stack).isPresent(), TooltipUtil.Visibility.SHIFT_ONLY,
-                stack -> SpiceProfiles.get(stack)
-                        .map(SpiceFlavorTooltips::formatFlavorAxes)
+                stack -> SpiceProfiles.getEffective(stack)
+                        .map(profile -> SpiceFlavorTooltips.formatFlavorAxes(profile, barScale(stack)))
                         .orElse(List.of()),
                 TooltipUtil.shiftHint(Constants.MOD_ID + ".tooltip.shift_hint.spice"));
+    }
+
+    /**
+     * @param stack The stack whose profile is shown.
+     * @return The flavor soft cap for a Profile Override (e.g. seasoned food,
+     *         whose flavor adds up across many spices), otherwise {@code 1},
+     *         the conventional range of a single Spice Item.
+     */
+    private static double barScale(ItemStack stack) {
+        return stack.has(ModDataComponents.SPICE_PROFILE.get()) ? Services.CONFIG.getFlavorSoftCap() : 1D;
     }
 }

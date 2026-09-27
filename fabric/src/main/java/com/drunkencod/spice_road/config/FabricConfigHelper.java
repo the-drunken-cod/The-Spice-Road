@@ -99,6 +99,26 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public double getCookingVarianceMin() {
+        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().cookingVarianceMin;
+    }
+
+    @Override
+    public double getCookingVarianceMax() {
+        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().cookingVarianceMax;
+    }
+
+    @Override
+    public double getFlavorSoftCap() {
+        return AutoConfig.getConfigHolder(CommonConfigData.class).getConfig().flavorSoftCap;
+    }
+
+    @Override
+    public double getFlavorMinimumAxisValue() {
+        return AutoConfig.getConfigHolder(CommonConfigData.class).getConfig().flavorMinimumAxisValue;
+    }
+
+    @Override
     public boolean isTooltipBothAxisLabelsShown() {
         return AutoConfig.getConfigHolder(ClientConfigData.class).getConfig().tooltipShowBothAxisLabels;
     }
@@ -139,6 +159,21 @@ public class FabricConfigHelper implements IConfigHelper {
         @ConfigEntry.Gui.Tooltip
         @ConfigEntry.BoundedDiscrete(min = 1, max = 64)
         public double spicePlantHarvestYieldMultiplier = Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER;
+
+        /**
+         * Magnitude each flavor axis saturates towards when a profile is
+         * read for effects and tooltips, giving diminishing returns when
+         * stacking many spices. Stored values are never capped.
+         */
+        @ConfigEntry.Gui.Tooltip
+        public double flavorSoftCap = 10.0;
+
+        /**
+         * Magnitude any non-zero flavor axis counts as at least when a
+         * profile is read for effects and tooltips.
+         */
+        @ConfigEntry.Gui.Tooltip
+        public double flavorMinimumAxisValue = 0.05;
     }
 
     /** Gameplay config read by the logical server. */
@@ -205,6 +240,21 @@ public class FabricConfigHelper implements IConfigHelper {
 
         @ConfigEntry.Gui.Tooltip
         public double spiceTreeFruitingLeavesEpic = 0.1;
+
+        /**
+         * Lower bound of the per-flavor-axis multipliers applied to inherited
+         * flavor when cooking. Results are reproducible: the same ingredients
+         * always cook into the same flavor.
+         */
+        @ConfigEntry.Gui.Tooltip
+        public double cookingVarianceMin = 0.85;
+
+        /**
+         * Upper bound of the per-flavor-axis multipliers applied to inherited
+         * flavor when cooking.
+         */
+        @ConfigEntry.Gui.Tooltip
+        public double cookingVarianceMax = 1.15;
     }
 
     /** Client-only display config. */

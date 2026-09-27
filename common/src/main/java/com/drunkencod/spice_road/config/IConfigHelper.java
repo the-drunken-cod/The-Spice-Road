@@ -143,6 +143,41 @@ public interface IConfigHelper {
     double getSpiceTreeFruitingLeavesChance(Tier tier);
 
     /**
+     * Lower bound of the per-axis multipliers applied to inherited flavor
+     * when cooking (furnace, smoker, blast furnace, campfire and compatible
+     * mod machines). If greater than {@link #getCookingVarianceMax()}, the two
+     * are swapped.
+     *
+     * @return The configured lower cooking variance multiplier.
+     */
+    double getCookingVarianceMin();
+
+    /**
+     * Upper bound of the per-axis multipliers applied to inherited flavor
+     * when cooking. See {@link #getCookingVarianceMin()}.
+     *
+     * @return The configured upper cooking variance multiplier.
+     */
+    double getCookingVarianceMax();
+
+    /**
+     * Magnitude each axis of an Effective Profile saturates towards, giving
+     * diminishing returns when stacking many spices. Stored profiles are never
+     * capped.
+     *
+     * @return The configured flavor soft cap.
+     */
+    double getFlavorSoftCap();
+
+    /**
+     * Magnitude any non-zero axis of an Effective Profile counts as at least,
+     * so a tiny share of a spice is still noticeable.
+     *
+     * @return The configured minimum axis magnitude.
+     */
+    double getFlavorMinimumAxisValue();
+
+    /**
      * Client-side. Whether Flavor Axis tooltips show both pole labels of each
      * axis (e.g. {@code [Spicy / Cooling]}), emphasizing the one matching the
      * value's sign, instead of only the matching one.

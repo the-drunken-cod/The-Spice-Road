@@ -5,7 +5,10 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "ItemStackMixin"
+    "ItemStackMixin",
+    "flavor.AbstractCookingRecipeMixin",
+    "flavor.ShapedRecipeMixin",
+    "flavor.ShapelessRecipeMixin"
   ],
   "client": [],
   "server": [],
@@ -13,4 +16,3 @@
     "defaultRequire": 1
   }
 }
-
