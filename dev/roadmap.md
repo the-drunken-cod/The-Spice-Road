@@ -1,4 +1,5 @@
-### Phases
+### Milestones
+Warning: may contain outdated information, and is only to be used as a guideline. Milestone order is not fixed.
 1. **Spice Plants**
     - [x] Uses custom perlin map, at a much larger scale than biomes (more like the "large biomes" preset).
         - Add F3 debug info for identifying spice regions (only in a debug env).
@@ -33,14 +34,14 @@
         - Pulls all items from the player inventory, as well as all nearby (configurable radius) spice racks. When the player position changes, update the list (debounced by 10 ticks).
         - Hovering over a spice shows its rarity and spice profile levels tooltip.
         - Clicking a spice adds it to the food item stack's spice profile. When more food items are in the food slot than there are of the selected spice, nothing happens and a different click sound plays that indicates the action failed.
-5. **Villagers**
+6. **Villagers**
     - Note: trades were also already a part of Mycomancy, so they can be used as a baseline (no datagenning tho).
     - Add Spice Trader villager type.
         - Sells common spices and some less common ones, few rare ones and none of the epic ones.
         - Buys all tiers of spices.
         - Datagen the trades from the enums.
-    - Make cartographer sell spice maps (common, rare and epic tiers).
-6. **Fermentation Jar**
+    - Make cartographer sell Spice Maps (Apprentice to Master levels, common to rare tiers); epic Spice Maps are chest loot only (see `dev/todos.md`).
+7. **Fermentation Jar**
     - Note: model already implemented in Mycomancy, needs to be ported.
     - Small 1x1 blockentity that can be used to produce up to 2 (configurable) fermented items at a time.
     - Custom recipe serializer, so that datapack JSONs and kubejs can be supported properly.
@@ -48,7 +49,7 @@
     - Hopper support.
     - Has a 0-10 hygiene blockstate value (mirroring a 0-1 value in NBT), which decreases with each finished recipe. Disinfectant can increase the value. All values can be configured.
         - Model reacts to blockstate value and becomes noticeably grimy.
-7. **Fermentation Minigame Events**
+8. **Fermentation Minigame Events**
     - Add different events that can happen to the fermentation machines:
         - Infestation: stray bacteria or mold cultures destroy an increasing percentage of the outputs. Starts to happen when fermenter is below 50% hygiene. Has a numeric blockstate prop.
         - Clog: the airlock is clogged, causing over-pressure sounds. If not corrected in a configurable time frame, it violently overflows, lowering hygiene by a lot (of course also configurable), and reducing output items. Has a bool blockstate prop.

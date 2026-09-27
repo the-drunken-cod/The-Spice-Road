@@ -40,6 +40,12 @@ Then simply place the downloaded JAR file into your Minecraft `mods` folder and 
 
 <br>
 
+## GenAI Usage:
+We use GenAI to make tedious work easier and bridge knowledge gaps. [Read our full policy here.](https://github.com/the-drunken-cod#genai-usage)  
+That being said, **every generated line is reviewed**, and **all assets remain fully human-made.**
+
+<br>
+
 ## License:
 This project is licensed under the AGPL-3.0-or-later License.  
 See the [`LICENSE.txt` file](https://github.com/#REPLACE_REPO/blob/develop/LICENSE.txt) for details.
