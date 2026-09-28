@@ -38,7 +38,8 @@
 - [x] Breaking a mature Spice with its harvest tool in the main hand drops the Spice and costs the tool a durability point, instead of only the seed (see `docs/adr/0007`).
     - Gated per Source Type by `SpiceBreakHarvest`: `minecraft:match_tool` on the harvest tool tag, plus a `spice_road:connected_player` condition for Hand-Pick Spices so automation still can't farm them by breaking. Pistons drop seeds only either way.
     - A Spice with a Hand-Pick but no Harvest Tool Requirement still never drops from breaking.
-- [ ] Investigate potential issues with Sable sublevels and spice regions.
+- [ ] Update `/locate spice` to work with climates (e.g. `/locate spice #spice_road:climate/arid`)
+- [ ] Add Sable sublevel coordinate resolution (using https://github.com/ryanhcode/sable-companion) to use the correct overworld region. This is so airship bases and things like that can partake in the region system.
 - [ ] Refactor config to use toml `[sections]`
 - [ ] Datagen recipes to turn spice wood logs into vanilla planks, type driven by an enum arg.
 - [ ] Advancements:
@@ -50,4 +51,3 @@
     - [ ] (Unnamed): use a spice map.
     - [ ] Pumpkin Purist: season a pumpkin pie with cinnamon, nutmeg, ginger and cloves.
 - [ ] Spice item names don't have rarity colors (while map item names already do).
-- [ ] Update `/locate spice` to work with climates (e.g. `/locate spice #spice_road:climate/arid`)
