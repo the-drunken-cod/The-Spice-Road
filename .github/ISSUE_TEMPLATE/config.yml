@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: "Wiki"
+    about: "Refer to the wiki for information on how to play with the mod installed."
+    url: "https://github.com/the-drunken-cod/The-Spice-Road/wiki"
+  - name: "Discussions"
+    about: "Open a new thread on the discussion board if you have a question, want to show off your project, etc."
+    url: "https://github.com/the-drunken-cod/The-Spice-Road/discussions"
+  - name: "Documentation"
+    about: "Learn how to make other mods compatible or how The Spice Road works internally."
+    url: "https://github.com/the-drunken-cod/The-Spice-Road/blob/1.21.1/docs/README.md"
