@@ -8,8 +8,8 @@
         "${mod_author}"
     ],
     "contact": {
-        "homepage": "https://github.com/#REPLACE_REPO",
-        "sources": "https://github.com/#REPLACE_REPO"
+        "homepage": "https://github.com/the-drunken-cod/The-Spice-Road",
+        "sources": "https://github.com/the-drunken-cod/The-Spice-Road"
     },
     "license": "${license}",
     "icon": "${mod_id}.png",
