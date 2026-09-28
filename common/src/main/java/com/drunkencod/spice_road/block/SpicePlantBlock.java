@@ -59,10 +59,11 @@ public abstract class SpicePlantBlock extends CropBlock {
 
     /**
      * Natural ground Spice Plants survive on besides farmland, like mushrooms
-     * on mycelium. Seeds can still only be planted on farmland (see
-     * {@link SpiceSeedItem}). Used directly by {@link FlowerPatchBlock}; for
-     * {@code CROP} Spices, only {@link WildSpiceCropBlock} accepts this
-     * ground - see {@link SpiceCropBlock#mayPlaceOn}.
+     * on mycelium. {@link SpiceSeedItem} defers to {@link #mayPlaceOn} for
+     * its own ground check, so this also governs where seeds may be planted.
+     * Used directly by {@link FlowerPatchBlock}; for {@code CROP} Spices,
+     * only {@link WildSpiceCropBlock} accepts this ground - see
+     * {@link SpiceCropBlock#mayPlaceOn}.
      */
     public static final TagKey<Block> SPICE_GROWABLE = TagKey.create(Registries.BLOCK,
             ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "spice_growable"));

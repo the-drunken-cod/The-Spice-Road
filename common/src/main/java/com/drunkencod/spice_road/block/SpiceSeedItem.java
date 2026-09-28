@@ -1,21 +1,20 @@
 package com.drunkencod.spice_road.block;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemNameBlockItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.FarmBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * Seeds of a {@link SpicePlantBlock}. Can only be planted on farmland.
- * <p>
- * For {@code CROP} Spices, the planted {@link SpiceCropBlock} only survives
- * on farmland - {@link WildSpiceCropBlock} is the separate, worldgen-only
- * variant that survives on {@link SpicePlantBlock#SPICE_GROWABLE} ground.
- * {@code FLOWER_PATCH} Spices don't have that split yet: the same
- * {@link FlowerPatchBlock} instance is both planted from seeds and generated
- * by worldgen, so it still survives on farmland and
- * {@link SpicePlantBlock#SPICE_GROWABLE} ground alike.
+ * Seeds of a {@link SpicePlantBlock}. Plantable wherever the seeded block
+ * itself is allowed to stand (see {@link SpicePlantBlock#mayPlaceOn}) - this
+ * defers to the block instead of hardcoding a ground check, so it stays in
+ * sync per Source Type without needing its own farmland/{@link
+ * SpicePlantBlock#SPICE_GROWABLE} split: farmland only for {@code CROP}
+ * Spices via {@link SpiceCropBlock}, or farmland plus
+ * {@code SPICE_GROWABLE} ground for {@code FLOWER_PATCH} Spices, which use
+ * {@link SpicePlantBlock}'s wider default unmodified.
  */
 public class SpiceSeedItem extends ItemNameBlockItem {
 
@@ -29,7 +28,11 @@ public class SpiceSeedItem extends ItemNameBlockItem {
 
     @Override
     protected boolean canPlace(BlockPlaceContext context, BlockState state) {
-        return context.getLevel().getBlockState(context.getClickedPos().below()).getBlock() instanceof FarmBlock
-                && super.canPlace(context, state);
+        if (!(getBlock() instanceof SpicePlantBlock plant))
+            return super.canPlace(context, state);
+
+        BlockPos belowPos = context.getClickedPos().below();
+        BlockState belowState = context.getLevel().getBlockState(belowPos);
+        return plant.mayPlaceOn(belowState, context.getLevel(), belowPos) && super.canPlace(context, state);
     }
 }
