@@ -47,6 +47,15 @@ repositories {
         }
         filter { includeGroup('maven.modrinth') }
     }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'RyanHCode'
+                url = 'https://maven.ryanhcode.dev/releases'
+            }
+        }
+        filter { includeGroup('dev.ryanhcode.sable-companion') }
+    }
     maven {
         name = 'BlameJared'
         url = 'https://maven.blamejared.com'

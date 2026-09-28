@@ -2,6 +2,8 @@ package com.drunkencod.spice_road.block;
 
 import java.util.function.Supplier;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
@@ -25,5 +27,16 @@ public class FlowerPatchBlock extends SpicePlantBlock {
     public FlowerPatchBlock(BlockBehaviour.Properties properties, Supplier<? extends ItemLike> seedItem,
             Spice spice) {
         super(properties, seedItem, spice);
+    }
+
+    /**
+     * Gates growth by Spice Region support - see
+     * {@link Spice#canBeCultivatedAt(ServerLevel, BlockPos)}. A Spice that
+     * fails this check isn't destroyed - it's simply never allowed to
+     * advance past stage 0.
+     */
+    @Override
+    public boolean canGrow(ServerLevel level, BlockPos pos) {
+        return getSpice().canBeCultivatedAt(level, pos);
     }
 }

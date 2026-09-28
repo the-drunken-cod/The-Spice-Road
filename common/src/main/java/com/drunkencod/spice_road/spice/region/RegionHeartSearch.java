@@ -281,6 +281,10 @@ public final class RegionHeartSearch {
      * Walks the grid ring by ring, keeping the nearest heart per key. Stops
      * once every wanted key is found and no unvisited cell can be nearer, or
      * once {@code radius} is exceeded.
+     * <p>
+     * {@code origin} is projected out of a Sable sub-level first (see
+     * {@link SublevelPositions}), so searching from a moving contraption
+     * walks the grid from its real location, not its stored coordinates.
      *
      * @param keyOf      Key a heart counts towards, or {@code null} if it
      *                   doesn't count.
@@ -292,11 +296,12 @@ public final class RegionHeartSearch {
         if (!hasSpiceRegions(level) || wantedKeys <= 0)
             return nearest;
 
+        BlockPos effectiveOrigin = SublevelPositions.projectOutOfSubLevel(level, origin);
         long worldSeed = level.getSeed();
         long salt = Services.CONFIG.getSpiceRegionSalt();
         double cellScale = Services.CONFIG.getSpiceRegionCellScale();
-        int originX = origin.getX();
-        int originZ = origin.getZ();
+        int originX = effectiveOrigin.getX();
+        int originZ = effectiveOrigin.getZ();
         int originGridX = (int) Math.floor(originX / cellScale);
         int originGridZ = (int) Math.floor(originZ / cellScale);
         int maxRing = (int) Math.ceil(radius / cellScale) + 1;

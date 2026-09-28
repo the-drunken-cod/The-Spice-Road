@@ -20,13 +20,14 @@ Adds rare spices to Minecraft that can enhance existing foods with a new buff me
 <br>
 
 ## Features:
-- TODO: 69+ new spice plants now grow in dedicated zones (dependent on climate, but not bound to biomes).
-- New mechanic that allows spices to be mixed and matched and applied to existing foods of any mod to imbue them with beneficial effects.
-- Common spices may be taken back home and grown, but a good portion of them will only mature if produced locally.  
+- **30 new spice plants now generate in dedicated regions throughout the overworld.** They are dependent on climate, but not bound to biomes and their size is configurable.
+- **Common spices may be taken back home and grown**, but a good portion of them will **only mature if produced locally.**  
   This incentivizes exploration, as well as establishing trade routes on servers. Maps can be traded for or found to help find certain spices.
-- Incredibly modpack-, datapack- and server admin friendly.
+- New mechanic that allows **spices to be mixed and matched and applied to existing foods** of any mod to **imbue them with beneficial custom effects.** Players can also create spice mixes and specialize in cultivating the rarest spice plants.
+- **Incredibly modpack-, datapack- and server admin friendly.**
   - Allows for tons of configuration for any play style and player base.
   - Spice profiles and items can easily be added by datapack makers, and any mod's food item is supported out of the box. Note: some mods' crafting stations might erase spice profiles. In that case, please [open an issue](https://github.com/the-drunken-cod/The-Spice-Road/issues) so we can add compatibility.
+  - Compatibility datapacks can easily add spice profiles to any other mods' items. Refer to the [spice profile documentation](./docs/data/spice_profile.md) for more info.
   - Commands for finding (`/locate spice`) and utilities for shuffling spice regions for balancing or setting up scenarios.
 
 <br>
@@ -54,6 +55,9 @@ Then simply place the downloaded JAR file into your Minecraft `mods` folder and 
   - Spice crops have realistic season data attached to them, with plants growing throughout the whole year.
 - [Create](https://modrinth.com/mod/create)
   - Spices can be harvested via deployers.
+- [Sable](https://modrinth.com/mod/sable) / [Create Aeronautics](https://modrinth.com/mod/create-aeronautics)
+  - Sublevels sample the spice region from the correct overworld coordinates.
+  - TODO: adjusted block weights.
 
 <br>
 

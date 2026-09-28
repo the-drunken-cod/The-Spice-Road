@@ -68,6 +68,13 @@ dependencies {
     // Optional compat targets, only needed to compile the compat mixins
     compileOnly "maven.modrinth:farmers-delight:${farmers_delight_neoforge_version}"
     compileOnly "maven.modrinth:cooking-for-blockheads:${cooking_for_blockheads_neoforge_version}"
+
+    // Sable Companion.
+    // jarJar bundles the actual shim jar into our own, so it ships and runs
+    // regardless of whether the player has Sable installed.
+    jarJar(api("dev.ryanhcode.sable-companion:sable-companion-common-1.21.1:[${sable_companion_version},)")) {
+        version { prefer(sable_companion_version) }
+    }
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }

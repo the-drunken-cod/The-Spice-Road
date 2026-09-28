@@ -8,6 +8,7 @@ import com.drunkencod.spice_road.item.SpiceItemTags;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.ModItems;
 import com.drunkencod.spice_road.spice.region.SpiceRegionResolver;
+import com.drunkencod.spice_road.spice.region.SublevelPositions;
 
 import com.mojang.serialization.Codec;
 
@@ -185,7 +186,10 @@ public enum Spice implements StringRepresentable {
      * </ol>
      *
      * @param level The server level.
-     * @param pos   The position to check.
+     * @param pos   The position to check. Projected out of a Sable
+     *              sub-level first (see {@link SublevelPositions}), so a
+     *              Spice Plant built on a moving contraption is judged
+     *              against whatever region it's currently over.
      * @return Whether this Spice is allowed to grow at {@code pos}.
      */
     public boolean canBeCultivatedAt(ServerLevel level, BlockPos pos) {
@@ -195,13 +199,15 @@ public enum Spice implements StringRepresentable {
         if (!Services.CONFIG.isSpiceRegionPlantingRestricted())
             return true;
 
+        BlockPos effectivePos = SublevelPositions.projectOutOfSubLevel(level, pos);
+
         double cellScale = Services.CONFIG.getSpiceRegionCellScale();
         double clusteringStrength = Services.CONFIG.getSpiceRegionClusteringStrength();
-        Climate climate = Climate.fromBiome(level.getBiome(pos), pos);
+        Climate climate = Climate.fromBiome(level.getBiome(effectivePos), effectivePos);
 
         Optional<Spice> resolved = SpiceRegionResolver
                 .resolve(level.getSeed(), Services.CONFIG.getSpiceRegionSalt(), cellScale, clusteringStrength, climate,
-                        pos.getX(), pos.getZ())
+                        effectivePos.getX(), effectivePos.getZ())
                 .spice();
         return resolved.isPresent() && resolved.get() == this;
     }

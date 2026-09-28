@@ -23,6 +23,14 @@ dependencies {
     // fabric and neoforge both bundle mixinextras, so it is safe to use it in common
     compileOnly 'io.github.llamalad7:mixinextras-common:0.3.5'
     annotationProcessor 'io.github.llamalad7:mixinextras-common:0.3.5'
+
+    // Sable Companion.
+    // Only lets this module's own standalone compile see the API; fabric/ and
+    // neoforge/ each declare their own loader-specific artifact that actually
+    // ships the shim at runtime (jarJar/include), since this module's sources
+    // are recompiled against each loader's own classpath rather than consumed
+    // as a prebuilt jar.
+    api "dev.ryanhcode.sable-companion:sable-companion-common-1.21.1:${sable_companion_version}"
 }
 
 configurations {

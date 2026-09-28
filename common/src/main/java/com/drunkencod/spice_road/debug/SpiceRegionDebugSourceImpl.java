@@ -15,6 +15,7 @@ import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Climate;
 import com.drunkencod.spice_road.spice.region.SpiceRegionResolver;
 import com.drunkencod.spice_road.spice.region.SpiceRegionResult;
+import com.drunkencod.spice_road.spice.region.SublevelPositions;
 
 /**
  * Real {@link SpiceRegionDebugSource}, backed directly by
@@ -45,17 +46,22 @@ public class SpiceRegionDebugSourceImpl implements SpiceRegionDebugSource {
                     new SpiceRegionDebugInfo.Line("Spice Region", "unavailable (not singleplayer)")));
         }
 
-        Holder<Biome> biome = level.getBiome(pos);
-        Climate climate = Climate.fromBiome(biome, pos);
+        BlockPos effectivePos = SublevelPositions.projectOutOfSubLevel(level, pos);
+        Holder<Biome> biome = level.getBiome(effectivePos);
+        Climate climate = Climate.fromBiome(biome, effectivePos);
 
         long salt = Services.CONFIG.getSpiceRegionSalt();
         double cellScale = Services.CONFIG.getSpiceRegionCellScale();
         double clusteringStrength = Services.CONFIG.getSpiceRegionClusteringStrength();
 
         SpiceRegionResult result = SpiceRegionResolver.resolve(worldSeed, salt, cellScale, clusteringStrength, climate,
-                pos.getX(), pos.getZ());
+                effectivePos.getX(), effectivePos.getZ());
 
         List<SpiceRegionDebugInfo.Line> lines = new ArrayList<>();
+        if (!effectivePos.equals(pos)) {
+            lines.add(new SpiceRegionDebugInfo.Line("Sub-level",
+                    "projected to " + effectivePos.getX() + ", " + effectivePos.getY() + ", " + effectivePos.getZ()));
+        }
         lines.add(new SpiceRegionDebugInfo.Line("Climate", climate.name()));
         lines.add(new SpiceRegionDebugInfo.Line("Cell",
                 result.cell().gridX() + ", " + result.cell().gridZ() + " (seed " + result.cell().seed() + ")"));
