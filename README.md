@@ -69,7 +69,7 @@ Then simply place the downloaded JAR file into your Minecraft `mods` folder and 
 <br>
 
 ## License:
-This project is licensed under the LGPL-3.0 license.  
+This project is licensed under the LGPL-3.0-or-later license.  
 See the [`LICENSE.txt` file](https://github.com/the-drunken-cod/The-Spice-Road/blob/develop/LICENSE.txt) for details.
 
 <br>
