@@ -10,6 +10,8 @@
     "block.spice_road.nutmeg_sapling": "Nutmeg Sapling",
     "block.spice_road.stripped_cinnamon_log": "Stripped Cinnamon Log",
     "block.spice_road.stripped_nutmeg_log": "Stripped Nutmeg Log",
+    "block.spice_road.wild_chili_pepper_crop": "Wild Chili Pepper Crops",
+    "block.spice_road.wild_cumin_crop": "Wild Cumin Crops",
     "commands.spice_road.locate.spice.invalid": "There is no spice named \"%1$s\"",
     "commands.spice_road.locate.spice.not_found": "Could not find a %1$s region within reasonable distance",
     "commands.spice_road.locate.spice.success": "The nearest %1$s region is at %2$s (%3$s blocks away)",

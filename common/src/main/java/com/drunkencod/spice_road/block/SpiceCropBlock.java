@@ -4,20 +4,35 @@ import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.FarmBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
 import com.drunkencod.spice_road.spice.Spice;
 
 /**
- * {@code CROP} template for spices.
+ * {@code CROP} template for spices. Farmland-only, unlike its worldgen-only
+ * counterpart {@link WildSpiceCropBlock}, so trampled farmland (which
+ * reverts to dirt, itself {@link #SPICE_GROWABLE}) correctly breaks a farmed
+ * crop instead of leaving it planted on now-wild ground.
  */
 public class SpiceCropBlock extends SpicePlantBlock {
 
     public SpiceCropBlock(BlockBehaviour.Properties properties, Supplier<? extends ItemLike> seedItem, Spice spice) {
         super(properties, seedItem, spice);
+    }
+
+    /**
+     * Narrowed from {@link SpicePlantBlock}'s farmland-or-{@link #SPICE_GROWABLE}
+     * default to farmland only - see {@link WildSpiceCropBlock} for the
+     * worldgen-only counterpart that restores the wider check.
+     */
+    @Override
+    protected boolean mayPlaceOn(BlockState state, BlockGetter level, BlockPos pos) {
+        return state.getBlock() instanceof FarmBlock;
     }
 
     /**

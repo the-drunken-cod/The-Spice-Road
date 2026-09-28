@@ -23,7 +23,6 @@ import net.minecraft.data.models.blockstates.VariantProperties;
 import net.minecraft.data.models.model.ModelTemplates;
 import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
 
 /**
  * Datagens the crop-shaped blockstate + one
@@ -63,8 +62,6 @@ public class FabricSpiceCropModelProvider implements DataProvider {
 
         SpicePlants.getRegistered().values().forEach(plant -> {
             SpicePlantBlock block = plant.block().get();
-            ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
-            IntegerProperty ageProperty = block.getAgeProperty();
             int maxAge = block.getMaxAge();
 
             Map<Integer, ResourceLocation> stageModels = new HashMap<>();
@@ -77,15 +74,30 @@ public class FabricSpiceCropModelProvider implements DataProvider {
                 stageModels.put(age, model);
             }
 
-            PropertyDispatch dispatch = PropertyDispatch.property(ageProperty)
-                    .generate(age -> Variant.variant().with(VariantProperties.MODEL,
-                            stageModels.get(Math.min(age, maxAge))));
-
-            JsonElement blockState = MultiVariantGenerator.multiVariant(block).with(dispatch).get();
-            futures.add(DataProvider.saveStable(cachedOutput, blockState, blockStatePathProvider.json(id)));
+            futures.add(writeCropBlockState(cachedOutput, block, maxAge, stageModels));
+            if (plant.worldgenBlock() != plant.block())
+                futures.add(writeCropBlockState(cachedOutput, plant.worldgenBlock().get(), maxAge, stageModels));
         });
 
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
+    }
+
+    /**
+     * Writes {@code block}'s blockstate, mapping every {@code age} state to
+     * its stage model in {@code stageModels}, clamped to {@code maxAge}.
+     * Reused as-is for a worldgen-only ({@code wild_}) block sharing another
+     * block's already-generated {@code stageModels}, so no duplicate
+     * textures/models are needed for it.
+     */
+    private CompletableFuture<?> writeCropBlockState(CachedOutput cachedOutput, SpicePlantBlock block, int maxAge,
+            Map<Integer, ResourceLocation> stageModels) {
+        ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
+        PropertyDispatch dispatch = PropertyDispatch.property(block.getAgeProperty())
+                .generate(age -> Variant.variant().with(VariantProperties.MODEL,
+                        stageModels.get(Math.min(age, maxAge))));
+
+        JsonElement blockState = MultiVariantGenerator.multiVariant(block).with(dispatch).get();
+        return DataProvider.saveStable(cachedOutput, blockState, blockStatePathProvider.json(id));
     }
 
     @Override

@@ -56,12 +56,24 @@ public class NeoForgeBlockStateProvider extends BlockStateProvider {
                         .renderType("minecraft:cutout");
             }
 
-            getVariantBuilder(block).forAllStates(state -> ConfiguredModel.builder()
-                    .modelFile(stageModels[Math.min(state.getValue(block.getAgeProperty()), maxAge)])
-                    .build());
+            applyCropVariants(block, stageModels, maxAge);
+            if (plant.worldgenBlock() != plant.block())
+                applyCropVariants(plant.worldgenBlock().get(), stageModels, maxAge);
         });
 
         SpiceTrees.getRegistered().values().forEach(this::registerSpiceTree);
+    }
+
+    /**
+     * Maps every {@code age} state of {@code block} to its stage model,
+     * clamped to {@code maxAge}. Reused as-is for a worldgen-only
+     * ({@code wild_}) block sharing another block's already-generated
+     * {@code stageModels}, so no duplicate textures/models are needed for it.
+     */
+    private void applyCropVariants(SpicePlantBlock block, ModelFile[] stageModels, int maxAge) {
+        getVariantBuilder(block).forAllStates(state -> ConfiguredModel.builder()
+                .modelFile(stageModels[Math.min(state.getValue(block.getAgeProperty()), maxAge)])
+                .build());
     }
 
     /**

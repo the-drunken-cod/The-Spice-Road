@@ -6,6 +6,7 @@ import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.SpicePlantBlock;
 import com.drunkencod.spice_road.block.SpicePlants;
 import com.drunkencod.spice_road.block.SpiceTrees;
+import com.drunkencod.spice_road.spice.Spice;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
@@ -29,14 +30,9 @@ public class FabricSpiceLootProvider extends FabricBlockLootTableProvider {
     @Override
     public void generate() {
         SpicePlants.getRegistered().forEach((spice, plant) -> {
-            SpicePlantBlock block = plant.block().get();
-            this.add(block, SpicePlantLootTables.create(
-                    block,
-                    block.getAgeProperty(),
-                    Constants.DEFAULT_SPICE_PLANT_GROWTH_STAGES,
-                    plant.seedItem().get(),
-                    plant.productItem().get(),
-                    (int) Math.floor(spice.getDropAmount() * Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER)));
+            addSpicePlantLoot(spice, plant.block().get(), plant);
+            if (plant.worldgenBlock() != plant.block())
+                addSpicePlantLoot(spice, plant.worldgenBlock().get(), plant);
         });
 
         SpiceTrees.getRegistered().values().forEach(tree -> {
@@ -47,5 +43,21 @@ public class FabricSpiceLootProvider extends FabricBlockLootTableProvider {
                     createLeavesDrops(tree.getLeaves().get(), tree.getSapling().get(),
                             NORMAL_LEAVES_SAPLING_CHANCES)));
         });
+    }
+
+    /**
+     * Adds {@code block}'s loot table, built from {@code plant}'s seed/
+     * product items and {@code spice}'s drop amount. Called once for the
+     * farmed block and, for {@code CROP} Spices, again for the worldgen-only
+     * {@code wild_} block, so both share the exact same loot table shape.
+     */
+    private void addSpicePlantLoot(Spice spice, SpicePlantBlock block, SpicePlants.RegisteredSpicePlant plant) {
+        this.add(block, SpicePlantLootTables.create(
+                block,
+                block.getAgeProperty(),
+                Constants.DEFAULT_SPICE_PLANT_GROWTH_STAGES,
+                plant.seedItem().get(),
+                plant.productItem().get(),
+                (int) Math.floor(spice.getDropAmount() * Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER)));
     }
 }

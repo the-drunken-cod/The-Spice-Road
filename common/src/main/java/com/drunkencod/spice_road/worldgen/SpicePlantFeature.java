@@ -133,7 +133,7 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
             return false;
         }
 
-        SpicePlantBlock block = plant.block().get();
+        SpicePlantBlock block = plant.worldgenBlock().get();
         if (!level.isEmptyBlock(surfacePos))
             return false;
 

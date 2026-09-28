@@ -7,10 +7,15 @@ import net.minecraft.world.level.block.FarmBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * Seeds of a {@link SpicePlantBlock}. Can only be planted on farmland, even
- * though the planted Spice Plant also survives on
- * {@link SpicePlantBlock#SPICE_GROWABLE} ground, where only wild ones
- * generate.
+ * Seeds of a {@link SpicePlantBlock}. Can only be planted on farmland.
+ * <p>
+ * For {@code CROP} Spices, the planted {@link SpiceCropBlock} only survives
+ * on farmland - {@link WildSpiceCropBlock} is the separate, worldgen-only
+ * variant that survives on {@link SpicePlantBlock#SPICE_GROWABLE} ground.
+ * {@code FLOWER_PATCH} Spices don't have that split yet: the same
+ * {@link FlowerPatchBlock} instance is both planted from seeds and generated
+ * by worldgen, so it still survives on farmland and
+ * {@link SpicePlantBlock#SPICE_GROWABLE} ground alike.
  */
 public class SpiceSeedItem extends ItemNameBlockItem {
 

@@ -24,7 +24,7 @@ The following datapack taglists are created and managed by The Spice Road and ma
 | :-- | :-- |
 | `spice_road:
 | `spice_road:
-| `spice_road:spice_crops` | Contains all spice crop blocks that grow on farmland. |
+| `spice_road:spice_crops` | Contains all spice crop blocks, both the farmland-grown ones and their worldgen-only wild counterparts. |
 | `spice_road:spice_tree_leaves` | Contains all spice tree leaves blocks. |
 | `spice_road:spice_tree_logs` | Contains all spice tree log blocks. |
 | `spice_road:spice_tree_saplings` | Contains all spice tree sapling blocks. |

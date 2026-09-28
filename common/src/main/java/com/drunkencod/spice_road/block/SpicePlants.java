@@ -1,7 +1,9 @@
 package com.drunkencod.spice_road.block;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -27,10 +29,20 @@ import com.drunkencod.spice_road.spice.SourceType;
  */
 public final class SpicePlants {
 
-    /** One registered Spice Plant's block + item suppliers. */
+    /**
+     * One registered Spice Plant's block + item suppliers.
+     *
+     * @param block        The seed-planted, farmland-only block.
+     * @param worldgenBlock The block {@code SpicePlantFeature} actually
+     *                      places. Equal to {@code block} for
+     *                      {@code FLOWER_PATCH} Spices; a separate
+     *                      {@link WildSpiceCropBlock} for {@code CROP}
+     *                      Spices (see {@link SpiceCropBlock}).
+     */
     public record RegisteredSpicePlant(
             Spice spice,
             Supplier<? extends SpicePlantBlock> block,
+            Supplier<? extends SpicePlantBlock> worldgenBlock,
             Supplier<? extends Item> seedItem,
             Supplier<? extends Item> productItem) {
     }
@@ -65,12 +77,16 @@ public final class SpicePlants {
         Supplier<ItemLike> seedItemRef = () -> seedItemHolder[0].get();
 
         Supplier<? extends SpicePlantBlock> block;
+        Supplier<? extends SpicePlantBlock> worldgenBlock;
         if (spice.getSourceType() == SourceType.FLOWER_PATCH) {
             block = Services.REGISTRY.registerBlock(blockId,
                     () -> new FlowerPatchBlock(SpicePlantBlock.defaultProperties(), seedItemRef, spice));
+            worldgenBlock = block;
         } else {
             block = Services.REGISTRY.registerBlock(blockId,
                     () -> new SpiceCropBlock(SpicePlantBlock.defaultProperties(), seedItemRef, spice));
+            worldgenBlock = Services.REGISTRY.registerBlock("wild_" + blockId,
+                    () -> new WildSpiceCropBlock(SpicePlantBlock.defaultProperties(), seedItemRef, spice));
         }
 
         Supplier<Item> seedItem = Services.REGISTRY.registerItem(seedId,
@@ -80,7 +96,24 @@ public final class SpicePlants {
         ItemModelHelper.addFlatItem(id);
         ItemModelHelper.addFlatItem(seedId);
 
-        return new RegisteredSpicePlant(spice, block, seedItem, productItem);
+        return new RegisteredSpicePlant(spice, block, worldgenBlock, seedItem, productItem);
+    }
+
+    /**
+     * @return Every registered {@link SpicePlantBlock} instance, including
+     *         both {@link RegisteredSpicePlant#block} and
+     *         {@link RegisteredSpicePlant#worldgenBlock} where they differ.
+     *         Consumed by blockstate/model datagen, which doesn't need the
+     *         rest of a Spice Plant's registration data.
+     */
+    public static List<SpicePlantBlock> getAllBlocks() {
+        List<SpicePlantBlock> blocks = new ArrayList<>();
+        for (RegisteredSpicePlant plant : REGISTERED.values()) {
+            blocks.add(plant.block().get());
+            if (plant.worldgenBlock() != plant.block())
+                blocks.add(plant.worldgenBlock().get());
+        }
+        return blocks;
     }
 
     /**

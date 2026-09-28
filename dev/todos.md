@@ -32,6 +32,6 @@
 - [x] Make plains biome not count as TROPICAL climate anymore.
 - [x] Decide spice tree heart cluster spawn attempts by whether the biome is forested.
 - [x] Nerf bonemeal for spice crops, since their age range is reduced. Prevent bone mealing on higher tier crops by default (configurable per-tier).
-- [ ] Add full tree spice wood sets.
 - [ ] Investigate potential issues with Sable sublevels and spice regions.
 - [ ] Refactor config to use toml `[sections]`
+- [ ] Datagen recipes to turn spice wood logs into vanilla planks, type driven by an enum arg.
