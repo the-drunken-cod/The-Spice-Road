@@ -11,6 +11,7 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.SpiceVineBlock;
 import com.drunkencod.spice_road.block.SpiceVines;
+import com.drunkencod.spice_road.spice.Spice;
 
 /**
  * Shared loot table additions for Spice Vine blocks, used by the per-loader
@@ -24,9 +25,10 @@ public final class SpiceVineLootTables {
 
     /**
      * Adds a pool to {@code shearsDrops} that drops the vine's Spice when a
-     * ripe segment is broken, unless the Spice has a Hand-Pick Requirement -
-     * then breaking never yields it, and it can only be harvested by
-     * right-clicking.
+     * ripe segment is broken, as far as {@link SpiceBreakHarvest} allows. This
+     * pool is independent of the base shears drop of the vine block itself, so
+     * breaking a ripe segment with a harvest tool that isn't shears yields the
+     * Spice but no replantable vine.
      * <p>
      * Bakes in {@link Constants#DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER},
      * since config isn't loaded during {@code runData}.
@@ -39,18 +41,21 @@ public final class SpiceVineLootTables {
      */
     public static LootTable.Builder withRipeVineHarvest(SpiceVines.RegisteredSpiceVine vine,
             LootTable.Builder shearsDrops) {
-        if (vine.spice().requiresHandPick())
+        Spice spice = vine.spice();
+        if (!SpiceBreakHarvest.canYieldSpice(spice))
             return shearsDrops;
 
         int harvestYield = (int) Math.floor(
-                vine.spice().getDropAmount() * Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER);
+                spice.getDropAmount() * Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER);
 
-        return shearsDrops.withPool(LootPool.lootPool()
+        LootPool.Builder productPool = LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1.0F))
                 .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(vine.block().get())
                         .setProperties(StatePropertiesPredicate.Builder.properties()
                                 .hasProperty(SpiceVineBlock.AGE, Constants.SPICE_VINE_GROWTH_STAGES)))
                 .add(LootItem.lootTableItem(vine.productItem().get())
-                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(harvestYield)))));
+                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(harvestYield))));
+
+        return shearsDrops.withPool(SpiceBreakHarvest.gate(spice, productPool));
     }
 }

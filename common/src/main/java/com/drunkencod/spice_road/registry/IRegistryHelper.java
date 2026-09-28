@@ -8,6 +8,8 @@ import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator;
+import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecoratorType;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraft.world.level.saveddata.maps.MapDecorationType;
@@ -103,6 +105,16 @@ public interface IRegistryHelper {
      */
     <T extends PlacementModifier> Supplier<PlacementModifierType<T>> registerPlacementModifierType(String id,
             Supplier<PlacementModifierType<T>> factory);
+
+    /**
+     * Register a custom {@link TreeDecoratorType} under the mod's namespace.
+     * Frozen as early as {@link #registerFeature}, with the same consequences.
+     *
+     * @param id      Registry path (e.g. {@code "my_decorator"})
+     * @param factory Supplier that creates the tree decorator type instance
+     */
+    <T extends TreeDecorator> Supplier<TreeDecoratorType<T>> registerTreeDecoratorType(String id,
+            Supplier<TreeDecoratorType<T>> factory);
 
     /**
      * Register a custom {@link MapDecorationType} under the mod's namespace.

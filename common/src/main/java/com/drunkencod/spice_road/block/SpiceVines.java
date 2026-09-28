@@ -5,12 +5,17 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FireBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 
+import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.datagen.ItemModelHelper;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.SourceType;
@@ -22,20 +27,30 @@ import com.drunkencod.spice_road.spice.Spice;
  * entirely by the member's own fields. Vines have no seeds - the vine block
  * item, obtained by shearing a segment, is what gets replanted.
  * <p>
- * Spice Vines aren't placed by worldgen yet.
+ * Worldgen places vines by generating their Host Tree, see
+ * {@link RegisteredSpiceVine#hostTreeFeature()}.
  */
 public final class SpiceVines {
 
     /**
      * One registered Spice Vine's block and items.
      *
-     * @param spice       The Spice this vine grows.
-     * @param block       The vine block, registered as {@code <id>_vine}.
-     * @param vineItem    The vine block's item, used to replant it.
-     * @param productItem The raw Spice item, registered as {@code <id>}.
+     * @param spice           The Spice this vine grows.
+     * @param hostTreeFeature The key of the datapack-defined
+     *                        {@code minecraft:tree} configured feature for
+     *                        this Spice's Host Tree - the tree worldgen
+     *                        generates to carry the vine, i.e.
+     *                        {@code data/<namespace>/worldgen/configured_feature/<id>_host_tree.json}.
+     *                        Its {@code spice_road:attached_to_logs}
+     *                        decorators are what actually seed the vine (see
+     *                        {@code AttachedToLogsDecorator}).
+     * @param block           The vine block, registered as {@code <id>_vine}.
+     * @param vineItem        The vine block's item, used to replant it.
+     * @param productItem     The raw Spice item, registered as {@code <id>}.
      */
     public record RegisteredSpiceVine(
             Spice spice,
+            ResourceKey<ConfiguredFeature<?, ?>> hostTreeFeature,
             Supplier<SpiceVineBlock> block,
             Supplier<Item> vineItem,
             Supplier<Item> productItem) {
@@ -60,6 +75,8 @@ public final class SpiceVines {
     private static RegisteredSpiceVine register(Spice spice) {
         String id = spice.getId();
         String vineId = id + "_vine";
+        ResourceKey<ConfiguredFeature<?, ?>> hostTreeFeature = ResourceKey.create(Registries.CONFIGURED_FEATURE,
+                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id + "_host_tree"));
 
         Supplier<Item> productItem = Services.REGISTRY.registerItem(id, () -> new Item(new Item.Properties()));
         Supplier<SpiceVineBlock> block = Services.REGISTRY.registerBlock(vineId,
@@ -70,7 +87,7 @@ public final class SpiceVines {
         ItemModelHelper.addFlatItem(id);
         ItemModelHelper.addFlatItem(vineId);
 
-        return new RegisteredSpiceVine(spice, block, vineItem, productItem);
+        return new RegisteredSpiceVine(spice, hostTreeFeature, block, vineItem, productItem);
     }
 
     /**

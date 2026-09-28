@@ -22,7 +22,7 @@
         - Tree count per biome: `trees` has a `default` count, biome-tag `rules` (first match wins) and a trunk `spacing`. Groves: 2-3 trees in `#spice_road:dense_grove_trees` (forests, taigas, jungle, bamboo jungle), 1 elsewhere, 4 blocks apart.
         - New `spice_road:region_heart` placement modifier (only fires in the chunk containing a non-barren Heart, moves origin onto the nearest dry spice-growable column within `max_shift` = 16 blocks, staying inside the Heart's region); `spice_heart_grove` configured + placed feature JSONs, added in the `local_modifications` step (before trees) via the NeoForge biome modifier and Fabric `BiomeModifications`.
     - [x] `#spice_road:spice_growable` block tag (default `#minecraft:dirt`, `#minecraft:sand`, `#minecraft:terracotta`): Spice Plants survive on it (like mushrooms), but seeds can still only be planted on farmland. Fixes CROP Spices never generating and ARID Spices failing on sand.
-    - [x] Search skips Hearts whose Heart Spice has no worldgen plant (currently BUSH / VINE / RHIZOME).
+    - [x] Search skips Hearts whose Heart Spice has no worldgen plant (currently BUSH / RHIZOME; VINE Spices count once they have a Host Tree).
     - [x] Search skips Hearts without dry land (terrain floor = surface) at the Heart or 8 points around it within the grove's shift range, e.g. in rivers.
     - [x] Add `stony_peaks`, `jagged_peaks`, `frozen_peaks`, `ice_spikes` to `#spice_road:no_region_heart`.
     - [x] Search radii in cells instead of blocks: `spiceMapSearchRadiusCells` (25) and `spiceMapVillagerSearchRadiusCells` (12).
@@ -32,6 +32,12 @@
 - [x] Make plains biome not count as TROPICAL climate anymore.
 - [x] Decide spice tree heart cluster spawn attempts by whether the biome is forested.
 - [x] Nerf bonemeal for spice crops, since their age range is reduced. Prevent bone mealing on higher tier crops by default (configurable per-tier).
+- [x] VINE Spice worldgen via Host Trees: a VINE Spice's Region resolves to its own `<id>_host_tree` configured feature, placed by `SpicePlantFeature` through the same `trees` count/spacing settings TREE Spices use (see `docs/adr/0006`).
+    - `spice_road:attached_to_logs` tree decorator (backport), seeding vine segments on a Host Tree's trunk logs. Needs an AT/access widener, since vanilla's `TreeDecoratorType` constructor is private.
+    - `vanilla_host_tree`: small jungle tree, cocoa kept, vanilla trunk/leave vine decorators dropped, vines at 0.45 per log side.
+- [x] Breaking a mature Spice with its harvest tool in the main hand drops the Spice and costs the tool a durability point, instead of only the seed (see `docs/adr/0007`).
+    - Gated per Source Type by `SpiceBreakHarvest`: `minecraft:match_tool` on the harvest tool tag, plus a `spice_road:connected_player` condition for Hand-Pick Spices so automation still can't farm them by breaking. Pistons drop seeds only either way.
+    - A Spice with a Hand-Pick but no Harvest Tool Requirement still never drops from breaking.
 - [ ] Investigate potential issues with Sable sublevels and spice regions.
 - [ ] Refactor config to use toml `[sections]`
 - [ ] Datagen recipes to turn spice wood logs into vanilla planks, type driven by an enum arg.

@@ -89,7 +89,7 @@ public class NeoForgeSpiceLootProvider extends LootTableProvider {
                     plant.seedItem().get(),
                     plant.productItem().get(),
                     (int) Math.floor(spice.getDropAmount() * Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER),
-                    !spice.requiresHandPick()));
+                    spice));
         }
 
         @Override

@@ -116,10 +116,12 @@ public enum Spice implements StringRepresentable {
     /**
      * @return Whether harvesting this Spice requires an item from its
      *         {@link #getHarvestToolTag() harvest tool tag} (its Harvest Tool
-     *         Requirement).
+     *         Requirement). Always true for {@link HarvestAction#SHEAR}, which
+     *         can't be performed without a tool by definition, so the two can
+     *         never drift out of sync.
      */
     public boolean requiresHarvestTool() {
-        return requiresHarvestTool;
+        return requiresHarvestTool || harvestAction == HarvestAction.SHEAR;
     }
 
     /**

@@ -2,6 +2,8 @@ package com.drunkencod.spice_road.block;
 
 import java.util.function.Supplier;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -23,6 +25,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.FarmBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
@@ -248,6 +251,28 @@ public abstract class SpicePlantBlock extends CropBlock {
             popResource(level, pos, new ItemStack(Spice.getRawById(spice.getId()), yield));
 
         level.destroyBlock(pos, false, player);
+    }
+
+    // #region break-harvest
+
+    /**
+     * Charges the harvest tool a mature Spice Plant was broken with, so that
+     * breaking it is equivalent to harvesting it by interaction (see
+     * {@link SpiceHarvesting#hurtHarvestTool}). Which of the two the break
+     * itself drops is decided by the loot table, see
+     * {@code SpiceBreakHarvest}.
+     * <p>
+     * Deliberately not {@code playerWillDestroy}: that runs before the tool
+     * the loot table is rolled against is captured, so breaking the tool on
+     * its last durability point would lose the Spice.
+     */
+    @Override
+    public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state,
+            @Nullable BlockEntity blockEntity, ItemStack tool) {
+        super.playerDestroy(level, player, pos, state, blockEntity, tool);
+
+        if (isMaxAge(state))
+            SpiceHarvesting.hurtHarvestTool(spice, level, player, tool);
     }
 
     // #region misc

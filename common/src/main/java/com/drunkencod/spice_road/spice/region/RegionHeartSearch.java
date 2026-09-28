@@ -31,6 +31,7 @@ import net.minecraft.world.level.levelgen.RandomState;
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.SpicePlants;
 import com.drunkencod.spice_road.block.SpiceTrees;
+import com.drunkencod.spice_road.block.SpiceVines;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Climate;
 import com.drunkencod.spice_road.spice.Spice;
@@ -288,9 +289,14 @@ public final class RegionHeartSearch {
                 .map(spice -> new RegionHeart(cell, pos, climate, spice));
     }
 
-    /** @return Whether {@code spice} has a plant or tree worldgen can place. */
+    /**
+     * @return Whether {@code spice} has a plant, tree or Host Tree worldgen can
+     *         place. Spices without one (currently {@code BUSH}/{@code RHIZOME})
+     *         would yield a Heart that leads nowhere.
+     */
     private static boolean hasWorldgenPlant(Spice spice) {
-        return SpicePlants.getRegistered().containsKey(spice) || SpiceTrees.getRegistered().containsKey(spice);
+        return SpicePlants.getRegistered().containsKey(spice) || SpiceTrees.getRegistered().containsKey(spice)
+                || SpiceVines.getRegistered().containsKey(spice);
     }
 
     /**

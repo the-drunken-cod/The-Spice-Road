@@ -4,15 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.mojang.serialization.Codec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 
@@ -20,6 +24,8 @@ import com.drunkencod.spice_road.block.SpicePlantBlock;
 import com.drunkencod.spice_road.block.SpicePlants;
 import com.drunkencod.spice_road.block.SpiceTree;
 import com.drunkencod.spice_road.block.SpiceTrees;
+import com.drunkencod.spice_road.block.SpiceVines;
+import com.drunkencod.spice_road.block.SpiceVines.RegisteredSpiceVine;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Climate;
 import com.drunkencod.spice_road.spice.Spice;
@@ -40,7 +46,8 @@ import com.drunkencod.spice_road.spice.region.SpiceRegionResolver;
  * <p>
  * If the patch's Spice grows as a tree, trees are placed instead, as many as
  * {@link SpicePlantConfiguration#trees()} rolls for the origin's biome, using
- * that tree's datapack-defined configured feature.
+ * that tree's datapack-defined configured feature. A vine Spice is placed the
+ * same way, via its Host Tree, whose decorators seed the vine itself.
  */
 public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
 
@@ -63,9 +70,14 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
         }
 
         Optional<Spice> originSpice = heartSpice.isPresent() ? heartSpice : resolveSpiceAt(level, originSurface);
+
         SpiceTree tree = originSpice.map(SpiceTrees.getRegistered()::get).orElse(null);
         if (tree != null)
-            return placeTrees(context, tree, originSurface);
+            return placeTrees(context, tree.getTreeFeature(), tree.getSapling().get(), originSurface);
+
+        RegisteredSpiceVine vine = originSpice.map(SpiceVines.getRegistered()::get).orElse(null);
+        if (vine != null)
+            return placeTrees(context, vine.hostTreeFeature(), null, originSurface);
 
         boolean placedAny = false;
         for (int i = 0; i < config.tries(); i++) {
@@ -82,9 +94,16 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
      * for the origin's biome, trying the origin first and random positions
      * around it after that. Positions closer than the configured spacing to
      * an already placed trunk are skipped.
+     *
+     * @param treeFeature The configured feature placed per tree - a Spice
+     *                    Tree's own species, or a vine Spice's Host Tree.
+     * @param sapling     Sapling whose survival gates each position, or
+     *                    {@code null} to leave the ground check to
+     *                    {@code treeFeature} itself, as Host Trees have no
+     *                    sapling of their own.
      */
-    private boolean placeTrees(FeaturePlaceContext<SpicePlantConfiguration> context, SpiceTree tree,
-            BlockPos originSurface) {
+    private boolean placeTrees(FeaturePlaceContext<SpicePlantConfiguration> context,
+            ResourceKey<ConfiguredFeature<?, ?>> treeFeature, @Nullable Block sapling, BlockPos originSurface) {
         SpicePlantConfiguration config = context.config();
         SpicePlantTreeSettings trees = config.trees();
         int maxTrees = trees.sampleCount(context.level().getBiome(originSurface), context.random());
@@ -95,7 +114,7 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
             BlockPos surfacePos = i == 0 ? originSurface
                     : randomSurfacePos(context.level(), context.random(), context.origin(), config.xzSpread());
             boolean tooClose = trunks.stream().anyMatch(trunk -> horizontalDistanceSq(trunk, surfacePos) < minDistanceSq);
-            if (!tooClose && tryPlaceTree(context, tree, surfacePos))
+            if (!tooClose && tryPlaceTree(context, treeFeature, sapling, surfacePos))
                 trunks.add(surfacePos);
         }
         return !trunks.isEmpty();
@@ -108,18 +127,21 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
     }
 
     /**
-     * Places a single tree using the tree's datapack-defined configured feature
-     * (see {@link SpiceTree#getTreeFeature()}), if its sapling could survive at
-     * {@code surfacePos}.
+     * Places a single tree using its datapack-defined configured feature (see
+     * {@link SpiceTree#getTreeFeature()} /
+     * {@link com.drunkencod.spice_road.block.SpiceVines.RegisteredSpiceVine#hostTreeFeature()}),
+     * if {@code sapling} could survive at {@code surfacePos}.
      */
-    private boolean tryPlaceTree(FeaturePlaceContext<SpicePlantConfiguration> context, SpiceTree tree,
-            BlockPos surfacePos) {
+    private boolean tryPlaceTree(FeaturePlaceContext<SpicePlantConfiguration> context,
+            ResourceKey<ConfiguredFeature<?, ?>> treeFeature, @Nullable Block sapling, BlockPos surfacePos) {
         WorldGenLevel level = context.level();
-        if (!level.isEmptyBlock(surfacePos) || !tree.getSapling().get().defaultBlockState().canSurvive(level, surfacePos))
+        if (!level.isEmptyBlock(surfacePos))
+            return false;
+        if (sapling != null && !sapling.defaultBlockState().canSurvive(level, surfacePos))
             return false;
 
         return level.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE)
-                .getHolder(tree.getTreeFeature())
+                .getHolder(treeFeature)
                 .map(feature -> feature.value().place(level, context.chunkGenerator(), context.random(), surfacePos))
                 .orElse(false);
     }
@@ -128,9 +150,9 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
     private boolean tryPlaceOne(WorldGenLevel level, RandomSource random, BlockPos surfacePos, Spice spice) {
         SpicePlants.RegisteredSpicePlant plant = SpicePlants.getRegistered().get(spice);
         if (plant == null) {
-            // Resolved Spice isn't a patch/crop plant (trees are placed
-            // separately, VINE isn't placed by worldgen yet, BUSH/RHIZOME have
-            // no block yet) - nothing to place.
+            // Resolved Spice isn't a patch/crop plant (trees and Host Trees are
+            // placed separately, BUSH/RHIZOME have no block yet) - nothing to
+            // place.
             return false;
         }
 

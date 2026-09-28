@@ -13,6 +13,8 @@ import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator;
+import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecoratorType;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraft.world.level.saveddata.maps.MapDecorationType;
@@ -51,6 +53,9 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
 
     private final DeferredRegister<PlacementModifierType<?>> placementModifierTypes = DeferredRegister
             .create(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, Constants.MOD_ID);
+
+    private final DeferredRegister<TreeDecoratorType<?>> treeDecoratorTypes = DeferredRegister
+            .create(BuiltInRegistries.TREE_DECORATOR_TYPE, Constants.MOD_ID);
 
     private final DeferredRegister<MapDecorationType> mapDecorationTypes = DeferredRegister
             .create(Registries.MAP_DECORATION_TYPE, Constants.MOD_ID);
@@ -100,6 +105,13 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public <T extends TreeDecorator> Supplier<TreeDecoratorType<T>> registerTreeDecoratorType(String id,
+            Supplier<TreeDecoratorType<T>> factory) {
+        return (Supplier<TreeDecoratorType<T>>) (Supplier<?>) treeDecoratorTypes.register(id, factory::get);
+    }
+
+    @Override
     public Holder<MapDecorationType> registerMapDecorationType(String id, Supplier<MapDecorationType> factory) {
         return mapDecorationTypes.register(id, factory);
     }
@@ -128,6 +140,7 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
         lootFunctionTypes.register(eventBus);
         mapDecorationTypes.register(eventBus);
         placementModifierTypes.register(eventBus);
+        treeDecoratorTypes.register(eventBus);
         // AddReloadListenerEvent is a game event, not a mod-bus event.
         NeoForge.EVENT_BUS.addListener(this::onAddReloadListeners);
     }

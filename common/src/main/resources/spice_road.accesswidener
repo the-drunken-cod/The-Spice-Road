@@ -1,0 +1,6 @@
+accessWidener v2 named
+
+# Fabric counterpart of META-INF/accesstransformer.cfg - needed to construct a TreeDecoratorType
+# for spice_road:attached_to_logs (see ModTreeDecorators), since vanilla keeps its constructor
+# private and offers no factory.
+accessible method net/minecraft/world/level/levelgen/feature/treedecorators/TreeDecoratorType <init> (Lcom/mojang/serialization/MapCodec;)V

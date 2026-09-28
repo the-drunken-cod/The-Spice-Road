@@ -12,6 +12,7 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.FruitingSpiceLeavesBlock;
 import com.drunkencod.spice_road.block.SpiceTree;
+import com.drunkencod.spice_road.spice.Spice;
 
 /**
  * Shared loot table additions for Spice Tree blocks, used by the per-loader
@@ -25,8 +26,12 @@ public final class SpiceTreeLootTables {
 
     /**
      * Adds a pool to {@code leavesDrops} that drops the tree's Spice when ripe
-     * {@link FruitingSpiceLeavesBlock} leaves are broken or decay, regardless
-     * of the tool used. Plain (non-fruiting) leaves are returned unchanged.
+     * {@link FruitingSpiceLeavesBlock} leaves are broken, as far as
+     * {@link SpiceBreakHarvest} allows. Plain (non-fruiting) leaves are
+     * returned unchanged.
+     * <p>
+     * Note that leaves of a Spice with a Harvest Tool Requirement therefore
+     * stop yielding it when they decay, since decay involves no tool.
      * <p>
      * Bakes in {@link Constants#DEFAULT_SPICE_TREE_HARVEST_YIELD_MULTIPLIER},
      * since config isn't loaded during {@code runData}.
@@ -39,18 +44,21 @@ public final class SpiceTreeLootTables {
      */
     public static LootTable.Builder withRipeLeavesHarvest(SpiceTree tree, LootTable.Builder leavesDrops) {
         LeavesBlock leaves = tree.getLeaves().get();
-        if (!(leaves instanceof FruitingSpiceLeavesBlock))
+        Spice spice = tree.getSpice();
+        if (!(leaves instanceof FruitingSpiceLeavesBlock) || !SpiceBreakHarvest.canYieldSpice(spice))
             return leavesDrops;
 
         int harvestYield = (int) Math.floor(
-                tree.getSpice().getDropAmount() * Constants.DEFAULT_SPICE_TREE_HARVEST_YIELD_MULTIPLIER);
+                spice.getDropAmount() * Constants.DEFAULT_SPICE_TREE_HARVEST_YIELD_MULTIPLIER);
 
-        return leavesDrops.withPool(LootPool.lootPool()
+        LootPool.Builder productPool = LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1.0F))
                 .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(leaves)
                         .setProperties(StatePropertiesPredicate.Builder.properties()
                                 .hasProperty(FruitingSpiceLeavesBlock.AGE, Constants.SPICE_TREE_LEAF_GROWTH_STAGES)))
                 .add(LootItem.lootTableItem(tree.getProductItem().get())
-                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(harvestYield)))));
+                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(harvestYield))));
+
+        return leavesDrops.withPool(SpiceBreakHarvest.gate(spice, productPool));
     }
 }
