@@ -52,7 +52,7 @@ Then simply place the downloaded JAR file into your Minecraft `mods` folder and 
   - Recipe compatibility for the toaster and oven (ingredient spice profiles get correctly summed for the outputs).
 - [Serene Seasons](https://modrinth.com/mod/serene-seasons)
   - Spice crops have realistic season data attached to them (with none growing in winter).
-- [Create]()
+- [Create](https://modrinth.com/mod/create)
   - Spices can be harvested via deployers.
 
 <br>
