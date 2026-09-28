@@ -1,0 +1,29 @@
+{
+  "name": "tools",
+  "version": "1.0.0",
+  "description": "CLI tools for The Spice Road's development",
+  "scripts": {
+    "pad_csv": "node --no-warnings=ExperimentalWarning pad_csv.ts"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Sv443",
+    "url": "https://github.com/Sv443"
+  },
+  "license": "LGPL-3.0-or-later",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^11.19.0",
+      "onFail": "download"
+    }
+  },
+  "type": "module",
+  "dependencies": {
+    "@sv443-network/coreutils": "^3.8.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "typescript": "^7.0.2"
+  }
+}
