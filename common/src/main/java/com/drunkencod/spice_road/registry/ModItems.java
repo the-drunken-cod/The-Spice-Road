@@ -17,6 +17,7 @@ import net.minecraft.world.item.Items;
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.SpiceTree;
 import com.drunkencod.spice_road.block.SpiceTrees;
+import com.drunkencod.spice_road.block.SpiceVines;
 import com.drunkencod.spice_road.spice.Spice;
 
 /**
@@ -65,7 +66,7 @@ public class ModItems {
 
     /**
      * Fills the spices creative tab with every {@link Spice}'s seeds, tree
-     * blocks, and raw/dried items, in enum order.
+     * blocks, vine, and raw/dried items, in enum order.
      *
      * @param output The tab's item output.
      */
@@ -81,6 +82,10 @@ public class ModItems {
             SpiceTree tree = SpiceTrees.getRegistered().get(spice);
             if (tree != null)
                 tree.getBlockItems().forEach(item -> output.accept(item.getDefaultInstance()));
+
+            SpiceVines.RegisteredSpiceVine vine = SpiceVines.getRegistered().get(spice);
+            if (vine != null)
+                output.accept(vine.vineItem().get().getDefaultInstance());
 
             if (spiceRaw != null)
                 output.accept(spiceRaw.getDefaultInstance());

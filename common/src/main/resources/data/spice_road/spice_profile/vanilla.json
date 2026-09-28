@@ -1,0 +1,13 @@
+{
+  "items": "spice_road:vanilla",
+  "profile": {
+    "heat_cooling": -0.2,
+    "sweet_bitter": 1.0,
+    "sour_mellow": -1.0,
+    "earthy_floral": -0.6,
+    "woody_green": 0.3,
+    "pungent_soft": -0.8,
+    "resinous_clean": -0.2,
+    "savory_delicate": -0.3
+  }
+}

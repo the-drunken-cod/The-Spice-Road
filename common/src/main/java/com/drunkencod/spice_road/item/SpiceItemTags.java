@@ -45,6 +45,13 @@ public class SpiceItemTags {
     public static final TagKey<Item> CUTTING_TOOLS = create("cutting_tools");
 
     /**
+     * Tools that satisfy the Harvest Tool Requirement of a Spice harvested by
+     * picking (e.g. plucking vanilla pods or saffron stigmas). Includes
+     * {@link #CUTTING_TOOLS} by default.
+     */
+    public static final TagKey<Item> PICKING_TOOLS = create("picking_tools");
+
+    /**
      * Non-edible items that keep the flavor of their ingredients when crafted
      * or cooked (e.g. storage blocks), making them Flavor Carriers.
      */

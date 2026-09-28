@@ -24,7 +24,6 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 
 import com.drunkencod.spice_road.Constants;
-import com.drunkencod.spice_road.item.ItemIdentification;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.HarvestAction;
 import com.drunkencod.spice_road.spice.Spice;
@@ -140,14 +139,16 @@ public class FruitingSpiceLeavesBlock extends LeavesBlock {
     // #region harvest
 
     /**
-     * Spices with {@link HarvestAction#SHEAR} (or that require a cutting tool)
-     * are harvested with an item from the {@code spice_road:cutting_tools} tag,
-     * which takes durability damage.
+     * Spices with {@link HarvestAction#SHEAR} (or a Harvest Tool Requirement)
+     * are harvested with an item from their harvest tool tag, which takes
+     * durability damage.
      */
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
             Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if (!isRipe(state) || !requiresCuttingTool() || !ItemIdentification.isCuttingTool(stack))
+        Spice spice = tree.getSpice();
+        if (!isRipe(state) || !requiresHarvestTool() || !SpiceHarvesting.isHarvestTool(spice, stack)
+                || !SpiceHarvesting.mayHarvest(spice, player))
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
         harvest(state, level, pos, player, hitResult.getDirection(), SoundEvents.GROWING_PLANT_CROP);
@@ -156,20 +157,20 @@ public class FruitingSpiceLeavesBlock extends LeavesBlock {
         return ItemInteractionResult.sidedSuccess(level.isClientSide());
     }
 
-    /** Spices that don't require a cutting tool are picked by hand. */
+    /** Spices without a Harvest Tool Requirement are picked by hand. */
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
             BlockHitResult hitResult) {
-        if (!isRipe(state) || requiresCuttingTool())
+        if (!isRipe(state) || requiresHarvestTool() || !SpiceHarvesting.mayHarvest(tree.getSpice(), player))
             return InteractionResult.PASS;
 
         harvest(state, level, pos, player, hitResult.getDirection(), SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES);
         return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
-    private boolean requiresCuttingTool() {
+    private boolean requiresHarvestTool() {
         Spice spice = tree.getSpice();
-        return spice.requiresCuttingTool() || spice.getHarvestAction() == HarvestAction.SHEAR;
+        return spice.requiresHarvestTool() || spice.getHarvestAction() == HarvestAction.SHEAR;
     }
 
     /**

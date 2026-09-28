@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.drunkencod.spice_road.item.SpiceItemTags;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.ModItems;
 import com.drunkencod.spice_road.spice.region.SpiceRegionResolver;
@@ -13,6 +14,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
 
@@ -35,12 +37,15 @@ import net.minecraft.world.item.Item;
 public enum Spice implements StringRepresentable {
 
     // crops
-    LAVENDER("lavender", SourceType.FLOWER_PATCH, HarvestAction.PICK, Climate.ARID, 1, false, 2),
-    CHILI_PEPPER("chili_pepper", SourceType.CROP, HarvestAction.PICK, Climate.TEMPERATE, 2, false, 2),
-    CUMIN("cumin", SourceType.CROP, HarvestAction.BREAK, Climate.ARID, 2, false, 1),
+    LAVENDER("lavender", SourceType.FLOWER_PATCH, HarvestAction.PICK, Climate.ARID, 1, false, false, 2),
+    SAFFRON("saffron", SourceType.FLOWER_PATCH, HarvestAction.PICK, Climate.ARID, 5, true, true, 1),
+    CHILI_PEPPER("chili_pepper", SourceType.CROP, HarvestAction.PICK, Climate.TEMPERATE, 2, false, false, 2),
+    CUMIN("cumin", SourceType.CROP, HarvestAction.BREAK, Climate.ARID, 2, false, false, 1),
     // trees
-    CINNAMON("cinnamon", SourceType.TREE, HarvestAction.STRIP, Climate.TROPICAL, 4, false, 1),
-    NUTMEG("nutmeg", SourceType.TREE, HarvestAction.SHEAR, Climate.TROPICAL, 5, true, 1);
+    CINNAMON("cinnamon", SourceType.TREE, HarvestAction.STRIP, Climate.TROPICAL, 4, false, false, 1),
+    NUTMEG("nutmeg", SourceType.TREE, HarvestAction.SHEAR, Climate.TROPICAL, 5, true, false, 1),
+    // vines
+    VANILLA("vanilla", SourceType.VINE, HarvestAction.PICK, Climate.TROPICAL, 5, true, true, 1);
 
     /**
      * Codec reading and writing a {@link Spice} by its {@link #getId() ID}, e.g.
@@ -53,17 +58,19 @@ public enum Spice implements StringRepresentable {
     private final HarvestAction harvestAction;
     private final Climate climate;
     private final int harvestDifficulty;
-    private final boolean requiresCuttingTool;
+    private final boolean requiresHarvestTool;
+    private final boolean requiresHandPick;
     private final int dropAmount;
 
     Spice(String id, SourceType sourceType, HarvestAction harvestAction, Climate climate, int harvestDifficulty,
-            boolean requiresCuttingTool, int dropAmount) {
+            boolean requiresHarvestTool, boolean requiresHandPick, int dropAmount) {
         this.id = id;
         this.sourceType = sourceType;
         this.harvestAction = harvestAction;
         this.climate = climate;
         this.harvestDifficulty = harvestDifficulty;
-        this.requiresCuttingTool = requiresCuttingTool;
+        this.requiresHarvestTool = requiresHarvestTool;
+        this.requiresHandPick = requiresHandPick;
         this.dropAmount = dropAmount;
     }
 
@@ -107,11 +114,31 @@ public enum Spice implements StringRepresentable {
     }
 
     /**
-     * @return Whether harvesting this Spice requires an item from the
-     *         {@code spice_road:cutting_tools} tag.
+     * @return Whether harvesting this Spice requires an item from its
+     *         {@link #getHarvestToolTag() harvest tool tag} (its Harvest Tool
+     *         Requirement).
      */
-    public boolean requiresCuttingTool() {
-        return requiresCuttingTool;
+    public boolean requiresHarvestTool() {
+        return requiresHarvestTool;
+    }
+
+    /**
+     * @return The tag of items satisfying this Spice's Harvest Tool
+     *         Requirement: {@link SpiceItemTags#PICKING_TOOLS} for
+     *         {@link HarvestAction#PICK}, otherwise
+     *         {@link SpiceItemTags#CUTTING_TOOLS}.
+     */
+    public TagKey<Item> getHarvestToolTag() {
+        return harvestAction == HarvestAction.PICK ? SpiceItemTags.PICKING_TOOLS : SpiceItemTags.CUTTING_TOOLS;
+    }
+
+    /**
+     * @return Whether this Spice may only be harvested by a connected player
+     *         performing its Harvest Action directly (its Hand-Pick
+     *         Requirement). Breaking such a Spice's plant never drops it.
+     */
+    public boolean requiresHandPick() {
+        return requiresHandPick;
     }
 
     /**

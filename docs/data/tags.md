@@ -12,6 +12,7 @@ The following datapack taglists are created and managed by The Spice Road and ma
 | `spice_road:retains_flavor` | Any item with this tag is a "flavor carrier", meaning that it can have an accumulated spice profile without being a food item itself (for example includes storage blocks like dried kelp). |
 | `spice_road:unseasonable` | Any item with this tag cannot be seasoned. Includes things like suspicious stew by default, as it uses a funky custom crafting recipe type. |
 | `spice_road:cutting_tools` | Any item that can be used on spice crops or leaves that require a cutting tool. Contains shears, swords and modded knives by default. |
+| `spice_road:picking_tools` | Any item that can be used to pick spices that require a tool, like vanilla and saffron. Contains `#spice_road:cutting_tools` by default. |
 | `spice_road:spice_plant_seeds` | Contains all spice crop seed items. |
 | `spice_road:spice_tree_leaves` | Contains all spice tree leaves block items. |
 | `spice_road:spice_tree_logs` | Contains all spice tree log block items. |
@@ -28,6 +29,7 @@ The following datapack taglists are created and managed by The Spice Road and ma
 | `spice_road:spice_tree_leaves` | Contains all spice tree leaves blocks. |
 | `spice_road:spice_tree_logs` | Contains all spice tree log blocks. |
 | `spice_road:spice_tree_saplings` | Contains all spice tree sapling blocks. |
+| `spice_road:spice_vines` | Contains all spice vine blocks. Added to `minecraft:climbable`, so they can be climbed like vanilla vines. |
 
 <br>
 

@@ -42,6 +42,13 @@ public class Constants {
     public static final int SPICE_TREE_LEAF_GROWTH_STAGES = 2;
 
     /**
+     * Highest ripening stage ({@code age} value, starting at 0) of Spice
+     * Vines. Fixed rather than configurable for the same reason as
+     * {@link #SPICE_TREE_LEAF_GROWTH_STAGES}.
+     */
+    public static final int SPICE_VINE_GROWTH_STAGES = 2;
+
+    /**
      * Default harvest yield multiplier for Spice Trees, applied to
      * {@code Spice#getDropAmount()} when stripping bark or picking fruiting
      * leaves.

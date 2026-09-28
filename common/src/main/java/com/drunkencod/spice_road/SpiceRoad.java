@@ -2,6 +2,7 @@ package com.drunkencod.spice_road;
 
 import com.drunkencod.spice_road.block.SpicePlants;
 import com.drunkencod.spice_road.block.SpiceTrees;
+import com.drunkencod.spice_road.block.SpiceVines;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.ModDataComponents;
 import com.drunkencod.spice_road.registry.ModLootConditions;
@@ -29,6 +30,7 @@ public class SpiceRoad {
         SpiceProfileTooltips.register();
         SpicePlants.bootstrap();
         SpiceTrees.bootstrap();
+        SpiceVines.bootstrap();
         ModFeatures.register();
         ModPlacementModifiers.register();
         ModLootConditions.register();
@@ -43,5 +45,6 @@ public class SpiceRoad {
      */
     public static void commonSetup() {
         SpiceTrees.registerFlammability();
+        SpiceVines.registerFlammability();
     }
 }

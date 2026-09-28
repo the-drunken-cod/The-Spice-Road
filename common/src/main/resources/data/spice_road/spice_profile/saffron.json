@@ -1,0 +1,13 @@
+{
+  "items": "spice_road:saffron",
+  "profile": {
+    "heat_cooling": 0.0,
+    "sweet_bitter": -0.1,
+    "sour_mellow": -0.3,
+    "earthy_floral": -1.0,
+    "woody_green": -0.2,
+    "pungent_soft": -0.4,
+    "resinous_clean": -0.3,
+    "savory_delicate": -0.6
+  }
+}

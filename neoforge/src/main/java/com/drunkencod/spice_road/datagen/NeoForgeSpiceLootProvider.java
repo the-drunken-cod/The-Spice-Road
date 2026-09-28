@@ -9,6 +9,7 @@ import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.SpicePlantBlock;
 import com.drunkencod.spice_road.block.SpicePlants;
 import com.drunkencod.spice_road.block.SpiceTrees;
+import com.drunkencod.spice_road.block.SpiceVines;
 import com.drunkencod.spice_road.spice.Spice;
 
 import net.minecraft.core.HolderLookup;
@@ -26,7 +27,9 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
  * counterpart. Spice Tree blocks (see {@link SpiceTrees}) use vanilla's
  * log/sapling self-drops and leaves drops (sapling chance, sticks, and the
  * leaves themselves with shears/Silk Touch), plus the Spice from ripe
- * fruiting leaves (see {@link SpiceTreeLootTables}).
+ * fruiting leaves (see {@link SpiceTreeLootTables}). Spice Vine blocks (see
+ * {@link SpiceVines}) drop themselves with shears, plus their Spice when ripe
+ * (see {@link SpiceVineLootTables}).
  * <p>
  * Uses {@link Constants#DEFAULT_SPICE_PLANT_GROWTH_STAGES} rather than
  * {@code block.getMaxAge()} for the loot condition's threshold age: a pure
@@ -66,6 +69,9 @@ public class NeoForgeSpiceLootProvider extends LootTableProvider {
                         createLeavesDrops(tree.getLeaves().get(), tree.getSapling().get(),
                                 NORMAL_LEAVES_SAPLING_CHANCES)));
             });
+
+            SpiceVines.getRegistered().values().forEach(vine -> add(vine.block().get(),
+                    SpiceVineLootTables.withRipeVineHarvest(vine, createShearsOnlyDrop(vine.block().get()))));
         }
 
         /**
@@ -82,14 +88,17 @@ public class NeoForgeSpiceLootProvider extends LootTableProvider {
                     Constants.DEFAULT_SPICE_PLANT_GROWTH_STAGES,
                     plant.seedItem().get(),
                     plant.productItem().get(),
-                    (int) Math.floor(spice.getDropAmount() * Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER)));
+                    (int) Math.floor(spice.getDropAmount() * Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER),
+                    !spice.requiresHandPick()));
         }
 
         @Override
         protected Iterable<Block> getKnownBlocks() {
-            return Stream.concat(
+            return Stream.of(
                     SpicePlants.getAllBlocks().stream().map(block -> (Block) block),
-                    SpiceTrees.getRegistered().values().stream().flatMap(tree -> tree.getBlocks().stream()))
+                    SpiceTrees.getRegistered().values().stream().flatMap(tree -> tree.getBlocks().stream()),
+                    SpiceVines.getRegistered().values().stream().map(vine -> (Block) vine.block().get()))
+                    .flatMap(blocks -> blocks)
                     .toList();
         }
     }

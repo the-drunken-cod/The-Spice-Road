@@ -1,8 +1,6 @@
 {
   "replace": false,
   "values": [
-    "#spice_road:spice_crops",
-    "#spice_road:spice_tree_logs",
     "#spice_road:spice_vines"
   ]
 }

@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.RenderType;
 
 import com.drunkencod.spice_road.block.SpicePlants;
 import com.drunkencod.spice_road.block.SpiceTrees;
+import com.drunkencod.spice_road.block.SpiceVines;
 import com.drunkencod.spice_road.spice.SpiceProfileSync;
 
 /**
@@ -41,5 +42,7 @@ public class SpiceRoadClientMod implements ClientModInitializer {
             BlockRenderLayerMap.INSTANCE.putBlock(tree.getSapling().get(), RenderType.cutout());
             BlockRenderLayerMap.INSTANCE.putBlock(tree.getLeaves().get(), RenderType.cutoutMipped());
         });
+        SpiceVines.getRegistered().values()
+                .forEach(vine -> BlockRenderLayerMap.INSTANCE.putBlock(vine.block().get(), RenderType.cutout()));
     }
 }

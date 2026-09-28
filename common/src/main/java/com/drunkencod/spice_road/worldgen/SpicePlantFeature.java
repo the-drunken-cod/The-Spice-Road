@@ -129,7 +129,8 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
         SpicePlants.RegisteredSpicePlant plant = SpicePlants.getRegistered().get(spice);
         if (plant == null) {
             // Resolved Spice isn't a patch/crop plant (trees are placed
-            // separately, BUSH/VINE/RHIZOME have no block yet) - nothing to place.
+            // separately, VINE isn't placed by worldgen yet, BUSH/RHIZOME have
+            // no block yet) - nothing to place.
             return false;
         }
 

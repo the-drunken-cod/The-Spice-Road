@@ -26,8 +26,9 @@ public final class SpicePlantLootTables {
 
         /**
          * Builds the minimal Spice Plant loot table: the seed item always drops,
-         * and the raw Spice product additionally drops, at the base harvestYield
-         * multiplied by the configured harvest yield multiplier.
+         * and unless the Spice has a Hand-Pick Requirement, the raw Spice
+         * product additionally drops, at the base harvestYield multiplied by
+         * the configured harvest yield multiplier.
          *
          * @param block        The Spice Plant block this loot table is for.
          * @param ageProperty  The block's growth-stage property (its
@@ -39,6 +40,9 @@ public final class SpicePlantLootTables {
          * @param harvestYield Flat count of {@code productItem} dropped at
          *                     {@code maxAge} (Phase 1: no tier-based scaling
          *                     yet).
+         * @param dropsProduct Whether breaking drops {@code productItem} at
+         *                     all. {@code false} for Hand-Pick Spices, which
+         *                     are only obtained by right-clicking.
          * @return The assembled loot table, ready to pass to a
          *         {@code BlockLootSubProvider}'s {@code add(Block, LootTable.Builder)}.
          */
@@ -48,10 +52,13 @@ public final class SpicePlantLootTables {
                         int maxAge,
                         ItemLike seedItem,
                         ItemLike productItem,
-                        int harvestYield) {
+                        int harvestYield,
+                        boolean dropsProduct) {
                 LootPool.Builder seedPool = LootPool.lootPool()
                                 .setRolls(ConstantValue.exactly(1.0F))
                                 .add(LootItem.lootTableItem(seedItem));
+                if (!dropsProduct)
+                        return LootTable.lootTable().withPool(seedPool);
 
                 LootPool.Builder productPool = LootPool.lootPool()
                                 .setRolls(ConstantValue.exactly(1.0F))

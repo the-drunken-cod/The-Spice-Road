@@ -6,6 +6,7 @@ import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.SpicePlantBlock;
 import com.drunkencod.spice_road.block.SpicePlants;
 import com.drunkencod.spice_road.block.SpiceTrees;
+import com.drunkencod.spice_road.block.SpiceVines;
 import com.drunkencod.spice_road.spice.Spice;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -19,7 +20,8 @@ import net.minecraft.core.HolderLookup;
  * {@code block.getMaxAge()} for the same reason (config isn't loaded during
  * {@code runData}). Spice Tree blocks use vanilla's log/sapling self-drops and
  * leaves drops, plus the Spice from ripe fruiting leaves (see
- * {@link SpiceTreeLootTables}).
+ * {@link SpiceTreeLootTables}). Spice Vine blocks drop themselves with shears,
+ * plus their Spice when ripe (see {@link SpiceVineLootTables}).
  */
 public class FabricSpiceLootProvider extends FabricBlockLootTableProvider {
 
@@ -43,6 +45,9 @@ public class FabricSpiceLootProvider extends FabricBlockLootTableProvider {
                     createLeavesDrops(tree.getLeaves().get(), tree.getSapling().get(),
                             NORMAL_LEAVES_SAPLING_CHANCES)));
         });
+
+        SpiceVines.getRegistered().values().forEach(vine -> add(vine.block().get(),
+                SpiceVineLootTables.withRipeVineHarvest(vine, createShearsOnlyDrop(vine.block().get()))));
     }
 
     /**
@@ -58,6 +63,7 @@ public class FabricSpiceLootProvider extends FabricBlockLootTableProvider {
                 Constants.DEFAULT_SPICE_PLANT_GROWTH_STAGES,
                 plant.seedItem().get(),
                 plant.productItem().get(),
-                (int) Math.floor(spice.getDropAmount() * Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER)));
+                (int) Math.floor(spice.getDropAmount() * Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER),
+                !spice.requiresHandPick()));
     }
 }

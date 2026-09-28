@@ -1,19 +1,27 @@
 package com.drunkencod.spice_road.datagen;
 
+import java.util.Map;
+
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.SpicePlantBlock;
 import com.drunkencod.spice_road.block.FruitingSpiceLeavesBlock;
 import com.drunkencod.spice_road.block.SpicePlants;
 import com.drunkencod.spice_road.block.SpiceTree;
 import com.drunkencod.spice_road.block.SpiceTrees;
+import com.drunkencod.spice_road.block.SpiceVineBlock;
+import com.drunkencod.spice_road.block.SpiceVines;
 
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.world.level.block.VineBlock;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.client.model.generators.MultiPartBlockStateBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 /**
@@ -62,6 +70,37 @@ public class NeoForgeBlockStateProvider extends BlockStateProvider {
         });
 
         SpiceTrees.getRegistered().values().forEach(this::registerSpiceTree);
+        SpiceVines.getRegistered().values().forEach(vine -> registerSpiceVine(vine.block().get()));
+    }
+
+    /**
+     * Mirrors vanilla's multipart vine blockstate, with one
+     * {@code minecraft:block/vine}-parented model per ripening stage
+     * ({@code block/<id>_stage<n>}). The vine item's flat model is generated
+     * through {@code ItemModelHelper}.
+     */
+    private void registerSpiceVine(SpiceVineBlock vine) {
+        String id = BuiltInRegistries.BLOCK.getKey(vine).getPath();
+        MultiPartBlockStateBuilder builder = getMultipartBuilder(vine);
+        for (int age = 0; age <= Constants.SPICE_VINE_GROWTH_STAGES; age++) {
+            String stageId = id + "_stage" + age;
+            ModelFile model = models().withExistingParent(stageId, "block/vine")
+                    .texture("vine", modLoc("block/" + stageId))
+                    .texture("particle", modLoc("block/" + stageId))
+                    .renderType("minecraft:cutout");
+
+            for (Map.Entry<Direction, BooleanProperty> face : VineBlock.PROPERTY_BY_DIRECTION.entrySet()) {
+                Direction direction = face.getKey();
+                builder.part().modelFile(model)
+                        .rotationX(direction == Direction.UP ? 270 : 0)
+                        .rotationY(direction.getAxis().isHorizontal() ? ((int) direction.toYRot() + 180) % 360 : 0)
+                        .uvLock(direction != Direction.NORTH)
+                        .addModel()
+                        .condition(face.getValue(), true)
+                        .condition(SpiceVineBlock.AGE, age)
+                        .end();
+            }
+        }
     }
 
     /**

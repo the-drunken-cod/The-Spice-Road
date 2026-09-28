@@ -21,9 +21,10 @@ import com.drunkencod.spice_road.spice.SourceType;
  * entirely by each member's own fields; nothing here is hand-authored per
  * spice.
  * <p>
- * {@code TREE}/{@code BUSH}/{@code VINE}/{@code RHIZOME} members are
- * deliberately skipped - they need mechanics (sapling stages, farmland
- * spreading) not implemented yet.
+ * {@code TREE} and {@code VINE} members are registered by {@link SpiceTrees}
+ * and {@link SpiceVines} instead. {@code BUSH}/{@code RHIZOME} members are
+ * deliberately skipped - they need mechanics (farmland spreading) not
+ * implemented yet.
  * <p>
  * <b>Contains prototype wiring - subject to change.</b>
  */

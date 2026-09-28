@@ -9,6 +9,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
@@ -22,6 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -186,6 +193,64 @@ public abstract class SpicePlantBlock extends CropBlock {
             return Mth.nextInt(level.random, 0, 2);
         return Mth.nextInt(level.random, 1, 2);
     }
+
+    // #region hand-pick
+
+    /**
+     * Mature Spices with a Hand-Pick and a Harvest Tool Requirement are
+     * harvested by right-clicking with an item from their harvest tool tag,
+     * which takes durability damage.
+     */
+    @Override
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
+            Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if (!isHandPickable(state) || !spice.requiresHarvestTool() || !SpiceHarvesting.isHarvestTool(spice, stack)
+                || !SpiceHarvesting.mayHarvest(spice, player))
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+
+        handPick(level, pos, player);
+        if (!level.isClientSide())
+            stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
+        return ItemInteractionResult.sidedSuccess(level.isClientSide());
+    }
+
+    /**
+     * Mature Spices with a Hand-Pick but no Harvest Tool Requirement are
+     * harvested by right-clicking with an empty hand.
+     */
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
+            BlockHitResult hitResult) {
+        if (!isHandPickable(state) || spice.requiresHarvestTool() || !SpiceHarvesting.mayHarvest(spice, player))
+            return InteractionResult.PASS;
+
+        handPick(level, pos, player);
+        return InteractionResult.sidedSuccess(level.isClientSide());
+    }
+
+    private boolean isHandPickable(BlockState state) {
+        return spice.requiresHandPick() && isMaxAge(state);
+    }
+
+    /**
+     * Destroys the plant, dropping its seed plus its Spice if the Spice Region
+     * supports it here (see {@link #canGrow}). The break loot table of a
+     * Hand-Pick Spice only drops the seed, so this is the only way to obtain
+     * its Spice.
+     */
+    private void handPick(Level level, BlockPos pos, Player player) {
+        if (!(level instanceof ServerLevel serverLevel))
+            return;
+
+        popResource(level, pos, new ItemStack(getBaseSeedId()));
+        int yield = SpiceHarvesting.getPlantYield(spice);
+        if (yield > 0 && canGrow(serverLevel, pos))
+            popResource(level, pos, new ItemStack(Spice.getRawById(spice.getId()), yield));
+
+        level.destroyBlock(pos, false, player);
+    }
+
+    // #region misc
 
     @Override
     protected ItemLike getBaseSeedId() {

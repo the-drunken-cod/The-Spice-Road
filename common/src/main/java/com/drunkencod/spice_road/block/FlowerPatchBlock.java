@@ -12,7 +12,8 @@ import com.drunkencod.spice_road.spice.Spice;
  * vanilla flower, but grows through stages, and breaking at
  * full growth drops the flower item (spice-use or decorative) plus seeds
  * (see {@code SpicePlantLootTables}, used identically for both Source
- * Types).
+ * Types). Spices with a Hand-Pick Requirement only drop seeds when broken and
+ * are harvested by right-clicking instead (see {@link SpicePlantBlock}).
  * <p>
  * All growth-stage mechanics are inherited unchanged from
  * {@link SpicePlantBlock}; this subclass exists as the concrete "shape"
