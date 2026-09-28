@@ -32,74 +32,74 @@ import com.drunkencod.spice_road.spice.Tier;
  */
 public final class SpiceProfileTooltips {
 
-        /**
-         * Bitmap font mapping one private use codepoint per {@link Tier} (starting
-         * at {@link #TIER_ICON_FIRST_CHAR}, in enum order) to its Region Heart map
-         * marker texture.
-         */
-        private static final ResourceLocation TIER_ICON_FONT = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID,
-                        "spice_tier_icons");
+    /**
+     * Bitmap font mapping one private use codepoint per {@link Tier} (starting
+     * at {@link #TIER_ICON_FIRST_CHAR}, in enum order) to its Region Heart map
+     * marker texture.
+     */
+    private static final ResourceLocation TIER_ICON_FONT = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID,
+            "spice_tier_icons");
 
-        /** Codepoint of the first {@link Tier}'s icon in {@link #TIER_ICON_FONT}. */
-        private static final char TIER_ICON_FIRST_CHAR = '';
+    /** Codepoint of the first {@link Tier}'s icon in {@link #TIER_ICON_FONT}. */
+    private static final char TIER_ICON_FIRST_CHAR = '';
 
-        private SpiceProfileTooltips() {
-        }
+    private SpiceProfileTooltips() {
+    }
 
-        /**
-         * Registers the tooltip contribution. Must be called once during mod
-         * init (safe on both client and dedicated server - {@link TooltipUtil}
-         * itself is client-agnostic, only ever consulted from client-only code).
-         */
-        public static void register() {
-                TooltipUtil.register(stack -> tierOf(stack).isPresent(), TooltipUtil.Visibility.ALWAYS,
-                                stack -> tierOf(stack).map(tier -> List.of(tierLine(tier))).orElse(List.of()));
-                TooltipUtil.register(stack -> SpiceProfiles.get(stack).isPresent(), TooltipUtil.Visibility.SHIFT_ONLY,
-                                stack -> SpiceProfiles.getEffective(stack)
-                                                .map(profile -> SpiceFlavorTooltips.formatFlavorAxes(profile,
-                                                                barScale(stack)))
-                                                .orElse(List.of()),
-                                stack -> TooltipUtil.shiftHint(Constants.MOD_ID + ".tooltip.shift_hint.spice",
-                                                Constants.MOD_ID + ".tooltip.shift_hint.spice."
-                                                                + (stack.is(SpiceItemTags.SPICES) ? "spice"
-                                                                                : "seasoned"),
-                                                stack.is(SpiceItemTags.SPICES)));
-        }
+    /**
+     * Registers the tooltip contribution. Must be called once during mod
+     * init (safe on both client and dedicated server - {@link TooltipUtil}
+     * itself is client-agnostic, only ever consulted from client-only code).
+     */
+    public static void register() {
+        TooltipUtil.register(stack -> tierOf(stack).isPresent(), TooltipUtil.Visibility.ALWAYS,
+                stack -> tierOf(stack).map(tier -> List.of(tierLine(tier))).orElse(List.of()));
+        TooltipUtil.register(stack -> SpiceProfiles.get(stack).isPresent(), TooltipUtil.Visibility.SHIFT_ONLY,
+                stack -> SpiceProfiles.getEffective(stack)
+                        .map(profile -> SpiceFlavorTooltips.formatFlavorAxes(profile,
+                                barScale(stack)))
+                        .orElse(List.of()),
+                stack -> TooltipUtil.shiftHint(Constants.MOD_ID + ".tooltip.shift_hint.spice",
+                        Constants.MOD_ID + ".tooltip.shift_hint.spice."
+                                + (stack.is(SpiceItemTags.SPICES) ? "spice"
+                                        : "seasoned"),
+                        stack.is(SpiceItemTags.SPICES)));
+    }
 
-        /**
-         * @param stack The stack to check.
-         * @return The {@link Tier} whose {@link Tier#getItemTag() tag} contains
-         *         {@code stack}, or empty if none does.
-         */
-        private static Optional<Tier> tierOf(ItemStack stack) {
-                return Arrays.stream(Tier.values()).filter(tier -> stack.is(tier.getItemTag())).findFirst();
-        }
+    /**
+     * @param stack The stack to check.
+     * @return The {@link Tier} whose {@link Tier#getItemTag() tag} contains
+     *         {@code stack}, or empty if none does.
+     */
+    private static Optional<Tier> tierOf(ItemStack stack) {
+        return Arrays.stream(Tier.values()).filter(tier -> stack.is(tier.getItemTag())).findFirst();
+    }
 
-        /**
-         * @param tier The tier to describe.
-         * @return A line like {@code "[icon] Epic rarity"}, with the icon
-         *         from {@link #TIER_ICON_FONT} and the text in the tier's rarity
-         *         color.
-         */
-        private static Component tierLine(Tier tier) {
-                Component icon = Component.literal(String.valueOf((char) (TIER_ICON_FIRST_CHAR + tier.ordinal())))
-                                .withStyle(style -> style.withFont(TIER_ICON_FONT).withColor(ChatFormatting.WHITE));
-                return Component.empty()
-                                .append(icon)
-                                .append(" ")
-                                .append(Component
-                                                .translatable(Constants.MOD_ID + ".tooltip.spice_tier."
-                                                                + tier.getSerializedName())
-                                                .withStyle(tier.getRarity().color()));
-        }
+    /**
+     * @param tier The tier to describe.
+     * @return A line like {@code "[icon] Epic rarity"}, with the icon
+     *         from {@link #TIER_ICON_FONT} and the text in the tier's rarity
+     *         color.
+     */
+    private static Component tierLine(Tier tier) {
+        Component icon = Component.literal(String.valueOf((char) (TIER_ICON_FIRST_CHAR + tier.ordinal())))
+                .withStyle(style -> style.withFont(TIER_ICON_FONT).withColor(ChatFormatting.WHITE));
+        return Component.empty()
+                .append(icon)
+                .append(" ")
+                .append(Component
+                        .translatable(Constants.MOD_ID + ".tooltip.spice_tier."
+                                + tier.getSerializedName())
+                        .withStyle(tier.getRarity().color()));
+    }
 
-        /**
-         * @param stack The stack whose profile is shown.
-         * @return The flavor soft cap for a Profile Override (e.g. seasoned food,
-         *         whose flavor adds up across many spices), otherwise {@code 1},
-         *         the conventional range of a single Spice Item.
-         */
-        private static double barScale(ItemStack stack) {
-                return stack.has(ModDataComponents.SPICE_PROFILE.get()) ? Services.CONFIG.getFlavorSoftCap() : 1D;
-        }
+    /**
+     * @param stack The stack whose profile is shown.
+     * @return The flavor soft cap for a Profile Override (e.g. seasoned food,
+     *         whose flavor adds up across many spices), otherwise {@code 1},
+     *         the conventional range of a single Spice Item.
+     */
+    private static double barScale(ItemStack stack) {
+        return stack.has(ModDataComponents.SPICE_PROFILE.get()) ? Services.CONFIG.getFlavorSoftCap() : 1D;
+    }
 }

@@ -7,6 +7,7 @@ import com.drunkencod.spice_road.datagen.FabricSpiceTreeModelProvider;
 import com.drunkencod.spice_road.datagen.FabricSpiceVineModelProvider;
 import com.drunkencod.spice_road.datagen.SpiceItemTagProvider;
 import com.drunkencod.spice_road.datagen.SpiceTreeCompatRecipeProvider;
+import com.drunkencod.spice_road.datagen.SpiceTreePlanksRecipeProvider;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -26,6 +27,7 @@ public class ModDataGen implements DataGeneratorEntrypoint {
         pack.addProvider(FabricSpiceVineModelProvider::new);
         pack.addProvider(FabricSpiceLootProvider::new);
         pack.addProvider((FabricDataOutput output) -> new SpiceTreeCompatRecipeProvider(output));
+        pack.addProvider((FabricDataOutput output) -> new SpiceTreePlanksRecipeProvider(output));
         pack.addProvider((FabricDataOutput output) -> new SpiceItemTagProvider(output));
     }
 }

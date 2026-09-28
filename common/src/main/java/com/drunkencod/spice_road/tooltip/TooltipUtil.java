@@ -120,7 +120,7 @@ public class TooltipUtil {
                 .append(Component.translatable(SHIFT_KEY_TRANSLATION_KEY).withStyle(ChatFormatting.GRAY))
                 .append("]");
         Component spicedWordComp = Component.translatable(spicedWordTrKey)
-                .withStyle(isSpice ? ChatFormatting.GREEN : ChatFormatting.GRAY);
+                .withStyle(isSpice ? ChatFormatting.GREEN : ChatFormatting.GOLD);
         return Component.translatable(translationKey, spicedWordComp, key).withStyle(ChatFormatting.DARK_GRAY);
     }
 

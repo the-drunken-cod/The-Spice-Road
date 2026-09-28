@@ -43,8 +43,8 @@
     - Sable Companion is bundled directly (jarJar/include) on both loaders, not probed for via `isModLoaded` - it's a safe-by-default shim, so this is a no-op without Sable installed.
     - Fixed at the 3 places a raw `BlockPos` fed Spice Region math: `Spice#canBeCultivatedAt` (growth/hand-pick/break-harvest gating), the F3 debug source, and `RegionHeartSearch`'s `/locate`/Spice Map search origin.
     - Fabric side is compile-verified only for now; in-game testing goes through the existing NeoForge run (Sable + Create Aeronautics already installed there). A Fabric run environment with the Fabric equivalents is separate follow-up work if wanted.
+- [x] Datagen recipes to turn spice wood logs into vanilla planks, type driven by an enum arg.
 - [ ] Refactor config to use toml `[sections]`
-- [ ] Datagen recipes to turn spice wood logs into vanilla planks, type driven by an enum arg.
 - [ ] Advancements:
     - [ ] Everything Bagel: achieve max seasoning buffs (positive or negative axes) on bread and eat it.
     - [ ] (Unnamed): apply a common-rare spice to food.

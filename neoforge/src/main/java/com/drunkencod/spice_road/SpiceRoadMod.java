@@ -10,6 +10,7 @@ import com.drunkencod.spice_road.datagen.NeoForgeSpiceDataMapProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeSpiceLootProvider;
 import com.drunkencod.spice_road.datagen.SpiceItemTagProvider;
 import com.drunkencod.spice_road.datagen.SpiceTreeCompatRecipeProvider;
+import com.drunkencod.spice_road.datagen.SpiceTreePlanksRecipeProvider;
 import com.drunkencod.spice_road.loot.LootInjections;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.NeoForgeCreativeTabHelper;
@@ -88,6 +89,9 @@ public class SpiceRoadMod {
         event.getGenerator().addProvider(
                 event.includeServer(),
                 new SpiceTreeCompatRecipeProvider(event.getGenerator().getPackOutput()));
+        event.getGenerator().addProvider(
+                event.includeServer(),
+                new SpiceTreePlanksRecipeProvider(event.getGenerator().getPackOutput()));
         event.getGenerator().addProvider(
                 event.includeServer(),
                 new SpiceItemTagProvider(event.getGenerator().getPackOutput()));
