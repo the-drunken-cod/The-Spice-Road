@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": "spice_road:spice_heart_satellite",
+  "step": "vegetal_decoration"
+}

@@ -2,6 +2,7 @@ package com.drunkencod.spice_road.spice.region;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -46,6 +47,12 @@ import com.drunkencod.spice_road.spice.Spice;
  * {@link #NO_REGION_HEART} are barren and never returned, and neither are
  * hearts whose Heart Spice has no worldgen plant, since no Heart Grove could
  * generate there.
+ * <p>
+ * This class also picks each heart's Heart Grove site (see
+ * {@link #groveSite}), which is what makes the grove's position independent of
+ * the chunk being decorated: every chunk resolves the same site for a given
+ * heart, so the grove generates exactly once, in whichever chunk that site
+ * falls into.
  */
 public final class RegionHeartSearch {
 
@@ -53,16 +60,20 @@ public final class RegionHeartSearch {
     public static final TagKey<Biome> NO_REGION_HEART = TagKey.create(Registries.BIOME,
             ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "no_region_heart"));
 
-    /**
-     * Horizontal offsets checked around a heart for dry land, besides the
-     * heart itself. Within reach of the Heart Grove's shift, so dry land found
-     * here is dry land the grove can move onto.
-     */
-    private static final int[][] DRY_LAND_OFFSETS = {
-            { 12, 0 }, { -12, 0 }, { 0, 12 }, { 0, -12 }, { 8, 8 }, { 8, -8 }, { -8, 8 }, { -8, -8 } };
+    /** Maximum distance, in blocks, a Heart Grove site may sit from its heart. */
+    public static final int GROVE_SEARCH_RADIUS = 48;
+
+    /** Spacing of the columns the grove site search samples, in blocks. */
+    private static final int GROVE_SEARCH_STEP = 8;
+
+    /** Offsets sampled around a heart when looking for a grove site, nearest first. */
+    private static final int[][] GROVE_SEARCH_OFFSETS = groveSearchOffsets();
 
     /** Maximum number of cached heart samples per chunk generator. */
-    private static final int SAMPLE_CACHE_SIZE = 4096;
+    private static final int SAMPLE_CACHE_SIZE = 16_384;
+
+    /** Maximum number of cached grove sites per chunk generator. */
+    private static final int GROVE_SITE_CACHE_SIZE = 1024;
 
     /**
      * Surface height and biome per heart position, per chunk generator. Both
@@ -70,6 +81,13 @@ public final class RegionHeartSearch {
      * most expensive part of a search.
      */
     private static final Map<ChunkGenerator, Map<Long, HeartSample>> SAMPLE_CACHE = new WeakHashMap<>();
+
+    /**
+     * Grove site per heart position, per chunk generator. Resolved by many
+     * chunks around a heart, and a miss can cost a full
+     * {@link #GROVE_SEARCH_OFFSETS} scan.
+     */
+    private static final Map<ChunkGenerator, Map<Long, Optional<BlockPos>>> GROVE_SITE_CACHE = new WeakHashMap<>();
 
     private RegionHeartSearch() {
     }
@@ -112,15 +130,15 @@ public final class RegionHeartSearch {
     }
 
     /**
-     * Resolves every Region Heart whose position lies within {@code chunk}.
+     * Resolves every Region Heart whose {@link #groveSite} lies within
+     * {@code chunk}, i.e. every heart whose Heart Grove belongs to this chunk.
      * Cheap for chunks without one, which is almost all of them.
      *
      * @param level The level to resolve in.
      * @param chunk The chunk to check.
-     * @return The hearts in {@code chunk}; usually none, at most one unless
-     *         cells are smaller than a chunk.
+     * @return The hearts whose grove belongs in {@code chunk}; usually none.
      */
-    public static List<RegionHeart> heartsInChunk(ServerLevel level, ChunkPos chunk) {
+    public static List<RegionHeart> heartsWithGroveIn(ServerLevel level, ChunkPos chunk) {
         List<RegionHeart> hearts = new ArrayList<>();
         if (!hasSpiceRegions(level))
             return hearts;
@@ -133,18 +151,60 @@ public final class RegionHeartSearch {
         int maxX = chunk.getMaxBlockX();
         int maxZ = chunk.getMaxBlockZ();
 
-        // A feature point never leaves its own square, so only squares overlapping the chunk can hold one.
-        for (int gridX = (int) Math.floor(minX / cellScale); gridX <= (int) Math.floor(maxX / cellScale); gridX++) {
-            for (int gridZ = (int) Math.floor(minZ / cellScale); gridZ <= (int) Math.floor(maxZ / cellScale);
-                    gridZ++) {
+        // A site never sits farther than the search radius from its heart, so
+        // only cells whose feature point is within that reach of the chunk can
+        // own a grove here - and a feature point never leaves its own square.
+        int minGridX = (int) Math.floor((minX - GROVE_SEARCH_RADIUS) / cellScale);
+        int maxGridX = (int) Math.floor((maxX + GROVE_SEARCH_RADIUS) / cellScale);
+        int minGridZ = (int) Math.floor((minZ - GROVE_SEARCH_RADIUS) / cellScale);
+        int maxGridZ = (int) Math.floor((maxZ + GROVE_SEARCH_RADIUS) / cellScale);
+
+        for (int gridX = minGridX; gridX <= maxGridX; gridX++) {
+            for (int gridZ = minGridZ; gridZ <= maxGridZ; gridZ++) {
                 SpiceCell cell = SpiceRegionResolver.cellAtGrid(worldSeed, salt, cellScale, gridX, gridZ, minX, minZ);
-                int x = (int) Math.floor(cell.centerX());
-                int z = (int) Math.floor(cell.centerZ());
-                if (x >= minX && x <= maxX && z >= minZ && z <= maxZ)
-                    heartOf(level, cell).ifPresent(hearts::add);
+                Optional<RegionHeart> heart = heartOf(level, cell);
+                if (heart.isEmpty())
+                    continue;
+
+                BlockPos site = groveSite(level, heart.get()).orElse(null);
+                if (site == null)
+                    continue;
+                if (site.getX() >= minX && site.getX() <= maxX && site.getZ() >= minZ && site.getZ() <= maxZ)
+                    hearts.add(heart.get());
             }
         }
         return hearts;
+    }
+
+    /**
+     * Picks where {@code heart}'s Heart Grove grows: the nearest column within
+     * {@link #GROVE_SEARCH_RADIUS} that is dry, not in a
+     * {@link #NO_REGION_HEART} biome, and still in the heart's own Spice
+     * Region. Based purely on the terrain estimate, so the answer is the same
+     * from every chunk and available before any of them generate; the grove's
+     * placement refines it against real blocks.
+     *
+     * @param level The level to resolve in.
+     * @param heart The heart whose grove site to pick.
+     * @return The site, at the estimated surface height, or empty if the heart
+     *         has no ground within reach - which makes it barren, since a heart
+     *         that can't host a grove would lead the player nowhere.
+     */
+    public static Optional<BlockPos> groveSite(ServerLevel level, RegionHeart heart) {
+        ChunkGenerator generator = level.getChunkSource().getGenerator();
+        long key = ChunkPos.asLong(heart.pos().getX(), heart.pos().getZ());
+        synchronized (GROVE_SITE_CACHE) {
+            Optional<BlockPos> cached = GROVE_SITE_CACHE
+                    .computeIfAbsent(generator, g -> newLruMap(GROVE_SITE_CACHE_SIZE)).get(key);
+            if (cached != null)
+                return cached;
+        }
+
+        Optional<BlockPos> site = searchGroveSite(level, heart);
+        synchronized (GROVE_SITE_CACHE) {
+            GROVE_SITE_CACHE.computeIfAbsent(generator, g -> newLruMap(GROVE_SITE_CACHE_SIZE)).put(key, site);
+        }
+        return site;
     }
 
     /**
@@ -263,7 +323,7 @@ public final class RegionHeartSearch {
                     continue;
 
                 K key = keyOf.apply(heart.get());
-                if (key == null || !hasDryLandNear(level, heart.get()))
+                if (key == null || groveSite(level, heart.get()).isEmpty())
                     continue;
 
                 RegionHeart previous = nearest.get(key);
@@ -299,22 +359,44 @@ public final class RegionHeartSearch {
                 || SpiceVines.getRegistered().containsKey(spice);
     }
 
-    /**
-     * Checks whether there's dry land at or around {@code heart}, so it isn't
-     * mapped when it sits in a river or wide lake the Heart Grove couldn't
-     * escape. Based on the terrain estimate, so features like ponds are
-     * invisible to it; the grove's own placement handles those.
-     */
-    private static boolean hasDryLandNear(ServerLevel level, RegionHeart heart) {
-        int x = heart.pos().getX();
-        int z = heart.pos().getZ();
-        if (sample(level, x, z).isDry())
-            return true;
-        for (int[] offset : DRY_LAND_OFFSETS) {
-            if (sample(level, x + offset[0], z + offset[1]).isDry())
-                return true;
+    /** Scans {@link #GROVE_SEARCH_OFFSETS} around {@code heart}, see {@link #groveSite}. */
+    private static Optional<BlockPos> searchGroveSite(ServerLevel level, RegionHeart heart) {
+        long worldSeed = level.getSeed();
+        long salt = Services.CONFIG.getSpiceRegionSalt();
+        double cellScale = Services.CONFIG.getSpiceRegionCellScale();
+
+        for (int[] offset : GROVE_SEARCH_OFFSETS) {
+            int x = heart.pos().getX() + offset[0];
+            int z = heart.pos().getZ() + offset[1];
+            HeartSample sample = sample(level, x, z);
+            if (!sample.isDry() || sample.biome().is(NO_REGION_HEART))
+                continue;
+
+            SpiceCell cell = SpiceRegionResolver.resolveCell(worldSeed, salt, cellScale, x, z);
+            if (cell.gridX() != heart.cell().gridX() || cell.gridZ() != heart.cell().gridZ())
+                continue;
+
+            return Optional.of(new BlockPos(x, sample.surfaceY(), z));
         }
-        return false;
+        return Optional.empty();
+    }
+
+    /**
+     * @return Offsets on a {@link #GROVE_SEARCH_STEP} grid within
+     *         {@link #GROVE_SEARCH_RADIUS}, nearest first, so the heart itself
+     *         is tried before anything else and a heart on dry land costs a
+     *         single sample.
+     */
+    private static int[][] groveSearchOffsets() {
+        List<int[]> offsets = new ArrayList<>();
+        for (int dx = -GROVE_SEARCH_RADIUS; dx <= GROVE_SEARCH_RADIUS; dx += GROVE_SEARCH_STEP) {
+            for (int dz = -GROVE_SEARCH_RADIUS; dz <= GROVE_SEARCH_RADIUS; dz += GROVE_SEARCH_STEP) {
+                if ((dx * dx) + (dz * dz) <= GROVE_SEARCH_RADIUS * GROVE_SEARCH_RADIUS)
+                    offsets.add(new int[] { dx, dz });
+            }
+        }
+        offsets.sort(Comparator.comparingInt(offset -> (offset[0] * offset[0]) + (offset[1] * offset[1])));
+        return offsets.toArray(int[][]::new);
     }
 
     /** Estimates surface height, floor height and biome at {@code (x, z)} without generating chunks. Cached. */
@@ -322,7 +404,8 @@ public final class RegionHeartSearch {
         ChunkGenerator generator = level.getChunkSource().getGenerator();
         long key = ChunkPos.asLong(x, z);
         synchronized (SAMPLE_CACHE) {
-            HeartSample cached = SAMPLE_CACHE.computeIfAbsent(generator, g -> newLruMap()).get(key);
+            HeartSample cached = SAMPLE_CACHE.computeIfAbsent(generator, g -> newLruMap(SAMPLE_CACHE_SIZE))
+                    .get(key);
             if (cached != null)
                 return cached;
         }
@@ -335,16 +418,17 @@ public final class RegionHeartSearch {
         HeartSample sample = new HeartSample(y, floorY, biome);
 
         synchronized (SAMPLE_CACHE) {
-            SAMPLE_CACHE.computeIfAbsent(generator, g -> newLruMap()).put(key, sample);
+            SAMPLE_CACHE.computeIfAbsent(generator, g -> newLruMap(SAMPLE_CACHE_SIZE)).put(key, sample);
         }
         return sample;
     }
 
-    private static Map<Long, HeartSample> newLruMap() {
+    /** @return A position-keyed map that evicts its least recently used entry past {@code maxSize}. */
+    private static <V> Map<Long, V> newLruMap(int maxSize) {
         return new LinkedHashMap<>(256, 0.75F, true) {
             @Override
-            protected boolean removeEldestEntry(Map.Entry<Long, HeartSample> eldest) {
-                return size() > SAMPLE_CACHE_SIZE;
+            protected boolean removeEldestEntry(Map.Entry<Long, V> eldest) {
+                return size() > maxSize;
             }
         };
     }

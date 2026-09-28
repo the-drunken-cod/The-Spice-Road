@@ -18,7 +18,9 @@ import com.drunkencod.spice_road.platform.Services;
  */
 public final class ModTreeDecorators {
 
-    /** {@code spice_road:attached_to_logs} - see {@link AttachedToLogsDecorator}. */
+    /**
+     * {@code spice_road:attached_to_logs} - see {@link AttachedToLogsDecorator}.
+     */
     public static final Supplier<TreeDecoratorType<AttachedToLogsDecorator>> ATTACHED_TO_LOGS = Services.REGISTRY
             .registerTreeDecoratorType("attached_to_logs",
                     () -> new TreeDecoratorType<AttachedToLogsDecorator>(AttachedToLogsDecorator.CODEC));

@@ -8,6 +8,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -29,6 +32,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
@@ -211,7 +215,7 @@ public abstract class SpicePlantBlock extends CropBlock {
                 || !SpiceHarvesting.mayHarvest(spice, player))
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
-        handPick(level, pos, player);
+        handPick(state, level, pos, player, hitResult, SoundEvents.SHEEP_SHEAR);
         if (!level.isClientSide())
             stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
         return ItemInteractionResult.sidedSuccess(level.isClientSide());
@@ -227,7 +231,7 @@ public abstract class SpicePlantBlock extends CropBlock {
         if (!isHandPickable(state) || spice.requiresHarvestTool() || !SpiceHarvesting.mayHarvest(spice, player))
             return InteractionResult.PASS;
 
-        handPick(level, pos, player);
+        handPick(state, level, pos, player, hitResult, SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES);
         return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
@@ -236,21 +240,29 @@ public abstract class SpicePlantBlock extends CropBlock {
     }
 
     /**
-     * Destroys the plant, dropping its seed plus its Spice if the Spice Region
-     * supports it here (see {@link #canGrow}). The break loot table of a
+     * Drops the plant's Spice from the clicked face if the Spice Region
+     * supports it here (see {@link #canGrow}), then resets the plant to age
+     * {@code 0} so it regrows instead of breaking. The break loot table of a
      * Hand-Pick Spice only drops the seed, so this is the only way to obtain
      * its Spice.
+     *
+     * @param sound The harvest sound, played at the plant's position.
      */
-    private void handPick(Level level, BlockPos pos, Player player) {
+    private void handPick(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult,
+            SoundEvent sound) {
         if (!(level instanceof ServerLevel serverLevel))
             return;
 
-        popResource(level, pos, new ItemStack(getBaseSeedId()));
         int yield = SpiceHarvesting.getPlantYield(spice);
         if (yield > 0 && canGrow(serverLevel, pos))
-            popResource(level, pos, new ItemStack(Spice.getRawById(spice.getId()), yield));
+            popResourceFromFace(level, pos, hitResult.getDirection(),
+                    new ItemStack(Spice.getRawById(spice.getId()), yield));
 
-        level.destroyBlock(pos, false, player);
+        level.playSound(null, pos, sound, SoundSource.BLOCKS, 1.0F, 0.8F + level.getRandom().nextFloat() * 0.4F);
+
+        BlockState harvestedState = state.setValue(getAgeProperty(), 0);
+        level.setBlock(pos, harvestedState, Block.UPDATE_CLIENTS);
+        level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, harvestedState));
     }
 
     // #region break-harvest

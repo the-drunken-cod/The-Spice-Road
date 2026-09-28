@@ -54,6 +54,8 @@ public class SpiceRoadMod implements ModInitializer {
         // Before any vegetation, so Heart Groves find bare ground instead of forest canopies.
         BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
                 GenerationStep.Decoration.LOCAL_MODIFICATIONS, placedFeature("spice_heart_grove"));
+        BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
+                GenerationStep.Decoration.VEGETAL_DECORATION, placedFeature("spice_heart_satellite"));
 
         registerSpiceMaps();
     }

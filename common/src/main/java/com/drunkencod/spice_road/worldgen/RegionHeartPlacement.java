@@ -27,13 +27,20 @@ import com.drunkencod.spice_road.spice.region.SpiceRegionResolver;
 
 /**
  * Placement modifier {@code spice_road:region_heart}: places once per
- * non-barren Region Heart within the chunk being decorated, and nowhere in
- * chunks without one. Used to place Heart Groves.
+ * non-barren Region Heart that owns a Heart Grove site in the chunk being
+ * decorated, and nowhere else. Used to place Heart Groves.
  * <p>
- * The position is the nearest dry, {@link SpicePlantBlock#SPICE_GROWABLE}
- * surface column within {@code max_shift} blocks of the heart that still lies
- * in the heart's own Spice Region, so lakes and other obstacles right at the
- * heart don't prevent its grove. A heart without such a column gets no grove.
+ * The site itself is picked by
+ * {@link RegionHeartSearch#groveSite(ServerLevel, RegionHeart)} from the
+ * terrain estimate, so it can sit well away from the heart - in a neighboring
+ * chunk if need be - without two chunks ever disagreeing about where the grove
+ * goes. A heart with no site is barren and gets no grove.
+ * <p>
+ * This modifier then refines the site against real blocks, moving to the
+ * nearest dry, {@link SpicePlantBlock#SPICE_GROWABLE} surface column within
+ * {@code max_shift} blocks that still lies in the heart's own Spice Region, so
+ * ponds and other obstacles the estimate can't see don't cost the grove. If
+ * there is none, the site is used as-is and the feature gets to try anyway.
  */
 public final class RegionHeartPlacement extends PlacementModifier {
 
@@ -70,34 +77,43 @@ public final class RegionHeartPlacement extends PlacementModifier {
     public Stream<BlockPos> getPositions(PlacementContext context, RandomSource random, BlockPos pos) {
         ServerLevel level = context.getLevel().getLevel();
         ChunkPos chunk = new ChunkPos(pos);
-        return RegionHeartSearch.heartsInChunk(level, chunk).stream()
-                .map(heart -> findGroveOrigin(context, level, chunk, heart))
+        return RegionHeartSearch.heartsWithGroveIn(level, chunk).stream()
+                .map(heart -> RegionHeartSearch.groveSite(level, heart)
+                        .map(site -> groveOrigin(context, level, chunk, heart, site)))
                 .flatMap(Optional::stream);
     }
 
-    /** @return The nearest suitable surface position around {@code heart}, if any. */
-    private Optional<BlockPos> findGroveOrigin(PlacementContext context, ServerLevel level, ChunkPos chunk,
-            RegionHeart heart) {
+    /**
+     * @return The nearest suitable surface position around {@code site}, or
+     *         {@code site}'s own surface column if there is none.
+     */
+    private BlockPos groveOrigin(PlacementContext context, ServerLevel level, ChunkPos chunk, RegionHeart heart,
+            BlockPos site) {
         int minX = chunk.getMinBlockX() - CHUNK_MARGIN;
         int maxX = chunk.getMaxBlockX() + CHUNK_MARGIN;
         int minZ = chunk.getMinBlockZ() - CHUNK_MARGIN;
         int maxZ = chunk.getMaxBlockZ() + CHUNK_MARGIN;
 
         for (int[] offset : offsetsByDistance) {
-            int x = heart.pos().getX() + offset[0];
-            int z = heart.pos().getZ() + offset[1];
+            int x = site.getX() + offset[0];
+            int z = site.getZ() + offset[1];
             if (x < minX || x > maxX || z < minZ || z > maxZ)
                 continue;
 
-            BlockPos surface = new BlockPos(x, context.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z), z);
+            BlockPos surface = surfaceOf(context, x, z);
             if (!context.getBlockState(surface.below()).is(SpicePlantBlock.SPICE_GROWABLE))
                 continue;
             if (!isInRegionOf(level, heart, x, z))
                 continue;
 
-            return Optional.of(surface);
+            return surface;
         }
-        return Optional.empty();
+        return surfaceOf(context, site.getX(), site.getZ());
+    }
+
+    /** @return The surface position of the column at {@code (x, z)}, per the generating world's heightmap. */
+    private static BlockPos surfaceOf(PlacementContext context, int x, int z) {
+        return new BlockPos(x, context.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z), z);
     }
 
     /** @return Whether {@code (x, z)} lies in the Spice Region {@code heart} belongs to. */
