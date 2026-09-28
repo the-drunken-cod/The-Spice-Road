@@ -119,7 +119,9 @@ public class TooltipUtil {
         Component key = Component.literal("[")
                 .append(Component.translatable(SHIFT_KEY_TRANSLATION_KEY).withStyle(ChatFormatting.GRAY))
                 .append("]");
-        return Component.translatable(translationKey, key).withStyle(ChatFormatting.DARK_GRAY);
+        Component spicedWordComp = Component.translatable(Constants.MOD_ID + ".tooltip.shift_hint.spice.seasoned")
+                .withStyle(ChatFormatting.GREEN);
+        return Component.translatable(translationKey, spicedWordComp, key).withStyle(ChatFormatting.DARK_GRAY);
     }
 
     /**
