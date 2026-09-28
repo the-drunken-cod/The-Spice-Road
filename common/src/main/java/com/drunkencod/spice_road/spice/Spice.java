@@ -37,12 +37,15 @@ public enum Spice implements StringRepresentable {
     // crops
     LAVENDER("lavender", SourceType.FLOWER_PATCH, HarvestAction.PICK, Climate.ARID, 1, false, 2),
     CHILI_PEPPER("chili_pepper", SourceType.CROP, HarvestAction.PICK, Climate.TEMPERATE, 2, false, 2),
-    CUMIN("cumin", SourceType.CROP, HarvestAction.BREAK, Climate.ARID, 5, false, 1),
+    CUMIN("cumin", SourceType.CROP, HarvestAction.BREAK, Climate.ARID, 2, false, 1),
     // trees
     CINNAMON("cinnamon", SourceType.TREE, HarvestAction.STRIP, Climate.TROPICAL, 4, false, 1),
     NUTMEG("nutmeg", SourceType.TREE, HarvestAction.SHEAR, Climate.TROPICAL, 5, true, 1);
 
-    /** Codec reading and writing a {@link Spice} by its {@link #getId() ID}, e.g. {@code "cinnamon"}. */
+    /**
+     * Codec reading and writing a {@link Spice} by its {@link #getId() ID}, e.g.
+     * {@code "cinnamon"}.
+     */
     public static final Codec<Spice> CODEC = StringRepresentable.fromEnum(Spice::values);
 
     private final String id;
@@ -132,7 +135,10 @@ public enum Spice implements StringRepresentable {
         return "spice.spice_road." + id;
     }
 
-    /** @return This Spice's translatable plain name. See {@link #getTranslationKey()}. */
+    /**
+     * @return This Spice's translatable plain name. See
+     *         {@link #getTranslationKey()}.
+     */
     public Component getDisplayName() {
         return Component.translatable(getTranslationKey());
     }
