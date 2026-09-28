@@ -94,6 +94,7 @@
     "spice_road.spice_axis.name.woody_green.negative": "Green",
     "spice_road.spice_axis.name.woody_green.positive": "Woody",
     "spice_road.tooltip.shift_hint.spice.seasoned": "Seasoned.",
+    "spice_road.tooltip.shift_hint.spice.spice": "Spice ingredient.",
     "spice_road.tooltip.shift_hint.spice": "%s Hold %s for information",
     "spice_road.tooltip.shift_key": "Shift",
     "spice_road.tooltip.spice_tier.common": "Common spice",

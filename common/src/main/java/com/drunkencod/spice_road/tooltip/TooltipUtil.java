@@ -50,7 +50,7 @@ public class TooltipUtil {
 
     /** One registered tooltip contribution. */
     private record Entry(Predicate<ItemStack> matcher, Visibility visibility,
-            Function<ItemStack, List<Component>> content, @Nullable Component shiftHint) {
+            Function<ItemStack, List<Component>> content, @Nullable Function<ItemStack, Component> shiftHint) {
     }
 
     /** Translation key of the Shift key's name, as shown in {@link #shiftHint}s. */
@@ -103,7 +103,7 @@ public class TooltipUtil {
      *                   to show nothing. Identical hints are only shown once
      */
     public static void register(Predicate<ItemStack> matcher, Visibility visibility,
-            Function<ItemStack, List<Component>> content, @Nullable Component shiftHint) {
+            Function<ItemStack, List<Component>> content, @Nullable Function<ItemStack, Component> shiftHint) {
         ENTRIES.add(new Entry(matcher, visibility, content, shiftHint));
     }
 
@@ -115,12 +115,12 @@ public class TooltipUtil {
      *                       bracketed key name as its only {@code %s} argument
      * @return The hint line
      */
-    public static Component shiftHint(String translationKey) {
+    public static Component shiftHint(String translationKey, String spicedWordTrKey, boolean isSpice) {
         Component key = Component.literal("[")
                 .append(Component.translatable(SHIFT_KEY_TRANSLATION_KEY).withStyle(ChatFormatting.GRAY))
                 .append("]");
-        Component spicedWordComp = Component.translatable(Constants.MOD_ID + ".tooltip.shift_hint.spice.seasoned")
-                .withStyle(ChatFormatting.GREEN);
+        Component spicedWordComp = Component.translatable(spicedWordTrKey)
+                .withStyle(isSpice ? ChatFormatting.GREEN : ChatFormatting.GRAY);
         return Component.translatable(translationKey, spicedWordComp, key).withStyle(ChatFormatting.DARK_GRAY);
     }
 
@@ -143,8 +143,8 @@ public class TooltipUtil {
             if (!entry.matcher().test(stack))
                 continue;
             if (entry.visibility() == Visibility.SHIFT_ONLY && !showShiftContent) {
-                if (entry.shiftHint() != null && !lines.contains(entry.shiftHint()))
-                    lines.add(entry.shiftHint());
+                if (entry.shiftHint != null && !lines.contains(entry.shiftHint.apply(stack)))
+                    lines.add(entry.shiftHint.apply(stack));
                 continue;
             }
             lines.addAll(entry.content().apply(stack));
