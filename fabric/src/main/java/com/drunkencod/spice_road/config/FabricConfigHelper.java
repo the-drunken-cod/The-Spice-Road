@@ -234,7 +234,8 @@ public class FabricConfigHelper implements IConfigHelper {
 
         /**
          * Maximum distance, in Spice Region cells, searched for a Spice
-         * Region's heart by /locate spice and by Spice Map chest loot.
+         * Region's heart by /locate spice, /locate spice_climate, and by
+         * Spice Map chest loot.
          */
         @ConfigEntry.Gui.Tooltip
         @ConfigEntry.BoundedDiscrete(min = 1, max = 1000)

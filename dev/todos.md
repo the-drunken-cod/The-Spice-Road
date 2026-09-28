@@ -38,7 +38,7 @@
 - [x] Breaking a mature Spice with its harvest tool in the main hand drops the Spice and costs the tool a durability point, instead of only the seed.
     - Gated per Source Type by `SpiceBreakHarvest`: `minecraft:match_tool` on the harvest tool tag, plus a `spice_road:connected_player` condition for Hand-Pick Spices so automation still can't farm them by breaking. Pistons drop seeds only either way.
     - A Spice with a Hand-Pick but no Harvest Tool Requirement still never drops from breaking.
-- [ ] Update `/locate spice` to work with climates (e.g. `/locate spice #spice_road:climate/arid`)
+- [x] `/locate spice_climate <climate>` merged into vanilla `/locate` alongside `/locate spice <spice>`, finds the nearest Region Heart of any Spice matching a Climate.
 - [x] Add Sable sublevel coordinate resolution (using https://github.com/ryanhcode/sable-companion) to use the correct overworld region. This is so airship bases and things like that can partake in the region system.
     - Sable Companion is bundled directly (jarJar/include) on both loaders, not probed for via `isModLoaded` - it's a safe-by-default shim, so this is a no-op without Sable installed.
     - Fixed at the 3 places a raw `BlockPos` fed Spice Region math: `Spice#canBeCultivatedAt` (growth/hand-pick/break-harvest gating), the F3 debug source, and `RegionHeartSearch`'s `/locate`/Spice Map search origin.

@@ -295,8 +295,8 @@ public class NeoForgeConfigHelper implements IConfigHelper {
                             Services.PLATFORM.isDedicatedServer() ? 1.75 : 1.0, 0.0, 10.0);
             spiceMapSearchRadiusCells = builder
                     .comment("Maximum distance, in Spice Region cells, searched for a Spice Region's heart by "
-                            + "/locate spice and by Spice Map chest loot. Measured in cells, so changing the cell "
-                            + "scale doesn't change how many regions are within reach.")
+                            + "/locate spice, /locate spice_climate, and by Spice Map chest loot. Measured in "
+                            + "cells, so changing the cell scale doesn't change how many regions are within reach.")
                     .defineInRange("spiceMapSearchRadiusCells", 25, 1, 1000);
             spiceMapVillagerSearchRadiusCells = builder
                     .comment("Maximum distance, in Spice Region cells, a cartographer searches for a Spice Region's "

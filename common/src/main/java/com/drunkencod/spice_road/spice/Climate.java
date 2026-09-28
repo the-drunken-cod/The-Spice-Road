@@ -1,7 +1,10 @@
 package com.drunkencod.spice_road.spice;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.biome.Biome;
 
 /**
@@ -12,13 +15,42 @@ import net.minecraft.world.level.biome.Biome;
 public enum Climate {
 
     // temp > 0.8, precip > 0:
-    TROPICAL,
+    TROPICAL("tropical"),
     // temp <= 0.7, precip > 0:
-    TEMPERATE,
+    TEMPERATE("temperate"),
     // temp >= 0.15, precip = 0:
-    ARID,
+    ARID("arid"),
     // temp < 0.15, precip >= 0:
-    COLD;
+    COLD("cold");
+
+    private final String id;
+
+    Climate(String id) {
+        this.id = id;
+    }
+
+    /** @return This Climate's ID, e.g. {@code "tropical"}. */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * @return The translation key of this Climate's plain name (e.g.
+     *         {@code "Tropical"}).
+     */
+    public String getTranslationKey() {
+        return "climate.spice_road." + id;
+    }
+
+    /**
+     * @return This Climate's translatable plain name. See
+     *         {@link #getTranslationKey()}.
+     */
+    public Component getDisplayName() {
+        return Component.translatable(getTranslationKey());
+    }
+
+    // #region static
 
     /**
      * Derives a {@link Climate} from a biome's temperature/precipitation.
@@ -47,5 +79,19 @@ public enum Climate {
         if (value.getPrecipitationAt(pos) == Biome.Precipitation.NONE)
             return ARID;
         return temperature <= 0.8F ? TEMPERATE : TROPICAL;
+    }
+
+    /**
+     * Looks up a Climate by its {@link #getId() ID}.
+     *
+     * @param id The Climate's ID, e.g. {@code "tropical"}.
+     * @return The matching Climate, or {@code null} if there is none.
+     */
+    public static @Nullable Climate byId(String id) {
+        for (Climate climate : values()) {
+            if (climate.id.equals(id))
+                return climate;
+        }
+        return null;
     }
 }

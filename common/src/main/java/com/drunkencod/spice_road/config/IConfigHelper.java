@@ -49,9 +49,9 @@ public interface IConfigHelper {
 
     /**
      * Maximum distance, in Spice Region cells, searched for a Region Heart by
-     * {@code /locate spice} and by Spice Map loot. Measured in cells so
-     * changing {@link #getSpiceRegionCellScale()} doesn't change how many
-     * hearts are within reach.
+     * {@code /locate spice}, {@code /locate spice_climate}, and by Spice Map
+     * loot. Measured in cells so changing {@link #getSpiceRegionCellScale()}
+     * doesn't change how many hearts are within reach.
      *
      * @return The configured search radius, in cells.
      */
