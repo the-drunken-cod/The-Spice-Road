@@ -5,7 +5,19 @@ Adds rare spices to Minecraft that can enhance existing foods with a new buff me
 
 ![Banner](./.github/assets/banner.png)
 
+—  
+
+<sup>Available on <a href="https://github.com/the-drunken-cod/The-Spice-Road/releases">GitHub</a>, <a href="https://modrinth.com/mod/the-spice-road">Modrinth</a> & <a href="https://www.curseforge.com/minecraft/mc-mods/the-spice-road">CurseForge</a></sup>
+
+---
+
+### [Wiki](https://github.com/the-drunken-cod/The-Spice-Road/wiki) &bull; [Features](#features) &bull; [Installation](#installation) &bull; [Integrations](#integrations) &bull; [Attribution](#attribution) &bull; [License](#license) &bull; [Disclaimers](#disclaimers)
+
+---
+
 </div>
+
+<br>
 
 ## Features:
 - TODO: 69+ new spice plants now grow in dedicated zones (dependent on climate, but not bound to biomes).
@@ -16,19 +28,6 @@ Adds rare spices to Minecraft that can enhance existing foods with a new buff me
   - Allows for tons of configuration for any play style and player base.
   - Spice profiles and items can easily be added by datapack makers, and any mod's food item is supported out of the box. Note: some mods' crafting stations might erase spice profiles. In that case, please [open an issue](https://github.com/the-drunken-cod/The-Spice-Road/issues) so we can add compatibility.
   - Commands for finding (`/locate spice`) and utilities for shuffling spice regions for balancing or setting up scenarios.
-
-<br>
-
-## Integrations:
-- [Farmer's Delight](https://modrinth.com/mod/farmers-delight)
-  - Recipe compatibility for the cooking pot and cutting board (meaning spice values carry over).
-  - Tag-level compatibility (knives as cutting tool, etc.).
-- [Cooking For Blockheads](https://modrinth.com/mod/cooking-for-blockheads)
-  - Recipe compatibility for the toaster and oven (meaning spice values carry over).
-- [Serene Seasons](https://modrinth.com/mod/serene-seasons)
-  - Spice crops have realistic season data attached to them (with none growing in winter).
-- [Create]()
-  - Spices can be harvested via deployers.
 
 <br>
 
@@ -45,6 +44,19 @@ Then simply place the downloaded JAR file into your Minecraft `mods` folder and 
 
 <br>
 
+## Integrations:
+- [Farmer's Delight](https://modrinth.com/mod/farmers-delight)
+  - Recipe compatibility for the cooking pot and cutting board (ingredient spice profiles get correctly summed for the outputs).
+  - Tag-level compatibility (knives as cutting tool, etc.).
+- [Cooking For Blockheads](https://modrinth.com/mod/cooking-for-blockheads)
+  - Recipe compatibility for the toaster and oven (ingredient spice profiles get correctly summed for the outputs).
+- [Serene Seasons](https://modrinth.com/mod/serene-seasons)
+  - Spice crops have realistic season data attached to them (with none growing in winter).
+- [Create]()
+  - Spices can be harvested via deployers.
+
+<br>
+
 ## Attribution:
 - Created from the template [jaredlll08/MultiLoader-Template.](https://github.com/jaredlll08/MultiLoader-Template)  
   Changes:
@@ -56,19 +68,13 @@ Then simply place the downloaded JAR file into your Minecraft `mods` folder and 
 
 <br>
 
-## GenAI Usage:
-We use GenAI to make tedious work easier and bridge knowledge gaps. [Read our full policy here.](https://github.com/the-drunken-cod#genai-usage)  
-That being said, **every generated line is reviewed**, and **all assets remain fully human-made.**
-
-<br>
-
 ## License:
-This project is licensed under the AGPL-3.0-or-later License.  
+This project is licensed under the AGPL-3.0-or-later license.  
 See the [`LICENSE.txt` file](https://github.com/#REPLACE_REPO/blob/develop/LICENSE.txt) for details.
 
 <br>
 
 ## Disclaimers:
-NOT AN OFFICIAL MINECRAFT PRODUCT. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT.  
-  
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+- We use Generative AI when coding to make tedious work easier and bridge knowledge gaps for this hobby project. [You can read our full policy here.](https://github.com/the-drunken-cod#genai-usage) That being said, **every generated line is reviewed**, and **all assets remain fully human-made.**
+- NOT AN OFFICIAL MINECRAFT PRODUCT. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT.  
+- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
