@@ -35,3 +35,11 @@
 - [ ] Investigate potential issues with Sable sublevels and spice regions.
 - [ ] Refactor config to use toml `[sections]`
 - [ ] Datagen recipes to turn spice wood logs into vanilla planks, type driven by an enum arg.
+- [ ] Advancements:
+    - [ ] Everything Bagel: achieve max seasoning buffs (positive or negative axes) on bread and eat it.
+    - [ ] (Unnamed): apply a common-rare spice to food.
+    - [ ] (Unnamed): apply an epic spice to food.
+    - [ ] (Unnamed): find a common-rare spice map
+    - [ ] (Unnamed): find an epic spice map
+    - [ ] (Unnamed): use a spice map
+    - [ ] Pumpkin Purist: season a pumpkin pie with cinnamon, nutmeg, ginger and cloves
