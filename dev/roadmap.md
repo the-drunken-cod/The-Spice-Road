@@ -1,6 +1,6 @@
 ### Milestones
 Warning: may contain outdated information, and is only to be used as a guideline. Milestone order is not fixed.
-1. **Spice Plants**
+1. [x] **Spice Plants**
     - [x] Uses custom perlin map, at a much larger scale than biomes (more like the "large biomes" preset).
         - Add F3 debug info for identifying spice regions (only in a debug env).
         - Plant generation respects biome parameters like temperature.
@@ -9,13 +9,29 @@ Warning: may contain outdated information, and is only to be used as a guideline
     - [x] Spice Profiles contain an assortment of double values of certain "flavor components" (like spicy, sweet, umami, but also fresh, strong, persistent, etc.).  
     The range of the values is -1 to +1, which allows spices to negatively stack. In order to do this in an intuitive way, spice profiles need to correspond to how the spices would interact in real life.
         - [ ] TODO: find an easy way of creating this system, i.e. a geometrical diagram or tree that will be traversed by the mechanic's algorithm.
-2. **Drying Rack**
-    - Note: mostly already implemented in Mycomancy, needs to be ported, except for the model, since it's limited to 2 inputs and outputs.
-    - Dries 2 (configurable) items at the same time.
+    - [ ] Make certain spices non-automatable.
+        - Vanilla and Saffron need to be hand-picked by an actual living player (no Create deployers).
+<!-- 2. **Spice Amplifiers**
+    - [ ] Materials that aren't usually eaten on their own, but also don't count as spices. Instead, they apply a multiplier onto the current flavor profile. If amplifiers are used more than n times (configurable, default 2), they harshly sway all values back towards zero.
+    - [ ] Data-driven in the same way spice profiles are.
+    - [ ] Items:
+        - Solar Salt (from drying): boosts all with a tiny multiplier.
+        - Kombu / MSG: boosts all with a small multiplier.
+        - Oil / Fat: boosts heat, clean, woody, earthy, floral, savory with a medium multiplier.
+            - 
+        - Acid: boosts sour, green & pungent with a medium multiplier.
+            - Vinegar
+            - Citrus
+        - Sugar / Honey: boosts sweet, lowers heat with a small multiplier. -->
+2. [ ] **Drying Rack**
+    - Note: mostly already implemented in Mycomancy, needs to be ported, except for the model, since it's limited to 2 inputs and outputs, and since Mycomancy only runs on NeoForge.
+    - Dries up to 2 items at the same time, hard limited by the model and renderer.
     - Custom recipe serializer (see Mycomancy).
+        - 1 input slot, 1 output slot, 1 extra slot per side, so 6 slots in total. This is an intentional deviation from Mycomancy's 4 slots.
     - Add Dried Spice item variants, with a set of different spice profile values.
         - Some spices will have more beneficial values when dried, others will have less.
-    - Drying Rack will be faster when placed next to a hot block (identified by a tag, refer to Mycomancy).
+        - Not all spices are dried.
+    - Drying Rack will be faster when placed next to a hot block (identified by a tag, again, refer to Mycomancy).
 3. **Spice Buffs**
     - Each spice gets a spice profile for its "fresh" and "dried" item variants.
     - There is a mechanic that makes different kinds of spices interact differently and yield different buffs of different levels.
@@ -55,6 +71,14 @@ Warning: may contain outdated information, and is only to be used as a guideline
         - Clog: the airlock is clogged, causing over-pressure sounds. If not corrected in a configurable time frame, it violently overflows, lowering hygiene by a lot (of course also configurable), and reducing output items. Has a bool blockstate prop.
         - Overheat: the jar is placed near a hot block, or in a hot biome during the day (deserts, badlands, nether) in direct sunlight (and transparent blocks). Check for this every 200 ticks (configurable) and update a bool blockstate prop accordingly.
     - Events can be configured in two different modes: "reduction", which makes failed events an active detriment, or "bonus", which makes processes start out with a configured bonus amount, which can decrease back to the base amount via failed events.
+9. **Spice Mixes**
+    - Combine spices into condensed items that impart more spice values at once.
+    - Predefined list of ~8 spice mixes with custom textures and a custom name ("Mediterranean Seasoning", etc.).
+    - Allow players to mix any spices together into custom spice mixes.
+10. **Documentation**
+    - Implement Patchouli as an in-game guide.
+    - Create user wiki.
+    - Create developer documentation.
 
 <br>
 
