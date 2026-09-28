@@ -47,7 +47,7 @@ Warning: may contain outdated information, and is only to be used as a guideline
         - Spice profile is stored via a data component. Items with the component render a custom tooltip when holding shift, displaying the final spice profile, and buffs.
     - When used, opens a GUI that shows all available spices and their amounts in a scrollable container on the left (grouped by "raw", "dried" and "crushed"), a food slot in the top right, and an info panel (displaying the current spice profile) in the bottom right. Below this, the regular inventory is rendered, as usual.
         - Food slot accepts any food item that is not on an exclude-taglist (`spice_road:unseasonable`). ItemStack can be up to 64 in size.
-        - Pulls all items from the player inventory, as well as all nearby (configurable radius) spice racks. When the player position changes, update the list (debounced by 10 ticks).
+        - Pulls all items from the player inventory, as well as all nearby (configurable radius) spice racks. When the player position changes, update the list (debounced by 10 ticks). Spice racks are a blockentity added by The Spice Road, but also exist in the mod cooking for blockheads, which should be included in this functionality and made compatible.
         - Hovering over a spice shows its rarity and spice profile levels tooltip.
         - Clicking a spice adds it to the food item stack's spice profile. When more food items are in the food slot than there are of the selected spice, nothing happens and a different click sound plays that indicates the action failed.
 6. **Villagers**
