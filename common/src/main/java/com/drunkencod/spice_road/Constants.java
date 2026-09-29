@@ -17,13 +17,12 @@ public class Constants {
     public static final Logger LOG = LoggerFactory.getLogger(MOD_NAME);
 
     /**
-     * Default growth stage count (highest age value) for
-     * {@code FLOWER_PATCH}/{@code CROP} Spice Plants. Shared source of truth
-     * between {@code IConfigHelper}'s config spec definitions and code that
-     * needs the default without reading a possibly-unloaded config (see
-     * {@link #DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER}).
+     * Growth stage count (highest age value) for {@code FLOWER_PATCH}/
+     * {@code CROP} Spice Plants. Fixed rather than configurable: it defines the
+     * blockstate property range, which is frozen at block registration, and
+     * every stage needs its own model and texture to exist.
      */
-    public static final int DEFAULT_SPICE_PLANT_GROWTH_STAGES = 4;
+    public static final int SPICE_PLANT_GROWTH_STAGES = 4;
 
     /**
      * Default harvest yield multiplier for {@code FLOWER_PATCH}/{@code CROP}

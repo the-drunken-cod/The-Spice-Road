@@ -31,13 +31,11 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
  * {@link SpiceVines}) drop themselves with shears, plus their Spice when ripe
  * (see {@link SpiceVineLootTables}).
  * <p>
- * Uses {@link Constants#DEFAULT_SPICE_PLANT_GROWTH_STAGES} rather than
- * {@code block.getMaxAge()} for the loot condition's threshold age: a pure
- * {@code runData} pass never loads config (see
- * {@link com.drunkencod.spice_road.block.SpicePlantBlock#getMaxAge()}), so
- * calling {@code getMaxAge()} here would crash datagen the same way reading
- * config during block registration did. Re-run datagen after changing that
- * default to regenerate the loot tables.
+ * The harvest yield bakes in
+ * {@link Constants#DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER} rather than
+ * the live config value, since a pure {@code runData} pass may run before the
+ * config file is loaded. Re-run datagen after changing that default to
+ * regenerate the loot tables.
  */
 public class NeoForgeSpiceLootProvider extends LootTableProvider {
 
@@ -85,7 +83,7 @@ public class NeoForgeSpiceLootProvider extends LootTableProvider {
             this.add(block, SpicePlantLootTables.create(
                     block,
                     block.getAgeProperty(),
-                    Constants.DEFAULT_SPICE_PLANT_GROWTH_STAGES,
+                    Constants.SPICE_PLANT_GROWTH_STAGES,
                     plant.seedItem().get(),
                     plant.productItem().get(),
                     (int) Math.floor(spice.getDropAmount() * Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER),

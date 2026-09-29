@@ -15,10 +15,9 @@ import net.minecraft.core.HolderLookup;
 
 /**
  * Fabric counterpart of {@code NeoForgeSpiceLootProvider} - see that class
- * and {@link SpicePlantLootTables} for the shared loot table shape. Also
- * uses {@link Constants#DEFAULT_SPICE_PLANT_GROWTH_STAGES} instead of
- * {@code block.getMaxAge()} for the same reason (config isn't loaded during
- * {@code runData}). Spice Tree blocks use vanilla's log/sapling self-drops and
+ * and {@link SpicePlantLootTables} for the shared loot table shape, and for why
+ * the harvest yield is baked in rather than read from live config.
+ * Spice Tree blocks use vanilla's log/sapling self-drops and
  * leaves drops, plus the Spice from ripe fruiting leaves (see
  * {@link SpiceTreeLootTables}). Spice Vine blocks drop themselves with shears,
  * plus their Spice when ripe (see {@link SpiceVineLootTables}).
@@ -60,7 +59,7 @@ public class FabricSpiceLootProvider extends FabricBlockLootTableProvider {
         this.add(block, SpicePlantLootTables.create(
                 block,
                 block.getAgeProperty(),
-                Constants.DEFAULT_SPICE_PLANT_GROWTH_STAGES,
+                Constants.SPICE_PLANT_GROWTH_STAGES,
                 plant.seedItem().get(),
                 plant.productItem().get(),
                 (int) Math.floor(spice.getDropAmount() * Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER),

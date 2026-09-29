@@ -124,27 +124,6 @@ public interface IConfigHelper {
     int getSpiceHardyHarvestDifficulty();
 
     /**
-     * Configured growth stage count (highest age value, 1-7) shared by every
-     * {@code FLOWER_PATCH}/{@code CROP} Spice Plant block.
-     * <p>
-     * <b>Not currently applied by the block itself.</b> Vanilla
-     * {@code CropBlock#isRandomlyTicking()} calls {@code getMaxAge()} during
-     * block-state-freeze, which happens immediately after
-     * {@code RegisterEvent} and always before {@code ModConfigEvent.Loading}
-     * in every environment. There is no safe point at which a {@code Block} can
-     * read live config for this value, so {@code SpicePlantBlock#getMaxAge()}
-     * returns
-     * {@link com.drunkencod.spice_road.Constants#DEFAULT_SPICE_PLANT_GROWTH_STAGES}
-     * directly instead of calling this method. This accessor is kept for any
-     * future mechanic that genuinely reads it at true runtime (e.g. a
-     * growth-chance multiplier checked during {@code randomTick}), not for
-     * the stage count itself.
-     *
-     * @return The configured growth stage count.
-     */
-    int getSpicePlantGrowthStages();
-
-    /**
      * Configured harvest yield multiplier for
      * {@code FLOWER_PATCH}/{@code CROP} Spice Plants. Note: loot table datagen does
      * not call this method directly (a pure {@code runData} pass may run before
@@ -161,12 +140,8 @@ public interface IConfigHelper {
      * Growth-speed multiplier for {@code FLOWER_PATCH}/{@code CROP} Spice Plants
      * of the given {@link Tier} (see {@code Spice#getTier()}), applied on top of
      * vanilla's farmland/light-based growth odds - {@code 1.0} matches vanilla
-     * speed, {@code < 1.0} slows growth down, {@code > 1.0} speeds it up.
-     * <p>
-     * Unlike {@link #getSpicePlantGrowthStages()}, this is read live at
-     * tick-time (see {@code SpicePlantBlock#randomTick}), not during
-     * block-state-freeze, so there is no constraint against reading it directly
-     * from live config.
+     * speed, {@code < 1.0} slows growth down, {@code > 1.0} speeds it up. Read
+     * live at tick-time (see {@code SpicePlantBlock#randomTick}).
      *
      * @param tier The Spice's {@link Tier}.
      * @return The configured growth-speed multiplier for that tier.

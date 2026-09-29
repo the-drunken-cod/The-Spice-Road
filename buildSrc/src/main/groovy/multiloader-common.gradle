@@ -123,7 +123,8 @@ processResources {
             'java_version'                 : java_version,
             'farmers_delight_min_version'  : farmers_delight_min_version,
             'farmers_delight_refabricated_min_version': farmers_delight_refabricated_min_version,
-            'cooking_for_blockheads_min_version': cooking_for_blockheads_min_version
+            'cooking_for_blockheads_min_version': cooking_for_blockheads_min_version,
+            'modmenu_min_version'          : modmenu_min_version
     ]
 
     filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/neoforge.mods.toml', '*.mixins.json']) {

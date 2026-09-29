@@ -1,384 +1,406 @@
 package com.drunkencod.spice_road.config;
 
-import java.util.Random;
+import java.lang.reflect.Field;
 
 import com.drunkencod.spice_road.Constants;
-import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Tier;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
-import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
+import me.shedaniel.autoconfig.serializer.ConfigSerializer;
+import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 
 /**
  * Fabric implementation of {@link IConfigHelper}, backed by Cloth Config's
- * AutoConfig with separate common, server, and client config files.
+ * AutoConfig with one file per {@link ConfigFile}.
+ * <p>
+ * The config classes are storage only: every default comes from
+ * {@link ConfigSchema}, and {@code validatePostLoad} clamps each field to the
+ * schema's range, since AutoConfig enforces no bounds of its own. Comments are
+ * written by {@link CommentedJsonConfigSerializer}.
  */
 public class FabricConfigHelper implements IConfigHelper {
 
-    // -------------------------------------------------------------------------
-    // Registration - called during mod initialization
-    // -------------------------------------------------------------------------
+    // #region Registration
 
     /**
-     * Registers all config files with AutoConfig. Must be called during mod
+     * Registers the config with AutoConfig. Must be called during mod
      * initialization, before any config value is read.
+     * <p>
+     * The two files are registered as one partitioned config so that ModMenu -
+     * which allows a mod only a single screen - can reach both of them, as one
+     * category each. Each partition still gets its own file, under
+     * {@code config/spice_road/}.
      */
     public void register() {
-        AutoConfig.register(CommonConfigData.class, GsonConfigSerializer::new);
-        AutoConfig.register(ServerConfigData.class, GsonConfigSerializer::new);
-        AutoConfig.register(ClientConfigData.class, GsonConfigSerializer::new);
+        ConfigSerializer.Factory<ConfigData> partitions = (definition, configClass) -> new CommentedJsonConfigSerializer<>(
+                definition, configClass, fileOf(configClass));
+        AutoConfig.register(SpiceRoadConfigData.class, PartitioningSerializer.wrap(partitions));
     }
 
-    // -------------------------------------------------------------------------
-    // IConfigHelper implementation
-    // -------------------------------------------------------------------------
+    /**
+     * @param configClass One of the partition classes.
+     * @return The schema file whose options back it.
+     */
+    private static ConfigFile fileOf(Class<?> configClass) {
+        return configClass == ClientConfigData.class ? ConfigFile.CLIENT : ConfigFile.SERVER;
+    }
+
+    /** @return The config screen factory ModMenu opens, covering both partitions. */
+    public static Class<SpiceRoadConfigData> getConfigClass() {
+        return SpiceRoadConfigData.class;
+    }
+
+    private static ServerConfigData server() {
+        return AutoConfig.getConfigHolder(SpiceRoadConfigData.class).getConfig().server;
+    }
+
+    private static ClientConfigData client() {
+        return AutoConfig.getConfigHolder(SpiceRoadConfigData.class).getConfig().client;
+    }
+
+    // #region IConfigHelper implementation
 
     @Override
     public double getSpiceRegionCellScale() {
-        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceRegionCellScale;
+        return server().region.cellScale;
     }
 
     @Override
     public long getSpiceRegionSalt() {
-        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceRegionSalt;
+        return server().region.salt;
     }
 
     @Override
     public double getSpiceRegionClusteringStrength() {
-        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceRegionClusteringStrength;
+        return server().region.clusteringStrength;
     }
 
     @Override
     public int getSpiceMapSearchRadiusCells() {
-        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceMapSearchRadiusCells;
+        return server().spiceMap.searchRadiusCells;
     }
 
     @Override
     public int getSpiceMapVillagerSearchRadiusCells() {
-        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceMapVillagerSearchRadiusCells;
+        return server().spiceMap.villagerSearchRadiusCells;
     }
 
     @Override
     public boolean isSpiceMapTradesEnabled() {
-        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceMapTradesEnabled;
+        return server().spiceMap.trades.enabled;
     }
 
     @Override
     public int getSpiceMapBasePrice() {
-        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceMapBasePrice;
+        return server().spiceMap.trades.basePrice;
     }
 
     @Override
     public double getSpiceMapPriceMultiplier(Tier tier) {
-        ServerConfigData config = AutoConfig.getConfigHolder(ServerConfigData.class).getConfig();
-        double multiplier = switch (tier) {
-            case COMMON -> config.spiceMapPriceMultiplierCommon;
-            case UNCOMMON -> config.spiceMapPriceMultiplierUncommon;
-            case RARE -> config.spiceMapPriceMultiplierRare;
-            case EPIC -> config.spiceMapPriceMultiplierEpic;
-        };
-        return Math.clamp(multiplier, 1.0, 2.0);
+        return server().spiceMap.trades.priceMultiplier.of(tier);
     }
 
     @Override
     public boolean isSpiceMapLootEnabled() {
-        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceMapLootEnabled;
+        return server().spiceMap.lootEnabled;
     }
 
     @Override
     public boolean isSpiceRegionPlantingRestricted() {
-        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceRegionPlantingRestricted;
+        return server().cultivation.regionPlantingRestricted;
     }
 
     @Override
     public int getSpiceHardyHarvestDifficulty() {
-        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceHardyHarvestDifficulty;
-    }
-
-    @Override
-    public int getSpicePlantGrowthStages() {
-        return AutoConfig.getConfigHolder(CommonConfigData.class).getConfig().spicePlantGrowthStages;
+        return server().cultivation.hardyHarvestDifficulty;
     }
 
     @Override
     public double getSpicePlantHarvestYieldMultiplier() {
-        return AutoConfig.getConfigHolder(CommonConfigData.class).getConfig().spicePlantHarvestYieldMultiplier;
+        return server().plant.harvestYieldMultiplier;
     }
 
     @Override
     public double getSpicePlantGrowthSpeedMultiplier(Tier tier) {
-        ServerConfigData config = AutoConfig.getConfigHolder(ServerConfigData.class).getConfig();
-        return switch (tier) {
-            case COMMON -> config.spiceGrowthSpeedCommon;
-            case UNCOMMON -> config.spiceGrowthSpeedUncommon;
-            case RARE -> config.spiceGrowthSpeedRare;
-            case EPIC -> config.spiceGrowthSpeedEpic;
-        };
+        return server().cultivation.growthSpeed.of(tier);
     }
 
     @Override
     public double getSpiceTreeHarvestYieldMultiplier() {
-        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().spiceTreeHarvestYieldMultiplier;
+        return server().tree.harvestYieldMultiplier;
     }
 
     @Override
     public double getSpiceTreeFruitingLeavesChance(Tier tier) {
-        ServerConfigData config = AutoConfig.getConfigHolder(ServerConfigData.class).getConfig();
-        return switch (tier) {
-            case COMMON -> config.spiceTreeFruitingLeavesCommon;
-            case UNCOMMON -> config.spiceTreeFruitingLeavesUncommon;
-            case RARE -> config.spiceTreeFruitingLeavesRare;
-            case EPIC -> config.spiceTreeFruitingLeavesEpic;
-        };
+        return server().tree.fruitingLeaves.of(tier);
     }
 
     @Override
     public double getCookingVarianceMin() {
-        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().cookingVarianceMin;
+        return server().cooking.varianceMin;
     }
 
     @Override
     public double getCookingVarianceMax() {
-        return AutoConfig.getConfigHolder(ServerConfigData.class).getConfig().cookingVarianceMax;
+        return server().cooking.varianceMax;
     }
 
     @Override
     public double getFlavorSoftCap() {
-        return AutoConfig.getConfigHolder(CommonConfigData.class).getConfig().flavorSoftCap;
+        return server().flavor.softCap;
     }
 
     @Override
     public double getFlavorMinimumAxisValue() {
-        return AutoConfig.getConfigHolder(CommonConfigData.class).getConfig().flavorMinimumAxisValue;
+        return server().flavor.minimumAxisValue;
     }
 
     @Override
     public double getSufficientlySeasoned() {
-        return AutoConfig.getConfigHolder(CommonConfigData.class).getConfig().sufficientlySeasoned;
+        return server().flavor.sufficientlySeasoned;
     }
 
     @Override
     public boolean isTooltipBothAxisLabelsShown() {
-        return AutoConfig.getConfigHolder(ClientConfigData.class).getConfig().tooltipShowBothAxisLabels;
+        return client().tooltip.showBothAxisLabels;
     }
 
     @Override
     public boolean isTooltipAxisValueShown() {
-        return AutoConfig.getConfigHolder(ClientConfigData.class).getConfig().tooltipShowAxisValues;
+        return client().tooltip.showAxisValues;
     }
 
     @Override
     public boolean isTooltipShiftBypassed() {
-        return AutoConfig.getConfigHolder(ClientConfigData.class).getConfig().tooltipAlwaysShowShiftContent;
+        return client().tooltip.alwaysShowShiftContent;
     }
 
-    // -------------------------------------------------------------------------
-    // Config data classes
-    // -------------------------------------------------------------------------
+    // #region Clamping
 
-    /** Common config, loaded on both physical sides. */
-    @Config(name = Constants.MOD_ID + "_common")
-    public static class CommonConfigData implements ConfigData {
-        /**
-         * Growth stage count (highest age value, 1-7) shared by every
-         * FLOWER_PATCH/CROP Spice Plant block. Read once per block at
-         * registration time; requires a restart to take effect.
-         */
-        @ConfigEntry.Gui.Tooltip
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 7)
-        public int spicePlantGrowthStages = Constants.DEFAULT_SPICE_PLANT_GROWTH_STAGES;
-
-        /**
-         * Flat harvest yield (item count) for FLOWER_PATCH/CROP Spice
-         * Plants. TODO: add tier-based scaling.
-         * Loot tables bake in the default value of this option at datagen time, not
-         * this live value; re-run datagen after changing
-         * {@link Constants#DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER} to regenerate
-         * them.
-         */
-        @ConfigEntry.Gui.Tooltip
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 64)
-        public double spicePlantHarvestYieldMultiplier = Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER;
-
-        /**
-         * Magnitude each flavor axis saturates towards when a profile is
-         * read for effects and tooltips, giving diminishing returns when
-         * stacking many spices. Stored values are never capped.
-         */
-        @ConfigEntry.Gui.Tooltip
-        public double flavorSoftCap = 10.0;
-
-        /**
-         * Magnitude any non-zero flavor axis counts as at least when a
-         * profile is read for effects and tooltips.
-         */
-        @ConfigEntry.Gui.Tooltip
-        public double flavorMinimumAxisValue = 0.05;
-
-        /**
-         * Magnitude a raw flavor axis must reach, in either direction, to
-         * count as Sufficiently Seasoned for pass/fail checks like
-         * advancement criteria. Independent of {@link #flavorSoftCap}.
-         */
-        @ConfigEntry.Gui.Tooltip
-        public double sufficientlySeasoned = 7.0;
+    /**
+     * Moves every field of a loaded config back inside the range its schema
+     * entry declares. AutoConfig has no notion of bounds, so without this a
+     * hand-edited file could feed nonsense (a negative flavor soft cap, say)
+     * straight into gameplay code.
+     *
+     * @param root The freshly loaded config object.
+     * @param file The schema file describing it.
+     */
+    private static void clampToSchema(Object root, ConfigFile file) {
+        for (ConfigOption<?> entry : ConfigSchema.options(file)) {
+            try {
+                clampOne(root, entry);
+            } catch (ReflectiveOperationException | RuntimeException e) {
+                Constants.LOG.error("Could not range-check config option {}", entry.getDottedPath(), e);
+            }
+        }
     }
 
-    /** Gameplay config read by the logical server. */
-    @Config(name = Constants.MOD_ID + "_server")
+    private static <T extends Comparable<T>> void clampOne(Object root,
+            ConfigOption<T> entry) throws ReflectiveOperationException {
+        if (entry.getMin() == null || entry.getMax() == null) {
+            return;
+        }
+        Object owner = root;
+        for (String name : entry.getSection().getPath()) {
+            owner = fieldOf(owner, name).get(owner);
+        }
+        Field field = fieldOf(owner, entry.getKey());
+        T current = entry.getType().cast(field.get(owner));
+        T clamped = entry.clamp(current);
+        if (!clamped.equals(current)) {
+            Constants.LOG.warn("Config option {} was {}, clamped to {}", entry.getDottedPath(), current, clamped);
+            field.set(owner, clamped);
+        }
+    }
+
+    private static Field fieldOf(Object owner, String name) throws NoSuchFieldException {
+        Field field = owner.getClass().getDeclaredField(name);
+        field.setAccessible(true);
+        return field;
+    }
+
+    // #region Config data classes
+
+    /**
+     * The whole config, as the single unit ModMenu opens. Each partition below
+     * is written to its own file; see {@link #register()}.
+     */
+    @Config(name = Constants.MOD_ID)
+    public static class SpiceRoadConfigData extends PartitioningSerializer.GlobalData {
+        @ConfigEntry.Category("server")
+        @ConfigEntry.Gui.TransitiveObject
+        public ServerConfigData server = new ServerConfigData();
+        @ConfigEntry.Category("client")
+        @ConfigEntry.Gui.TransitiveObject
+        public ClientConfigData client = new ClientConfigData();
+    }
+
+    /** Gameplay values, mirroring {@code spice_road-server.toml} on NeoForge. */
+    @Config(name = "server")
     public static class ServerConfigData implements ConfigData {
-        @ConfigEntry.Gui.Tooltip
-        public double spiceRegionCellScale = 256.0;
 
-        /**
-         * Salt mixed into the world seed when resolving Spice Regions. Defaults
-         * to a random value when this config is first created. WARNING: affects
-         * world generation - changing it reshuffles every Spice Region,
-         * including in already generated chunks.
-         */
-        @ConfigEntry.Gui.Tooltip
-        public long spiceRegionSalt = new Random().nextLong();
+        @ConfigEntry.Gui.CollapsibleObject
+        public Region region = new Region();
+        @ConfigEntry.Gui.CollapsibleObject
+        public SpiceMap spiceMap = new SpiceMap();
+        @ConfigEntry.Gui.CollapsibleObject
+        public Cultivation cultivation = new Cultivation();
+        @ConfigEntry.Gui.CollapsibleObject
+        public Plant plant = new Plant();
+        @ConfigEntry.Gui.CollapsibleObject
+        public Tree tree = new Tree();
+        @ConfigEntry.Gui.CollapsibleObject
+        public Flavor flavor = new Flavor();
+        @ConfigEntry.Gui.CollapsibleObject
+        public Cooking cooking = new Cooking();
 
-        @ConfigEntry.Gui.Tooltip
-        public double spiceRegionClusteringStrength = Services.PLATFORM.isDedicatedServer() ? 1.75 : 1.0;
+        @Override
+        public void validatePostLoad() {
+            clampToSchema(this, ConfigFile.SERVER);
+        }
 
-        /**
-         * Maximum distance, in Spice Region cells, searched for a Spice
-         * Region's heart by /locate spice, /locate spice_climate, and by
-         * Spice Map chest loot.
-         */
-        @ConfigEntry.Gui.Tooltip
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 1000)
-        public int spiceMapSearchRadiusCells = 25;
+        /** Spice Region layout and identity. */
+        public static class Region {
+            @ConfigEntry.Gui.Tooltip
+            public double cellScale = ConfigSchema.REGION_CELL_SCALE.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            @ConfigEntry.Gui.RequiresRestart
+            public long salt = ConfigSchema.REGION_SALT.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public double clusteringStrength = ConfigSchema.REGION_CLUSTERING_STRENGTH.getDefault();
+        }
 
-        /**
-         * Maximum distance, in Spice Region cells, a cartographer searches for
-         * a Spice Region's heart when offering a Spice Map.
-         */
-        @ConfigEntry.Gui.Tooltip
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 1000)
-        public int spiceMapVillagerSearchRadiusCells = 12;
+        /** Finding Spice Regions, and the maps that point to them. */
+        public static class SpiceMap {
+            @ConfigEntry.Gui.Tooltip
+            public int searchRadiusCells = ConfigSchema.SPICE_MAP_SEARCH_RADIUS_CELLS.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public int villagerSearchRadiusCells = ConfigSchema.SPICE_MAP_VILLAGER_SEARCH_RADIUS_CELLS.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public boolean lootEnabled = ConfigSchema.SPICE_MAP_LOOT_ENABLED.getDefault();
+            @ConfigEntry.Gui.CollapsibleObject
+            public Trades trades = new Trades();
+        }
 
-        /** Whether cartographers offer Spice Map trades. */
-        @ConfigEntry.Gui.Tooltip
-        public boolean spiceMapTradesEnabled = true;
+        /** Cartographer Spice Map offers. */
+        public static class Trades {
+            @ConfigEntry.Gui.Tooltip
+            public boolean enabled = ConfigSchema.SPICE_MAP_TRADES_ENABLED.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public int basePrice = ConfigSchema.SPICE_MAP_BASE_PRICE.getDefault();
+            @ConfigEntry.Gui.CollapsibleObject
+            public PerTier priceMultiplier = PerTier.of(ConfigSchema.SPICE_MAP_PRICE_MULTIPLIER);
+        }
 
-        /**
-         * Base emerald price of a Spice Map trade, multiplied by the Spice's
-         * tier multiplier. Capped at 128; above 64, the compass is replaced by
-         * a second stack of emeralds.
-         */
-        @ConfigEntry.Gui.Tooltip
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 128)
-        public int spiceMapBasePrice = 16;
+        /** Where Spices may be planted, and how quickly they grow. */
+        public static class Cultivation {
+            @ConfigEntry.Gui.Tooltip
+            public boolean regionPlantingRestricted = ConfigSchema.CULTIVATION_REGION_PLANTING_RESTRICTED.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public int hardyHarvestDifficulty = ConfigSchema.CULTIVATION_HARDY_HARVEST_DIFFICULTY.getDefault();
+            @ConfigEntry.Gui.CollapsibleObject
+            public PerTier growthSpeed = PerTier.of(ConfigSchema.CULTIVATION_GROWTH_SPEED_MULTIPLIER);
+        }
 
-        /** Spice Map price multiplier (1.0-2.0) per {@link Tier}. */
-        @ConfigEntry.Gui.Tooltip
-        public double spiceMapPriceMultiplierCommon = 1.0;
+        /** Harvesting Spices that grow on the ground. */
+        public static class Plant {
+            @ConfigEntry.Gui.Tooltip
+            public double harvestYieldMultiplier = ConfigSchema.PLANT_HARVEST_YIELD_MULTIPLIER.getDefault();
+        }
 
-        @ConfigEntry.Gui.Tooltip
-        public double spiceMapPriceMultiplierUncommon = 1.33;
+        /** Harvesting Spices that grow on trees. */
+        public static class Tree {
+            @ConfigEntry.Gui.Tooltip
+            public double harvestYieldMultiplier = ConfigSchema.TREE_HARVEST_YIELD_MULTIPLIER.getDefault();
+            @ConfigEntry.Gui.CollapsibleObject
+            public PerTier fruitingLeaves = PerTier.of(ConfigSchema.TREE_FRUITING_LEAVES_CHANCE);
+        }
 
-        @ConfigEntry.Gui.Tooltip
-        public double spiceMapPriceMultiplierRare = 1.67;
+        /** How stored Spice Profiles turn into the flavor a player gets. */
+        public static class Flavor {
+            @ConfigEntry.Gui.Tooltip
+            public double softCap = ConfigSchema.FLAVOR_SOFT_CAP.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public double minimumAxisValue = ConfigSchema.FLAVOR_MINIMUM_AXIS_VALUE.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public double sufficientlySeasoned = ConfigSchema.FLAVOR_SUFFICIENTLY_SEASONED.getDefault();
+        }
 
-        @ConfigEntry.Gui.Tooltip
-        public double spiceMapPriceMultiplierEpic = 2.0;
-
-        /** Whether Spice Maps can generate as chest loot. */
-        @ConfigEntry.Gui.Tooltip
-        public boolean spiceMapLootEnabled = true;
-
-        @ConfigEntry.Gui.Tooltip
-        public boolean spiceRegionPlantingRestricted = true;
-
-        @ConfigEntry.Gui.Tooltip
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 5)
-        public int spiceHardyHarvestDifficulty = 2;
-
-        /**
-         * Growth-speed multiplier for Spice Plants, applied on top of vanilla's
-         * farmland/light-based growth odds, per {@link Tier}. 1.0 matches vanilla
-         * speed, less than 1.0 slows growth down, greater than 1.0 speeds it up.
-         */
-        @ConfigEntry.Gui.Tooltip
-        public double spiceGrowthSpeedCommon = 1.0;
-
-        @ConfigEntry.Gui.Tooltip
-        public double spiceGrowthSpeedUncommon = 1.0;
-
-        @ConfigEntry.Gui.Tooltip
-        public double spiceGrowthSpeedRare = 1.0;
-
-        @ConfigEntry.Gui.Tooltip
-        public double spiceGrowthSpeedEpic = 1.0;
-
-        /**
-         * Harvest yield multiplier for Spice Trees, applied when stripping bark
-         * or picking fruiting leaves.
-         */
-        @ConfigEntry.Gui.Tooltip
-        public double spiceTreeHarvestYieldMultiplier = Constants.DEFAULT_SPICE_TREE_HARVEST_YIELD_MULTIPLIER;
-
-        /**
-         * Fraction (0.0-1.0) of air-exposed, naturally grown leaves of
-         * fruiting Spice Trees that can bear fruit, per {@link Tier}.
-         */
-        @ConfigEntry.Gui.Tooltip
-        public double spiceTreeFruitingLeavesCommon = 0.3;
-
-        @ConfigEntry.Gui.Tooltip
-        public double spiceTreeFruitingLeavesUncommon = 0.2;
-
-        @ConfigEntry.Gui.Tooltip
-        public double spiceTreeFruitingLeavesRare = 0.15;
-
-        @ConfigEntry.Gui.Tooltip
-        public double spiceTreeFruitingLeavesEpic = 0.1;
-
-        /**
-         * Lower bound of the per-flavor-axis multipliers applied to inherited
-         * flavor when cooking. Results are reproducible: the same ingredients
-         * always cook into the same flavor.
-         */
-        @ConfigEntry.Gui.Tooltip
-        public double cookingVarianceMin = 0.85;
-
-        /**
-         * Upper bound of the per-flavor-axis multipliers applied to inherited
-         * flavor when cooking.
-         */
-        @ConfigEntry.Gui.Tooltip
-        public double cookingVarianceMax = 1.15;
+        /** How cooking alters inherited flavor. */
+        public static class Cooking {
+            @ConfigEntry.Gui.Tooltip
+            public double varianceMin = ConfigSchema.COOKING_VARIANCE_MIN.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public double varianceMax = ConfigSchema.COOKING_VARIANCE_MAX.getDefault();
+        }
     }
 
-    /** Client-only display config. */
+    /** Client-only display values, mirroring {@code spice_road-client.toml}. */
     @Config(name = Constants.MOD_ID + "_client")
     public static class ClientConfigData implements ConfigData {
-        /**
-         * Whether Flavor Axis tooltips show both labels of each axis (e.g.
-         * [Spicy / Cooling]), emphasizing the one matching the value, instead
-         * of only the matching one.
-         */
+
+        @ConfigEntry.Gui.CollapsibleObject
+        public TooltipDisplay tooltip = new TooltipDisplay();
+
+        @Override
+        public void validatePostLoad() {
+            clampToSchema(this, ConfigFile.CLIENT);
+        }
+
+        /** What the mod shows on item tooltips. */
+        public static class TooltipDisplay {
+            @ConfigEntry.Gui.Tooltip
+            public boolean showBothAxisLabels = ConfigSchema.TOOLTIP_SHOW_BOTH_AXIS_LABELS.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public boolean showAxisValues = ConfigSchema.TOOLTIP_SHOW_AXIS_VALUES.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public boolean alwaysShowShiftContent = ConfigSchema.TOOLTIP_ALWAYS_SHOW_SHIFT_CONTENT.getDefault();
+        }
+    }
+
+    /**
+     * The four per-{@link Tier} values a schema section declares, as a nested
+     * object so the config file reads {@code common}/{@code uncommon}/… inside
+     * its section rather than repeating the tier in every key.
+     */
+    public static class PerTier {
         @ConfigEntry.Gui.Tooltip
-        public boolean tooltipShowBothAxisLabels = false;
+        public double common;
+        @ConfigEntry.Gui.Tooltip
+        public double uncommon;
+        @ConfigEntry.Gui.Tooltip
+        public double rare;
+        @ConfigEntry.Gui.Tooltip
+        public double epic;
 
         /**
-         * Whether Flavor Axis tooltips show each axis' value, multiplied by
-         * 10, after its label (e.g. [Spicy: 5]).
+         * @param entries The schema's per-tier options for one section.
+         * @return A value object holding each tier's default.
          */
-        @ConfigEntry.Gui.Tooltip
-        public boolean tooltipShowAxisValues = false;
+        static PerTier of(java.util.Map<Tier, ConfigOption<Double>> entries) {
+            PerTier values = new PerTier();
+            values.common = entries.get(Tier.COMMON).getDefault();
+            values.uncommon = entries.get(Tier.UNCOMMON).getDefault();
+            values.rare = entries.get(Tier.RARE).getDefault();
+            values.epic = entries.get(Tier.EPIC).getDefault();
+            return values;
+        }
 
         /**
-         * Whether all of this mod's tooltip content that normally requires
-         * holding Shift is always shown instead. Can help with finding specific
-         * items in JEI/EMI, since their search can then match this content.
+         * @param tier The tier to read.
+         * @return That tier's configured value.
          */
-        @ConfigEntry.Gui.Tooltip
-        public boolean tooltipAlwaysShowShiftContent = false;
+        public double of(Tier tier) {
+            return switch (tier) {
+                case COMMON -> common;
+                case UNCOMMON -> uncommon;
+                case RARE -> rare;
+                case EPIC -> epic;
+            };
+        }
     }
 }

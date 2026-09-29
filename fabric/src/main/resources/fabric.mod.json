@@ -23,6 +23,9 @@
         ],
         "fabric-datagen": [
             "com.drunkencod.spice_road.ModDataGen"
+        ],
+        "modmenu": [
+            "com.drunkencod.spice_road.config.ModMenuIntegration"
         ]
     },
     "accessWidener": "${mod_id}.accesswidener",
@@ -38,6 +41,7 @@
         "java": ">=${java_version}"
     },
     "suggests": {
+        "modmenu": ">=${modmenu_min_version}",
         "cookingforblockheads": ">=${cooking_for_blockheads_min_version}",
         "farmersdelight": ">=${farmers_delight_refabricated_min_version}"
     },

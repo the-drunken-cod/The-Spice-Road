@@ -1,417 +1,243 @@
 package com.drunkencod.spice_road.config;
 
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.neoforge.common.ModConfigSpec;
-import org.apache.commons.lang3.tuple.Pair;
 
-import com.drunkencod.spice_road.Constants;
-import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Tier;
 
 /**
- * NeoForge implementation of {@link IConfigHelper}, backed by
- * {@link ModConfigSpec}s for the common, server, and client configs.
+ * NeoForge implementation of {@link IConfigHelper}, building one
+ * {@link ModConfigSpec} per {@link ConfigFile} out of {@link ConfigSchema}.
+ * <p>
+ * Every option's default, range, restart requirement and translation key comes
+ * from the schema, and its comment from {@link ConfigText}, so nothing about an
+ * option is restated here.
  */
 public class NeoForgeConfigHelper implements IConfigHelper {
 
-    // -------------------------------------------------------------------------
-    // Common (startup) config
-    // -------------------------------------------------------------------------
-
-    /** Common config values, loaded on both physical sides. */
-    public static final CommonConfig COMMON;
-    private static final ModConfigSpec COMMON_SPEC;
+    private static final Map<ConfigOption<?>, ModConfigSpec.ConfigValue<?>> VALUES = new HashMap<>();
+    private static final Map<ConfigFile, ModConfigSpec> SPECS = new HashMap<>();
 
     static {
-        Pair<CommonConfig, ModConfigSpec> specPair = new ModConfigSpec.Builder()
-                .configure(CommonConfig::new);
-        COMMON = specPair.getLeft();
-        COMMON_SPEC = specPair.getRight();
+        for (ConfigFile file : ConfigFile.values()) {
+            SPECS.put(file, buildSpec(file));
+        }
     }
 
-    // -------------------------------------------------------------------------
-    // Server config
-    // -------------------------------------------------------------------------
-
-    /** Gameplay config values, synced from the logical server. */
-    public static final ServerConfig SERVER;
-    private static final ModConfigSpec SERVER_SPEC;
-
-    static {
-        Pair<ServerConfig, ModConfigSpec> specPair = new ModConfigSpec.Builder()
-                .configure(ServerConfig::new);
-        SERVER = specPair.getLeft();
-        SERVER_SPEC = specPair.getRight();
-    }
-
-    // -------------------------------------------------------------------------
-    // Client config
-    // -------------------------------------------------------------------------
-
-    /** Client-only display config values. */
-    public static final ClientConfig CLIENT;
-    private static final ModConfigSpec CLIENT_SPEC;
-
-    static {
-        Pair<ClientConfig, ModConfigSpec> specPair = new ModConfigSpec.Builder()
-                .configure(ClientConfig::new);
-        CLIENT = specPair.getLeft();
-        CLIENT_SPEC = specPair.getRight();
-    }
-
-    // -------------------------------------------------------------------------
-    // Registration - called from SpiceRoadMod constructor
-    // -------------------------------------------------------------------------
+    // #region Registration
 
     /**
-     * Must be called in the NeoForge mod constructor with the injected
-     * {@link ModContainer} so that configs are registered before the world loads.
+     * Registers every config spec. Must be called from the NeoForge mod
+     * constructor with the injected {@link ModContainer}, so configs are loaded
+     * before the world is.
+     *
+     * @param modContainer The mod's container.
      */
     public void register(ModContainer modContainer) {
-        modContainer.registerConfig(ModConfig.Type.COMMON, COMMON_SPEC);
-        modContainer.registerConfig(ModConfig.Type.SERVER, SERVER_SPEC);
-        modContainer.registerConfig(ModConfig.Type.CLIENT, CLIENT_SPEC);
+        modContainer.registerConfig(ModConfig.Type.SERVER, SPECS.get(ConfigFile.SERVER));
+        modContainer.registerConfig(ModConfig.Type.CLIENT, SPECS.get(ConfigFile.CLIENT));
     }
 
-    // -------------------------------------------------------------------------
-    // IConfigHelper implementation
-    // -------------------------------------------------------------------------
+    // #region Spec building
+
+    private static ModConfigSpec buildSpec(ConfigFile file) {
+        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+        for (ConfigSection section : rootsOf(file)) {
+            appendSection(builder, file, section);
+        }
+        return builder.build();
+    }
+
+    /** Emits one section, its options, and then its subsections, in schema order. */
+    private static void appendSection(ModConfigSpec.Builder builder, ConfigFile file, ConfigSection section) {
+        builder.comment(ConfigText.comment(section.getTranslationKey()))
+                .translation(section.getTranslationKey())
+                .push(section.getName());
+        for (ConfigOption<?> entry : ConfigSchema.options(file)) {
+            if (entry.getSection() == section) {
+                VALUES.put(entry, define(builder, entry));
+            }
+        }
+        for (ConfigSection child : childrenOf(file, section)) {
+            appendSection(builder, file, child);
+        }
+        builder.pop();
+    }
+
+    private static List<ConfigSection> rootsOf(ConfigFile file) {
+        return ConfigSchema.sections(file).stream().filter(section -> section.getParent() == null).toList();
+    }
+
+    private static List<ConfigSection> childrenOf(ConfigFile file, ConfigSection parent) {
+        List<ConfigSection> children = new ArrayList<>();
+        for (ConfigSection section : ConfigSchema.sections(file)) {
+            if (section.getParent() == parent) {
+                children.add(section);
+            }
+        }
+        return children;
+    }
+
+    private static ModConfigSpec.ConfigValue<?> define(ModConfigSpec.Builder builder, ConfigOption<?> entry) {
+        applyMetadata(builder, entry);
+        if (entry.getType() == Boolean.class) {
+            return builder.define(entry.getKey(), (Boolean) entry.getDefault());
+        }
+        return defineInRange(builder, entry);
+    }
+
+    private static <T extends Comparable<T>> ModConfigSpec.ConfigValue<T> defineInRange(ModConfigSpec.Builder builder,
+            ConfigOption<T> entry) {
+        return builder.defineInRange(entry.getKey(), entry.getDefault(), entry.getMin(), entry.getMax(),
+                entry.getType());
+    }
+
+    /**
+     * Applies the comment, translation key and restart requirement that the
+     * next {@code define} call picks up. The comment carries no range or
+     * default, since the TOML writer appends those itself.
+     */
+    private static void applyMetadata(ModConfigSpec.Builder builder, ConfigOption<?> entry) {
+        String warning = ConfigText.warning(entry.getTranslationKey());
+        String comment = ConfigText.comment(entry.getTranslationKey());
+        if (warning.isEmpty()) {
+            builder.comment(comment);
+        } else {
+            builder.comment(comment, warning);
+        }
+        builder.translation(entry.getTranslationKey());
+        switch (entry.getRestart()) {
+            case WORLD -> builder.worldRestart();
+            case GAME -> builder.gameRestart();
+            case NONE -> {
+            }
+        }
+    }
+
+    private static <T extends Comparable<T>> T value(ConfigOption<T> entry) {
+        return entry.getType().cast(VALUES.get(entry).get());
+    }
+
+    // #region IConfigHelper implementation
 
     @Override
     public double getSpiceRegionCellScale() {
-        return SERVER.spiceRegionCellScale.get();
+        return value(ConfigSchema.REGION_CELL_SCALE);
     }
 
     @Override
     public long getSpiceRegionSalt() {
-        return SERVER.spiceRegionSalt.get();
+        return value(ConfigSchema.REGION_SALT);
     }
 
     @Override
     public double getSpiceRegionClusteringStrength() {
-        return SERVER.spiceRegionClusteringStrength.get();
+        return value(ConfigSchema.REGION_CLUSTERING_STRENGTH);
     }
 
     @Override
     public int getSpiceMapSearchRadiusCells() {
-        return SERVER.spiceMapSearchRadiusCells.get();
+        return value(ConfigSchema.SPICE_MAP_SEARCH_RADIUS_CELLS);
     }
 
     @Override
     public int getSpiceMapVillagerSearchRadiusCells() {
-        return SERVER.spiceMapVillagerSearchRadiusCells.get();
+        return value(ConfigSchema.SPICE_MAP_VILLAGER_SEARCH_RADIUS_CELLS);
     }
 
     @Override
     public boolean isSpiceMapTradesEnabled() {
-        return SERVER.spiceMapTradesEnabled.get();
+        return value(ConfigSchema.SPICE_MAP_TRADES_ENABLED);
     }
 
     @Override
     public int getSpiceMapBasePrice() {
-        return SERVER.spiceMapBasePrice.get();
+        return value(ConfigSchema.SPICE_MAP_BASE_PRICE);
     }
 
     @Override
     public double getSpiceMapPriceMultiplier(Tier tier) {
-        return switch (tier) {
-            case COMMON -> SERVER.spiceMapPriceMultiplierCommon.get();
-            case UNCOMMON -> SERVER.spiceMapPriceMultiplierUncommon.get();
-            case RARE -> SERVER.spiceMapPriceMultiplierRare.get();
-            case EPIC -> SERVER.spiceMapPriceMultiplierEpic.get();
-        };
+        return value(ConfigSchema.SPICE_MAP_PRICE_MULTIPLIER.get(tier));
     }
 
     @Override
     public boolean isSpiceMapLootEnabled() {
-        return SERVER.spiceMapLootEnabled.get();
+        return value(ConfigSchema.SPICE_MAP_LOOT_ENABLED);
     }
 
     @Override
     public boolean isSpiceRegionPlantingRestricted() {
-        return SERVER.spiceRegionPlantingRestricted.get();
+        return value(ConfigSchema.CULTIVATION_REGION_PLANTING_RESTRICTED);
     }
 
     @Override
     public int getSpiceHardyHarvestDifficulty() {
-        return SERVER.spiceHardyHarvestDifficulty.get();
-    }
-
-    @Override
-    public int getSpicePlantGrowthStages() {
-        return COMMON.spicePlantGrowthStages.get();
+        return value(ConfigSchema.CULTIVATION_HARDY_HARVEST_DIFFICULTY);
     }
 
     @Override
     public double getSpicePlantHarvestYieldMultiplier() {
-        return COMMON.spicePlantHarvestYieldMultiplier.get();
+        return value(ConfigSchema.PLANT_HARVEST_YIELD_MULTIPLIER);
     }
 
     @Override
     public double getSpicePlantGrowthSpeedMultiplier(Tier tier) {
-        return switch (tier) {
-            case COMMON -> SERVER.spiceGrowthSpeedCommon.get();
-            case UNCOMMON -> SERVER.spiceGrowthSpeedUncommon.get();
-            case RARE -> SERVER.spiceGrowthSpeedRare.get();
-            case EPIC -> SERVER.spiceGrowthSpeedEpic.get();
-        };
+        return value(ConfigSchema.CULTIVATION_GROWTH_SPEED_MULTIPLIER.get(tier));
     }
 
     @Override
     public double getSpiceTreeHarvestYieldMultiplier() {
-        return SERVER.spiceTreeHarvestYieldMultiplier.get();
+        return value(ConfigSchema.TREE_HARVEST_YIELD_MULTIPLIER);
     }
 
     @Override
     public double getSpiceTreeFruitingLeavesChance(Tier tier) {
-        return switch (tier) {
-            case COMMON -> SERVER.spiceTreeFruitingLeavesCommon.get();
-            case UNCOMMON -> SERVER.spiceTreeFruitingLeavesUncommon.get();
-            case RARE -> SERVER.spiceTreeFruitingLeavesRare.get();
-            case EPIC -> SERVER.spiceTreeFruitingLeavesEpic.get();
-        };
+        return value(ConfigSchema.TREE_FRUITING_LEAVES_CHANCE.get(tier));
     }
 
     @Override
     public double getCookingVarianceMin() {
-        return SERVER.cookingVarianceMin.get();
+        return value(ConfigSchema.COOKING_VARIANCE_MIN);
     }
 
     @Override
     public double getCookingVarianceMax() {
-        return SERVER.cookingVarianceMax.get();
+        return value(ConfigSchema.COOKING_VARIANCE_MAX);
     }
 
     @Override
     public double getFlavorSoftCap() {
-        return COMMON.flavorSoftCap.get();
+        return value(ConfigSchema.FLAVOR_SOFT_CAP);
     }
 
     @Override
     public double getFlavorMinimumAxisValue() {
-        return COMMON.flavorMinimumAxisValue.get();
+        return value(ConfigSchema.FLAVOR_MINIMUM_AXIS_VALUE);
     }
 
     @Override
     public double getSufficientlySeasoned() {
-        return COMMON.sufficientlySeasoned.get();
+        return value(ConfigSchema.FLAVOR_SUFFICIENTLY_SEASONED);
     }
 
     @Override
     public boolean isTooltipBothAxisLabelsShown() {
-        return CLIENT.tooltipShowBothAxisLabels.get();
+        return value(ConfigSchema.TOOLTIP_SHOW_BOTH_AXIS_LABELS);
     }
 
     @Override
     public boolean isTooltipAxisValueShown() {
-        return CLIENT.tooltipShowAxisValues.get();
+        return value(ConfigSchema.TOOLTIP_SHOW_AXIS_VALUES);
     }
 
     @Override
     public boolean isTooltipShiftBypassed() {
-        return CLIENT.tooltipAlwaysShowShiftContent.get();
-    }
-
-    // -------------------------------------------------------------------------
-    // Inner config classes
-    // -------------------------------------------------------------------------
-
-    /** Spec entries of the common config. */
-    public static class CommonConfig {
-        public final ModConfigSpec.IntValue spicePlantGrowthStages;
-        public final ModConfigSpec.DoubleValue spicePlantHarvestYieldMultiplier;
-        public final ModConfigSpec.DoubleValue flavorSoftCap;
-        public final ModConfigSpec.DoubleValue flavorMinimumAxisValue;
-        public final ModConfigSpec.DoubleValue sufficientlySeasoned;
-
-        CommonConfig(ModConfigSpec.Builder builder) {
-            spicePlantGrowthStages = builder
-                    .comment("Growth stage count (highest age value, 1-7) shared by every "
-                            + "FLOWER_PATCH/CROP Spice Plant block. Read once per block at registration "
-                            + "time; requires a restart to take effect.")
-                    .defineInRange("spicePlantGrowthStages",
-                            Constants.DEFAULT_SPICE_PLANT_GROWTH_STAGES, 1, 7);
-            spicePlantHarvestYieldMultiplier = builder
-                    .comment("Harvest yield multiplier for all FLOWER_PATCH/CROP Spice Plants. "
-                            + "Loot tables bake in the default value of this option at datagen "
-                            + "time, not this live value, so re-run datagen after changing "
-                            + "Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER.")
-                    .defineInRange("spicePlantHarvestYieldMultiplier",
-                            Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER, 0.0D,
-                            Double.MAX_VALUE);
-            flavorSoftCap = builder
-                    .comment("Magnitude each flavor axis saturates towards when a profile is read for effects and "
-                            + "tooltips, giving diminishing returns when stacking many spices. Stored values are "
-                            + "never capped.")
-                    .defineInRange("flavorSoftCap", 10.0, 0.1, 1000.0);
-            flavorMinimumAxisValue = builder
-                    .comment("Magnitude any non-zero flavor axis counts as at least when a profile is read for "
-                            + "effects and tooltips.")
-                    .defineInRange("flavorMinimumAxisValue", 0.05, 0.0, 1.0);
-            sufficientlySeasoned = builder
-                    .comment("Magnitude a raw flavor axis must reach, in either direction, to count as "
-                            + "Sufficiently Seasoned for pass/fail checks like advancement criteria. Independent "
-                            + "of flavorSoftCap.")
-                    .defineInRange("sufficientlySeasoned", 7.0, 0.1, 1000.0);
-        }
-    }
-
-    /** Spec entries of the server config. */
-    public static class ServerConfig {
-        public final ModConfigSpec.DoubleValue spiceRegionCellScale;
-        public final ModConfigSpec.LongValue spiceRegionSalt;
-        public final ModConfigSpec.DoubleValue spiceRegionClusteringStrength;
-        public final ModConfigSpec.IntValue spiceMapSearchRadiusCells;
-        public final ModConfigSpec.IntValue spiceMapVillagerSearchRadiusCells;
-        public final ModConfigSpec.BooleanValue spiceMapTradesEnabled;
-        public final ModConfigSpec.IntValue spiceMapBasePrice;
-        public final ModConfigSpec.DoubleValue spiceMapPriceMultiplierCommon;
-        public final ModConfigSpec.DoubleValue spiceMapPriceMultiplierUncommon;
-        public final ModConfigSpec.DoubleValue spiceMapPriceMultiplierRare;
-        public final ModConfigSpec.DoubleValue spiceMapPriceMultiplierEpic;
-        public final ModConfigSpec.BooleanValue spiceMapLootEnabled;
-        public final ModConfigSpec.BooleanValue spiceRegionPlantingRestricted;
-        public final ModConfigSpec.IntValue spiceHardyHarvestDifficulty;
-        public final ModConfigSpec.DoubleValue spiceGrowthSpeedCommon;
-        public final ModConfigSpec.DoubleValue spiceGrowthSpeedUncommon;
-        public final ModConfigSpec.DoubleValue spiceGrowthSpeedRare;
-        public final ModConfigSpec.DoubleValue spiceGrowthSpeedEpic;
-        public final ModConfigSpec.DoubleValue spiceTreeHarvestYieldMultiplier;
-        public final ModConfigSpec.DoubleValue spiceTreeFruitingLeavesCommon;
-        public final ModConfigSpec.DoubleValue spiceTreeFruitingLeavesUncommon;
-        public final ModConfigSpec.DoubleValue spiceTreeFruitingLeavesRare;
-        public final ModConfigSpec.DoubleValue spiceTreeFruitingLeavesEpic;
-        public final ModConfigSpec.DoubleValue cookingVarianceMin;
-        public final ModConfigSpec.DoubleValue cookingVarianceMax;
-
-        ServerConfig(ModConfigSpec.Builder builder) {
-            spiceRegionCellScale = builder
-                    .comment("Approximate edge length of a Spice Region cell, in blocks. Should only be increased "
-                            + "on Multiplayer servers, to encourage lots of travel and specialization. ")
-                    .defineInRange("spiceRegionCellScale", 256.0, 64.0, 1_000_000.0);
-            spiceRegionSalt = builder
-                    .comment("Salt mixed into the world seed when resolving Spice Regions. Change this to "
-                            + "any random value to shuffle spice regions.",
-                            "WARNING: This affects existing worlds! Changing this will regenerate all Spice Regions, "
-                                    + "including in already generated chunks.")
-                    .worldRestart()
-                    .defineInRange("spiceRegionSalt", new Random().nextLong(), Long.MIN_VALUE,
-                            Long.MAX_VALUE);
-            spiceRegionClusteringStrength = builder
-                    .comment("How strongly Spice Region generation favors common Spices over rarer ones")
-                    .defineInRange("spiceRegionClusteringStrength",
-                            Services.PLATFORM.isDedicatedServer() ? 1.75 : 1.0, 0.0, 10.0);
-            spiceMapSearchRadiusCells = builder
-                    .comment("Maximum distance, in Spice Region cells, searched for a Spice Region's heart by "
-                            + "/locate spice, /locate spice_climate, and by Spice Map chest loot. Measured in "
-                            + "cells, so changing the cell scale doesn't change how many regions are within reach.")
-                    .defineInRange("spiceMapSearchRadiusCells", 25, 1, 1000);
-            spiceMapVillagerSearchRadiusCells = builder
-                    .comment("Maximum distance, in Spice Region cells, a cartographer searches for a Spice Region's "
-                            + "heart when offering a Spice Map. Lower values keep trading halls from reaching every "
-                            + "Spice.")
-                    .defineInRange("spiceMapVillagerSearchRadiusCells", 12, 1, 1000);
-            spiceMapTradesEnabled = builder
-                    .comment("Whether cartographers offer Spice Map trades. Only affects newly generated offers.")
-                    .define("spiceMapTradesEnabled", true);
-            spiceMapBasePrice = builder
-                    .comment("Base emerald price of a Spice Map trade, multiplied by the Spice's tier multiplier. "
-                            + "The final price is capped at 128; above 64, the compass is replaced by a second "
-                            + "stack of emeralds.")
-                    .defineInRange("spiceMapBasePrice", 16, 1, 128);
-            spiceMapPriceMultiplierCommon = builder
-                    .comment("Spice Map price multiplier for COMMON-tier Spices.")
-                    .defineInRange("spiceMapPriceMultiplierCommon", 1.0, 1.0, 2.0);
-            spiceMapPriceMultiplierUncommon = builder
-                    .comment("Spice Map price multiplier for UNCOMMON-tier Spices.")
-                    .defineInRange("spiceMapPriceMultiplierUncommon", 1.33, 1.0, 2.0);
-            spiceMapPriceMultiplierRare = builder
-                    .comment("Spice Map price multiplier for RARE-tier Spices.")
-                    .defineInRange("spiceMapPriceMultiplierRare", 1.67, 1.0, 2.0);
-            spiceMapPriceMultiplierEpic = builder
-                    .comment("Spice Map price multiplier for EPIC-tier Spices. Cartographers don't sell these by "
-                            + "default, but datapacks and other mods may.")
-                    .defineInRange("spiceMapPriceMultiplierEpic", 2.0, 1.0, 2.0);
-            spiceMapLootEnabled = builder
-                    .comment("Whether Spice Maps can generate as chest loot.")
-                    .define("spiceMapLootEnabled", true);
-            spiceRegionPlantingRestricted = builder
-                    .comment("Whether planting a CROP Spice's seeds requires the Spice Region at that "
-                            + "position to actually support that Spice. Spices at or below "
-                            + "spiceHardyHarvestDifficulty are always exempt.")
-                    .define("spiceRegionPlantingRestricted", true);
-            spiceHardyHarvestDifficulty = builder
-                    .comment("Harvest/cultivation difficulty (1-5) at or below which a Spice is 'hardy' and "
-                            + "can be planted anywhere the ground allows, bypassing the Spice Region check")
-                    .defineInRange("spiceHardyHarvestDifficulty", 2, 1, 5);
-            spiceGrowthSpeedCommon = builder
-                    .comment("Growth-speed multiplier for COMMON-tier Spice Plants, applied on top of vanilla's "
-                            + "farmland/light-based growth odds. 1.0 matches vanilla speed, < 1.0 slows growth "
-                            + "down, > 1.0 speeds it up.")
-                    .defineInRange("spiceGrowthSpeedCommon", 1.0, 0.1, 5.0);
-            spiceGrowthSpeedUncommon = builder
-                    .comment("Growth-speed multiplier for UNCOMMON-tier Spice Plants. See spiceGrowthSpeedCommon.")
-                    .defineInRange("spiceGrowthSpeedUncommon", 1.0, 0.1, 5.0);
-            spiceGrowthSpeedRare = builder
-                    .comment("Growth-speed multiplier for RARE-tier Spice Plants. See spiceGrowthSpeedCommon.")
-                    .defineInRange("spiceGrowthSpeedRare", 1.0, 0.1, 5.0);
-            spiceGrowthSpeedEpic = builder
-                    .comment("Growth-speed multiplier for EPIC-tier Spice Plants. See spiceGrowthSpeedCommon.")
-                    .defineInRange("spiceGrowthSpeedEpic", 1.0, 0.1, 5.0);
-            spiceTreeHarvestYieldMultiplier = builder
-                    .comment("Harvest yield multiplier for Spice Trees, applied when stripping bark or picking "
-                            + "fruiting leaves. Fractional results are rounded up or down at random.")
-                    .defineInRange("spiceTreeHarvestYieldMultiplier",
-                            Constants.DEFAULT_SPICE_TREE_HARVEST_YIELD_MULTIPLIER, 0.0,
-                            64.0);
-            spiceTreeFruitingLeavesCommon = builder
-                    .comment("Fraction (0.0-1.0) of air-exposed, naturally grown leaves of COMMON-tier fruiting "
-                            + "Spice Trees that can bear fruit.")
-                    .defineInRange("spiceTreeFruitingLeavesCommon", 0.3, 0.0, 1.0);
-            spiceTreeFruitingLeavesUncommon = builder
-                    .comment(
-                            "Fruiting leaves fraction for UNCOMMON-tier Spice Trees. See spiceTreeFruitingLeavesCommon.")
-                    .defineInRange("spiceTreeFruitingLeavesUncommon", 0.2, 0.0, 1.0);
-            spiceTreeFruitingLeavesRare = builder
-                    .comment("Fruiting leaves fraction for RARE-tier Spice Trees. See spiceTreeFruitingLeavesCommon.")
-                    .defineInRange("spiceTreeFruitingLeavesRare", 0.15, 0.0, 1.0);
-            spiceTreeFruitingLeavesEpic = builder
-                    .comment("Fruiting leaves fraction for EPIC-tier Spice Trees. See spiceTreeFruitingLeavesCommon.")
-                    .defineInRange("spiceTreeFruitingLeavesEpic", 0.1, 0.0, 1.0);
-            cookingVarianceMin = builder
-                    .comment("Lower bound of the per-flavor-axis multipliers applied to inherited flavor when "
-                            + "cooking. Results are reproducible: the same ingredients always cook into the same "
-                            + "flavor.")
-                    .defineInRange("cookingVarianceMin", 0.85, 0.0, 10.0);
-            cookingVarianceMax = builder
-                    .comment("Upper bound of the per-flavor-axis multipliers applied to inherited flavor when "
-                            + "cooking.")
-                    .defineInRange("cookingVarianceMax", 1.15, 0.0, 10.0);
-        }
-    }
-
-    /** Spec entries of the client config. */
-    public static class ClientConfig {
-        public final ModConfigSpec.BooleanValue tooltipShowBothAxisLabels;
-        public final ModConfigSpec.BooleanValue tooltipShowAxisValues;
-        public final ModConfigSpec.BooleanValue tooltipAlwaysShowShiftContent;
-
-        ClientConfig(ModConfigSpec.Builder builder) {
-            tooltipShowBothAxisLabels = builder
-                    .comment("Whether Flavor Axis tooltips show both labels of each axis (e.g. [Spicy / Cooling]), "
-                            + "emphasizing the one matching the value, instead of only the matching one.")
-                    .define("tooltipShowBothAxisLabels", false);
-            tooltipShowAxisValues = builder
-                    .comment("Whether Flavor Axis tooltips show each axis' value, multiplied by 10, after its label "
-                            + "(e.g. [Spicy: 5]).")
-                    .define("tooltipShowAxisValues", false);
-            tooltipAlwaysShowShiftContent = builder
-                    .comment("Whether all of this mod's tooltip content that normally requires holding Shift is "
-                            + "always shown instead.")
-                    .define("tooltipAlwaysShowShiftContent", false);
-        }
+        return value(ConfigSchema.TOOLTIP_ALWAYS_SHOW_SHIFT_CONTENT);
     }
 }

@@ -129,13 +129,10 @@ public abstract class SpicePlantBlock extends CropBlock {
         return state.getBlock() instanceof FarmBlock || state.is(SPICE_GROWABLE);
     }
 
-    /**
-     * Returns {@link Constants#DEFAULT_SPICE_PLANT_GROWTH_STAGES}, not the
-     * live {@code IConfigHelper#getSpicePlantGrowthStages()} config value.
-     */
+    /** @return {@link Constants#SPICE_PLANT_GROWTH_STAGES}. */
     @Override
     public int getMaxAge() {
-        return Constants.DEFAULT_SPICE_PLANT_GROWTH_STAGES;
+        return Constants.SPICE_PLANT_GROWTH_STAGES;
     }
 
     /**

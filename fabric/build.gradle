@@ -11,6 +11,10 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
     modImplementation "me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version}"
+    // Compile-only: never shipped, never required at runtime. Added to the dev
+    // runtime so the config screen can actually be opened while testing.
+    modCompileOnly "maven.modrinth:modmenu:${modmenu_version}"
+    modLocalRuntime "maven.modrinth:modmenu:${modmenu_version}"
 
     // Optional compat targets, only needed to compile the compat mixins
     modCompileOnly "maven.modrinth:farmers-delight-refabricated:${farmers_delight_fabric_version}"
@@ -63,4 +67,78 @@ loom {
 sourceSets.main.resources {
     srcDir 'src/generated/resources'
     exclude '.cache'
+}
+// Cloth Config's screen looks up its own translation key family, which we do not
+// author: only the NeoForge-shaped "<modid>.configuration.<path>" keys are written
+// and translated. This mirrors each of those into the key Cloth expects, in the
+// built jar only, so translators never see the duplicates and they can never go
+// stale. The NeoForge jar does not carry them. See docs/adr/0011.
+tasks.named('processResources') {
+    doLast {
+        def canonicalPrefix = "${mod_id}.configuration.".toString()
+        def autoConfigPrefix = "text.autoconfig.${mod_id}".toString()
+        def metaSuffixes = ['.tooltip', '.comment', '.warning']
+
+        // Which config file each top-level section belongs to, read straight from
+        // the schema so the two can't disagree.
+        def schemaSource = project(':common')
+                .file('src/main/java/com/drunkencod/spice_road/config/ConfigSchema.java').text
+        def fileOfRoot = [:]
+        (schemaSource =~ /ConfigSection\.root\(ConfigFile\.(\w+),\s*"(\w+)"\)/).each { match, configFile, section ->
+            fileOfRoot[section] = configFile.toLowerCase()
+        }
+        if (fileOfRoot.isEmpty()) {
+            throw new GradleException('Could not read any config sections from ConfigSchema.java')
+        }
+
+        fileTree(destinationDir) { include "assets/${mod_id}/lang/*.json" }.each { langFile ->
+            def strings = new groovy.json.JsonSlurper().parseText(langFile.text) as LinkedHashMap
+            def problems = []
+            def mirrored = new LinkedHashMap(strings)
+
+            strings.each { key, value ->
+                if (!key.startsWith(canonicalPrefix)) {
+                    return
+                }
+                def body = key.substring(canonicalPrefix.length())
+                def suffix = metaSuffixes.find { body.endsWith(it) }
+                def path = suffix ? body.substring(0, body.length() - suffix.length()) : body
+
+                // A label needs a tooltip beside it, and vice versa - a missing one
+                // ships an option with an empty comment and a raw key as its label.
+                if (!strings.containsKey(canonicalPrefix + path)) {
+                    problems << "${key} has no matching label '${canonicalPrefix + path}'"
+                }
+                if (!suffix && !strings.containsKey(key + '.tooltip')) {
+                    problems << "${key} has no matching '${key}.tooltip'"
+                }
+
+                // Only labels and tooltips reach a Cloth screen; comments are
+                // file-only and warnings are a NeoForge screen feature.
+                if (suffix && suffix != '.tooltip') {
+                    return
+                }
+                def target
+                if (path == 'title') {
+                    target = autoConfigPrefix + '.title'
+                } else if (path.startsWith('file.')) {
+                    target = (autoConfigPrefix + '.category.' + path.substring('file.'.length())).toString()
+                } else {
+                    def configFile = fileOfRoot[path.tokenize('.').first()]
+                    if (configFile == null) {
+                        problems << "${key} is not under any section declared in ConfigSchema.java"
+                        return
+                    }
+                    target = (autoConfigPrefix + ".option." + configFile + "." + path).toString()
+                }
+                mirrored.put((suffix == ".tooltip" ? target + ".@Tooltip" : target).toString(), value)
+            }
+
+            if (!problems.isEmpty()) {
+                throw new GradleException(
+                        "Config translations in ${langFile.name} are incomplete:\n  " + problems.join('\n  '))
+            }
+            langFile.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(mirrored))
+        }
+    }
 }
