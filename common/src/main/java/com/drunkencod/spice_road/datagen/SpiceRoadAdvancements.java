@@ -65,5 +65,37 @@ public class SpiceRoadAdvancements implements AdvancementSubProvider {
                         List.of()))
                 .build(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "everything_bagel"));
         saver.accept(everythingBagel);
+
+        AdvancementHolder pumpkinPurist = Advancement.Builder.advancement()
+                .parent(root)
+                .display(Items.PUMPKIN_PIE, Component.translatable(
+                        "advancements.spice_road.pumpkin_purist.title"),
+                        Component.translatable(
+                                "advancements.spice_road.pumpkin_purist.description"),
+                        null, AdvancementType.CHALLENGE, true, true, false)
+                .addCriterion("pumpkin_purist", FoodEatenTrigger.TriggerInstance.foodEaten(
+                        Optional.of(ItemPredicate.Builder.item().of(Items.PUMPKIN_PIE)),
+                        Map.of(),
+                        Optional.empty(),
+                        List.of(
+                                ItemPredicate.Builder.item()
+                                        .of(Spice.getRawById(Spice.CINNAMON.getId())),
+                                ItemPredicate.Builder.item()
+                                        .of(Spice.getRawById(Spice.NUTMEG.getId()))
+                        // ItemPredicate.Builder.item()
+                        // .of(Spice.getRawById(Spice.CINNAMON.getId()),
+                        // Spice.getDriedById(Spice.CINNAMON.getId())),
+                        // ItemPredicate.Builder.item()
+                        // .of(Spice.getRawById(Spice.NUTMEG.getId()),
+                        // Spice.getDriedById(Spice.NUTMEG.getId()))
+                        // ItemPredicate.Builder.item()
+                        // .of(Spice.getRawById(Spice.GINGER.getId()),
+                        // Spice.getDriedById(Spice.GINGER.getId())),
+                        // ItemPredicate.Builder.item()
+                        // .of(Spice.getRawById(Spice.CLOVES.getId()),
+                        // Spice.getDriedById(Spice.CLOVES.getId()))
+                        )))
+                .build(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "pumpkin_purist"));
+        saver.accept(pumpkinPurist);
     }
 }

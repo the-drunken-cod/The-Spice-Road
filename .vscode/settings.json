@@ -3,4 +3,5 @@
     "java.configuration.updateBuildConfiguration": "automatic",
     "git.ignoreLimitWarning": true,
     "editor.tabSize": 4,
+    "editor.detectIndentation": false
 }

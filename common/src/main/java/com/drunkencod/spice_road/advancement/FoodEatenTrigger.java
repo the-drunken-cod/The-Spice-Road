@@ -24,7 +24,8 @@ import com.drunkencod.spice_road.spice.SpiceProfile;
  * Datapack-configurable criterion firing when a {@code ServerPlayer} finishes
  * eating food matching an optional {@link ItemPredicate}, optionally
  * reaching a per-{@link FlavorAxis} raw magnitude threshold (Sufficiently
- * Seasoned - see {@link com.drunkencod.spice_road.config.IConfigHelper#getSufficientlySeasoned()})
+ * Seasoned - see
+ * {@link com.drunkencod.spice_road.config.IConfigHelper#getSufficientlySeasoned()})
  * on enough of the listed axes, and optionally requiring specific Flavor
  * Contributors to be present. Registered as {@code spice_road:food_eaten}.
  */
@@ -105,9 +106,9 @@ public class FoodEatenTrigger extends SimpleCriterionTrigger<FoodEatenTrigger.Tr
         }
 
         /**
-         * @param stack              The eaten stack.
-         * @param rawProfile         {@code stack}'s raw, uncapped {@link SpiceProfile}.
-         * @param stackContributors  {@code stack}'s Flavor Contributors.
+         * @param stack             The eaten stack.
+         * @param rawProfile        {@code stack}'s raw, uncapped {@link SpiceProfile}.
+         * @param stackContributors {@code stack}'s Flavor Contributors.
          * @return Whether this criterion is satisfied.
          */
         public boolean matches(ItemStack stack, SpiceProfile rawProfile, Set<Item> stackContributors) {
