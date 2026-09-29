@@ -1,7 +1,11 @@
 <div align="center" style="text-align: center;">
 
 # The Spice Road
-Adds rare spices to Minecraft that can enhance existing foods with a new buff mechanic and encourages local production and trade.
+Adds rare spices to Minecraft that can enhance existing foods with a new buff mechanic and encourages local production and trade.  
+  
+> [!IMPORTANT]  
+>   
+> This mod is still in its alpha stage. Please do try the mod, but check back later for a more stable experience.
 
 ![Banner](./.github/assets/banner.png)
 
