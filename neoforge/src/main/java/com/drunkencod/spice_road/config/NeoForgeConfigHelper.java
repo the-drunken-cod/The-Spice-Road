@@ -202,6 +202,11 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public double getSpiceVineRipeningSegmentsChance(Tier tier) {
+        return value(ConfigSchema.VINE_RIPENING_SEGMENTS_CHANCE.get(tier));
+    }
+
+    @Override
     public double getCookingVarianceMin() {
         return value(ConfigSchema.COOKING_VARIANCE_MIN);
     }

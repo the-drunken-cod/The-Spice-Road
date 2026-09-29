@@ -34,14 +34,17 @@ import net.minecraft.world.phys.BlockHitResult;
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Spice;
+import com.drunkencod.spice_road.spice.region.SeededHash;
 
 /**
  * A {@code VINE} Source Type Spice Plant. Climbs and spreads exactly like a
  * vanilla vine, regardless of climate, and is propagated by shearing off a
  * segment. On top of that, each segment ripens through {@link #AGE} stages
- * {@code 0} to {@link Constants#SPICE_VINE_GROWTH_STAGES}, but only where
- * its Spice may be cultivated (see {@link Spice#canBeCultivatedAt}). Ripe
- * segments are right-clicked to drop the Spice and reset to stage {@code 0}.
+ * {@code 0} to {@link Constants#SPICE_VINE_GROWTH_STAGES}, but only where its
+ * Spice may be cultivated (see {@link Spice#canBeCultivatedAt}) - and only
+ * some segments, a deterministic fraction, are able to ripen at all - see
+ * {@link #canRipen}. Ripe segments are right-clicked to drop the Spice and
+ * reset to stage {@code 0}.
  * <p>
  * Bonemeal only speeds up ripening, never the spreading.
  */
@@ -96,7 +99,7 @@ public class SpiceVineBlock extends VineBlock implements BonemealableBlock {
             resetAge(level, above);
 
         BlockState current = level.getBlockState(pos);
-        if (!current.is(this) || isRipe(current) || !spice.canBeCultivatedAt(level, pos))
+        if (!current.is(this) || isRipe(current) || !canRipen(level, pos))
             return;
 
         double multiplier = Services.CONFIG.getSpicePlantGrowthSpeedMultiplier(spice.getTier());
@@ -108,6 +111,31 @@ public class SpiceVineBlock extends VineBlock implements BonemealableBlock {
         BlockState state = level.getBlockState(pos);
         if (state.is(this) && state.getValue(AGE) > 0)
             level.setBlock(pos, state.setValue(AGE, 0), Block.UPDATE_CLIENTS);
+    }
+
+    /**
+     * Whether the vine segment at {@code pos} is able to ripen. Both of these
+     * must hold:
+     * <ul>
+     * <li>The position is one of the ripening ones - a deterministic fraction
+     * of positions, set per tier by
+     * {@code IConfigHelper#getSpiceVineRipeningSegmentsChance}.</li>
+     * <li>The Spice may be cultivated here - see
+     * {@link Spice#canBeCultivatedAt}.</li>
+     * </ul>
+     *
+     * @param level The server level.
+     * @param pos   The segment's position.
+     * @return Whether the segment may advance its ripening stage.
+     */
+    public boolean canRipen(ServerLevel level, BlockPos pos) {
+        return isRipeningPosition(level.getSeed(), pos) && spice.canBeCultivatedAt(level, pos);
+    }
+
+    private boolean isRipeningPosition(long worldSeed, BlockPos pos) {
+        long hash = SeededHash.hash(SeededHash.hash(worldSeed, pos.getX(), pos.getY()), pos.getZ(),
+                spice.getId().hashCode());
+        return SeededHash.toUnitDouble(hash) < Services.CONFIG.getSpiceVineRipeningSegmentsChance(spice.getTier());
     }
 
     /** @return Whether {@code state} is at its final ripening stage. */
@@ -127,11 +155,11 @@ public class SpiceVineBlock extends VineBlock implements BonemealableBlock {
 
     /**
      * Advances the ripening stage by one (epic Spices only half of the time),
-     * if the Spice may be cultivated here.
+     * if the segment is able to ripen.
      */
     @Override
     public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
-        if (!spice.canBeCultivatedAt(level, pos))
+        if (!canRipen(level, pos))
             return;
 
         int increase = spice.getTier().getRarity() == Rarity.EPIC ? random.nextInt(2) : 1;

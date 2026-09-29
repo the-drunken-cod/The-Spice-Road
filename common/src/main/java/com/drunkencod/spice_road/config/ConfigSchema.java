@@ -46,6 +46,10 @@ public final class ConfigSchema {
     public static final ConfigSection TREE = ConfigSection.root(ConfigFile.SERVER, "tree");
     /** Per-tier fruiting of Spice Tree leaves. */
     public static final ConfigSection TREE_FRUITING_LEAVES = TREE.child("fruitingLeaves");
+    /** Harvesting Spice Vines. */
+    public static final ConfigSection VINE = ConfigSection.root(ConfigFile.SERVER, "vine");
+    /** Per-tier ripening of Spice Vine segments. */
+    public static final ConfigSection VINE_RIPENING_SEGMENTS = VINE.child("ripeningSegments");
     /** How stored Spice Profiles turn into the flavor a player actually gets. */
     public static final ConfigSection FLAVOR = ConfigSection.root(ConfigFile.SERVER, "flavor");
     /** How cooking alters inherited flavor. */
@@ -121,6 +125,10 @@ public final class ConfigSchema {
     /** Fraction of a fruiting Spice Tree's leaves that bear fruit, per {@link Tier}. */
     public static final Map<Tier, ConfigOption<Double>> TREE_FRUITING_LEAVES_CHANCE = perTier(TREE_FRUITING_LEAVES,
             0.3, 0.2, 0.15, 0.1, 0.0, 1.0);
+
+    /** Fraction of a Spice Vine's segments that can ripen, per {@link Tier}. */
+    public static final Map<Tier, ConfigOption<Double>> VINE_RIPENING_SEGMENTS_CHANCE = perTier(
+            VINE_RIPENING_SEGMENTS, 0.3, 0.2, 0.15, 0.1, 0.0, 1.0);
 
     // #region Flavor
 

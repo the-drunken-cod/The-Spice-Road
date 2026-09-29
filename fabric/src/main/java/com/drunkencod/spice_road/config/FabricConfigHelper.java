@@ -162,6 +162,11 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public double getSpiceVineRipeningSegmentsChance(Tier tier) {
+        return value(ConfigSchema.VINE_RIPENING_SEGMENTS_CHANCE.get(tier), server().vine.ripeningSegments.of(tier));
+    }
+
+    @Override
     public double getCookingVarianceMin() {
         return value(ConfigSchema.COOKING_VARIANCE_MIN, server().cooking.varianceMin);
     }
@@ -307,6 +312,8 @@ public class FabricConfigHelper implements IConfigHelper {
         @ConfigEntry.Gui.CollapsibleObject
         public Tree tree = new Tree();
         @ConfigEntry.Gui.CollapsibleObject
+        public Vine vine = new Vine();
+        @ConfigEntry.Gui.CollapsibleObject
         public Flavor flavor = new Flavor();
         @ConfigEntry.Gui.CollapsibleObject
         public Cooking cooking = new Cooking();
@@ -371,6 +378,12 @@ public class FabricConfigHelper implements IConfigHelper {
             public double harvestYieldMultiplier = ConfigSchema.TREE_HARVEST_YIELD_MULTIPLIER.getDefault();
             @ConfigEntry.Gui.CollapsibleObject
             public PerTier fruitingLeaves = PerTier.of(ConfigSchema.TREE_FRUITING_LEAVES_CHANCE);
+        }
+
+        /** Harvesting Spice Vines. */
+        public static class Vine {
+            @ConfigEntry.Gui.CollapsibleObject
+            public PerTier ripeningSegments = PerTier.of(ConfigSchema.VINE_RIPENING_SEGMENTS_CHANCE);
         }
 
         /** How stored Spice Profiles turn into the flavor a player gets. */

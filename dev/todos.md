@@ -56,6 +56,7 @@
     - [ ] Pumpkin Purist: season a pumpkin pie with cinnamon, nutmeg, ginger and cloves.
 - [x] Spice item names don't have rarity colors (while map item names already do).
 - [x] Merge "<tier> spice" and "Spice ingredient. Press [shift] ..." tooltips into one line.
-- [ ] Vine blocks should also only have a location-seeded chance to increase in age.
+- [x] Vine blocks should also only have a location-seeded chance to increase in age.
 - [ ] Fabric creative tabs don't show up.
 - [x] Sync Fabric config from server to client on join.
+- [ ] Neoforge in game config screen doesnt exist anymore.

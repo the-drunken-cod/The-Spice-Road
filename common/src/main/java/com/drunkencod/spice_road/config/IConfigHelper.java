@@ -171,6 +171,17 @@ public interface IConfigHelper {
     double getSpiceTreeFruitingLeavesChance(Tier tier);
 
     /**
+     * Fraction ({@code 0.0}-{@code 1.0}) of a Spice Vine's segments of the
+     * given {@link Tier} that are able to ripen. Which segments can ripen is a
+     * deterministic function of world seed and position, so changing this
+     * value takes effect live without regrowing vines.
+     *
+     * @param tier The Spice's {@link Tier}.
+     * @return The configured ripening segments fraction for that tier.
+     */
+    double getSpiceVineRipeningSegmentsChance(Tier tier);
+
+    /**
      * Lower bound of the per-axis multipliers applied to inherited flavor
      * when cooking (furnace, smoker, blast furnace, campfire and compatible
      * mod machines). If greater than {@link #getCookingVarianceMax()}, the two
