@@ -79,6 +79,12 @@ Warning: may contain outdated information, and is only to be used as a guideline
     - Implement Patchouli as an in-game guide.
     - Create user wiki.
     - Create developer documentation.
+11. **Stats**
+    - Record how many seasoned food items were eaten.
+    - Record how many items were eaten of any of the 16 axes (8 x 2, separated by pos. and neg.).
+    - Record how many unique spice types were discovered for 100% purposes.
+12. **Advancements**
+    - Set of advancements to help teach game mechanics and for some 100% goals.
 
 <br>
 
