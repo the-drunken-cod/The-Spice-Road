@@ -87,7 +87,10 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     private static ModConfigSpec.ConfigValue<?> define(ModConfigSpec.Builder builder, ConfigOption<?> entry) {
         applyMetadata(builder, entry);
         if (entry.getType() == Boolean.class) {
-            return builder.define(entry.getKey(), (Boolean) entry.getDefault());
+            // Unboxed on purpose: define(String, T) would otherwise win overload
+            // resolution over define(String, boolean), returning a plain ConfigValue
+            // that NeoForge's built-in config screen can't render an input for.
+            return builder.define(entry.getKey(), ((Boolean) entry.getDefault()).booleanValue());
         }
         return defineInRange(builder, entry);
     }
