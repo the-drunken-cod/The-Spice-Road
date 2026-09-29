@@ -33,7 +33,9 @@ import com.drunkencod.spice_road.spice.SpiceProfile;
  */
 public class SpiceFlavorTooltips {
 
-    /** Number of bar characters on either side of the label at a full-scale score. */
+    /**
+     * Number of bar characters on either side of the label at a full-scale score.
+     */
     public static final int BAR_LENGTH = 5;
     /** Character progress bars are drawn with. */
     public static final String BAR_CHAR = "+";
@@ -45,7 +47,7 @@ public class SpiceFlavorTooltips {
     /**
      * Factor scores are multiplied by when shown as a number inside the brackets.
      */
-    public static final int VALUE_SCALE = 10;
+    public static final int VALUE_SCALE = 1;
     /** Color ({@code 0xRRGGBB}) of the label brackets and label separator. */
     public static final int BRACKET_COLOR = 0x777777;
 
@@ -215,13 +217,13 @@ public class SpiceFlavorTooltips {
     public static MutableComponent axisLabel(FlavorAxis axis, boolean positive, boolean bothLabels) {
         if (!bothLabels)
             return poleLabel(axis, positive);
-        MutableComponent positiveLabel = poleLabel(axis, true);
         MutableComponent negativeLabel = poleLabel(axis, false);
+        MutableComponent positiveLabel = poleLabel(axis, true);
         (positive ? positiveLabel : negativeLabel).withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE);
         return Component.empty()
-                .append(positiveLabel)
+                .append(negativeLabel)
                 .append(Component.literal(" / ").withColor(BRACKET_COLOR))
-                .append(negativeLabel);
+                .append(positiveLabel);
     }
 
     /**
