@@ -1,6 +1,8 @@
 package com.drunkencod.spice_road.spice;
 
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -80,6 +82,7 @@ public final class Flavoring {
         SpiceProfile inherited = inheritedFlavor(inputs);
         if (inherited.isZero())
             return;
+        Set<Item> contributors = inheritedContributors(inputs);
         int carrierCount = 0;
         for (ItemStack result : results) {
             if (isFlavorCarrier(result))
@@ -89,8 +92,10 @@ public final class Flavoring {
             return;
         SpiceProfile share = truncate(inherited.scale(1D / carrierCount));
         for (ItemStack result : results) {
-            if (isFlavorCarrier(result))
-                addFlavor(result, cooking ? truncate(share.scale(cookingVariance(share, result.getItem()))) : share);
+            if (isFlavorCarrier(result)) {
+                addFlavor(result, cooking ? truncate(share.scale(cookingVariance(share, result.getItem()))) : share,
+                        contributors);
+            }
         }
     }
 
@@ -133,19 +138,46 @@ public final class Flavoring {
     }
 
     /**
+     * Collects every Flavor Contributor carried by the given inputs: an
+     * input's own {@link ModDataComponents#FLAVOR_CONTRIBUTORS} if present
+     * (propagating a flavored intermediate's contributors transitively),
+     * otherwise the input's own item if it has a non-zero
+     * {@link SpiceProfiles#get profile} of its own (e.g. a plain raw spice).
+     */
+    private static Set<Item> inheritedContributors(Iterable<ItemStack> inputs) {
+        Set<Item> contributors = new LinkedHashSet<>();
+        for (ItemStack input : inputs) {
+            if (input.isEmpty())
+                continue;
+            Set<Item> existing = input.get(ModDataComponents.FLAVOR_CONTRIBUTORS.get());
+            if (existing != null)
+                contributors.addAll(existing);
+            else if (SpiceProfiles.get(input).map(profile -> !profile.isZero()).orElse(false))
+                contributors.add(input.getItem());
+        }
+        return contributors;
+    }
+
+    /**
      * Adds a share of inherited flavor to a stack's own profile, storing the
      * result as a Profile Override unless it equals the item's Default
-     * Profile.
+     * Profile, and its Flavor Contributors alongside it.
      */
-    private static void addFlavor(ItemStack result, SpiceProfile share) {
+    private static void addFlavor(ItemStack result, SpiceProfile share, Set<Item> contributors) {
         if (share.isZero())
             return;
         SpiceProfile flavored = SpiceProfiles.get(result).orElse(SpiceProfile.ZERO).add(share);
         SpiceProfile itemDefault = SpiceProfileRegistry.getDefault(result.getItem()).orElse(SpiceProfile.ZERO);
-        if (flavored.equals(itemDefault))
+        if (flavored.equals(itemDefault)) {
             result.remove(ModDataComponents.SPICE_PROFILE.get());
-        else
+            result.remove(ModDataComponents.FLAVOR_CONTRIBUTORS.get());
+        } else {
             result.set(ModDataComponents.SPICE_PROFILE.get(), flavored);
+            Set<Item> merged = new LinkedHashSet<>(
+                    result.getOrDefault(ModDataComponents.FLAVOR_CONTRIBUTORS.get(), Set.of()));
+            merged.addAll(contributors);
+            result.set(ModDataComponents.FLAVOR_CONTRIBUTORS.get(), Set.copyOf(merged));
+        }
     }
 
     /**

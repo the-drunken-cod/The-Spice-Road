@@ -1,6 +1,7 @@
 package com.drunkencod.spice_road.datagen;
 
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -60,7 +61,8 @@ public class SpiceRoadAdvancements implements AdvancementSubProvider {
                 .addCriterion("everything_bagel", FoodEatenTrigger.TriggerInstance.foodEaten(
                         Optional.of(ItemPredicate.Builder.item().of(Items.BREAD)),
                         everyAxisSufficientlySeasoned,
-                        Optional.empty()))
+                        Optional.empty(),
+                        List.of()))
                 .build(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "everything_bagel"));
         saver.accept(everythingBagel);
     }
