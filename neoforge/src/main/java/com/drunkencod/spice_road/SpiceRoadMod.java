@@ -2,6 +2,7 @@ package com.drunkencod.spice_road;
 
 import java.util.List;
 
+import com.drunkencod.spice_road.client.NeoForgeConfigScreenHandler;
 import com.drunkencod.spice_road.client.NeoForgeSpiceRegionDebugOverlay;
 import com.drunkencod.spice_road.command.SpiceLocateCommand;
 import com.drunkencod.spice_road.client.NeoForgeSpiceTooltipHandler;
@@ -45,14 +46,19 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 @Mod(Constants.MOD_ID)
 public class SpiceRoadMod {
 
+    private final ModContainer modContainer;
+
     /**
      * Wires up registries, configs, and lifecycle/datagen listeners, then runs
      * the shared {@link SpiceRoad#init()}.
      *
      * @param eventBus     The mod event bus.
-     * @param modContainer This mod's container, used to register configs.
+     * @param modContainer This mod's container, used to register configs and the
+     *                     config screen.
      */
     public SpiceRoadMod(IEventBus eventBus, ModContainer modContainer) {
+        this.modContainer = modContainer;
+
         // Wire DeferredRegisters
         ((NeoForgeRegistryHelper) Services.REGISTRY).initialize(eventBus);
         ((NeoForgeCreativeTabHelper) Services.CREATIVE_TAB).initialize(eventBus);
@@ -111,6 +117,7 @@ public class SpiceRoadMod {
         // production.
         NeoForgeSpiceRegionDebugOverlay.registerIfDevelopment();
         NeoForgeSpiceTooltipHandler.register();
+        NeoForgeConfigScreenHandler.register(modContainer);
     }
 
     private static void onRegisterPayloadHandlers(RegisterPayloadHandlersEvent event) {
@@ -142,7 +149,10 @@ public class SpiceRoadMod {
         LootInjections.poolFor(event.getName()).ifPresent(event.getTable()::addPool);
     }
 
-    /** Syncs Default Profiles to each player on join and to everyone after {@code /reload}. */
+    /**
+     * Syncs Default Profiles to each player on join and to everyone after
+     * {@code /reload}.
+     */
     private static void onDatapackSync(OnDatapackSyncEvent event) {
         SpiceProfileSync payload = SpiceProfileSync.current();
         event.getRelevantPlayers().forEach(player -> PacketDistributor.sendToPlayer(player, payload));

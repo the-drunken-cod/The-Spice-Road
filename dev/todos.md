@@ -46,6 +46,9 @@
 - [x] Datagen recipes to turn spice wood logs into vanilla planks, type driven by an enum arg.
 - [x] Refactor config to use toml `[sections]`
     - Release note for the version this lands in: every config key is renamed, so both config files reset to defaults. `region.salt` re-rolls to a new random value, which reshuffles Spice Regions in existing worlds - copy the old `spiceRegionSalt` over by hand before launching.
+- Advancement Triggers:
+    - [x] Food with Flavor Profile of given bounds eaten (with option to require any of the given axes, or all) - see "everything bagel" advancement.
+    - [ ] Food with list of given constituent spices eaten (with a loose/strict flag) - see "pumpkin purist" advancement.
 - [ ] Advancements:
     - [x] Everything Bagel: achieve max seasoning buffs (positive or negative axes) on bread and eat it.
     - [ ] (Unnamed): apply a common-rare spice to food.
@@ -59,4 +62,27 @@
 - [x] Vine blocks should also only have a location-seeded chance to increase in age.
 - [ ] Fabric creative tabs don't show up.
 - [x] Sync Fabric config from server to client on join.
-- [ ] Neoforge in game config screen doesnt exist anymore.
+- [x] Neoforge in game config screen doesnt exist.
+
+
+
+
+
+### Pumpkin Purist Advancement Code
+```java
+        Map<FlavorAxis, AxisThreshold> pumpkinSpiceAxisMap = new EnumMap<>(FlavorAxis.class);
+
+        AdvancementHolder pumpkinPurist = Advancement.Builder.advancement()
+                .parent(root)
+                .display(Items.PUMPKIN_PIE, Component.translatable(
+                        "advancements.spice_road.pumpkin_purist.title"),
+                        Component.translatable(
+                                "advancements.spice_road.pumpkin_purist.description"),
+                        null, AdvancementType.CHALLENGE, true, true, false)
+                .addCriterion("pumpkin_purist", FoodEatenTrigger.TriggerInstance.foodEaten(
+                        Optional.of(ItemPredicate.Builder.item().of(Items.BREAD)),
+                        pumpkinSpiceAxisMap,
+                        Optional.empty()))
+                .build(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "everything_bagel"));
+        saver.accept(pumpkinPurist);
+```
