@@ -2,6 +2,7 @@ package com.drunkencod.spice_road;
 
 import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.command.SpiceLocateCommand;
+import com.drunkencod.spice_road.config.ConfigSync;
 import com.drunkencod.spice_road.config.FabricConfigHelper;
 import com.drunkencod.spice_road.loot.LootInjections;
 import com.drunkencod.spice_road.platform.Services;
@@ -32,64 +33,83 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
  */
 public class SpiceRoadMod implements ModInitializer {
 
-    @Override
-    public void onInitialize() {
-        // Register Cloth Config configs
-        ((FabricConfigHelper) Services.CONFIG).register();
+        @Override
+        public void onInitialize() {
+                // Register Cloth Config configs
+                ((FabricConfigHelper) Services.CONFIG).register();
 
-        SpiceRoad.init();
-        SpiceRoad.commonSetup();
+                SpiceRoad.init();
+                SpiceRoad.commonSetup();
 
-        registerSpiceProfileSync();
+                registerSpiceProfileSync();
+                registerConfigSync();
 
-        // NeoForge gets this mapping from the datagenned neoforge:strippables data map.
-        SpiceTrees.getRegistered().values().forEach(
-                tree -> StrippableBlockRegistry.register(tree.getLog().get(), tree.getStrippedLog().get()));
+                // NeoForge gets this mapping from the datagenned neoforge:strippables data map.
+                SpiceTrees.getRegistered().values().forEach(
+                                tree -> StrippableBlockRegistry.register(tree.getLog().get(),
+                                                tree.getStrippedLog().get()));
 
-        // NeoForge does the equivalent via the data-driven biome_modifier JSON
-        // (neoforge/src/main/resources/data/spice_road/neoforge/biome_modifier/);
-        // Fabric has no JSON-based equivalent, so this is done in code instead.
-        BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
-                GenerationStep.Decoration.VEGETAL_DECORATION, placedFeature("spice_plant"));
-        // Before any vegetation, so Heart Groves find bare ground instead of forest canopies.
-        BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
-                GenerationStep.Decoration.LOCAL_MODIFICATIONS, placedFeature("spice_heart_grove"));
-        BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
-                GenerationStep.Decoration.VEGETAL_DECORATION, placedFeature("spice_heart_satellite"));
+                // NeoForge does the equivalent via the data-driven biome_modifier JSON
+                // (neoforge/src/main/resources/data/spice_road/neoforge/biome_modifier/);
+                // Fabric has no JSON-based equivalent, so this is done in code instead.
+                BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
+                                GenerationStep.Decoration.VEGETAL_DECORATION, placedFeature("spice_plant"));
+                // Before any vegetation, so Heart Groves find bare ground instead of forest
+                // canopies.
+                BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
+                                GenerationStep.Decoration.LOCAL_MODIFICATIONS, placedFeature("spice_heart_grove"));
+                BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
+                                GenerationStep.Decoration.VEGETAL_DECORATION, placedFeature("spice_heart_satellite"));
 
-        registerSpiceMaps();
-    }
+                registerSpiceMaps();
+        }
 
-    private static ResourceKey<PlacedFeature> placedFeature(String id) {
-        return ResourceKey.create(Registries.PLACED_FEATURE, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id));
-    }
+        private static ResourceKey<PlacedFeature> placedFeature(String id) {
+                return ResourceKey.create(Registries.PLACED_FEATURE,
+                                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id));
+        }
 
-    /**
-     * Registers {@code /locate spice}/{@code spice_climate}, the
-     * cartographer's Spice Map trades, and the loot table injections.
-     * NeoForge does the same through its own events.
-     */
-    private static void registerSpiceMaps() {
-        CommandRegistrationCallback.EVENT
-                .register((dispatcher, registryAccess, environment) -> SpiceLocateCommand.register(dispatcher));
-        SpiceMapTrade.TIER_BY_LEVEL.forEach((level, tier) -> TradeOfferHelper.registerVillagerOffers(
-                VillagerProfession.CARTOGRAPHER, level, factories -> factories.add(new SpiceMapTrade(tier))));
-        LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> LootInjections
-                .poolFor(key.location()).ifPresent(tableBuilder::pool));
-    }
+        /**
+         * Registers {@code /locate spice}/{@code spice_climate}, the
+         * cartographer's Spice Map trades, and the loot table injections.
+         * NeoForge does the same through its own events.
+         */
+        private static void registerSpiceMaps() {
+                CommandRegistrationCallback.EVENT
+                                .register((dispatcher, registryAccess, environment) -> SpiceLocateCommand
+                                                .register(dispatcher));
+                SpiceMapTrade.TIER_BY_LEVEL.forEach((level, tier) -> TradeOfferHelper.registerVillagerOffers(
+                                VillagerProfession.CARTOGRAPHER, level,
+                                factories -> factories.add(new SpiceMapTrade(tier))));
+                LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> LootInjections
+                                .poolFor(key.location()).ifPresent(tableBuilder::pool));
+        }
 
-    /**
-     * Resolves Default Profiles once the server's item tags are bound, and
-     * syncs them to each player on join and to everyone after
-     * {@code /reload}. NeoForge does the same through its own events.
-     */
-    private static void registerSpiceProfileSync() {
-        PayloadTypeRegistry.playS2C().register(SpiceProfileSync.TYPE, SpiceProfileSync.STREAM_CODEC);
-        CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
-            if (!client)
-                SpiceProfileRegistry.resolve();
-        });
-        ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS
-                .register((player, joined) -> ServerPlayNetworking.send(player, SpiceProfileSync.current()));
-    }
+        /**
+         * Resolves Default Profiles once the server's item tags are bound, and
+         * syncs them to each player on join and to everyone after
+         * {@code /reload}. NeoForge does the same through its own events.
+         */
+        private static void registerSpiceProfileSync() {
+                PayloadTypeRegistry.playS2C().register(SpiceProfileSync.TYPE, SpiceProfileSync.STREAM_CODEC);
+                CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
+                        if (!client)
+                                SpiceProfileRegistry.resolve();
+                });
+                ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS
+                                .register((player, joined) -> ServerPlayNetworking.send(player,
+                                                SpiceProfileSync.current()));
+        }
+
+        /**
+         * Registers and sends {@link ConfigSync}, syncing SERVER config values to
+         * each player on join and to everyone after {@code /reload}. NeoForge
+         * needs no equivalent: its built-in {@code ModConfigSpec} sync already
+         * reaches NeoForge clients.
+         */
+        private static void registerConfigSync() {
+                PayloadTypeRegistry.playS2C().register(ConfigSync.TYPE, ConfigSync.STREAM_CODEC);
+                ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS
+                                .register((player, joined) -> ServerPlayNetworking.send(player, ConfigSync.current()));
+        }
 }

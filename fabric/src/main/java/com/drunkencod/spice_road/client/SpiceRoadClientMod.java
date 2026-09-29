@@ -2,12 +2,15 @@ package com.drunkencod.spice_road.client;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.renderer.RenderType;
 
 import com.drunkencod.spice_road.block.SpicePlants;
 import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.block.SpiceVines;
+import com.drunkencod.spice_road.config.ConfigSync;
+import com.drunkencod.spice_road.config.ConfigSyncOverride;
 import com.drunkencod.spice_road.spice.SpiceProfileSync;
 
 /**
@@ -24,6 +27,10 @@ public class SpiceRoadClientMod implements ClientModInitializer {
         FabricSpiceRegionDebugOverlay.registerIfDevelopment();
         FabricSpiceTooltipHandler.register();
         ClientPlayNetworking.registerGlobalReceiver(SpiceProfileSync.TYPE, (payload, context) -> payload.handle());
+        ClientPlayNetworking.registerGlobalReceiver(ConfigSync.TYPE, (payload, context) -> payload.handle());
+        // The override must not outlive the connection that sent it - a later
+        // singleplayer world or a different server needs its own values.
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ConfigSyncOverride.clear());
 
         registerSpicePlantRenderLayers();
     }

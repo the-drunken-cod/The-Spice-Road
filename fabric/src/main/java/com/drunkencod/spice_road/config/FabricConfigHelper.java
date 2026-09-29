@@ -1,6 +1,8 @@
 package com.drunkencod.spice_road.config;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.spice.Tier;
@@ -35,8 +37,9 @@ public class FabricConfigHelper implements IConfigHelper {
      * {@code config/spice_road/}.
      */
     public void register() {
-        ConfigSerializer.Factory<ConfigData> partitions = (definition, configClass) -> new CommentedJsonConfigSerializer<>(
-                definition, configClass, fileOf(configClass));
+        ConfigSerializer.Factory<ConfigData> partitions = (definition,
+                configClass) -> new CommentedJsonConfigSerializer<>(
+                        definition, configClass, fileOf(configClass));
         AutoConfig.register(SpiceRoadConfigData.class, PartitioningSerializer.wrap(partitions));
     }
 
@@ -48,7 +51,9 @@ public class FabricConfigHelper implements IConfigHelper {
         return configClass == ClientConfigData.class ? ConfigFile.CLIENT : ConfigFile.SERVER;
     }
 
-    /** @return The config screen factory ModMenu opens, covering both partitions. */
+    /**
+     * @return The config screen factory ModMenu opens, covering both partitions.
+     */
     public static Class<SpiceRoadConfigData> getConfigClass() {
         return SpiceRoadConfigData.class;
     }
@@ -61,106 +66,124 @@ public class FabricConfigHelper implements IConfigHelper {
         return AutoConfig.getConfigHolder(SpiceRoadConfigData.class).getConfig().client;
     }
 
+    /**
+     * Resolves a SERVER-file option, preferring a value received via
+     * {@link ConfigSync} - see {@link ConfigSyncOverride} - over the local
+     * config file.
+     *
+     * @param <T>    The option's value type.
+     * @param option The option being read.
+     * @param local  The value currently in the local config file.
+     * @return The synced value if one is active, else {@code local}.
+     */
+    private static <T extends Comparable<T>> T value(ConfigOption<T> option, T local) {
+        T synced = ConfigSyncOverride.get(option);
+        return synced != null ? synced : local;
+    }
+
     // #region IConfigHelper implementation
 
     @Override
     public double getSpiceRegionCellScale() {
-        return server().region.cellScale;
+        return value(ConfigSchema.REGION_CELL_SCALE, server().region.cellScale);
     }
 
     @Override
     public long getSpiceRegionSalt() {
-        return server().region.salt;
+        return value(ConfigSchema.REGION_SALT, server().region.salt);
     }
 
     @Override
     public double getSpiceRegionClusteringStrength() {
-        return server().region.clusteringStrength;
+        return value(ConfigSchema.REGION_CLUSTERING_STRENGTH, server().region.clusteringStrength);
     }
 
     @Override
     public int getSpiceMapSearchRadiusCells() {
-        return server().spiceMap.searchRadiusCells;
+        return value(ConfigSchema.SPICE_MAP_SEARCH_RADIUS_CELLS, server().spiceMap.searchRadiusCells);
     }
 
     @Override
     public int getSpiceMapVillagerSearchRadiusCells() {
-        return server().spiceMap.villagerSearchRadiusCells;
+        return value(ConfigSchema.SPICE_MAP_VILLAGER_SEARCH_RADIUS_CELLS, server().spiceMap.villagerSearchRadiusCells);
     }
 
     @Override
     public boolean isSpiceMapTradesEnabled() {
-        return server().spiceMap.trades.enabled;
+        return value(ConfigSchema.SPICE_MAP_TRADES_ENABLED, server().spiceMap.trades.enabled);
     }
 
     @Override
     public int getSpiceMapBasePrice() {
-        return server().spiceMap.trades.basePrice;
+        return value(ConfigSchema.SPICE_MAP_BASE_PRICE, server().spiceMap.trades.basePrice);
     }
 
     @Override
     public double getSpiceMapPriceMultiplier(Tier tier) {
-        return server().spiceMap.trades.priceMultiplier.of(tier);
+        return value(ConfigSchema.SPICE_MAP_PRICE_MULTIPLIER.get(tier),
+                server().spiceMap.trades.priceMultiplier.of(tier));
     }
 
     @Override
     public boolean isSpiceMapLootEnabled() {
-        return server().spiceMap.lootEnabled;
+        return value(ConfigSchema.SPICE_MAP_LOOT_ENABLED, server().spiceMap.lootEnabled);
     }
 
     @Override
     public boolean isSpiceRegionPlantingRestricted() {
-        return server().cultivation.regionPlantingRestricted;
+        return value(ConfigSchema.CULTIVATION_REGION_PLANTING_RESTRICTED,
+                server().cultivation.regionPlantingRestricted);
     }
 
     @Override
     public int getSpiceHardyHarvestDifficulty() {
-        return server().cultivation.hardyHarvestDifficulty;
+        return value(ConfigSchema.CULTIVATION_HARDY_HARVEST_DIFFICULTY, server().cultivation.hardyHarvestDifficulty);
     }
 
     @Override
     public double getSpicePlantHarvestYieldMultiplier() {
-        return server().plant.harvestYieldMultiplier;
+        return value(ConfigSchema.PLANT_HARVEST_YIELD_MULTIPLIER, server().plant.harvestYieldMultiplier);
     }
 
     @Override
     public double getSpicePlantGrowthSpeedMultiplier(Tier tier) {
-        return server().cultivation.growthSpeed.of(tier);
+        return value(ConfigSchema.CULTIVATION_GROWTH_SPEED_MULTIPLIER.get(tier),
+                server().cultivation.growthSpeed.of(tier));
     }
 
     @Override
     public double getSpiceTreeHarvestYieldMultiplier() {
-        return server().tree.harvestYieldMultiplier;
+        return value(ConfigSchema.TREE_HARVEST_YIELD_MULTIPLIER, server().tree.harvestYieldMultiplier);
     }
 
     @Override
     public double getSpiceTreeFruitingLeavesChance(Tier tier) {
-        return server().tree.fruitingLeaves.of(tier);
+        return value(ConfigSchema.TREE_FRUITING_LEAVES_CHANCE.get(tier), server().tree.fruitingLeaves.of(tier));
     }
 
     @Override
     public double getCookingVarianceMin() {
-        return server().cooking.varianceMin;
+        return value(ConfigSchema.COOKING_VARIANCE_MIN, server().cooking.varianceMin);
     }
 
     @Override
     public double getCookingVarianceMax() {
-        return server().cooking.varianceMax;
+        return value(ConfigSchema.COOKING_VARIANCE_MAX, server().cooking.varianceMax);
     }
 
     @Override
     public double getFlavorSoftCap() {
-        return server().flavor.softCap;
+        return value(ConfigSchema.FLAVOR_SOFT_CAP, server().flavor.softCap);
     }
 
     @Override
     public double getFlavorMinimumAxisValue() {
-        return server().flavor.minimumAxisValue;
+        return value(ConfigSchema.FLAVOR_MINIMUM_AXIS_VALUE, server().flavor.minimumAxisValue);
     }
 
     @Override
     public double getSufficientlySeasoned() {
-        return server().flavor.sufficientlySeasoned;
+        return value(ConfigSchema.FLAVOR_SUFFICIENTLY_SEASONED, server().flavor.sufficientlySeasoned);
     }
 
     @Override
@@ -204,10 +227,7 @@ public class FabricConfigHelper implements IConfigHelper {
         if (entry.getMin() == null || entry.getMax() == null) {
             return;
         }
-        Object owner = root;
-        for (String name : entry.getSection().getPath()) {
-            owner = fieldOf(owner, name).get(owner);
-        }
+        Object owner = ownerFor(root, entry);
         Field field = fieldOf(owner, entry.getKey());
         T current = entry.getType().cast(field.get(owner));
         T clamped = entry.clamp(current);
@@ -217,10 +237,43 @@ public class FabricConfigHelper implements IConfigHelper {
         }
     }
 
+    /**
+     * @param root  The config object an option's section path is relative to.
+     * @param entry The option to resolve the owning section object for.
+     * @return The nested section object that directly declares {@code entry}'s
+     *         field.
+     */
+    private static Object ownerFor(Object root, ConfigOption<?> entry) throws ReflectiveOperationException {
+        Object owner = root;
+        for (String name : entry.getSection().getPath()) {
+            owner = fieldOf(owner, name).get(owner);
+        }
+        return owner;
+    }
+
     private static Field fieldOf(Object owner, String name) throws NoSuchFieldException {
         Field field = owner.getClass().getDeclaredField(name);
         field.setAccessible(true);
         return field;
+    }
+
+    // #region Sync
+
+    /**
+     * @return Every SERVER-file option's current local value, keyed by its
+     *         dotted path, for {@link ConfigSync} to send on join.
+     */
+    static Map<String, Object> currentServerValues() {
+        Map<String, Object> values = new HashMap<>();
+        for (ConfigOption<?> option : ConfigSchema.options(ConfigFile.SERVER)) {
+            try {
+                Object owner = ownerFor(server(), option);
+                values.put(option.getDottedPath(), fieldOf(owner, option.getKey()).get(owner));
+            } catch (ReflectiveOperationException e) {
+                Constants.LOG.error("Could not read config option {} for sync", option.getDottedPath(), e);
+            }
+        }
+        return values;
     }
 
     // #region Config data classes

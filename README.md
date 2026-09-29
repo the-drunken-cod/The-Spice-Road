@@ -41,7 +41,8 @@ You can visit the [releases page](https://github.com/the-drunken-cod/The-Spice-R
 Then simply place the downloaded JAR file into your Minecraft `mods` folder and launch the game with either NeoForge or Fabric.  
   
 > [!TIP]  
-> **On Fabric**, optionally install [Cloth Config API](https://modrinth.com/mod/cloth-config) and [Mod Menu](https://modrinth.com/mod/modmenu) to configure the mod in-game.
+> **On Fabric**, optionally install [Cloth Config API](https://modrinth.com/mod/cloth-config) and [Mod Menu](https://modrinth.com/mod/modmenu) to configure the mod in-game in Singleplayer (on servers, the config is automatically sent to the clients and the edit screen only affects Singleplayer worlds).  
+> On NeoForge, the in-game config screen is already included.
 
 > [!NOTE]  
 > You will need either the [NeoForge](https://neoforge.dev/) or [Fabric](https://fabricmc.net/) mod loader installed to run the mod.  
@@ -60,7 +61,7 @@ Then simply place the downloaded JAR file into your Minecraft `mods` folder and 
 - [Create](https://modrinth.com/mod/create)
   - Spices can be harvested via deployers.
 - [Sable](https://modrinth.com/mod/sable) / [Create Aeronautics](https://modrinth.com/mod/create-aeronautics)
-  - Sublevels sample the spice region from the correct overworld coordinates.
+  - Sublevels sample the spice region from the correct overworld coordinates, meaning crops on mobile bases correctly react to the current spice region.
   - TODO: adjusted block weights.
 
 <br>

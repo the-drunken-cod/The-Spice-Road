@@ -44,7 +44,7 @@
     - Fixed at the 3 places a raw `BlockPos` fed Spice Region math: `Spice#canBeCultivatedAt` (growth/hand-pick/break-harvest gating), the F3 debug source, and `RegionHeartSearch`'s `/locate`/Spice Map search origin.
     - Fabric side is compile-verified only for now; in-game testing goes through the existing NeoForge run (Sable + Create Aeronautics already installed there). A Fabric run environment with the Fabric equivalents is separate follow-up work if wanted.
 - [x] Datagen recipes to turn spice wood logs into vanilla planks, type driven by an enum arg.
-- [ ] Refactor config to use toml `[sections]`
+- [x] Refactor config to use toml `[sections]`
     - Release note for the version this lands in: every config key is renamed, so both config files reset to defaults. `region.salt` re-rolls to a new random value, which reshuffles Spice Regions in existing worlds - copy the old `spiceRegionSalt` over by hand before launching.
 - [ ] Advancements:
     - [x] Everything Bagel: achieve max seasoning buffs (positive or negative axes) on bread and eat it.
@@ -58,4 +58,4 @@
 - [x] Merge "<tier> spice" and "Spice ingredient. Press [shift] ..." tooltips into one line.
 - [ ] Vine blocks should also only have a location-seeded chance to increase in age.
 - [ ] Fabric creative tabs don't show up.
-- [ ] Sync Fabric config from server to client on join.
+- [x] Sync Fabric config from server to client on join.
