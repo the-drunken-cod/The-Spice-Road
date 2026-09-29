@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import com.drunkencod.spice_road.Constants;
@@ -54,6 +56,16 @@ public final class SpiceProfileTooltips {
      */
     private static final String TIER_LINE_KEY = Constants.MOD_ID + ".tooltip.spice_tier.line";
 
+    /**
+     * Translation key of the first Flavor Contributors line, taking as many
+     * comma-separated item names as fit on it as its only argument (see
+     * {@link #flavorContributorsLines}).
+     */
+    private static final String FLAVOR_CONTRIBUTORS_KEY = Constants.MOD_ID + ".tooltip.flavor_contributors";
+
+    /** Pixel width a Flavor Contributors name list wraps at. */
+    private static final int CONTRIBUTORS_LINE_WIDTH = 200;
+
     private SpiceProfileTooltips() {
     }
 
@@ -85,6 +97,54 @@ public final class SpiceProfileTooltips {
         SpiceProfiles.getEffective(stack)
                 .map(profile -> SpiceFlavorTooltips.formatFlavorAxes(profile, barScale(stack)))
                 .ifPresent(lines::addAll);
+
+        Set<Item> contributors = stack.getOrDefault(ModDataComponents.FLAVOR_CONTRIBUTORS.get(), Set.of());
+        if (!contributors.isEmpty())
+            lines.addAll(flavorContributorsLines(contributors));
+
+        return lines;
+    }
+
+    /**
+     * @param contributors The stack's {@link ModDataComponents#FLAVOR_CONTRIBUTORS}.
+     * @return The comma-separated contributor item names, word-wrapped at
+     *         {@link #CONTRIBUTORS_LINE_WIDTH}, with the first line prefixed via
+     *         {@link #FLAVOR_CONTRIBUTORS_KEY}, e.g. {@code "Contains: Cinnamon,
+     *         Nutmeg,"} followed by {@code "Chili Pepper"} on its own line.
+     */
+    private static List<Component> flavorContributorsLines(Set<Item> contributors) {
+        Component space = Component.literal(" ");
+        int spaceWidth = SpiceFlavorTooltips.measureWidth(space);
+
+        List<Component> rawLines = new ArrayList<>();
+        MutableComponent line = Component.empty();
+        int lineWidth = 0;
+        int index = 0;
+        for (Item item : contributors) {
+            boolean isLast = ++index == contributors.size();
+            MutableComponent token = item.getDefaultInstance().getHoverName().copy();
+            if (!isLast)
+                token.append(",");
+            int tokenWidth = SpiceFlavorTooltips.measureWidth(token);
+
+            if (lineWidth > 0 && lineWidth + spaceWidth + tokenWidth > CONTRIBUTORS_LINE_WIDTH) {
+                rawLines.add(line);
+                line = Component.empty();
+                lineWidth = 0;
+            }
+            if (lineWidth > 0) {
+                line.append(space);
+                lineWidth += spaceWidth;
+            }
+            line.append(token);
+            lineWidth += tokenWidth;
+        }
+        rawLines.add(line);
+
+        List<Component> lines = new ArrayList<>(rawLines.size());
+        lines.add(Component.translatable(FLAVOR_CONTRIBUTORS_KEY, rawLines.get(0)).withStyle(ChatFormatting.GRAY));
+        for (Component continuation : rawLines.subList(1, rawLines.size()))
+            lines.add(continuation.copy().withStyle(ChatFormatting.GRAY));
         return lines;
     }
 

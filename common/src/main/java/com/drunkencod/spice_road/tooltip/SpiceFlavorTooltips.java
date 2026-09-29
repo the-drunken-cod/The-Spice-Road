@@ -71,6 +71,15 @@ public class SpiceFlavorTooltips {
     }
 
     /**
+     * @param text The text to measure.
+     * @return {@code text}'s rendered width in pixels, per the measurer set via
+     *         {@link #setTextWidthMeasurer}.
+     */
+    public static int measureWidth(FormattedText text) {
+        return width(text);
+    }
+
+    /**
      * Formats every {@link FlavorAxis} of a {@link SpiceProfile} as a
      * tooltip line, in {@link FlavorAxis} enum order.
      *
@@ -114,6 +123,7 @@ public class SpiceFlavorTooltips {
         for (FlavorAxis axis : FlavorAxis.values())
             lines.add(formatLine(axis, profile.get(axis), barScale, bothLabels, showValues, padder, labelWidth,
                     barWidth));
+
         return lines;
     }
 

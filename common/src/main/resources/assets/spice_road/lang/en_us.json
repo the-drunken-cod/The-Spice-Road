@@ -177,6 +177,7 @@
     "spice_road.spice_axis.name.sweet_bitter.positive": "Sweet",
     "spice_road.spice_axis.name.woody_green.negative": "Green",
     "spice_road.spice_axis.name.woody_green.positive": "Woody",
+    "spice_road.tooltip.flavor_contributors": "Seasoned with: %s",
     "spice_road.tooltip.shift_hint.spice.hold": "Hold %s for information.",
     "spice_road.tooltip.shift_hint.spice.seasoned": "Seasoned.",
     "spice_road.tooltip.shift_hint.spice.spice": "Spice ingredient.",
