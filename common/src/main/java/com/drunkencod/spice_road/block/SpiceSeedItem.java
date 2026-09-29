@@ -1,5 +1,8 @@
 package com.drunkencod.spice_road.block;
 
+import com.drunkencod.spice_road.spice.Spice;
+import com.drunkencod.spice_road.spice.Tier;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemNameBlockItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -24,6 +27,15 @@ public class SpiceSeedItem extends ItemNameBlockItem {
      */
     public SpiceSeedItem(Block block, Properties properties) {
         super(block, properties);
+    }
+
+    /**
+     * @param spice The {@link Spice} these seeds plant.
+     * @return Default item properties, rarity-coded by {@code spice}'s
+     *         {@link Tier}.
+     */
+    public static Properties defaultProperties(Spice spice) {
+        return new Properties().rarity(spice.getTier().getRarity());
     }
 
     @Override

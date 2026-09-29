@@ -228,17 +228,26 @@ public enum Spice implements StringRepresentable {
         return null;
     }
 
-    /** Returns the raw spice item with the given enum ID from the registry. */
+    /**
+     * Returns the raw spice item with the given enum ID from the registry, if it
+     * exists.
+     */
     public static @Nullable Item getRawById(String id) {
         return ModItems.byPath(id);
     }
 
-    /** Returns the dried spice item with the given enum ID from the registry. */
+    /**
+     * Returns the dried spice item with the given enum ID from the registry, if it
+     * exists.
+     */
     public static @Nullable Item getDriedById(String id) {
         return ModItems.byPath("dried_" + id);
     }
 
-    /** Returns the spice seeds item with the given enum ID from the registry. */
+    /**
+     * Returns the spice seeds item with the given enum ID from the registry, if it
+     * exists.
+     */
     public static @Nullable Item getSeedsById(String id) {
         return ModItems.byPath(id + "_seeds");
     }

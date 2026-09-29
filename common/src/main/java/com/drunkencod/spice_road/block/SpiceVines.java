@@ -8,7 +8,6 @@ import java.util.function.Supplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FireBlock;
@@ -17,6 +16,7 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.datagen.ItemModelHelper;
+import com.drunkencod.spice_road.item.SpiceItem;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.SourceType;
 import com.drunkencod.spice_road.spice.Spice;
@@ -78,11 +78,12 @@ public final class SpiceVines {
         ResourceKey<ConfiguredFeature<?, ?>> hostTreeFeature = ResourceKey.create(Registries.CONFIGURED_FEATURE,
                 ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id + "_host_tree"));
 
-        Supplier<Item> productItem = Services.REGISTRY.registerItem(id, () -> new Item(new Item.Properties()));
+        Supplier<Item> productItem = Services.REGISTRY.registerItem(id,
+                () -> new SpiceItem(SpiceItem.defaultProperties(spice)));
         Supplier<SpiceVineBlock> block = Services.REGISTRY.registerBlock(vineId,
                 () -> new SpiceVineBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.VINE), spice, productItem));
         Supplier<Item> vineItem = Services.REGISTRY.registerItem(vineId,
-                () -> new BlockItem(block.get(), new Item.Properties()));
+                () -> new SpiceVineItem(block.get(), SpiceVineItem.defaultProperties(spice)));
 
         ItemModelHelper.addFlatItem(id);
         ItemModelHelper.addFlatItem(vineId);

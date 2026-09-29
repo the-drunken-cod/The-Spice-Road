@@ -11,6 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
 import com.drunkencod.spice_road.datagen.ItemModelHelper;
+import com.drunkencod.spice_road.item.SpiceItem;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Spice;
 import com.drunkencod.spice_road.spice.SourceType;
@@ -71,7 +72,8 @@ public final class SpicePlants {
         String seedId = id + "_seeds";
         String blockId = id + (spice.getSourceType() == SourceType.FLOWER_PATCH ? "_flower" : "_crop");
 
-        Supplier<Item> productItem = Services.REGISTRY.registerItem(id, () -> new Item(new Item.Properties()));
+        Supplier<Item> productItem = Services.REGISTRY.registerItem(id,
+                () -> new SpiceItem(SpiceItem.defaultProperties(spice)));
 
         @SuppressWarnings("unchecked")
         Supplier<Item>[] seedItemHolder = new Supplier[1];
@@ -91,7 +93,7 @@ public final class SpicePlants {
         }
 
         Supplier<Item> seedItem = Services.REGISTRY.registerItem(seedId,
-                () -> new SpiceSeedItem(block.get(), new Item.Properties()));
+                () -> new SpiceSeedItem(block.get(), SpiceSeedItem.defaultProperties(spice)));
         seedItemHolder[0] = seedItem;
 
         ItemModelHelper.addFlatItem(id);

@@ -21,6 +21,7 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.datagen.ItemModelHelper;
+import com.drunkencod.spice_road.item.SpiceItem;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.HarvestAction;
 import com.drunkencod.spice_road.spice.SourceType;
@@ -83,7 +84,7 @@ public final class SpiceTree {
         TreeGrower grower = new TreeGrower(Constants.MOD_ID + ":" + id, Optional.empty(), Optional.of(treeFeature),
                 Optional.empty());
 
-        this.productItem = Services.REGISTRY.registerItem(id, () -> new Item(new Item.Properties()));
+        this.productItem = Services.REGISTRY.registerItem(id, () -> new SpiceItem(SpiceItem.defaultProperties(spice)));
         this.log = Services.REGISTRY.registerBlock(getLogId(),
                 () -> new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.JUNGLE_LOG)));
         this.strippedLog = Services.REGISTRY.<RotatedPillarBlock>registerBlock(getStrippedLogId(),
@@ -97,7 +98,8 @@ public final class SpiceTree {
         this.logItem = registerBlockItem(getLogId(), log);
         this.strippedLogItem = registerBlockItem(getStrippedLogId(), strippedLog);
         this.leavesItem = registerBlockItem(getLeavesId(), leaves);
-        this.saplingItem = registerBlockItem(getSaplingId(), sapling);
+        this.saplingItem = Services.REGISTRY.registerItem(getSaplingId(),
+                () -> new SpiceSaplingItem(sapling.get(), SpiceSaplingItem.defaultProperties(spice)));
 
         ItemModelHelper.addFlatItem(id);
         ItemModelHelper.addFlatItem(getSaplingId());
