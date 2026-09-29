@@ -6,6 +6,7 @@ import com.drunkencod.spice_road.config.ConfigSync;
 import com.drunkencod.spice_road.config.FabricConfigHelper;
 import com.drunkencod.spice_road.loot.LootInjections;
 import com.drunkencod.spice_road.platform.Services;
+import com.drunkencod.spice_road.registry.FabricCreativeTabHelper;
 import com.drunkencod.spice_road.spice.SpiceProfileRegistry;
 import com.drunkencod.spice_road.spice.SpiceProfileSync;
 import com.drunkencod.spice_road.villager.SpiceMapTrade;
@@ -37,6 +38,7 @@ public class SpiceRoadMod implements ModInitializer {
         public void onInitialize() {
                 // Register Cloth Config configs
                 ((FabricConfigHelper) Services.CONFIG).register();
+                ((FabricCreativeTabHelper) Services.CREATIVE_TAB).register();
 
                 SpiceRoad.init();
                 SpiceRoad.commonSetup();
