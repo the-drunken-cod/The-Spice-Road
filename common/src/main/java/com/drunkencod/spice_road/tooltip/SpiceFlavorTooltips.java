@@ -183,10 +183,13 @@ public class SpiceFlavorTooltips {
     /**
      * @param axis  The Flavor Axis, whose pole color is used
      * @param value Score
-     * @return The score multiplied by {@link #VALUE_SCALE}, e.g. {@code "5"}
+     * @return The score multiplied by {@link #VALUE_SCALE}, e.g. {@code "0.5"}
      */
     private static Component valueNumber(FlavorAxis axis, double value) {
-        return Component.literal(String.valueOf(Math.round(value * VALUE_SCALE)))
+        double scale = Math.pow(10, 2);
+        double roundedVal = Math.round(value * scale) / scale;
+
+        return Component.literal(String.valueOf(roundedVal))
                 .withColor(axis.getColor(value >= 0D));
     }
 
