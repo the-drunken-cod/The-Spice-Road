@@ -49,21 +49,34 @@ public class SpiceItemTagProvider implements DataProvider {
     @Override
     public CompletableFuture<?> run(CachedOutput cachedOutput) {
         List<CompletableFuture<?>> futures = new ArrayList<>();
-        futures.add(save(cachedOutput, SpiceItemTags.RAW_SPICES, spiceItems(spice -> Spice.getRawById(spice.getId()))));
+        futures.add(save(cachedOutput, SpiceItemTags.RAW_SPICES,
+                spiceItems(spice -> Spice.getRawById(spice.getId())).stream().map(TagValue::of).toList()));
         futures.add(save(cachedOutput, SpiceItemTags.DRIED_SPICES,
-                spiceItems(spice -> Spice.getDriedById(spice.getId()))));
+                spiceItems(spice -> Spice.getDriedById(spice.getId())).stream().map(TagValue::of).toList()));
         futures.add(save(cachedOutput, SpiceItemTags.SPICES, List.of(
-                "#" + SpiceItemTags.RAW_SPICES.location(),
-                "#" + SpiceItemTags.DRIED_SPICES.location())));
+                TagValue.of("#" + SpiceItemTags.RAW_SPICES.location()),
+                TagValue.of("#" + SpiceItemTags.DRIED_SPICES.location()))));
         futures.add(save(cachedOutput, SpiceItemTags.RETAINS_FLAVOR, List.of(
-                "#c:mushrooms",
-                "#c:crops/grain")));
+                TagValue.of("#c:mushrooms"),
+                TagValue.optional("#c:crops/grain"))));
         futures.add(save(cachedOutput, SpiceItemTags.UNSEASONABLE, List.of()));
         futures.add(save(cachedOutput, SpiceItemTags.VOIDS_FLAVOR_WHEN_PLACED, List.of(
-                "minecraft:pumpkin_pie")));
+                TagValue.of("minecraft:pumpkin_pie"))));
         for (Tier tier : Tier.values())
-            futures.add(save(cachedOutput, tier.getItemTag(), tierItems(tier)));
+            futures.add(save(cachedOutput, tier.getItemTag(), tierItems(tier).stream().map(TagValue::of).toList()));
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
+    }
+
+    /** One {@code values} entry of a tag: a required reference, or an {@link #optional} one that may not exist. */
+    private record TagValue(String id, boolean required) {
+        static TagValue of(String id) {
+            return new TagValue(id, true);
+        }
+
+        /** @param id A reference tolerated as missing, e.g. another mod's convention tag that may not be loaded. */
+        static TagValue optional(String id) {
+            return new TagValue(id, false);
+        }
     }
 
     /**
@@ -99,11 +112,20 @@ public class SpiceItemTagProvider implements DataProvider {
                 .toList();
     }
 
-    private CompletableFuture<?> save(CachedOutput cachedOutput, TagKey<Item> tag, List<String> values) {
+    private CompletableFuture<?> save(CachedOutput cachedOutput, TagKey<Item> tag, List<TagValue> values) {
         JsonObject json = new JsonObject();
         json.addProperty("replace", false);
         JsonArray valuesJson = new JsonArray();
-        values.forEach(valuesJson::add);
+        for (TagValue value : values) {
+            if (value.required()) {
+                valuesJson.add(value.id());
+                continue;
+            }
+            JsonObject entry = new JsonObject();
+            entry.addProperty("id", value.id());
+            entry.addProperty("required", false);
+            valuesJson.add(entry);
+        }
         json.add("values", valuesJson);
         return DataProvider.saveStable(cachedOutput, json, tagPathProvider.json(tag.location()));
     }

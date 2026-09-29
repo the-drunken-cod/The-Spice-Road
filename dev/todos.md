@@ -64,7 +64,7 @@
 - [x] Neoforge in game config screen doesnt exist.
 - Fabric issues:
     - [x] Fabric creative tabs don't show up.
-    - [ ] Vine right-clicking doesn't work.
-    - [ ] Breaking fully aged saffron with shears doesn't drop saffron, only seeds.
+    - [x] Vine right-clicking doesn't work.
+    - [x] Breaking fully aged saffron with shears doesn't drop saffron, only seeds.
 - [ ] Right-click harvest tool on any SpiceCrop to roll and drop its harvest loot and set it back to age0.
 - [x] Display flavor contributors at the bottom of the extended tooltip

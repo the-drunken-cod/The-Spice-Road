@@ -1,7 +1,10 @@
 {
   "replace": false,
   "values": [
-    "#c:tools/knife",
+    {
+      "id": "#c:tools/knife",
+      "required": false
+    },
     "#c:tools/shear",
     "#minecraft:swords"
   ]
