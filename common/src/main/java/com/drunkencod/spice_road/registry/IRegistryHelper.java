@@ -1,6 +1,7 @@
 package com.drunkencod.spice_road.registry;
 
 import java.util.function.Supplier;
+import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.resources.ResourceLocation;
@@ -143,4 +144,14 @@ public interface IRegistryHelper {
      * @param listener The reload listener to register
      */
     void registerReloadListener(ResourceLocation id, PreparableReloadListener listener);
+
+    /**
+     * Register a custom {@link CriterionTrigger} under the mod's namespace.
+     * Frozen as early as {@link #registerFeature}, with the same
+     * consequences.
+     *
+     * @param id      Registry path (e.g. {@code "my_trigger"})
+     * @param factory Supplier that creates the trigger instance
+     */
+    <T extends CriterionTrigger<?>> Supplier<T> registerCriterionTrigger(String id, Supplier<T> factory);
 }

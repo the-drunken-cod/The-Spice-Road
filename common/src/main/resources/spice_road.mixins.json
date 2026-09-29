@@ -9,7 +9,8 @@
     "ReloadableServerRegistriesMixin",
     "flavor.AbstractCookingRecipeMixin",
     "flavor.ShapedRecipeMixin",
-    "flavor.ShapelessRecipeMixin"
+    "flavor.ShapelessRecipeMixin",
+    "food.LivingEntityMixin"
   ],
   "client": [],
   "server": [],

@@ -1,5 +1,7 @@
 package com.drunkencod.spice_road;
 
+import com.drunkencod.spice_road.advancement.FoodEatenAdvancements;
+import com.drunkencod.spice_road.advancement.ModCriteriaTriggers;
 import com.drunkencod.spice_road.block.SpicePlants;
 import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.block.SpiceVines;
@@ -38,6 +40,8 @@ public class SpiceRoad {
         ModLootConditions.register();
         ModLootFunctions.register();
         ModMapDecorations.register();
+        ModCriteriaTriggers.register();
+        FoodEatenAdvancements.register();
     }
 
     /**

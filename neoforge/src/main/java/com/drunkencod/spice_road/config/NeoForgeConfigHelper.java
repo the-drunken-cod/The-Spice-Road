@@ -196,6 +196,11 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public double getSufficientlySeasoned() {
+        return COMMON.sufficientlySeasoned.get();
+    }
+
+    @Override
     public boolean isTooltipBothAxisLabelsShown() {
         return CLIENT.tooltipShowBothAxisLabels.get();
     }
@@ -220,6 +225,7 @@ public class NeoForgeConfigHelper implements IConfigHelper {
         public final ModConfigSpec.DoubleValue spicePlantHarvestYieldMultiplier;
         public final ModConfigSpec.DoubleValue flavorSoftCap;
         public final ModConfigSpec.DoubleValue flavorMinimumAxisValue;
+        public final ModConfigSpec.DoubleValue sufficientlySeasoned;
 
         CommonConfig(ModConfigSpec.Builder builder) {
             spicePlantGrowthStages = builder
@@ -245,6 +251,11 @@ public class NeoForgeConfigHelper implements IConfigHelper {
                     .comment("Magnitude any non-zero flavor axis counts as at least when a profile is read for "
                             + "effects and tooltips.")
                     .defineInRange("flavorMinimumAxisValue", 0.05, 0.0, 1.0);
+            sufficientlySeasoned = builder
+                    .comment("Magnitude a raw flavor axis must reach, in either direction, to count as "
+                            + "Sufficiently Seasoned for pass/fail checks like advancement criteria. Independent "
+                            + "of flavorSoftCap.")
+                    .defineInRange("sufficientlySeasoned", 7.0, 0.1, 1000.0);
         }
     }
 

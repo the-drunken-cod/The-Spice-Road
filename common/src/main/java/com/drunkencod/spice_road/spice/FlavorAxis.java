@@ -1,5 +1,9 @@
 package com.drunkencod.spice_road.spice;
 
+import com.mojang.serialization.Codec;
+
+import net.minecraft.util.StringRepresentable;
+
 import com.drunkencod.spice_road.Constants;
 
 /**
@@ -7,7 +11,7 @@ import com.drunkencod.spice_road.Constants;
  * scored on, each a single value from +1 (its positive pole) to -1 (its
  * negative pole).
  */
-public enum FlavorAxis {
+public enum FlavorAxis implements StringRepresentable {
 
     /** Fiery (+1) / cooling (-1). */
     HEAT_COOLING("heat_cooling", 0xFF5533, 0x55CCFF),
@@ -26,6 +30,9 @@ public enum FlavorAxis {
     /** Umami (+1) / airy (-1). */
     SAVORY_DELICATE("savory_delicate", 0xCC6644, 0xE8D8FF);
 
+    /** Codec reading and writing a {@link FlavorAxis} by its {@link #getId()}. */
+    public static final Codec<FlavorAxis> CODEC = StringRepresentable.fromEnum(FlavorAxis::values);
+
     protected String axisId;
     protected int positiveColor;
     protected int negativeColor;
@@ -42,6 +49,11 @@ public enum FlavorAxis {
     }
 
     public String getId() {
+        return this.axisId;
+    }
+
+    @Override
+    public String getSerializedName() {
         return this.axisId;
     }
 

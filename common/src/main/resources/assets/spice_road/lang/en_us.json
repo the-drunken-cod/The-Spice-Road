@@ -1,4 +1,8 @@
 {
+    "advancements.spice_road.everything_bagel.description": "Season a loaf of bread until every flavor axis is close to maxed out, then eat it",
+    "advancements.spice_road.everything_bagel.title": "Everything Bagel",
+    "advancements.spice_road.root.description": "Grow, harvest and season with Spices",
+    "advancements.spice_road.root.title": "The Spice Road",
     "block.spice_road.chili_pepper_crop": "Chili Pepper Crops",
     "block.spice_road.cinnamon_leaves": "Cinnamon Leaves",
     "block.spice_road.cinnamon_log": "Cinnamon Log",

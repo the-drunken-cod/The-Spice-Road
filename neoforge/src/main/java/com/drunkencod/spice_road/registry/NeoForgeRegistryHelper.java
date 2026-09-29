@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -59,6 +60,9 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
 
     private final DeferredRegister<MapDecorationType> mapDecorationTypes = DeferredRegister
             .create(Registries.MAP_DECORATION_TYPE, Constants.MOD_ID);
+
+    private final DeferredRegister<CriterionTrigger<?>> criterionTriggers = DeferredRegister
+            .create(Registries.TRIGGER_TYPE, Constants.MOD_ID);
 
     private final List<PreparableReloadListener> pendingReloadListeners = new ArrayList<>();
 
@@ -121,6 +125,12 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
         pendingReloadListeners.add(listener);
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends CriterionTrigger<?>> Supplier<T> registerCriterionTrigger(String id, Supplier<T> factory) {
+        return (Supplier<T>) (Supplier<?>) criterionTriggers.register(id, factory::get);
+    }
+
     private void onAddReloadListeners(AddReloadListenerEvent event) {
         for (PreparableReloadListener listener : pendingReloadListeners) {
             event.addListener(listener);
@@ -141,6 +151,7 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
         mapDecorationTypes.register(eventBus);
         placementModifierTypes.register(eventBus);
         treeDecoratorTypes.register(eventBus);
+        criterionTriggers.register(eventBus);
         // AddReloadListenerEvent is a game event, not a mod-bus event.
         NeoForge.EVENT_BUS.addListener(this::onAddReloadListeners);
     }

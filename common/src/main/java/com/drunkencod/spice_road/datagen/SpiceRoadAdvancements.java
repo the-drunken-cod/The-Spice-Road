@@ -1,0 +1,67 @@
+package com.drunkencod.spice_road.datagen;
+
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
+
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementType;
+import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.critereon.PlayerTrigger;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.advancements.AdvancementSubProvider;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
+
+import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.advancement.FoodEatenTrigger;
+import com.drunkencod.spice_road.spice.FlavorAxis;
+import com.drunkencod.spice_road.spice.Spice;
+
+/**
+ * Datagens the {@code spice_road} advancement tab: a hidden, auto-granted
+ * root (own tab, so future advancements don't crowd a vanilla one) plus
+ * Everything Bagel (see {@code dev/todos.md}). Plain vanilla
+ * {@code AdvancementProvider}, so this runs unchanged on both loaders.
+ */
+public class SpiceRoadAdvancements implements AdvancementSubProvider {
+
+    private static final ResourceLocation ROOT_ID = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "root");
+
+    @Override
+    public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> saver) {
+        AdvancementHolder root = Advancement.Builder.advancement()
+                .display(Spice.getRawById(Spice.CHILI_PEPPER.getId()),
+                        Component.translatable("advancements.spice_road.root.title"),
+                        Component.translatable("advancements.spice_road.root.description"),
+                        ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID,
+                                "textures/block/stripped_cinnamon_log.png"),
+                        AdvancementType.TASK, false, false, true)
+                .addCriterion("tick", PlayerTrigger.TriggerInstance.tick())
+                .build(ROOT_ID);
+        saver.accept(root);
+
+        Map<FlavorAxis, FoodEatenTrigger.AxisThreshold> everyAxisSufficientlySeasoned = new EnumMap<>(
+                FlavorAxis.class);
+        for (FlavorAxis axis : FlavorAxis.values())
+            everyAxisSufficientlySeasoned.put(axis, new FoodEatenTrigger.AxisThreshold(Optional.empty()));
+
+        AdvancementHolder everythingBagel = Advancement.Builder.advancement()
+                .parent(root)
+                .display(Items.BREAD,
+                        Component.translatable(
+                                "advancements.spice_road.everything_bagel.title"),
+                        Component.translatable(
+                                "advancements.spice_road.everything_bagel.description"),
+                        null, AdvancementType.CHALLENGE, true, true, false)
+                .addCriterion("everything_bagel", FoodEatenTrigger.TriggerInstance.foodEaten(
+                        Optional.of(ItemPredicate.Builder.item().of(Items.BREAD)),
+                        everyAxisSufficientlySeasoned,
+                        Optional.empty()))
+                .build(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "everything_bagel"));
+        saver.accept(everythingBagel);
+    }
+}

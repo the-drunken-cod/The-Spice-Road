@@ -46,7 +46,7 @@
 - [x] Datagen recipes to turn spice wood logs into vanilla planks, type driven by an enum arg.
 - [ ] Refactor config to use toml `[sections]`
 - [ ] Advancements:
-    - [ ] Everything Bagel: achieve max seasoning buffs (positive or negative axes) on bread and eat it.
+    - [x] Everything Bagel: achieve max seasoning buffs (positive or negative axes) on bread and eat it.
     - [ ] (Unnamed): apply a common-rare spice to food.
     - [ ] (Unnamed): apply an epic spice to food.
     - [ ] (Unnamed): find a common-rare spice map.

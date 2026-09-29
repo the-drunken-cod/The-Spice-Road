@@ -1,5 +1,7 @@
 package com.drunkencod.spice_road;
 
+import java.util.List;
+
 import com.drunkencod.spice_road.client.NeoForgeSpiceRegionDebugOverlay;
 import com.drunkencod.spice_road.command.SpiceLocateCommand;
 import com.drunkencod.spice_road.client.NeoForgeSpiceTooltipHandler;
@@ -9,6 +11,7 @@ import com.drunkencod.spice_road.datagen.NeoForgeItemModelProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeSpiceDataMapProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeSpiceLootProvider;
 import com.drunkencod.spice_road.datagen.SpiceItemTagProvider;
+import com.drunkencod.spice_road.datagen.SpiceRoadAdvancements;
 import com.drunkencod.spice_road.datagen.SpiceTreeCompatRecipeProvider;
 import com.drunkencod.spice_road.datagen.SpiceTreePlanksRecipeProvider;
 import com.drunkencod.spice_road.loot.LootInjections;
@@ -25,6 +28,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
@@ -95,6 +99,10 @@ public class SpiceRoadMod {
         event.getGenerator().addProvider(
                 event.includeServer(),
                 new SpiceItemTagProvider(event.getGenerator().getPackOutput()));
+        event.getGenerator().addProvider(
+                event.includeServer(),
+                new AdvancementProvider(event.getGenerator().getPackOutput(), event.getLookupProvider(),
+                        List.of(new SpiceRoadAdvancements())));
     }
 
     private void onClientSetup(FMLClientSetupEvent event) {

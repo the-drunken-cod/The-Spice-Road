@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
@@ -104,6 +105,13 @@ public class FabricRegistryHelper implements IRegistryHelper {
                 ResourceKey.create(Registries.MAP_DECORATION_TYPE,
                         ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id)),
                 factory.get());
+    }
+
+    @Override
+    public <T extends CriterionTrigger<?>> Supplier<T> registerCriterionTrigger(String id, Supplier<T> factory) {
+        T trigger = Registry.register(BuiltInRegistries.TRIGGER_TYPES,
+                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id), factory.get());
+        return () -> trigger;
     }
 
     @Override

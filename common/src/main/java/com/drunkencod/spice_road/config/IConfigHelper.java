@@ -231,6 +231,16 @@ public interface IConfigHelper {
     double getFlavorMinimumAxisValue();
 
     /**
+     * Magnitude a raw Spice Profile axis must reach, in either direction, to
+     * count as Sufficiently Seasoned - used by pass/fail checks like the
+     * {@code spice_road:food_eaten} advancement criterion, not by tooltips or
+     * the Effective Profile's diminishing-returns cap ({@link #getFlavorSoftCap()}).
+     *
+     * @return The configured Sufficiently Seasoned threshold.
+     */
+    double getSufficientlySeasoned();
+
+    /**
      * Client-side. Whether Flavor Axis tooltips show both pole labels of each
      * axis (e.g. {@code [Spicy / Cooling]}), emphasizing the one matching the
      * value's sign, instead of only the matching one.

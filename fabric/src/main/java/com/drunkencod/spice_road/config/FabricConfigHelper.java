@@ -156,6 +156,11 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public double getSufficientlySeasoned() {
+        return AutoConfig.getConfigHolder(CommonConfigData.class).getConfig().sufficientlySeasoned;
+    }
+
+    @Override
     public boolean isTooltipBothAxisLabelsShown() {
         return AutoConfig.getConfigHolder(ClientConfigData.class).getConfig().tooltipShowBothAxisLabels;
     }
@@ -212,6 +217,14 @@ public class FabricConfigHelper implements IConfigHelper {
          */
         @ConfigEntry.Gui.Tooltip
         public double flavorMinimumAxisValue = 0.05;
+
+        /**
+         * Magnitude a raw flavor axis must reach, in either direction, to
+         * count as Sufficiently Seasoned for pass/fail checks like
+         * advancement criteria. Independent of {@link #flavorSoftCap}.
+         */
+        @ConfigEntry.Gui.Tooltip
+        public double sufficientlySeasoned = 7.0;
     }
 
     /** Gameplay config read by the logical server. */
