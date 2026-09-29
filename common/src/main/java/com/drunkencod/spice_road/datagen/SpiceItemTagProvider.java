@@ -34,8 +34,9 @@ import com.drunkencod.spice_road.spice.Tier;
  * sapling and vine items. Also writes the (initially empty)
  * {@link SpiceItemTags#RETAINS_FLAVOR} and
  * {@link SpiceItemTags#UNSEASONABLE} tags so they exist for datapacks to
- * add to. Plain {@link DataProvider} writing raw JSON, so it runs unchanged
- * on both loaders.
+ * add to, and {@link SpiceItemTags#VOIDS_FLAVOR_WHEN_PLACED} with its one
+ * known default member. Plain {@link DataProvider} writing raw JSON, so it
+ * runs unchanged on both loaders.
  */
 public class SpiceItemTagProvider implements DataProvider {
 
@@ -58,6 +59,8 @@ public class SpiceItemTagProvider implements DataProvider {
                 "#c:mushrooms",
                 "#c:crops/grain")));
         futures.add(save(cachedOutput, SpiceItemTags.UNSEASONABLE, List.of()));
+        futures.add(save(cachedOutput, SpiceItemTags.VOIDS_FLAVOR_WHEN_PLACED, List.of(
+                "minecraft:pumpkin_pie")));
         for (Tier tier : Tier.values())
             futures.add(save(cachedOutput, tier.getItemTag(), tierItems(tier)));
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));

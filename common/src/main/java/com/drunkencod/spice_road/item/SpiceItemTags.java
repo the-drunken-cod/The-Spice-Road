@@ -66,6 +66,16 @@ public class SpiceItemTags {
      */
     public static final TagKey<Item> UNSEASONABLE = create("unseasonable");
 
+    /**
+     * Items that place as a block without being a {@code BlockItem}
+     * themselves, so the generic "is this a {@code BlockItem} whose block
+     * isn't a {@code BlockEntity}" check can't catch them - e.g. vanilla
+     * {@code minecraft:pumpkin_pie}, which Farmer's Delight makes placeable
+     * through a Mixin rather than by changing its item class. Datapacks add
+     * to this for other mods' items with the same kind of hack.
+     */
+    public static final TagKey<Item> VOIDS_FLAVOR_WHEN_PLACED = create("voids_flavor_when_placed");
+
     private SpiceItemTags() {
     }
 

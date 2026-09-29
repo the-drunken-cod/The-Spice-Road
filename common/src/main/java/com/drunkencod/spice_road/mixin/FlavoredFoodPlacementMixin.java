@@ -12,15 +12,25 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.EntityBlock;
 
+import com.drunkencod.spice_road.item.SpiceItemTags;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.SpiceProfiles;
 
 /**
- * Requires sneaking to place a stack carrying a {@code spice_road:spice_profile}
+ * Requires sneaking to place a stack carrying a
+ * {@code spice_road:spice_profile}
  * override as a block that isn't a {@code BlockEntity}, since such a block has
  * nowhere to keep that data and would otherwise silently discard it - notably
- * Farmer's Delight-style placeable food (pie slices, food bowls). Configurable
- * via {@code IConfigHelper#isSneakRequiredToPlaceFlavoredFood}.
+ * Farmer's Delight-style placeable food (pie slices, food bowls). Cancelling
+ * the placement (returning {@code PASS}) falls through to vanilla's own eat
+ * fallback, so the stack is eaten instead.
+ * <p>
+ * Catches both a stack that's a {@code BlockItem} of a non-{@code BlockEntity}
+ * block, and one in {@link SpiceItemTags#VOIDS_FLAVOR_WHEN_PLACED} for items
+ * that place as a block through other means (e.g. vanilla
+ * {@code minecraft:pumpkin_pie}, made placeable by a Farmer's Delight Mixin
+ * rather than by being a {@code BlockItem}). Configurable via
+ * {@code IConfigHelper#isSneakRequiredToPlaceFlavoredFood}.
  */
 @Mixin(ItemStack.class)
 public abstract class FlavoredFoodPlacementMixin {
@@ -32,11 +42,21 @@ public abstract class FlavoredFoodPlacementMixin {
         Player player = context.getPlayer();
         if (player == null || player.isShiftKeyDown() || !Services.CONFIG.isSneakRequiredToPlaceFlavoredFood())
             return;
-        if (!(stack.getItem() instanceof BlockItem blockItem) || blockItem.getBlock() instanceof EntityBlock)
-            return;
-        if (!SpiceProfiles.hasOverride(stack))
+        if (!placesAsBlock(stack) || !SpiceProfiles.hasOverride(stack))
             return;
         cir.setReturnValue(InteractionResult.PASS);
         cir.cancel();
+    }
+
+    /**
+     * @param stack The stack about to be used on a block.
+     * @return Whether {@code stack} would place a block that can't be a
+     *         {@code BlockEntity}, and would therefore discard any Profile
+     *         Override it carries.
+     */
+    private static boolean placesAsBlock(ItemStack stack) {
+        if (stack.getItem() instanceof BlockItem blockItem)
+            return !(blockItem.getBlock() instanceof EntityBlock);
+        return stack.is(SpiceItemTags.VOIDS_FLAVOR_WHEN_PLACED);
     }
 }
