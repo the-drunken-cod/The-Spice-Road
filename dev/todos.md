@@ -48,7 +48,7 @@
     - Release note for the version this lands in: every config key is renamed, so both config files reset to defaults. `region.salt` re-rolls to a new random value, which reshuffles Spice Regions in existing worlds - copy the old `spiceRegionSalt` over by hand before launching.
 - Advancement Triggers:
     - [x] Food with Flavor Profile of given bounds eaten (with option to require any of the given axes, or all) - see "everything bagel" advancement.
-    - [ ] Food with list of given constituent spices eaten (with a loose/strict flag) - see "pumpkin purist" advancement.
+    - [x] Food with list of given constituent spices eaten (with a loose/strict flag) - see "pumpkin purist" advancement.
 - [ ] Advancements:
     - [x] Everything Bagel: achieve max seasoning buffs (positive or negative axes) on bread and eat it.
     - [x] Pumpkin Purist: season a pumpkin pie with cinnamon, nutmeg, ginger and cloves.

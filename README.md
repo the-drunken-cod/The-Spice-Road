@@ -53,13 +53,14 @@ Then simply place the downloaded JAR file into your Minecraft `mods` folder and 
 ## Integrations:
 - [Farmer's Delight](https://modrinth.com/mod/farmers-delight)
   - Recipe compatibility for the cooking pot and cutting board (ingredient spice profiles get correctly summed for the outputs).
+  - Food block (pumpkin pie, etc.) placement is prevented by default unless sneaking to avoid accidentally voiding spiced foods.
   - Tag-level compatibility (knives as cutting tool, etc.).
 - [Cooking For Blockheads](https://modrinth.com/mod/cooking-for-blockheads)
   - Recipe compatibility for the toaster and oven (ingredient spice profiles get correctly summed for the outputs).
 - [Serene Seasons](https://modrinth.com/mod/serene-seasons)
   - Spice crops have realistic season data attached to them, with plants growing throughout the whole year.
 - [Create](https://modrinth.com/mod/create)
-  - Spices can be harvested via deployers.
+  - Spices can be harvested via deployers, unless they require hand-picking (like Vanilla and Saffron).
 - [Sable](https://modrinth.com/mod/sable) / [Create Aeronautics](https://modrinth.com/mod/create-aeronautics)
   - Sublevels sample the spice region from the correct overworld coordinates, meaning crops on mobile bases correctly react to the current spice region.
   - TODO: adjusted block weights.
