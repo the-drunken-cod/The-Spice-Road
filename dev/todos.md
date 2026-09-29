@@ -66,5 +66,6 @@
     - [x] Fabric creative tabs don't show up.
     - [x] Vine right-clicking doesn't work.
     - [x] Breaking fully aged saffron with shears doesn't drop saffron, only seeds.
-- [ ] Right-click harvest tool on any SpiceCrop to roll and drop its harvest loot and set it back to age0.
+    - [x] F3 lines don't adjust to what other mods add and end up positioned behind other lines, which mostly obscures them.
+- [x] Right-click harvest tool on any SpiceCrop to roll and drop its harvest loot and set it back to age0.
 - [x] Display flavor contributors at the bottom of the extended tooltip
