@@ -206,6 +206,11 @@ public class FabricConfigHelper implements IConfigHelper {
         return client().tooltip.alwaysShowShiftContent;
     }
 
+    @Override
+    public boolean isSneakRequiredToPlaceFlavoredFood() {
+        return value(ConfigSchema.COMPAT_SNEAK_TO_PLACE_FLAVORED_FOOD, server().compat.sneakToPlaceFlavoredFood);
+    }
+
     // #region Clamping
 
     /**
@@ -317,6 +322,8 @@ public class FabricConfigHelper implements IConfigHelper {
         public Flavor flavor = new Flavor();
         @ConfigEntry.Gui.CollapsibleObject
         public Cooking cooking = new Cooking();
+        @ConfigEntry.Gui.CollapsibleObject
+        public Compat compat = new Compat();
 
         @Override
         public void validatePostLoad() {
@@ -402,6 +409,12 @@ public class FabricConfigHelper implements IConfigHelper {
             public double varianceMin = ConfigSchema.COOKING_VARIANCE_MIN.getDefault();
             @ConfigEntry.Gui.Tooltip
             public double varianceMax = ConfigSchema.COOKING_VARIANCE_MAX.getDefault();
+        }
+
+        /** Behavior around other mods' placeable food items. */
+        public static class Compat {
+            @ConfigEntry.Gui.Tooltip
+            public boolean sneakToPlaceFlavoredFood = ConfigSchema.COMPAT_SNEAK_TO_PLACE_FLAVORED_FOOD.getDefault();
         }
     }
 

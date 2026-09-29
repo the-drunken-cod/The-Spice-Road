@@ -5,6 +5,7 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "FlavoredFoodPlacementMixin",
     "ItemStackMixin",
     "ReloadableServerRegistriesMixin",
     "flavor.AbstractCookingRecipeMixin",

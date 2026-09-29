@@ -248,4 +248,9 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     public boolean isTooltipShiftBypassed() {
         return value(ConfigSchema.TOOLTIP_ALWAYS_SHOW_SHIFT_CONTENT);
     }
+
+    @Override
+    public boolean isSneakRequiredToPlaceFlavoredFood() {
+        return value(ConfigSchema.COMPAT_SNEAK_TO_PLACE_FLAVORED_FOOD);
+    }
 }

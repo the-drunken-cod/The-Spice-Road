@@ -56,6 +56,8 @@ public final class ConfigSchema {
     public static final ConfigSection COOKING = ConfigSection.root(ConfigFile.SERVER, "cooking");
     /** Client-side tooltip display. */
     public static final ConfigSection TOOLTIP = ConfigSection.root(ConfigFile.CLIENT, "tooltip");
+    /** Behavior around other mods' placeable food items. */
+    public static final ConfigSection COMPAT = ConfigSection.root(ConfigFile.SERVER, "compat");
 
     // #region Region
 
@@ -167,6 +169,12 @@ public final class ConfigSchema {
     /** Whether Shift-gated tooltip content is always shown. */
     public static final ConfigOption<Boolean> TOOLTIP_ALWAYS_SHOW_SHIFT_CONTENT = add(
             ConfigOption.ofBoolean(TOOLTIP, "alwaysShowShiftContent", false));
+
+    // #region Compat
+
+    /** Whether placing a Spice Profile override as a non-block-entity block requires sneaking. */
+    public static final ConfigOption<Boolean> COMPAT_SNEAK_TO_PLACE_FLAVORED_FOOD = add(
+            ConfigOption.ofBoolean(COMPAT, "sneakToPlaceFlavoredFood", true));
 
     private ConfigSchema() {
     }

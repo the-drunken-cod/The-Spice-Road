@@ -38,6 +38,18 @@ public final class SpiceProfiles {
     }
 
     /**
+     * @param stack The stack to check.
+     * @return Whether {@code stack} carries its own {@code spice_road:spice_profile}
+     *         override, as opposed to only its item's datapack-registered
+     *         default. A stack turned into a block that isn't a
+     *         {@code BlockEntity} (e.g. a mod's placeable food) would silently
+     *         discard this data, since it has nowhere to go.
+     */
+    public static boolean hasOverride(ItemStack stack) {
+        return stack.has(ModDataComponents.SPICE_PROFILE.get());
+    }
+
+    /**
      * @param stack The stack to look up.
      * @return The Effective Profile of {@code stack}'s {@link #get stored
      *         profile}, which is what effects and tooltips should use.

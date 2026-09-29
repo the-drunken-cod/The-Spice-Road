@@ -250,4 +250,16 @@ public interface IConfigHelper {
      * @return Whether Shift-gated tooltips are always shown.
      */
     boolean isTooltipShiftBypassed();
+
+    /**
+     * Whether placing an {@link net.minecraft.world.item.ItemStack} carrying a
+     * {@code spice_road:spice_profile} override as a block that isn't a
+     * {@code BlockEntity} requires sneaking, so the override isn't silently
+     * discarded by an accidental right-click (e.g. a Farmer's Delight-style
+     * placeable food). When {@code false}, such stacks place as normal without
+     * sneaking, same as vanilla.
+     *
+     * @return Whether sneaking is required to place a flavored food stack.
+     */
+    boolean isSneakRequiredToPlaceFlavoredFood();
 }
