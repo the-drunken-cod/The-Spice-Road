@@ -116,12 +116,20 @@ public class TooltipUtil {
      * @return The hint line
      */
     public static Component shiftHint(String translationKey, String spicedWordTrKey, boolean isSpice) {
-        Component key = Component.literal("[")
-                .append(Component.translatable(SHIFT_KEY_TRANSLATION_KEY).withStyle(ChatFormatting.GRAY))
-                .append("]");
         Component spicedWordComp = Component.translatable(spicedWordTrKey)
                 .withStyle(isSpice ? ChatFormatting.GREEN : ChatFormatting.GOLD);
-        return Component.translatable(translationKey, spicedWordComp, key).withStyle(ChatFormatting.DARK_GRAY);
+        return Component.translatable(translationKey, spicedWordComp, shiftKeyName())
+                .withStyle(ChatFormatting.DARK_GRAY);
+    }
+
+    /**
+     * @return The Shift key's localized name in brackets, like {@code "[Shift]"},
+     *         for use as a hint line's key name argument
+     */
+    public static Component shiftKeyName() {
+        return Component.literal("[")
+                .append(Component.translatable(SHIFT_KEY_TRANSLATION_KEY).withStyle(ChatFormatting.GRAY))
+                .append("]");
     }
 
     /**

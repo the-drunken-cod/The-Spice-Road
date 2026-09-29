@@ -54,4 +54,4 @@
     - [ ] (Unnamed): use a spice map.
     - [ ] Pumpkin Purist: season a pumpkin pie with cinnamon, nutmeg, ginger and cloves.
 - [x] Spice item names don't have rarity colors (while map item names already do).
-- [ ] Merge "<tier> spice" and "Spice ingredient. Press [shift] ..." tooltips into one line.
+- [x] Merge "<tier> spice" and "Spice ingredient. Press [shift] ..." tooltips into one line.

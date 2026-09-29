@@ -37,6 +37,9 @@ public class SpiceItemTags {
     /** All dried Spice items (produced by the Drying Rack). */
     public static final TagKey<Item> DRIED_SPICES = create("spices/dried");
 
+    /** The seeds of every Spice that grows as a plant (i.e. not a tree or vine). */
+    public static final TagKey<Item> SPICE_PLANT_SEEDS = create("spice_plant_seeds");
+
     /**
      * Tools that count as a "cutting tool" for harvest-tool-requirement checks
      * (e.g. axe-stripping a tree spice, or a bush spice that requires a tool to
