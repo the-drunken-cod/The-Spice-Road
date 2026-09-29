@@ -157,6 +157,6 @@ public class TooltipUtil {
             }
             lines.addAll(entry.content().apply(stack));
         }
-        tooltip.addAll(Math.min(2, tooltip.size()), lines);
+        tooltip.addAll(Math.min(1, tooltip.size()), lines);
     }
 }
