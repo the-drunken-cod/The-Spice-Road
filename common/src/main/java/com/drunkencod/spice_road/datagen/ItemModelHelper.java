@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.drunkencod.spice_road.Constants;
-import com.drunkencod.spice_road.registry.ModItems;
 import com.drunkencod.spice_road.spice.Spice;
 
 /**
@@ -32,15 +30,12 @@ public class ItemModelHelper {
 
     /**
      * Register an item id for flat ({@code item/generated}) model generation.
-     * Also registers the item in {@link ModItems#FLAT_ITEM_MODEL_IDS} for
-     * cross-loader use.
      *
      * @param id    Registry path of the item (e.g. {@code "cinnamon_sapling"})
      * @param spice The Spice whose texture folder holds the item's texture.
      */
     public static void addFlatItem(String id, Spice spice) {
         FLAT_ITEMS.put(id, SpiceAssetPaths.item(spice, id));
-        ModItems.addForBulkModel(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id));
     }
 
     /** @return Unmodifiable view of the flat item path IDs, mapped to their {@code layer0} texture. */

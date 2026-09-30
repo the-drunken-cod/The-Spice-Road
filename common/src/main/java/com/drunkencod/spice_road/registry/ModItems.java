@@ -5,9 +5,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
@@ -22,37 +19,13 @@ import com.drunkencod.spice_road.spice.ProcessedSpice;
 import com.drunkencod.spice_road.spice.Spice;
 
 /**
- * Central item registry.
+ * Central item registry helpers: creative tab contents and item lookup.
  * <p>
- * Add items here using {@link IRegistryHelper#registerItem(String, Supplier)},
- * then call {@link #addForBulkModel(ResourceLocation)} so the datagen helper
- * knows to generate a flat item model for them automatically.
+ * Items are registered using {@link IRegistryHelper#registerItem(String, Supplier)};
+ * items that need a flat item model are queued via
+ * {@link com.drunkencod.spice_road.datagen.ItemModelHelper#addFlatItem}.
  */
 public class ModItems {
-
-    // #region model genning
-
-    /**
-     * Resource locations of items that should receive an auto-generated flat item
-     * model (i.e. {@code minecraft:item/generated} parent with a single
-     * {@code layer0} texture).
-     */
-    public static final List<ResourceLocation> FLAT_ITEM_MODEL_IDS = new ArrayList<>();
-
-    /**
-     * Mark an item as needing a bulk-generated flat item model.
-     * 
-     * @param loc The full {@link ResourceLocation} of the item (e.g.
-     *            {@code spice_road:my_item})
-     */
-    public static void addForBulkModel(ResourceLocation loc) {
-        FLAT_ITEM_MODEL_IDS.add(loc);
-    }
-
-    /** @return Unmodifiable view of the items queued for flat model generation. */
-    public static List<ResourceLocation> getFlatItemModelIds() {
-        return Collections.unmodifiableList(FLAT_ITEM_MODEL_IDS);
-    }
 
     // #region creative tabs
 
