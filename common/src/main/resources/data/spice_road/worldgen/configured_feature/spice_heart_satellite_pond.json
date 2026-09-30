@@ -3,7 +3,7 @@
   "config": {
     "radius": {
       "type": "minecraft:uniform",
-      "min_inclusive": 2,
+      "min_inclusive": 1,
       "max_inclusive": 3
     },
     "floor": {
@@ -24,10 +24,7 @@
           "Name": "minecraft:clay"
         },
         {
-          "Name": "minecraft:gravel"
-        },
-        {
-          "Name": "minecraft:mud"
+          "Name": "minecraft:coarse_dirt"
         }
       ]
     },
@@ -52,7 +49,7 @@
           "Name": "minecraft:grass_block"
         },
         {
-          "Name": "minecraft:podzol"
+          "Name": "minecraft:rooted_dirt"
         }
       ]
     },

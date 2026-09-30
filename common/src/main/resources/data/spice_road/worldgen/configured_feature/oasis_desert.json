@@ -3,8 +3,8 @@
   "config": {
     "radius": {
       "type": "minecraft:uniform",
-      "min_inclusive": 2,
-      "max_inclusive": 4
+      "min_inclusive": 1,
+      "max_inclusive": 3
     },
     "floor": {
       "type": "minecraft:noise_provider",
@@ -18,13 +18,13 @@
       "scale": 0.3,
       "states": [
         {
-          "Name": "minecraft:sand"
+          "Name": "minecraft:sandstone"
         },
         {
           "Name": "minecraft:clay"
         },
         {
-          "Name": "minecraft:sand"
+          "Name": "coarse_dirt"
         },
         {
           "Name": "minecraft:mud"
@@ -46,13 +46,7 @@
           "Name": "minecraft:coarse_dirt"
         },
         {
-          "Name": "minecraft:dirt"
-        },
-        {
-          "Name": "minecraft:gravel"
-        },
-        {
-          "Name": "minecraft:coarse_dirt"
+          "Name": "minecraft:mud"
         },
         {
           "Name": "minecraft:dirt"

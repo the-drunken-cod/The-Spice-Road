@@ -2,7 +2,7 @@
   "feature": "spice_road:spice_heart_satellite",
   "placement": [
     { "type": "minecraft:in_square" },
-    { "type": "spice_road:near_region_heart", "max_distance": 96, "chance": 4 },
+    { "type": "spice_road:near_region_heart", "max_distance": 70, "chance": 6 },
     { "type": "minecraft:heightmap", "heightmap": "WORLD_SURFACE_WG" },
     { "type": "minecraft:biome" }
   ]

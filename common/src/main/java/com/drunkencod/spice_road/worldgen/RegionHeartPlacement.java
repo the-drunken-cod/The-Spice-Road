@@ -51,9 +51,15 @@ public final class RegionHeartPlacement extends PlacementModifier {
      */
     private static final int CHUNK_MARGIN = 4;
 
+    /**
+     * Max possible radius of deviation when direct centered feature placement
+     * attempts fail (for example due to other features like lakes being in the way)
+     */
+    private static final int MAX_SHIFT = 32;
+
     /** Codec of this modifier's JSON fields. */
-    public static final MapCodec<RegionHeartPlacement> CODEC = Codec.intRange(0, 16)
-            .optionalFieldOf("max_shift", 16)
+    public static final MapCodec<RegionHeartPlacement> CODEC = Codec.intRange(0, MAX_SHIFT)
+            .optionalFieldOf("max_shift", MAX_SHIFT)
             .xmap(RegionHeartPlacement::new, placement -> placement.maxShift);
 
     private final int maxShift;
@@ -111,12 +117,18 @@ public final class RegionHeartPlacement extends PlacementModifier {
         return surfaceOf(context, site.getX(), site.getZ());
     }
 
-    /** @return The surface position of the column at {@code (x, z)}, per the generating world's heightmap. */
+    /**
+     * @return The surface position of the column at {@code (x, z)}, per the
+     *         generating world's heightmap.
+     */
     private static BlockPos surfaceOf(PlacementContext context, int x, int z) {
         return new BlockPos(x, context.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z), z);
     }
 
-    /** @return Whether {@code (x, z)} lies in the Spice Region {@code heart} belongs to. */
+    /**
+     * @return Whether {@code (x, z)} lies in the Spice Region {@code heart} belongs
+     *         to.
+     */
     private static boolean isInRegionOf(ServerLevel level, RegionHeart heart, int x, int z) {
         SpiceCell cell = SpiceRegionResolver.resolveCell(level.getSeed(), Services.CONFIG.getSpiceRegionSalt(),
                 Services.CONFIG.getSpiceRegionCellScale(), x, z);

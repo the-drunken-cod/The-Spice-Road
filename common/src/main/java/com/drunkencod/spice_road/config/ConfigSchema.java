@@ -114,7 +114,10 @@ public final class ConfigSchema {
     public static final ConfigOption<Boolean> CULTIVATION_AQUATIC_REQUIRES_WATER = add(
             ConfigOption.ofBoolean(CULTIVATION, "aquaticRequiresWater", true));
 
-    /** Whether flowing water passes through Aquatic Spice plants instead of being blocked by them. */
+    /**
+     * Whether flowing water passes through Aquatic Spice plants instead of being
+     * blocked by them.
+     */
     public static final ConfigOption<Boolean> CULTIVATION_AQUATIC_FLOW_THROUGH = add(
             ConfigOption.ofBoolean(CULTIVATION, "aquaticFlowThrough", true));
 
@@ -136,7 +139,9 @@ public final class ConfigSchema {
     public static final ConfigOption<Double> TREE_HARVEST_YIELD_MULTIPLIER = add(ConfigOption.ofDouble(TREE,
             "harvestYieldMultiplier", Constants.DEFAULT_SPICE_TREE_HARVEST_YIELD_MULTIPLIER, 0.0, 64.0));
 
-    /** Fraction of a fruiting Spice Tree's leaves that bear fruit, per {@link Tier}. */
+    /**
+     * Fraction of a fruiting Spice Tree's leaves that bear fruit, per {@link Tier}.
+     */
     public static final Map<Tier, ConfigOption<Double>> TREE_FRUITING_LEAVES_CHANCE = perTier(TREE_FRUITING_LEAVES,
             0.3, 0.2, 0.15, 0.1, 0.0, 1.0);
 
@@ -184,7 +189,10 @@ public final class ConfigSchema {
 
     // #region Compat
 
-    /** Whether placing a Spice Profile override as a non-block-entity block requires sneaking. */
+    /**
+     * Whether placing a Spice Profile override as a non-block-entity block requires
+     * sneaking.
+     */
     public static final ConfigOption<Boolean> COMPAT_SNEAK_TO_PLACE_FLAVORED_FOOD = add(
             ConfigOption.ofBoolean(COMPAT, "sneakToPlaceFlavoredFood", true));
 
@@ -220,8 +228,8 @@ public final class ConfigSchema {
     }
 
     /**
-     * @param file        The config file the path belongs to.
-     * @param dottedPath  A dotted option path, e.g. {@code "cooking.varianceMin"}.
+     * @param file       The config file the path belongs to.
+     * @param dottedPath A dotted option path, e.g. {@code "cooking.varianceMin"}.
      * @return The matching option, or {@code null} if the file has none.
      */
     public static ConfigOption<?> option(ConfigFile file, String dottedPath) {

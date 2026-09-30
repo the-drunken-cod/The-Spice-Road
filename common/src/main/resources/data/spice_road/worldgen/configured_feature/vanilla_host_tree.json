@@ -3,8 +3,52 @@
   "config": {
     "decorators": [
       {
-        "type": "minecraft:cocoa",
-        "probability": 0.2
+        "type": "spice_road:attached_to_logs",
+        "probability": 0.2,
+        "directions": ["north"],
+        "block_provider": {
+          "type": "minecraft:simple_state_provider",
+          "state": {
+            "Name": "minecraft:cocoa",
+            "Properties": { "age": "0", "facing": "south" }
+          }
+        }
+      },
+      {
+        "type": "spice_road:attached_to_logs",
+        "probability": 0.2,
+        "directions": ["east"],
+        "block_provider": {
+          "type": "minecraft:simple_state_provider",
+          "state": {
+            "Name": "minecraft:cocoa",
+            "Properties": { "age": "0", "facing": "west" }
+          }
+        }
+      },
+      {
+        "type": "spice_road:attached_to_logs",
+        "probability": 0.2,
+        "directions": ["south"],
+        "block_provider": {
+          "type": "minecraft:simple_state_provider",
+          "state": {
+            "Name": "minecraft:cocoa",
+            "Properties": { "age": "0", "facing": "north" }
+          }
+        }
+      },
+      {
+        "type": "spice_road:attached_to_logs",
+        "probability": 0.2,
+        "directions": ["west"],
+        "block_provider": {
+          "type": "minecraft:simple_state_provider",
+          "state": {
+            "Name": "minecraft:cocoa",
+            "Properties": { "age": "0", "facing": "east" }
+          }
+        }
       },
       {
         "type": "spice_road:attached_to_logs",
