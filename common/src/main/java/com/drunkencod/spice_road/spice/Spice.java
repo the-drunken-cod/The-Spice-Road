@@ -1,6 +1,10 @@
 package com.drunkencod.spice_road.spice;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Optional;
+import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -39,18 +43,27 @@ import net.minecraft.world.item.Item;
 public enum Spice implements StringRepresentable {
 
     // crops
-    LAVENDER("lavender", SourceType.FLOWER_PATCH, HarvestAction.PICK, Climate.ARID, 1, false, false, 2, false),
-    SAFFRON("saffron", SourceType.FLOWER_PATCH, HarvestAction.PICK, Climate.ARID, 5, true, true, 1, false),
-    CHILI_PEPPER("chili_pepper", SourceType.CROP, HarvestAction.PICK, Climate.TEMPERATE, 2, false, false, 2, false),
-    CUMIN("cumin", SourceType.CROP, HarvestAction.BREAK, Climate.ARID, 2, false, false, 1, false),
+    LAVENDER("lavender", SourceType.FLOWER_PATCH, HarvestAction.PICK, Climate.ARID, 1, false, false, 2, false,
+            Season.SUMMER),
+    SAFFRON("saffron", SourceType.FLOWER_PATCH, HarvestAction.PICK, Climate.ARID, 5, true, true, 1, false,
+            Season.AUTUMN),
+    CHILI_PEPPER("chili_pepper", SourceType.CROP, HarvestAction.PICK, Climate.TEMPERATE, 2, false, false, 2, false,
+            Season.SUMMER),
+    CUMIN("cumin", SourceType.CROP, HarvestAction.BREAK, Climate.ARID, 2, false, false, 1, false,
+            Season.SPRING, Season.SUMMER),
     // rhizomes
-    WASABI("wasabi", SourceType.RHIZOME, HarvestAction.BREAK, Climate.COLD, 5, true, true, 1, true),
+    WASABI("wasabi", SourceType.RHIZOME, HarvestAction.BREAK, Climate.COLD, 5, true, true, 1, true,
+            Season.AUTUMN, Season.WINTER, Season.SPRING),
     // trees
-    CINNAMON("cinnamon", SourceType.TREE, HarvestAction.STRIP, Climate.TROPICAL, 5, false, false, 1, false),
-    CASSIA("cassia", SourceType.TREE, HarvestAction.STRIP, Climate.TROPICAL, 4, false, false, 2, false),
-    NUTMEG("nutmeg", SourceType.TREE, HarvestAction.SHEAR, Climate.TROPICAL, 5, true, false, 1, false),
+    CINNAMON("cinnamon", SourceType.TREE, HarvestAction.STRIP, Climate.TROPICAL, 5, false, false, 1, false,
+            Season.SPRING, Season.SUMMER),
+    CASSIA("cassia", SourceType.TREE, HarvestAction.STRIP, Climate.TROPICAL, 4, false, false, 2, false,
+            Season.SPRING, Season.SUMMER),
+    NUTMEG("nutmeg", SourceType.TREE, HarvestAction.SHEAR, Climate.TROPICAL, 5, true, false, 1, false,
+            Season.SUMMER, Season.AUTUMN),
     // vines
-    VANILLA("vanilla", SourceType.VINE, HarvestAction.PICK, Climate.TROPICAL, 5, true, true, 1, false);
+    VANILLA("vanilla", SourceType.VINE, HarvestAction.PICK, Climate.TROPICAL, 5, true, true, 1, false,
+            Season.SPRING, Season.SUMMER);
 
     /**
      * Codec reading and writing a {@link Spice} by its {@link #getId() ID}, e.g.
@@ -67,9 +80,10 @@ public enum Spice implements StringRepresentable {
     private final boolean requiresHandPick;
     private final int dropAmount;
     private final boolean aquatic;
+    private final Set<Season> seasons;
 
     Spice(String id, SourceType sourceType, HarvestAction harAct, Climate climate, int rarity,
-            boolean harRqTool, boolean harHandPick, int harDrops, boolean aquatic) {
+            boolean harRqTool, boolean harHandPick, int harDrops, boolean aquatic, Season... seasons) {
         this.id = id;
         this.sourceType = sourceType;
         this.harvestAction = harAct;
@@ -79,6 +93,7 @@ public enum Spice implements StringRepresentable {
         this.requiresHandPick = harHandPick;
         this.dropAmount = harDrops;
         this.aquatic = aquatic;
+        this.seasons = Collections.unmodifiableSet(EnumSet.copyOf(Arrays.asList(seasons)));
     }
 
     /**
@@ -165,6 +180,13 @@ public enum Spice implements StringRepresentable {
      */
     public boolean isAquatic() {
         return aquatic && sourceType == SourceType.RHIZOME;
+    }
+
+    /**
+     * @return The seasons this Spice grows in, for season mods. Never empty.
+     */
+    public Set<Season> getSeasons() {
+        return seasons;
     }
 
     /**

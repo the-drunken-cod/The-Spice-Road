@@ -11,6 +11,7 @@ import com.drunkencod.spice_road.datagen.NeoForgeBlockStateProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeItemModelProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeSpiceDataMapProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeSpiceLootProvider;
+import com.drunkencod.spice_road.datagen.SpiceBlockTagProvider;
 import com.drunkencod.spice_road.datagen.SpiceItemTagProvider;
 import com.drunkencod.spice_road.datagen.SpiceRoadAdvancements;
 import com.drunkencod.spice_road.datagen.SpiceTreeCompatRecipeProvider;
@@ -105,6 +106,9 @@ public class SpiceRoadMod {
         event.getGenerator().addProvider(
                 event.includeServer(),
                 new SpiceItemTagProvider(event.getGenerator().getPackOutput()));
+        event.getGenerator().addProvider(
+                event.includeServer(),
+                new SpiceBlockTagProvider(event.getGenerator().getPackOutput()));
         event.getGenerator().addProvider(
                 event.includeServer(),
                 new AdvancementProvider(event.getGenerator().getPackOutput(), event.getLookupProvider(),

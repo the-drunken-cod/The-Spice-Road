@@ -40,6 +40,15 @@ public class SpiceItemTags {
     /** The seeds of every Spice that grows as a plant (i.e. not a tree or vine). */
     public static final TagKey<Item> SPICE_PLANT_SEEDS = create("spice_plant_seeds");
 
+    /** Every Spice Tree log and stripped log item. */
+    public static final TagKey<Item> SPICE_TREE_LOGS = create("spice_tree_logs");
+
+    /** Every Spice Tree's leaves item. */
+    public static final TagKey<Item> SPICE_TREE_LEAVES = create("spice_tree_leaves");
+
+    /** Every Spice Tree sapling item. */
+    public static final TagKey<Item> SPICE_TREE_SAPLINGS = create("spice_tree_saplings");
+
     /**
      * Tools that count as a "cutting tool" for harvest-tool-requirement checks
      * (e.g. axe-stripping a tree spice, or a bush spice that requires a tool to
