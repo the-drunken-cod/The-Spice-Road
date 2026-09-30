@@ -75,3 +75,4 @@
 - [ ] Add desert oasis groves.
 - [ ] Rework "dried" spices to instead be called "processed" and to be more independent of spices.
     - [ ] Recipes to turn raw into processed spices should usually involve the drying rack, but could theoretically be done with other processes like soaking, smoking, cutting, etc. in the future.
+- [ ] Rework textures to be separated into folders per spice (e.g. `textures/block/cinnamon/stripped_cinnamon_log.png`)

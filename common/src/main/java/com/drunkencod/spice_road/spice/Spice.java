@@ -43,9 +43,10 @@ public enum Spice implements StringRepresentable {
     CHILI_PEPPER("chili_pepper", SourceType.CROP, HarvestAction.PICK, Climate.TEMPERATE, 2, false, false, 2, false),
     CUMIN("cumin", SourceType.CROP, HarvestAction.BREAK, Climate.ARID, 2, false, false, 1, false),
     // rhizomes
-    WASABI("wasabi", SourceType.RHIZOME, HarvestAction.BREAK, Climate.COLD, 5, false, false, 1, true),
+    WASABI("wasabi", SourceType.RHIZOME, HarvestAction.BREAK, Climate.COLD, 5, true, true, 1, true),
     // trees
-    CINNAMON("cinnamon", SourceType.TREE, HarvestAction.STRIP, Climate.TROPICAL, 4, false, false, 1, false),
+    CINNAMON("cinnamon", SourceType.TREE, HarvestAction.STRIP, Climate.TROPICAL, 5, false, false, 1, false),
+    CASSIA("cassia", SourceType.TREE, HarvestAction.STRIP, Climate.TROPICAL, 4, false, false, 2, false),
     NUTMEG("nutmeg", SourceType.TREE, HarvestAction.SHEAR, Climate.TROPICAL, 5, true, false, 1, false),
     // vines
     VANILLA("vanilla", SourceType.VINE, HarvestAction.PICK, Climate.TROPICAL, 5, true, true, 1, false);
@@ -66,16 +67,16 @@ public enum Spice implements StringRepresentable {
     private final int dropAmount;
     private final boolean aquatic;
 
-    Spice(String id, SourceType sourceType, HarvestAction harvestAction, Climate climate, int harvestDifficulty,
-            boolean requiresHarvestTool, boolean requiresHandPick, int dropAmount, boolean aquatic) {
+    Spice(String id, SourceType sourceType, HarvestAction harAct, Climate climate, int rarity,
+            boolean harRqTool, boolean harHandPick, int harDrops, boolean aquatic) {
         this.id = id;
         this.sourceType = sourceType;
-        this.harvestAction = harvestAction;
+        this.harvestAction = harAct;
         this.climate = climate;
-        this.harvestDifficulty = harvestDifficulty;
-        this.requiresHarvestTool = requiresHarvestTool;
-        this.requiresHandPick = requiresHandPick;
-        this.dropAmount = dropAmount;
+        this.harvestDifficulty = rarity;
+        this.requiresHarvestTool = harRqTool;
+        this.requiresHandPick = harHandPick;
+        this.dropAmount = harDrops;
         this.aquatic = aquatic;
     }
 

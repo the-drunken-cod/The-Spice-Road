@@ -1,0 +1,13 @@
+{
+  "items": "spice_road:cassia",
+  "profile": {
+    "heat_cooling": 0.4,
+    "sweet_bitter": 0.5,
+    "sour_mellow": -0.3,
+    "earthy_floral": 0.1,
+    "woody_green": 1.0,
+    "pungent_soft": 0.4,
+    "resinous_clean": 0.3,
+    "savory_delicate": -0.2
+  }
+}
