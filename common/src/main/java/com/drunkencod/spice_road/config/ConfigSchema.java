@@ -110,6 +110,14 @@ public final class ConfigSchema {
     public static final ConfigOption<Integer> CULTIVATION_HARDY_HARVEST_DIFFICULTY = add(
             ConfigOption.ofInt(CULTIVATION, "hardyHarvestDifficulty", 2, 1, 5));
 
+    /** Whether Aquatic Spices only grow while waterlogged. */
+    public static final ConfigOption<Boolean> CULTIVATION_AQUATIC_REQUIRES_WATER = add(
+            ConfigOption.ofBoolean(CULTIVATION, "aquaticRequiresWater", true));
+
+    /** Whether flowing water passes through Aquatic Spice plants instead of being blocked by them. */
+    public static final ConfigOption<Boolean> CULTIVATION_AQUATIC_FLOW_THROUGH = add(
+            ConfigOption.ofBoolean(CULTIVATION, "aquaticFlowThrough", true));
+
     /** Growth-speed multiplier of planted Spices per {@link Tier}. */
     public static final Map<Tier, ConfigOption<Double>> CULTIVATION_GROWTH_SPEED_MULTIPLIER = perTier(
             CULTIVATION_GROWTH_SPEED, 1.0, 1.0, 1.0, 1.0, 0.1, 5.0);

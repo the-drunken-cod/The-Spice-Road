@@ -15,8 +15,8 @@ import com.drunkencod.spice_road.loot.SpiceRegionSupportedCondition;
 import com.drunkencod.spice_road.spice.Spice;
 
 /**
- * Shared loot table shape for every {@code FLOWER_PATCH}/{@code CROP} Spice
- * Plant block. Datagenned per {@link com.drunkencod.spice_road.spice.Spice}
+ * Shared loot table shape for every {@code FLOWER_PATCH}/{@code CROP}/
+ * {@code RHIZOME} Spice Plant block. Datagenned per {@link com.drunkencod.spice_road.spice.Spice}
  * enum member by the per-loader loot providers
  * ({@code NeoForgeSpiceLootProvider} / {@code FabricSpiceLootProvider}).
  */
@@ -29,7 +29,10 @@ public final class SpicePlantLootTables {
          * Builds the minimal Spice Plant loot table: the seed item always drops,
          * and the raw Spice product additionally drops at {@code maxAge} where
          * the Spice Region supports it, as far as {@link SpiceBreakHarvest}
-         * allows the Spice to be obtained by breaking at all.
+         * allows the Spice to be obtained by breaking at all. If the Spice
+         * {@link Spice#harvestYieldsPlantingItem() yields its planting item},
+         * that harvest also raises the seed item's count to
+         * {@code harvestYield}.
          *
          * @param block        The Spice Plant block this loot table is for.
          * @param ageProperty  The block's growth-stage property (its
@@ -60,17 +63,32 @@ public final class SpicePlantLootTables {
                 if (!SpiceBreakHarvest.canYieldSpice(spice))
                         return LootTable.lootTable().withPool(seedPool);
 
-                LootPool.Builder productPool = LootPool.lootPool()
+                LootTable.Builder table = LootTable.lootTable().withPool(seedPool)
+                                .withPool(SpiceBreakHarvest.gate(spice,
+                                                matureHarvestPool(block, ageProperty, maxAge, productItem, harvestYield)));
+
+                // Tops the always-dropped seed item up to the harvest yield, so
+                // both drop at the same rate.
+                if (spice.harvestYieldsPlantingItem() && harvestYield > 1)
+                        table.withPool(SpiceBreakHarvest.gate(spice,
+                                        matureHarvestPool(block, ageProperty, maxAge, seedItem, harvestYield - 1)));
+                return table;
+        }
+
+        /**
+         * @return A pool dropping {@code count} of {@code item} from a
+         *         {@code maxAge} plant where the Spice Region supports it.
+         */
+        private static LootPool.Builder matureHarvestPool(Block block, IntegerProperty ageProperty, int maxAge,
+                        ItemLike item, int count) {
+                return LootPool.lootPool()
                                 .setRolls(ConstantValue.exactly(1.0F))
                                 .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
                                                 .setProperties(StatePropertiesPredicate.Builder.properties()
                                                                 .hasProperty(ageProperty, maxAge)))
                                 .when(SpiceRegionSupportedCondition.spiceRegionSupported())
-                                .add(LootItem.lootTableItem(productItem)
+                                .add(LootItem.lootTableItem(item)
                                                 .apply(SetItemCountFunction
-                                                                .setCount(ConstantValue.exactly(harvestYield))));
-
-                return LootTable.lootTable().withPool(seedPool)
-                                .withPool(SpiceBreakHarvest.gate(spice, productPool));
+                                                                .setCount(ConstantValue.exactly(count))));
         }
 }

@@ -44,7 +44,8 @@ import com.drunkencod.spice_road.spice.Spice;
  * generator.
  * <p>
  * Only the Overworld has Spice Regions. Hearts in biomes tagged
- * {@link #NO_REGION_HEART} are barren and never returned, and neither are
+ * {@link #NO_REGION_HEART} are barren and never returned, unless an Aquatic
+ * Heart Spice lifts that for {@link #AQUATIC_REGION_HEART} biomes, and neither are
  * hearts whose Heart Spice has no worldgen plant, since no Heart Grove could
  * generate there.
  * <p>
@@ -59,6 +60,13 @@ public final class RegionHeartSearch {
     /** Biomes whose Region Hearts are barren, i.e. never located, mapped or otherwise targeted. */
     public static final TagKey<Biome> NO_REGION_HEART = TagKey.create(Registries.BIOME,
             ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "no_region_heart"));
+
+    /**
+     * {@link #NO_REGION_HEART} biomes whose Region Hearts, and Heart Grove
+     * sites, are allowed anyway if the Heart Spice is an Aquatic Spice.
+     */
+    public static final TagKey<Biome> AQUATIC_REGION_HEART = TagKey.create(Registries.BIOME,
+            ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "aquatic_region_heart"));
 
     /** Maximum distance, in blocks, a Heart Grove site may sit from its heart. */
     public static final int GROVE_SEARCH_RADIUS = 48;
@@ -179,7 +187,8 @@ public final class RegionHeartSearch {
     /**
      * Picks where {@code heart}'s Heart Grove grows: the nearest column within
      * {@link #GROVE_SEARCH_RADIUS} that is dry, not in a
-     * {@link #NO_REGION_HEART} biome, and still in the heart's own Spice
+     * {@link #NO_REGION_HEART} biome (see {@link #AQUATIC_REGION_HEART} for
+     * the exception), and still in the heart's own Spice
      * Region. Based purely on the terrain estimate, so the answer is the same
      * from every chunk and available before any of them generate; the grove's
      * placement refines it against real blocks.
@@ -344,20 +353,31 @@ public final class RegionHeartSearch {
         int x = (int) Math.floor(cell.centerX());
         int z = (int) Math.floor(cell.centerZ());
         HeartSample sample = sample(level, x, z);
-        if (sample.biome().is(NO_REGION_HEART))
+        boolean heartless = sample.biome().is(NO_REGION_HEART);
+        if (heartless && !sample.biome().is(AQUATIC_REGION_HEART))
             return Optional.empty();
 
         BlockPos pos = new BlockPos(x, sample.surfaceY(), z);
         Climate climate = Climate.fromBiome(sample.biome(), pos);
         return SpiceRegionResolver.resolveSpice(cell, climate, Services.CONFIG.getSpiceRegionClusteringStrength())
                 .filter(RegionHeartSearch::hasWorldgenPlant)
+                .filter(spice -> !heartless || spice.isAquatic())
                 .map(spice -> new RegionHeart(cell, pos, climate, spice));
     }
 
     /**
+     * @return Whether {@code biome} may host a Region Heart or Heart Grove
+     *         site of {@code spice} - see {@link #NO_REGION_HEART} and
+     *         {@link #AQUATIC_REGION_HEART}.
+     */
+    private static boolean allowsHeartOf(Holder<Biome> biome, Spice spice) {
+        return !biome.is(NO_REGION_HEART) || (spice.isAquatic() && biome.is(AQUATIC_REGION_HEART));
+    }
+
+    /**
      * @return Whether {@code spice} has a plant, tree or Host Tree worldgen can
-     *         place. Spices without one (currently {@code BUSH}/{@code RHIZOME})
-     *         would yield a Heart that leads nowhere.
+     *         place. Spices without one (currently {@code BUSH}) would yield a
+     *         Heart that leads nowhere.
      */
     private static boolean hasWorldgenPlant(Spice spice) {
         return SpicePlants.getRegistered().containsKey(spice) || SpiceTrees.getRegistered().containsKey(spice)
@@ -374,7 +394,7 @@ public final class RegionHeartSearch {
             int x = heart.pos().getX() + offset[0];
             int z = heart.pos().getZ() + offset[1];
             HeartSample sample = sample(level, x, z);
-            if (!sample.isDry() || sample.biome().is(NO_REGION_HEART))
+            if (!sample.isDry() || !allowsHeartOf(sample.biome(), heart.spice()))
                 continue;
 
             SpiceCell cell = SpiceRegionResolver.resolveCell(worldSeed, salt, cellScale, x, z);

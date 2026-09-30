@@ -7,6 +7,7 @@
     "trees": {
       "default": 1,
       "spacing": 4
-    }
+    },
+    "aquatic_pond": "spice_road:spice_heart_satellite_pond"
   }
 }

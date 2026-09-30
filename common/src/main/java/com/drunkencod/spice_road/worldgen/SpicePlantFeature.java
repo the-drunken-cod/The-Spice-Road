@@ -14,12 +14,16 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 
+import com.drunkencod.spice_road.block.AquaticSpiceRhizomeBlock;
 import com.drunkencod.spice_road.block.SpicePlantBlock;
 import com.drunkencod.spice_road.block.SpicePlants;
 import com.drunkencod.spice_road.block.SpiceTree;
@@ -48,6 +52,10 @@ import com.drunkencod.spice_road.spice.region.SpiceRegionResolver;
  * {@link SpicePlantConfiguration#trees()} rolls for the origin's biome, using
  * that tree's datapack-defined configured feature. A vine Spice is placed the
  * same way, via its Host Tree, whose decorators seed the vine itself.
+ * <p>
+ * An Aquatic Spice's plants only generate waterlogged, in water exactly one
+ * block deep. {@link SpicePlantConfiguration#aquaticPond()} can carve that
+ * water first, so a Heart Grove doesn't depend on finding any.
  */
 public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
 
@@ -78,6 +86,10 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
         RegisteredSpiceVine vine = originSpice.map(SpiceVines.getRegistered()::get).orElse(null);
         if (vine != null)
             return placeTrees(context, vine.hostTreeFeature(), null, originSurface);
+
+        if (originSpice.isPresent() && originSpice.get().isAquatic())
+            config.aquaticPond().ifPresent(pond -> pond.value().place(level, context.chunkGenerator(), random,
+                    originSurface));
 
         boolean placedAny = false;
         for (int i = 0; i < config.tries(); i++) {
@@ -146,27 +158,63 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
                 .orElse(false);
     }
 
-    /** Places one {@code spice} plant at a random growth stage, if it can survive at {@code surfacePos}. */
+    /**
+     * Places one {@code spice} plant at a random growth stage, if it can
+     * survive at {@code surfacePos} - or, for an Aquatic Spice, waterlogged in
+     * the water just below it (see {@link #findShallowWater}).
+     */
     private boolean tryPlaceOne(WorldGenLevel level, RandomSource random, BlockPos surfacePos, Spice spice) {
         SpicePlants.RegisteredSpicePlant plant = SpicePlants.getRegistered().get(spice);
         if (plant == null) {
-            // Resolved Spice isn't a patch/crop plant (trees and Host Trees are
-            // placed separately, BUSH/RHIZOME have no block yet) - nothing to
+            // Resolved Spice isn't a patch/crop/rhizome plant (trees and Host
+            // Trees are placed separately, BUSH has no block yet) - nothing to
             // place.
             return false;
         }
 
         SpicePlantBlock block = plant.worldgenBlock().get();
-        if (!level.isEmptyBlock(surfacePos))
-            return false;
-
         BlockState defaultState = block.defaultBlockState();
-        if (!defaultState.canSurvive(level, surfacePos))
+        BlockPos pos = surfacePos;
+        if (block instanceof AquaticSpiceRhizomeBlock) {
+            pos = findShallowWater(level, surfacePos);
+            if (pos == null)
+                return false;
+            defaultState = defaultState.setValue(AquaticSpiceRhizomeBlock.WATERLOGGED, true);
+        } else if (!level.isEmptyBlock(pos)) {
+            return false;
+        }
+
+        if (!defaultState.canSurvive(level, pos))
             return false;
 
         int age = random.nextInt(block.getMaxAge() + 1);
         BlockState state = defaultState.setValue(block.getAgeProperty(), age);
-        return level.setBlock(surfacePos, state, Block.UPDATE_CLIENTS);
+        return level.setBlock(pos, state, Block.UPDATE_CLIENTS);
+    }
+
+    /**
+     * Looks for the topmost water source just below {@code surfacePos}, or
+     * ice - a Spice Pond freezes its own surface before its plants are
+     * placed, so they're set into the ice as waterlogged plants, the way
+     * vanilla's freezing would have left them. Checks two blocks, since the
+     * worldgen heightmap may not reflect water carved by a Spice Pond earlier
+     * in the same feature. Whether that water is exactly one block deep is
+     * left to the plant's own survival check.
+     *
+     * @return The water source's or ice's position, or {@code null} if there
+     *         is neither.
+     */
+    private static @Nullable BlockPos findShallowWater(WorldGenLevel level, BlockPos surfacePos) {
+        for (int depth = 1; depth <= 2; depth++) {
+            BlockPos pos = surfacePos.below(depth);
+            BlockState state = level.getBlockState(pos);
+            FluidState fluid = level.getFluidState(pos);
+            boolean water = fluid.isSource() && fluid.is(AquaticSpiceRhizomeBlock.AQUATIC_SPICE_WATER)
+                    && state.getBlock() instanceof LiquidBlock;
+            if (water || state.is(Blocks.ICE))
+                return pos;
+        }
+        return null;
     }
 
     /** @return The Spice the Spice Region resolves to at {@code pos}, using the climate found there. */

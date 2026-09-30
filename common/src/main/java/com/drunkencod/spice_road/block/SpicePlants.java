@@ -23,9 +23,12 @@ import com.drunkencod.spice_road.spice.SourceType;
  * spice.
  * <p>
  * {@code TREE} and {@code VINE} members are registered by {@link SpiceTrees}
- * and {@link SpiceVines} instead. {@code BUSH}/{@code RHIZOME} members are
- * deliberately skipped - they need mechanics (farmland spreading) not
- * implemented yet.
+ * and {@link SpiceVines} instead. {@code BUSH} members are deliberately
+ * skipped - they need mechanics not implemented yet.
+ * <p>
+ * A {@code RHIZOME} Spice grows exactly like a {@code CROP} one - only its
+ * model differs, which datagen picks by Source Type - so it reuses the crop
+ * blocks, unless it's an Aquatic Spice (see {@link AquaticSpiceRhizomeBlock}).
  * <p>
  * <b>Contains prototype wiring - subject to change.</b>
  */
@@ -34,12 +37,15 @@ public final class SpicePlants {
     /**
      * One registered Spice Plant's block + item suppliers.
      *
-     * @param block        The seed-planted, farmland-only block.
+     * @param block         The block its planting item places.
      * @param worldgenBlock The block {@code SpicePlantFeature} actually
      *                      places. Equal to {@code block} for
-     *                      {@code FLOWER_PATCH} Spices; a separate
-     *                      {@link WildSpiceCropBlock} for {@code CROP}
-     *                      Spices (see {@link SpiceCropBlock}).
+     *                      {@code FLOWER_PATCH} and Aquatic Spices; a
+     *                      separate {@link WildSpiceCropBlock} for other
+     *                      {@code CROP}/{@code RHIZOME} Spices (see
+     *                      {@link SpiceCropBlock}).
+     * @param seedItem      Its planting item - seeds, or cuttings for a
+     *                      rhizome.
      */
     public record RegisteredSpicePlant(
             Spice spice,
@@ -60,7 +66,9 @@ public final class SpicePlants {
      */
     public static void bootstrap() {
         for (Spice spice : Spice.values()) {
-            if (spice.getSourceType() != SourceType.FLOWER_PATCH && spice.getSourceType() != SourceType.CROP)
+            SourceType sourceType = spice.getSourceType();
+            if (sourceType != SourceType.FLOWER_PATCH && sourceType != SourceType.CROP
+                    && sourceType != SourceType.RHIZOME)
                 continue;
 
             REGISTERED.put(spice, register(spice));
@@ -69,8 +77,12 @@ public final class SpicePlants {
 
     private static RegisteredSpicePlant register(Spice spice) {
         String id = spice.getId();
-        String seedId = id + "_seeds";
-        String blockId = id + (spice.getSourceType() == SourceType.FLOWER_PATCH ? "_flower" : "_crop");
+        String seedId = id + spice.getPlantingItemSuffix();
+        String blockId = id + switch (spice.getSourceType()) {
+            case FLOWER_PATCH -> "_flower";
+            case RHIZOME -> "_rhizome";
+            default -> "_crop";
+        };
 
         Supplier<Item> productItem = Services.REGISTRY.registerItem(id,
                 () -> new SpiceItem(SpiceItem.defaultProperties(spice)));
@@ -84,6 +96,10 @@ public final class SpicePlants {
         if (spice.getSourceType() == SourceType.FLOWER_PATCH) {
             block = Services.REGISTRY.registerBlock(blockId,
                     () -> new FlowerPatchBlock(SpicePlantBlock.defaultProperties(), seedItemRef, spice));
+            worldgenBlock = block;
+        } else if (spice.isAquatic()) {
+            block = Services.REGISTRY.registerBlock(blockId,
+                    () -> new AquaticSpiceRhizomeBlock(SpicePlantBlock.defaultProperties(), seedItemRef, spice));
             worldgenBlock = block;
         } else {
             block = Services.REGISTRY.registerBlock(blockId,

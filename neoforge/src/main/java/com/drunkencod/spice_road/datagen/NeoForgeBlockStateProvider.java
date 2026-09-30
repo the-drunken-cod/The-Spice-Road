@@ -10,6 +10,7 @@ import com.drunkencod.spice_road.block.SpiceTree;
 import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.block.SpiceVineBlock;
 import com.drunkencod.spice_road.block.SpiceVines;
+import com.drunkencod.spice_road.spice.SourceType;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -22,13 +23,16 @@ import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.client.model.generators.MultiPartBlockStateBuilder;
+import net.neoforged.neoforge.client.model.generators.VariantBlockStateBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 /**
  * Datagens the crop-shaped blockstate + one
  * {@code minecraft:block/crop}-parented model per growth stage (age
  * {@code 0..getMaxAge()}) for every registered Spice Plant block (see
- * {@link SpicePlants}). Mirrors vanilla crop blocks (e.g. wheat) exactly; see
+ * {@link SpicePlants}) - {@code spice_road:block/rhizome}-parented instead for
+ * {@code RHIZOME} Spices. Blockstate properties besides the age (e.g.
+ * {@code waterlogged}) don't affect the model. Mirrors vanilla crop blocks (e.g. wheat) exactly; see
  * {@code FabricSpiceCropModelProvider} for the Fabric counterpart
  * -
  * vanilla's own equivalent generator
@@ -56,10 +60,13 @@ public class NeoForgeBlockStateProvider extends BlockStateProvider {
             ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
             int maxAge = block.getMaxAge();
 
+            ResourceLocation parent = plant.spice().getSourceType() == SourceType.RHIZOME
+                    ? modLoc("block/rhizome")
+                    : mcLoc("block/crop");
             ModelFile[] stageModels = new ModelFile[maxAge + 1];
             for (int age = 0; age <= maxAge; age++) {
                 String stageId = id.getPath() + "_stage" + age;
-                stageModels[age] = models().withExistingParent(stageId, "block/crop")
+                stageModels[age] = models().withExistingParent(stageId, parent)
                         .texture("crop", modLoc("block/" + stageId))
                         .renderType("minecraft:cutout");
             }
@@ -110,9 +117,10 @@ public class NeoForgeBlockStateProvider extends BlockStateProvider {
      * {@code stageModels}, so no duplicate textures/models are needed for it.
      */
     private void applyCropVariants(SpicePlantBlock block, ModelFile[] stageModels, int maxAge) {
-        getVariantBuilder(block).forAllStates(state -> ConfiguredModel.builder()
-                .modelFile(stageModels[Math.min(state.getValue(block.getAgeProperty()), maxAge)])
-                .build());
+        VariantBlockStateBuilder builder = getVariantBuilder(block);
+        for (int age : block.getAgeProperty().getPossibleValues())
+            builder.partialState().with(block.getAgeProperty(), age)
+                    .modelForState().modelFile(stageModels[Math.min(age, maxAge)]).addModel();
     }
 
     /**

@@ -141,6 +141,16 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean isAquaticSpiceWaterRequired() {
+        return value(ConfigSchema.CULTIVATION_AQUATIC_REQUIRES_WATER, server().cultivation.aquaticRequiresWater);
+    }
+
+    @Override
+    public boolean isAquaticSpiceFlowThroughEnabled() {
+        return value(ConfigSchema.CULTIVATION_AQUATIC_FLOW_THROUGH, server().cultivation.aquaticFlowThrough);
+    }
+
+    @Override
     public double getSpicePlantHarvestYieldMultiplier() {
         return value(ConfigSchema.PLANT_HARVEST_YIELD_MULTIPLIER, server().plant.harvestYieldMultiplier);
     }
@@ -369,6 +379,10 @@ public class FabricConfigHelper implements IConfigHelper {
             public boolean regionPlantingRestricted = ConfigSchema.CULTIVATION_REGION_PLANTING_RESTRICTED.getDefault();
             @ConfigEntry.Gui.Tooltip
             public int hardyHarvestDifficulty = ConfigSchema.CULTIVATION_HARDY_HARVEST_DIFFICULTY.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public boolean aquaticRequiresWater = ConfigSchema.CULTIVATION_AQUATIC_REQUIRES_WATER.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public boolean aquaticFlowThrough = ConfigSchema.CULTIVATION_AQUATIC_FLOW_THROUGH.getDefault();
             @ConfigEntry.Gui.CollapsibleObject
             public PerTier growthSpeed = PerTier.of(ConfigSchema.CULTIVATION_GROWTH_SPEED_MULTIPLIER);
         }

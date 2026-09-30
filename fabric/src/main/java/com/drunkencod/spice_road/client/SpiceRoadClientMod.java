@@ -43,8 +43,7 @@ public class SpiceRoadClientMod implements ClientModInitializer {
      * as solid/black.
      */
     private static void registerSpicePlantRenderLayers() {
-        SpicePlants.getRegistered().values()
-                .forEach(plant -> BlockRenderLayerMap.INSTANCE.putBlock(plant.block().get(), RenderType.cutout()));
+        SpicePlants.getAllBlocks().forEach(block -> BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.cutout()));
         SpiceTrees.getRegistered().values().forEach(tree -> {
             BlockRenderLayerMap.INSTANCE.putBlock(tree.getSapling().get(), RenderType.cutout());
             BlockRenderLayerMap.INSTANCE.putBlock(tree.getLeaves().get(), RenderType.cutoutMipped());

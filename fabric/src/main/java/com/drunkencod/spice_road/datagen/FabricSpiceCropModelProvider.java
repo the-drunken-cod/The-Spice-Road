@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import com.google.gson.JsonElement;
 
+import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.SpicePlantBlock;
 import com.drunkencod.spice_road.block.SpicePlants;
+import com.drunkencod.spice_road.spice.SourceType;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -20,15 +23,20 @@ import net.minecraft.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.data.models.blockstates.PropertyDispatch;
 import net.minecraft.data.models.blockstates.Variant;
 import net.minecraft.data.models.blockstates.VariantProperties;
+import net.minecraft.data.models.model.ModelTemplate;
 import net.minecraft.data.models.model.ModelTemplates;
 import net.minecraft.data.models.model.TextureMapping;
+import net.minecraft.data.models.model.TextureSlot;
 import net.minecraft.resources.ResourceLocation;
 
 /**
  * Datagens the crop-shaped blockstate + one
  * {@code minecraft:block/crop}-parented model per growth stage (age
  * {@code 0..getMaxAge()}) for every registered Spice Plant block (see
- * {@link SpicePlants}). Mirrors vanilla crop blocks (e.g. wheat) exactly; see
+ * {@link SpicePlants}) - {@code spice_road:block/rhizome}-parented instead for
+ * {@code RHIZOME} Spices. Blockstate properties besides the age (e.g.
+ * {@code waterlogged}) don't affect the model. Mirrors vanilla crop blocks
+ * (e.g. wheat) exactly; see
  * {@code NeoForgeBlockStateProvider} for the NeoForge counterpart.
  * <p>
  * Implemented as a standalone {@link DataProvider} rather than via
@@ -48,6 +56,11 @@ import net.minecraft.resources.ResourceLocation;
  */
 public class FabricSpiceCropModelProvider implements DataProvider {
 
+    /** Stage model template of {@code RHIZOME} Spices, in place of vanilla's crop template. */
+    private static final ModelTemplate RHIZOME = new ModelTemplate(
+            Optional.of(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "block/rhizome")),
+            Optional.empty(), TextureSlot.CROP);
+
     private final PackOutput.PathProvider blockStatePathProvider;
     private final PackOutput.PathProvider modelPathProvider;
 
@@ -64,10 +77,13 @@ public class FabricSpiceCropModelProvider implements DataProvider {
             SpicePlantBlock block = plant.block().get();
             int maxAge = block.getMaxAge();
 
+            ModelTemplate template = plant.spice().getSourceType() == SourceType.RHIZOME
+                    ? RHIZOME
+                    : ModelTemplates.CROP;
             Map<Integer, ResourceLocation> stageModels = new HashMap<>();
             for (int age = 0; age <= maxAge; age++) {
                 String suffix = "_stage" + age;
-                ResourceLocation model = ModelTemplates.CROP.createWithSuffix(
+                ResourceLocation model = template.createWithSuffix(
                         block, suffix, TextureMapping.crop(TextureMapping.getBlockTexture(block, suffix)),
                         (modelLocation, jsonSupplier) -> futures.add(DataProvider.saveStable(
                                 cachedOutput, jsonSupplier.get(), modelPathProvider.json(modelLocation))));

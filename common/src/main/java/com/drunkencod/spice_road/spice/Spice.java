@@ -38,15 +38,17 @@ import net.minecraft.world.item.Item;
 public enum Spice implements StringRepresentable {
 
     // crops
-    LAVENDER("lavender", SourceType.FLOWER_PATCH, HarvestAction.PICK, Climate.ARID, 1, false, false, 2),
-    SAFFRON("saffron", SourceType.FLOWER_PATCH, HarvestAction.PICK, Climate.ARID, 5, true, true, 1),
-    CHILI_PEPPER("chili_pepper", SourceType.CROP, HarvestAction.PICK, Climate.TEMPERATE, 2, false, false, 2),
-    CUMIN("cumin", SourceType.CROP, HarvestAction.BREAK, Climate.ARID, 2, false, false, 1),
+    LAVENDER("lavender", SourceType.FLOWER_PATCH, HarvestAction.PICK, Climate.ARID, 1, false, false, 2, false),
+    SAFFRON("saffron", SourceType.FLOWER_PATCH, HarvestAction.PICK, Climate.ARID, 5, true, true, 1, false),
+    CHILI_PEPPER("chili_pepper", SourceType.CROP, HarvestAction.PICK, Climate.TEMPERATE, 2, false, false, 2, false),
+    CUMIN("cumin", SourceType.CROP, HarvestAction.BREAK, Climate.ARID, 2, false, false, 1, false),
+    // rhizomes
+    WASABI("wasabi", SourceType.RHIZOME, HarvestAction.BREAK, Climate.COLD, 5, false, false, 1, true),
     // trees
-    CINNAMON("cinnamon", SourceType.TREE, HarvestAction.STRIP, Climate.TROPICAL, 4, false, false, 1),
-    NUTMEG("nutmeg", SourceType.TREE, HarvestAction.SHEAR, Climate.TROPICAL, 5, true, false, 1),
+    CINNAMON("cinnamon", SourceType.TREE, HarvestAction.STRIP, Climate.TROPICAL, 4, false, false, 1, false),
+    NUTMEG("nutmeg", SourceType.TREE, HarvestAction.SHEAR, Climate.TROPICAL, 5, true, false, 1, false),
     // vines
-    VANILLA("vanilla", SourceType.VINE, HarvestAction.PICK, Climate.TROPICAL, 5, true, true, 1);
+    VANILLA("vanilla", SourceType.VINE, HarvestAction.PICK, Climate.TROPICAL, 5, true, true, 1, false);
 
     /**
      * Codec reading and writing a {@link Spice} by its {@link #getId() ID}, e.g.
@@ -62,9 +64,10 @@ public enum Spice implements StringRepresentable {
     private final boolean requiresHarvestTool;
     private final boolean requiresHandPick;
     private final int dropAmount;
+    private final boolean aquatic;
 
     Spice(String id, SourceType sourceType, HarvestAction harvestAction, Climate climate, int harvestDifficulty,
-            boolean requiresHarvestTool, boolean requiresHandPick, int dropAmount) {
+            boolean requiresHarvestTool, boolean requiresHandPick, int dropAmount, boolean aquatic) {
         this.id = id;
         this.sourceType = sourceType;
         this.harvestAction = harvestAction;
@@ -73,6 +76,7 @@ public enum Spice implements StringRepresentable {
         this.requiresHarvestTool = requiresHarvestTool;
         this.requiresHandPick = requiresHandPick;
         this.dropAmount = dropAmount;
+        this.aquatic = aquatic;
     }
 
     /**
@@ -150,6 +154,34 @@ public enum Spice implements StringRepresentable {
      */
     public int getDropAmount() {
         return dropAmount;
+    }
+
+    /**
+     * @return Whether this is an Aquatic Spice, whose plant lives waterlogged
+     *         on aquatic-growable ground instead of on farmland. Only
+     *         honored for {@link SourceType#RHIZOME} Spices.
+     */
+    public boolean isAquatic() {
+        return aquatic && sourceType == SourceType.RHIZOME;
+    }
+
+    /**
+     * @return Whether a harvest of this Spice's mature plant yields its
+     *         planting item at the same rate as the Spice itself - true for
+     *         {@link SourceType#RHIZOME} Spices, whose cuttings are sliced off
+     *         together with the harvested part.
+     */
+    public boolean harvestYieldsPlantingItem() {
+        return sourceType == SourceType.RHIZOME;
+    }
+
+    /**
+     * @return The registry path suffix of this Spice's planting item:
+     *         {@code "_cuttings"} for {@link SourceType#RHIZOME} Spices,
+     *         {@code "_seeds"} otherwise.
+     */
+    public String getPlantingItemSuffix() {
+        return sourceType == SourceType.RHIZOME ? "_cuttings" : "_seeds";
     }
 
     @Override
@@ -245,11 +277,13 @@ public enum Spice implements StringRepresentable {
     }
 
     /**
-     * Returns the spice seeds item with the given enum ID from the registry, if it
-     * exists.
+     * Returns the planting item (seeds, or cuttings for rhizomes - see
+     * {@link #getPlantingItemSuffix()}) of the spice with the given enum ID
+     * from the registry, if it exists.
      */
     public static @Nullable Item getSeedsById(String id) {
-        return ModItems.byPath(id + "_seeds");
+        Spice spice = byId(id);
+        return ModItems.byPath(id + (spice != null ? spice.getPlantingItemSuffix() : "_seeds"));
     }
 
     // #endregion

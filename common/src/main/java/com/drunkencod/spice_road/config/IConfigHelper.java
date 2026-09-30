@@ -124,6 +124,27 @@ public interface IConfigHelper {
     int getSpiceHardyHarvestDifficulty();
 
     /**
+     * Whether an Aquatic Spice's plant is stunted while not waterlogged. When
+     * {@code false}, it grows the same wet or dry. Read live at tick-time.
+     *
+     * @return Whether Aquatic Spices need water to grow.
+     */
+    boolean isAquaticSpiceWaterRequired();
+
+    /**
+     * Whether flowing water passes through an Aquatic Spice's plant as if it
+     * weren't there, via a mixin on vanilla fluid ticking. When {@code false},
+     * that mixin does nothing, flowing water can't enter the plant, and
+     * planting it into flowing water waterlogs it with a source instead - an
+     * escape hatch for mods that change fluid ticking themselves. A plant
+     * still holding flowing water when this is turned off is washed away by
+     * its water's next update.
+     *
+     * @return Whether flowing water passes through Aquatic Spice plants.
+     */
+    boolean isAquaticSpiceFlowThroughEnabled();
+
+    /**
      * Configured harvest yield multiplier for
      * {@code FLOWER_PATCH}/{@code CROP} Spice Plants. Note: loot table datagen does
      * not call this method directly (a pure {@code runData} pass may run before

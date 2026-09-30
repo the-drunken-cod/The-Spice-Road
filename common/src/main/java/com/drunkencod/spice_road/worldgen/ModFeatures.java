@@ -27,12 +27,16 @@ public final class ModFeatures {
     public static final Supplier<Feature<SpicePlantConfiguration>> SPICE_PLANT = Services.REGISTRY
             .registerFeature("spice_plant", () -> new SpicePlantFeature(SpicePlantConfiguration.CODEC));
 
+    /** {@code spice_road:spice_pond} - see {@link SpicePondFeature}. */
+    public static final Supplier<Feature<SpicePondConfiguration>> SPICE_POND = Services.REGISTRY
+            .registerFeature("spice_pond", () -> new SpicePondFeature(SpicePondConfiguration.CODEC));
+
     private ModFeatures() {
     }
 
     /**
-     * No-op other than forcing this class (and therefore {@link #SPICE_PLANT}'s
-     * static initializer) to load.
+     * No-op other than forcing this class (and therefore its static
+     * initializers) to load.
      */
     public static void register() {
     }

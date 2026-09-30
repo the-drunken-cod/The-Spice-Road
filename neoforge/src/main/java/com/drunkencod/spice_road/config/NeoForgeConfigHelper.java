@@ -185,6 +185,16 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean isAquaticSpiceWaterRequired() {
+        return value(ConfigSchema.CULTIVATION_AQUATIC_REQUIRES_WATER);
+    }
+
+    @Override
+    public boolean isAquaticSpiceFlowThroughEnabled() {
+        return value(ConfigSchema.CULTIVATION_AQUATIC_FLOW_THROUGH);
+    }
+
+    @Override
     public double getSpicePlantHarvestYieldMultiplier() {
         return value(ConfigSchema.PLANT_HARVEST_YIELD_MULTIPLIER);
     }

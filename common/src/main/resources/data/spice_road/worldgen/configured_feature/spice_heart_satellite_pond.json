@@ -1,0 +1,61 @@
+{
+  "type": "spice_road:spice_pond",
+  "config": {
+    "radius": {
+      "type": "minecraft:uniform",
+      "min_inclusive": 2,
+      "max_inclusive": 3
+    },
+    "floor": {
+      "type": "minecraft:noise_provider",
+      "seed": 2791,
+      "noise": {
+        "firstOctave": 0,
+        "amplitudes": [
+          1
+        ]
+      },
+      "scale": 0.3,
+      "states": [
+        {
+          "Name": "minecraft:mud"
+        },
+        {
+          "Name": "minecraft:clay"
+        },
+        {
+          "Name": "minecraft:gravel"
+        },
+        {
+          "Name": "minecraft:mud"
+        }
+      ]
+    },
+    "shore": {
+      "type": "minecraft:noise_provider",
+      "seed": 4127,
+      "noise": {
+        "firstOctave": 0,
+        "amplitudes": [
+          1
+        ]
+      },
+      "scale": 0.25,
+      "states": [
+        {
+          "Name": "minecraft:grass_block"
+        },
+        {
+          "Name": "minecraft:coarse_dirt"
+        },
+        {
+          "Name": "minecraft:grass_block"
+        },
+        {
+          "Name": "minecraft:podzol"
+        }
+      ]
+    },
+    "shore_width": 1
+  }
+}

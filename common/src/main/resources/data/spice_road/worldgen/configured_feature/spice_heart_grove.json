@@ -10,9 +10,14 @@
       "rules": [
         {
           "biomes": "#spice_road:dense_grove_trees",
-          "count": { "type": "minecraft:uniform", "min_inclusive": 2, "max_inclusive": 3 }
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 2,
+            "max_inclusive": 3
+          }
         }
       ]
-    }
+    },
+    "aquatic_pond": "spice_road:spice_heart_pond"
   }
 }

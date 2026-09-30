@@ -1,9 +1,13 @@
 package com.drunkencod.spice_road.worldgen;
 
+import java.util.Optional;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.core.Holder;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
 /**
@@ -19,9 +23,13 @@ import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfigur
  * @param heartSpiceOnly Whether every plant is the Heart Spice of the Spice
  *                       Region the origin lies in (a Heart Grove), instead of
  *                       resolving the Spice at each attempt's own position.
+ * @param aquaticPond    Feature generated at the origin before any plant if
+ *                       the origin's Spice is an Aquatic Spice - typically a
+ *                       {@link SpicePondFeature}, giving its plants water to
+ *                       grow in.
  */
-public record SpicePlantConfiguration(int tries, int xzSpread, SpicePlantTreeSettings trees, boolean heartSpiceOnly)
-        implements FeatureConfiguration {
+public record SpicePlantConfiguration(int tries, int xzSpread, SpicePlantTreeSettings trees, boolean heartSpiceOnly,
+        Optional<Holder<ConfiguredFeature<?, ?>>> aquaticPond) implements FeatureConfiguration {
 
     /** Codec of this configuration's JSON fields. */
     public static final Codec<SpicePlantConfiguration> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -30,6 +38,8 @@ public record SpicePlantConfiguration(int tries, int xzSpread, SpicePlantTreeSet
             SpicePlantTreeSettings.CODEC.optionalFieldOf("trees", SpicePlantTreeSettings.SINGLE)
                     .forGetter(SpicePlantConfiguration::trees),
             Codec.BOOL.optionalFieldOf("heart_spice_only", false)
-                    .forGetter(SpicePlantConfiguration::heartSpiceOnly))
+                    .forGetter(SpicePlantConfiguration::heartSpiceOnly),
+            ConfiguredFeature.CODEC.optionalFieldOf("aquatic_pond")
+                    .forGetter(SpicePlantConfiguration::aquaticPond))
             .apply(instance, SpicePlantConfiguration::new));
 }

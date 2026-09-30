@@ -45,11 +45,11 @@ import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Spice;
 
 /**
- * Shared growth-stage/interaction template for the {@code flower_patch} and
- * {@code crop} {@link com.drunkencod.spice_road.spice.SourceType} Source
- * Types.
+ * Shared growth-stage/interaction template for the {@code flower_patch},
+ * {@code crop} and {@code rhizome}
+ * {@link com.drunkencod.spice_road.spice.SourceType} Source Types.
  * <p>
- * Both source types grow/regrow on farmland the same way, so this base class
+ * All of them grow/regrow the same way, so this base class
  * holds all of that shared behaviour by extending vanilla {@link CropBlock}
  * directly: age-based growth stages gated by light/farmland fertility, bonemeal
  * support, and seed-item cloning are all inherited unchanged. A concrete
@@ -147,7 +147,7 @@ public abstract class SpicePlantBlock extends CropBlock {
     }
 
     /**
-     * Scales vanilla's per-tick growth odds by
+     * Scales vanilla-equivalent per-tick growth odds (see {@link #growRandomly}) by
      * {@code IConfigHelper#getSpicePlantGrowthSpeedMultiplier(Tier)} for this
      * block's {@link Spice}'s {@link com.drunkencod.spice_road.spice.Tier}.
      * <p>
@@ -160,8 +160,91 @@ public abstract class SpicePlantBlock extends CropBlock {
             return;
 
         SpiceGrowth.rollScaled(Services.CONFIG.getSpicePlantGrowthSpeedMultiplier(spice.getTier()), random,
-                () -> super.randomTick(state, level, pos, random));
+                () -> growRandomly(state, level, pos, random));
     }
+
+    // #region growth
+
+    /**
+     * Mirrors vanilla {@code CropBlock#randomTick}, but advances the age via
+     * {@link #stateForAge} and weighs the ground via {@link #getGroundFertility},
+     * so subclasses with extra blockstate properties or other ground keep both.
+     */
+    private void growRandomly(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        int age = getAge(state);
+        if (level.getRawBrightness(pos, 0) < 9 || age >= getMaxAge())
+            return;
+
+        float growthSpeed = getGrowthSpeed(level, pos);
+        if (random.nextInt((int) (25.0F / growthSpeed) + 1) == 0)
+            level.setBlock(pos, stateForAge(state, age + 1), Block.UPDATE_CLIENTS);
+    }
+
+    /**
+     * Mirrors vanilla {@code CropBlock#growCrops}, keeping every blockstate
+     * property other than the age (see {@link #stateForAge}).
+     */
+    @Override
+    public void growCrops(Level level, BlockPos pos, BlockState state) {
+        int age = Math.min(getAge(state) + getBonemealAgeIncrease(level), getMaxAge());
+        level.setBlock(pos, stateForAge(state, age), Block.UPDATE_CLIENTS);
+    }
+
+    /**
+     * Unlike vanilla's {@code getStateForAge}, which starts from the default
+     * state, this keeps every other property of {@code state}.
+     *
+     * @return {@code state} with its age set to {@code age}.
+     */
+    protected BlockState stateForAge(BlockState state, int age) {
+        return state.setValue(getAgeProperty(), age);
+    }
+
+    /**
+     * Mirrors vanilla {@code CropBlock#getGrowthSpeed}: the fertility of the
+     * 3x3 ground below (the center counting fully, the rest a quarter each),
+     * halved if same-block neighbors crowd this plant.
+     *
+     * @return The growth speed, where {@code 1.0} means infertile ground.
+     */
+    private float getGrowthSpeed(BlockGetter level, BlockPos pos) {
+        float speed = 1.0F;
+        BlockPos groundPos = pos.below();
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) {
+                float fertility = getGroundFertility(level, groundPos.offset(dx, 0, dz));
+                speed += (dx == 0 && dz == 0) ? fertility : fertility / 4.0F;
+            }
+        }
+
+        boolean rowX = level.getBlockState(pos.west()).is(this) || level.getBlockState(pos.east()).is(this);
+        boolean rowZ = level.getBlockState(pos.north()).is(this) || level.getBlockState(pos.south()).is(this);
+        if (rowX && rowZ)
+            return speed / 2.0F;
+
+        boolean diagonal = level.getBlockState(pos.west().north()).is(this)
+                || level.getBlockState(pos.east().north()).is(this)
+                || level.getBlockState(pos.east().south()).is(this)
+                || level.getBlockState(pos.west().south()).is(this);
+        return diagonal ? speed / 2.0F : speed;
+    }
+
+    /**
+     * Fertility of one ground block below or around this plant, as vanilla
+     * rates it: {@code 1} for dry farmland, {@code 3} for moist farmland,
+     * {@code 0} for anything else.
+     *
+     * @param groundPos The ground block's position.
+     * @return The ground's fertility.
+     */
+    protected float getGroundFertility(BlockGetter level, BlockPos groundPos) {
+        BlockState ground = level.getBlockState(groundPos);
+        if (!(ground.getBlock() instanceof FarmBlock))
+            return 0.0F;
+        return ground.getValue(FarmBlock.MOISTURE) > 0 ? 3.0F : 1.0F;
+    }
+
+    // #region growth gating
 
     /**
      * Growth gate checked before every {@link #randomTick}, on top of
@@ -248,11 +331,14 @@ public abstract class SpicePlantBlock extends CropBlock {
 
     /**
      * Drops the plant's Spice from the clicked face if the Spice Region
-     * supports it here (see {@link #canGrow}), then resets the plant to age
-     * {@code 0} so it regrows instead of breaking. The break loot table of a
-     * Hand-Pick Spice only drops the seed, so this is the only way to obtain
-     * its Spice; for every other Spice, it's a shortcut that spares the
-     * plant instead of breaking it.
+     * supports it here (see {@link Spice#canBeCultivatedAt}, the same check
+     * as the break loot table's), then resets the plant to age {@code 0} so
+     * it regrows instead of breaking. If the Spice
+     * {@link Spice#harvestYieldsPlantingItem() yields its planting item}, as
+     * many of those drop alongside it. The break loot table of a Hand-Pick
+     * Spice only drops the seed, so this is the only way to obtain its Spice;
+     * for every other Spice, it's a shortcut that spares the plant instead of
+     * breaking it.
      *
      * @param sound The harvest sound, played at the plant's position.
      */
@@ -262,9 +348,12 @@ public abstract class SpicePlantBlock extends CropBlock {
             return;
 
         int yield = SpiceHarvesting.getPlantYield(spice);
-        if (yield > 0 && canGrow(serverLevel, pos))
+        if (yield > 0 && spice.canBeCultivatedAt(serverLevel, pos)) {
             popResourceFromFace(level, pos, hitResult.getDirection(),
                     new ItemStack(Spice.getRawById(spice.getId()), yield));
+            if (spice.harvestYieldsPlantingItem())
+                popResourceFromFace(level, pos, hitResult.getDirection(), new ItemStack(seedItem.get(), yield));
+        }
 
         level.playSound(null, pos, sound, SoundSource.BLOCKS, 1.0F, 0.8F + level.getRandom().nextFloat() * 0.4F);
 
