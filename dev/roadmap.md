@@ -50,31 +50,18 @@ Warning: may contain outdated information, and is only to be used as a guideline
         - Pulls all items from the player inventory, as well as all nearby (configurable radius) spice racks. When the player position changes, update the list (debounced by 10 ticks). Spice racks are a blockentity added by The Spice Road, but also exist in the mod cooking for blockheads, which should be included in this functionality and made compatible.
         - Hovering over a spice shows its rarity and spice profile levels tooltip.
         - Clicking a spice adds it to the food item stack's spice profile. When more food items are in the food slot than there are of the selected spice, nothing happens and a different click sound plays that indicates the action failed.
-6. **Villagers**
+6. [ ] **Villagers**
     - Note: trades were also already a part of Mycomancy, so they can be used as a baseline (no datagenning tho).
-    - Add Spice Trader villager type.
+    - [ ] Add Spice Trader villager type.
         - Sells common spices and some less common ones, few rare ones and none of the epic ones.
         - Buys all tiers of spices.
         - Datagen the trades from the enums.
-    - Make cartographer sell Spice Maps (Journeyman common, Expert uncommon, Master rare); epic Spice Maps are chest loot only (see `dev/todos.md`).
-7. **Fermentation Jar**
-    - Note: model already implemented in Mycomancy, needs to be ported.
-    - Small 1x1 blockentity that can be used to produce up to 2 (configurable) fermented items at a time.
-    - Custom recipe serializer, so that datapack JSONs and kubejs can be supported properly.
-    - No UI, just world interactions.
-    - Hopper support.
-    - Has a 0-10 hygiene blockstate value (mirroring a 0-1 value in NBT), which decreases with each finished recipe. Disinfectant can increase the value. All values can be configured.
-        - Model reacts to blockstate value and becomes noticeably grimy.
-8. **Fermentation Minigame Events**
-    - Add different events that can happen to the fermentation machines:
-        - Infestation: stray bacteria or mold cultures destroy an increasing percentage of the outputs. Starts to happen when fermenter is below 50% hygiene. Has a numeric blockstate prop.
-        - Clog: the airlock is clogged, causing over-pressure sounds. If not corrected in a configurable time frame, it violently overflows, lowering hygiene by a lot (of course also configurable), and reducing output items. Has a bool blockstate prop.
-        - Overheat: the jar is placed near a hot block, or in a hot biome during the day (deserts, badlands, nether) in direct sunlight (and transparent blocks). Check for this every 200 ticks (configurable) and update a bool blockstate prop accordingly.
-    - Events can be configured in two different modes: "reduction", which makes failed events an active detriment, or "bonus", which makes processes start out with a configured bonus amount, which can decrease back to the base amount via failed events.
-9. **Spice Mixes**
-    - Combine spices into condensed items that impart more spice values at once.
-    - Predefined list of ~8 spice mixes with custom textures and a custom name ("Mediterranean Seasoning", etc.).
-    - Allow players to mix any spices together into custom spice mixes.
+        - Custom house .nbt structures that jigsaw onto multiple of the vanilla village road segments.
+    - [x] Make cartographer sell Spice Maps (Journeyman common, Expert uncommon, Master rare); epic Spice Maps are chest loot only (see `dev/todos.md`).
+8. [ ] **Spice Mixes**
+    - Allows recipes to be reproduced easier, and trade to include preset and custom spice mixes.
+    - [ ] Combine up to 10 spices into condensed flavor_carrier items that impart more spice values at once.
+    - [ ] Predefined list of ~8 spice mixes with custom textures and a custom name ("Mediterranean Seasoning", etc.).
 10. **Documentation**
     - Implement Patchouli as an in-game guide.
     - Create user wiki.
