@@ -42,11 +42,11 @@ import com.drunkencod.spice_road.spice.region.SpiceRegionResolver;
  * Which Spice appears is chosen by {@link SpiceRegionResolver} rather than a
  * fixed per-biome roster.
  * <p>
- * By default each attempt resolves the Spice at its own position, and
- * frequency comes from the placement modifiers, not from this class. With
- * {@link SpicePlantConfiguration#heartSpiceOnly()}, every plant is the Heart
- * Spice of the origin's Spice Region instead, which is how Heart Groves are
- * generated.
+ * By default the Spice is resolved once at the origin, so a patch on a region
+ * border never mixes Spices. Frequency comes from the placement modifiers,
+ * not from this class. With {@link SpicePlantConfiguration#heartSpiceOnly()},
+ * every plant is the Heart Spice of the origin's Spice Region instead, which
+ * is how Heart Groves are generated.
  * <p>
  * If the patch's Spice grows as a tree, trees are placed instead, as many as
  * {@link SpicePlantConfiguration#trees()} rolls for the origin's biome, using
@@ -92,11 +92,13 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
         if (vine != null)
             return placeTrees(context, vine.hostTreeFeature(), null, originSurface);
 
+        if (originSpice.isEmpty())
+            return false;
+
         boolean placedAny = false;
         for (int i = 0; i < config.tries(); i++) {
             BlockPos surfacePos = randomSurfacePos(level, random, context.origin(), config.xzSpread());
-            Optional<Spice> spice = heartSpice.isPresent() ? heartSpice : resolveSpiceAt(level, surfacePos);
-            if (spice.isPresent() && tryPlaceOne(level, random, surfacePos, spice.get()))
+            if (tryPlaceOne(level, random, surfacePos, originSpice.get()))
                 placedAny = true;
         }
         return placedAny;
