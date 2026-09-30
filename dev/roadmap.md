@@ -32,16 +32,11 @@ Warning: may contain outdated information, and is only to be used as a guideline
         - Some spices will have more beneficial values when dried, others will have less.
         - Not all spices are dried.
     - Drying Rack will be faster when placed next to a hot block (identified by a tag, again, refer to Mycomancy).
-3. **Spice Buffs**
-    - Each spice gets a spice profile for its "fresh" and "dried" item variants.
-    - There is a mechanic that makes different kinds of spices interact differently and yield different buffs of different levels.
-        - The mechanic yields diminishing returns, a good amount of spices for max benefits should be around 8-10 (configurable).
-    - Buffs have 3 levels of potency (with configurable multipliers).
-4. **Spice Rack**
+3. [ ] **Spice Rack**
     - Way to store and display spices.
     - Inventory is exposed to the mod loader so automation is supported.
     - Similar in shape to vanilla shelves in 1.21.whatever.
-5. **Spice Grinder**
+4. [ ] **Spice Grinder**
     - Note: texture and sounds already implemented in Mycomancy, need to be ported.
     - Used to apply spices to food items.
         - Spice profile is stored via a data component. Items with the component render a custom tooltip when holding shift, displaying the final spice profile, and buffs.
@@ -50,6 +45,11 @@ Warning: may contain outdated information, and is only to be used as a guideline
         - Pulls all items from the player inventory, as well as all nearby (configurable radius) spice racks. When the player position changes, update the list (debounced by 10 ticks). Spice racks are a blockentity added by The Spice Road, but also exist in the mod cooking for blockheads, which should be included in this functionality and made compatible.
         - Hovering over a spice shows its rarity and spice profile levels tooltip.
         - Clicking a spice adds it to the food item stack's spice profile. When more food items are in the food slot than there are of the selected spice, nothing happens and a different click sound plays that indicates the action failed.
+5. [ ] **Spice Buffs**
+    - Each spice gets a spice profile for its "fresh" and "dried" item variants.
+    - There is a mechanic that makes different kinds of spices interact differently and yield different buffs of different levels.
+        - The mechanic yields diminishing returns, a good amount of spices for max benefits should be around 8-10 (configurable).
+    - Buffs have 3 levels of potency (with configurable multipliers).
 6. [ ] **Villagers**
     - Note: trades were also already a part of Mycomancy, so they can be used as a baseline (no datagenning tho).
     - [ ] Add Spice Trader villager type.
@@ -62,10 +62,10 @@ Warning: may contain outdated information, and is only to be used as a guideline
     - Allows recipes to be reproduced easier, and trade to include preset and custom spice mixes.
     - [ ] Combine up to 10 spices into condensed flavor_carrier items that impart more spice values at once.
     - [ ] Predefined list of ~8 spice mixes with custom textures and a custom name ("Mediterranean Seasoning", etc.).
-10. **Documentation**
-    - Implement Patchouli as an in-game guide.
-    - Create user wiki.
-    - Create developer documentation.
+10. [ ] **Documentation**
+    - [ ] Create user wiki.
+    - [ ] Create developer documentation.
+    - [ ] Implement Patchouli as an in-game guide.
 11. **Stats**
     - Record how many seasoned food items were eaten.
     - Record how many items were eaten of any of the 16 axes (8 x 2, separated by pos. and neg.).

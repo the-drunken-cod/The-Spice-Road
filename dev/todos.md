@@ -73,3 +73,5 @@
     - [ ] Only allow bees to pollinate vines and leaves above age 1 and crops above age 3.
 - [ ] Publish built javadoc jar alongside mod releases.
 - [ ] Add desert oasis groves.
+- [ ] Rework "dried" spices to instead be called "processed" and to be more independent of spices.
+    - [ ] Recipes to turn raw into processed spices should usually involve the drying rack, but could theoretically be done with other processes like soaking, smoking, cutting, etc. in the future.
