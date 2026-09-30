@@ -26,8 +26,10 @@ Adds rare spices to Minecraft that can enhance existing foods with a new buff me
 ## Features:
 - **30 new spice plants now generate in dedicated regions throughout the overworld.** They are dependent on climate, but not bound to biomes and their size is configurable.
 - **Common spices may be taken back home and grown**, but a good portion of them will **only mature if produced locally.**  
-  This incentivizes exploration, as well as establishing trade routes on servers. Maps can be traded for or found to help find certain spices.
-- New mechanic that allows **spices to be mixed and matched and applied to existing foods** of any mod to **imbue them with beneficial custom effects.** Players can also create spice mixes and specialize in cultivating the rarest spice plants.
+  This incentivizes exploration, as well as establishing trade routes and associations on servers. From Hanseatic League to West India Company, there's something for everyone.
+    - **Spice plants are worldgen-reliant and finite**, so monopolizing them is a real thing players can do. Extra spice sources can always be added my modpack creators and server admins, like loot tables, villager trades, kubejs scripts, currency shops, etc.
+    - Maps can be **traded for or found as loot** to help find certain spices. Epic tier spices can only be found via maps found in treasure loot by default.
+- **New mechanic that allows spices to be mixed and matched and applied to existing foods** of any mod to **imbue them with beneficial custom effects.** Players can also create spice mixes and specialize in cultivating the rarest spice plants.
 - **Incredibly modpack-, datapack- and server admin friendly.**
   - Allows for tons of configuration for any play style and player base.
   - Spice profiles and items can easily be added by datapack makers, and any mod's food item is supported out of the box. Note: some mods' crafting stations might erase spice profiles. In that case, please [open an issue](https://github.com/the-drunken-cod/The-Spice-Road/issues) so we can add compatibility.
