@@ -1,10 +1,12 @@
 package com.drunkencod.spice_road.block;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -52,6 +54,14 @@ public class SpiceVineBlock extends VineBlock implements BonemealableBlock {
 
     /** Ripening stage, ripe at {@link Constants#SPICE_VINE_GROWTH_STAGES}. */
     public static final IntegerProperty AGE = IntegerProperty.create("age", 0, Constants.SPICE_VINE_GROWTH_STAGES);
+
+    /**
+     * Every face a vine can cover, in a fixed order. Iterate this instead of
+     * {@link VineBlock#PROPERTY_BY_DIRECTION}, whose order isn't stable, so
+     * datagen output stays the same between runs.
+     */
+    public static final List<Direction> FACES = List.of(Direction.UP, Direction.NORTH, Direction.EAST,
+            Direction.SOUTH, Direction.WEST);
 
     /**
      * On average, one in this many random ticks advances a ripening stage at a

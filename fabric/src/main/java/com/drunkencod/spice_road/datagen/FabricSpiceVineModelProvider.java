@@ -19,7 +19,6 @@ import net.minecraft.data.models.blockstates.Variant;
 import net.minecraft.data.models.blockstates.VariantProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.VineBlock;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.SpiceVineBlock;
@@ -63,8 +62,7 @@ public class FabricSpiceVineModelProvider implements DataProvider {
                 futures.add(DataProvider.saveStable(cachedOutput, createStageModel(model),
                         modelPathProvider.json(model)));
 
-                for (Map.Entry<Direction, BooleanProperty> face : VineBlock.PROPERTY_BY_DIRECTION.entrySet()) {
-                    Direction direction = face.getKey();
+                for (Direction direction : SpiceVineBlock.FACES) {
                     Variant variant = Variant.variant().with(VariantProperties.MODEL, model);
                     if (direction == Direction.UP)
                         variant.with(VariantProperties.X_ROT, VariantProperties.Rotation.R270);
@@ -74,7 +72,7 @@ public class FabricSpiceVineModelProvider implements DataProvider {
                         variant.with(VariantProperties.UV_LOCK, true);
 
                     blockState.with(Condition.condition()
-                            .term(face.getValue(), true)
+                            .term(VineBlock.getPropertyForFace(direction), true)
                             .term(SpiceVineBlock.AGE, age), variant);
                 }
             }

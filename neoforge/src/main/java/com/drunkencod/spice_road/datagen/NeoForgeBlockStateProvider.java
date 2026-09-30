@@ -1,6 +1,5 @@
 package com.drunkencod.spice_road.datagen;
 
-import java.util.Map;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.SpicePlantBlock;
@@ -20,7 +19,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.VineBlock;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
@@ -98,14 +96,13 @@ public class NeoForgeBlockStateProvider extends BlockStateProvider {
                     .texture("particle", stage)
                     .renderType("minecraft:cutout");
 
-            for (Map.Entry<Direction, BooleanProperty> face : VineBlock.PROPERTY_BY_DIRECTION.entrySet()) {
-                Direction direction = face.getKey();
+            for (Direction direction : SpiceVineBlock.FACES) {
                 builder.part().modelFile(model)
                         .rotationX(direction == Direction.UP ? 270 : 0)
                         .rotationY(direction.getAxis().isHorizontal() ? ((int) direction.toYRot() + 180) % 360 : 0)
                         .uvLock(direction != Direction.NORTH)
                         .addModel()
-                        .condition(face.getValue(), true)
+                        .condition(VineBlock.getPropertyForFace(direction), true)
                         .condition(SpiceVineBlock.AGE, age)
                         .end();
             }
