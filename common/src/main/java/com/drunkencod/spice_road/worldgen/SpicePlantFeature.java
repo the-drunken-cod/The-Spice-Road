@@ -19,7 +19,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
@@ -72,7 +71,7 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
         WorldGenLevel level = context.level();
         RandomSource random = context.random();
         SpicePlantConfiguration config = context.config();
-        BlockPos originSurface = level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE_WG, context.origin());
+        BlockPos originSurface = level.getHeightmapPos(SurfaceHeightmaps.surface(level), context.origin());
 
         Optional<Spice> heartSpice = Optional.empty();
         if (config.heartSpiceOnly()) {
@@ -146,7 +145,7 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
         for (int dx = -spread; dx <= spread; dx++) {
             for (int dz = -spread; dz <= spread; dz++) {
                 column.set(origin.getX() + dx, origin.getY(), origin.getZ() + dz);
-                BlockPos ground = level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE_WG, column).below();
+                BlockPos ground = level.getHeightmapPos(SurfaceHeightmaps.surface(level), column).below();
                 if (!level.getFluidState(ground).isEmpty())
                     continue;
 
@@ -292,6 +291,6 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
     private static BlockPos randomSurfacePos(WorldGenLevel level, RandomSource random, BlockPos origin, int spread) {
         int dx = random.nextInt(spread * 2 + 1) - spread;
         int dz = random.nextInt(spread * 2 + 1) - spread;
-        return level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE_WG, origin.offset(dx, 0, dz));
+        return level.getHeightmapPos(SurfaceHeightmaps.surface(level), origin.offset(dx, 0, dz));
     }
 }
