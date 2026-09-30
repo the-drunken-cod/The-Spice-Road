@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
@@ -55,7 +56,10 @@ import com.drunkencod.spice_road.spice.region.SpiceRegionResolver;
  * <p>
  * An Aquatic Spice's plants only generate waterlogged, in water exactly one
  * block deep. {@link SpicePlantConfiguration#aquaticPond()} can carve that
- * water first, so a Heart Grove doesn't depend on finding any.
+ * water first, so a Heart Grove doesn't depend on finding any. Likewise,
+ * {@link SpicePlantConfiguration#oasis()} can carve an oasis with a
+ * spice-growable shore wherever the ground can't grow other Spices, e.g. in a
+ * desert.
  */
 public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
 
@@ -78,6 +82,8 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
         }
 
         Optional<Spice> originSpice = heartSpice.isPresent() ? heartSpice : resolveSpiceAt(level, originSurface);
+        originSpice.flatMap(spice -> groundPond(context, spice, originSurface))
+                .ifPresent(pond -> pond.value().place(level, context.chunkGenerator(), random, originSurface));
 
         SpiceTree tree = originSpice.map(SpiceTrees.getRegistered()::get).orElse(null);
         if (tree != null)
@@ -86,10 +92,6 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
         RegisteredSpiceVine vine = originSpice.map(SpiceVines.getRegistered()::get).orElse(null);
         if (vine != null)
             return placeTrees(context, vine.hostTreeFeature(), null, originSurface);
-
-        if (originSpice.isPresent() && originSpice.get().isAquatic())
-            config.aquaticPond().ifPresent(pond -> pond.value().place(level, context.chunkGenerator(), random,
-                    originSurface));
 
         boolean placedAny = false;
         for (int i = 0; i < config.tries(); i++) {
@@ -100,6 +102,63 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
         }
         return placedAny;
     }
+
+    // #region ground
+
+    /**
+     * Picks the pond to carve at the origin before anything else, so the
+     * patch has something to grow in: the
+     * {@link SpicePlantConfiguration#aquaticPond() aquatic pond} for an
+     * Aquatic Spice, otherwise the biome's
+     * {@link SpicePlantConfiguration#oasis() oasis} if too little of the
+     * patch's ground is spice-growable (see {@link #lacksGrowableGround}).
+     *
+     * @return The pond to carve, or empty if none is needed or configured.
+     */
+    private static Optional<Holder<ConfiguredFeature<?, ?>>> groundPond(
+            FeaturePlaceContext<SpicePlantConfiguration> context, Spice spice, BlockPos originSurface) {
+        SpicePlantConfiguration config = context.config();
+        if (spice.isAquatic())
+            return config.aquaticPond();
+
+        WorldGenLevel level = context.level();
+        return config.oasis()
+                .filter(oasis -> lacksGrowableGround(level, originSurface, config.xzSpread(),
+                        oasis.minGrowableGround()))
+                .flatMap(oasis -> oasis.pondFor(level.getBiome(originSurface)));
+    }
+
+    /**
+     * Rates the ground of every column within {@code spread} blocks of
+     * {@code origin}. Columns topped by fluid don't count either way, so a
+     * patch next to a lake isn't mistaken for barren ground.
+     *
+     * @param minShare Share of dry columns that must be
+     *                 {@link SpicePlantBlock#SPICE_GROWABLE}.
+     * @return Whether fewer dry columns than {@code minShare} are
+     *         spice-growable. {@code false} if no column is dry at all, since
+     *         a pond couldn't be carved there anyway.
+     */
+    private static boolean lacksGrowableGround(WorldGenLevel level, BlockPos origin, int spread, float minShare) {
+        int dry = 0;
+        int growable = 0;
+        BlockPos.MutableBlockPos column = new BlockPos.MutableBlockPos();
+        for (int dx = -spread; dx <= spread; dx++) {
+            for (int dz = -spread; dz <= spread; dz++) {
+                column.set(origin.getX() + dx, origin.getY(), origin.getZ() + dz);
+                BlockPos ground = level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE_WG, column).below();
+                if (!level.getFluidState(ground).isEmpty())
+                    continue;
+
+                dry++;
+                if (level.getBlockState(ground).is(SpicePlantBlock.SPICE_GROWABLE))
+                    growable++;
+            }
+        }
+        return dry > 0 && growable < dry * minShare;
+    }
+
+    // #region trees
 
     /**
      * Places as many trees as {@link SpicePlantConfiguration#trees()} rolls
@@ -158,6 +217,8 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
                 .orElse(false);
     }
 
+    // #region plants
+
     /**
      * Places one {@code spice} plant at a random growth stage, if it can
      * survive at {@code surfacePos} - or, for an Aquatic Spice, waterlogged in
@@ -184,7 +245,7 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
             return false;
         }
 
-        if (!defaultState.canSurvive(level, pos))
+        if (!block.canGenerateAt(defaultState, level, pos))
             return false;
 
         int age = random.nextInt(block.getMaxAge() + 1);

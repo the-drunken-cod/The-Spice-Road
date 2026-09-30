@@ -8,6 +8,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.level.block.Block;
@@ -15,7 +16,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfigur
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
-import com.drunkencod.spice_road.block.SpicePlantBlock;
+import com.drunkencod.spice_road.Constants;
 
 /**
  * Configuration of a {@link SpicePondFeature} Spice Pond, read from its
@@ -42,6 +43,10 @@ public record SpicePondConfiguration(IntProvider radius, BlockStateProvider floo
      */
     public static final int MAX_RADIUS = 8;
 
+    /** Default {@link #replaceable()} ground: natural surface blocks a pond's shore may paint over. */
+    public static final TagKey<Block> SHORE_REPLACEABLE = TagKey.create(Registries.BLOCK,
+            ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "pond_shore_replaceable"));
+
     /** Largest accepted {@link #shoreWidth()}. */
     public static final int MAX_SHORE_WIDTH = 3;
 
@@ -52,7 +57,7 @@ public record SpicePondConfiguration(IntProvider radius, BlockStateProvider floo
             BlockStateProvider.CODEC.optionalFieldOf("shore").forGetter(SpicePondConfiguration::shore),
             Codec.intRange(0, MAX_SHORE_WIDTH).optionalFieldOf("shore_width", 1)
                     .forGetter(SpicePondConfiguration::shoreWidth),
-            TagKey.hashedCodec(Registries.BLOCK).optionalFieldOf("replaceable", SpicePlantBlock.SPICE_GROWABLE)
+            TagKey.hashedCodec(Registries.BLOCK).optionalFieldOf("replaceable", SHORE_REPLACEABLE)
                     .forGetter(SpicePondConfiguration::replaceable),
             Decoration.CODEC.listOf().optionalFieldOf("decorations", List.of())
                     .forGetter(SpicePondConfiguration::decorations))

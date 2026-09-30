@@ -5,6 +5,9 @@
     "#minecraft:dirt",
     "#minecraft:sand",
     "#minecraft:terracotta",
-    "minecraft:clay"
+    "#minecraft:base_stone_overworld",
+    "minecraft:sandstone",
+    "minecraft:red_sandstone",
+    "minecraft:snow_block"
   ]
 }

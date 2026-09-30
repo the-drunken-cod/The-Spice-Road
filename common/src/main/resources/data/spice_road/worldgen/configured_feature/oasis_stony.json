@@ -1,0 +1,122 @@
+{
+  "type": "spice_road:spice_pond",
+  "config": {
+    "radius": {
+      "type": "minecraft:uniform",
+      "min_inclusive": 2,
+      "max_inclusive": 4
+    },
+    "floor": {
+      "type": "minecraft:noise_provider",
+      "seed": 2791,
+      "noise": {
+        "firstOctave": 0,
+        "amplitudes": [
+          1
+        ]
+      },
+      "scale": 0.3,
+      "states": [
+        {
+          "Name": "minecraft:gravel"
+        },
+        {
+          "Name": "minecraft:clay"
+        },
+        {
+          "Name": "minecraft:gravel"
+        },
+        {
+          "Name": "minecraft:stone"
+        }
+      ]
+    },
+    "shore": {
+      "type": "minecraft:noise_provider",
+      "seed": 4127,
+      "noise": {
+        "firstOctave": 0,
+        "amplitudes": [
+          1
+        ]
+      },
+      "scale": 0.25,
+      "states": [
+        {
+          "Name": "minecraft:grass_block"
+        },
+        {
+          "Name": "minecraft:podzol"
+        },
+        {
+          "Name": "minecraft:coarse_dirt"
+        },
+        {
+          "Name": "minecraft:moss_block"
+        }
+      ]
+    },
+    "shore_width": 3,
+    "decorations": [
+      {
+        "feature": {
+          "feature": "spice_road:oasis_spice_patch",
+          "placement": []
+        },
+        "count": {
+          "type": "minecraft:uniform",
+          "min_inclusive": 3,
+          "max_inclusive": 5
+        }
+      },
+      {
+        "feature": "minecraft:spruce_checked",
+        "count": {
+          "type": "minecraft:uniform",
+          "min_inclusive": 0,
+          "max_inclusive": 2
+        }
+      },
+      {
+        "feature": {
+          "feature": {
+            "type": "minecraft:random_patch",
+            "config": {
+              "tries": 8,
+              "xz_spread": 2,
+              "y_spread": 1,
+              "feature": {
+                "feature": {
+                  "type": "minecraft:simple_block",
+                  "config": {
+                    "to_place": {
+                      "type": "minecraft:simple_state_provider",
+                      "state": {
+                        "Name": "minecraft:fern"
+                      }
+                    }
+                  }
+                },
+                "placement": [
+                  {
+                    "type": "minecraft:block_predicate_filter",
+                    "predicate": {
+                      "type": "minecraft:matching_blocks",
+                      "blocks": "minecraft:air"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "placement": []
+        },
+        "count": {
+          "type": "minecraft:uniform",
+          "min_inclusive": 1,
+          "max_inclusive": 2
+        }
+      }
+    ]
+  }
+}

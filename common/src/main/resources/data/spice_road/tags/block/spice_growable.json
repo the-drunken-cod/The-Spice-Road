@@ -1,9 +1,6 @@
 {
   "replace": false,
   "values": [
-    "#c:gravels",
-    "#minecraft:dirt",
-    "#minecraft:sand",
-    "#minecraft:terracotta"
+    "#minecraft:dirt"
   ]
 }

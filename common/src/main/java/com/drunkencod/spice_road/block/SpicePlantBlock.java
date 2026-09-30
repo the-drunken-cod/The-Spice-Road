@@ -24,6 +24,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.FarmBlock;
@@ -128,6 +129,21 @@ public abstract class SpicePlantBlock extends CropBlock {
     @Override
     protected boolean mayPlaceOn(BlockState state, BlockGetter level, BlockPos pos) {
         return state.getBlock() instanceof FarmBlock || state.is(SPICE_GROWABLE);
+    }
+
+    /**
+     * {@link #canSurvive} without vanilla's light requirement, for worldgen:
+     * light isn't computed yet while features generate, so the light check
+     * would reject almost every position.
+     *
+     * @param state The state to place.
+     * @param level The level being generated.
+     * @param pos   The position to place at.
+     * @return Whether {@code state} could stay at {@code pos}, light aside.
+     */
+    public boolean canGenerateAt(BlockState state, LevelReader level, BlockPos pos) {
+        BlockPos below = pos.below();
+        return mayPlaceOn(level.getBlockState(below), level, below);
     }
 
     /** @return {@link Constants#SPICE_PLANT_GROWTH_STAGES}. */

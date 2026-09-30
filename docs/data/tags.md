@@ -25,6 +25,9 @@ The following datapack taglists are created and managed by The Spice Road and ma
 | :-- | :-- |
 | `spice_road:
 | `spice_road:
+| `spice_road:spice_growable` | Natural ground wild spice plants survive on besides farmland. Only `#minecraft:dirt` by default. |
+| `spice_road:aquatic_spice_growable` | Ground aquatic spices like wasabi grow on under water. Contains dirt, sand, gravel, terracotta and clay by default. |
+| `spice_road:pond_shore_replaceable` | Ground a spice pond's shore may paint over, unless the pond sets its own `replaceable` tag. |
 | `spice_road:spice_crops` | Contains all spice crop blocks, both the farmland-grown ones and their worldgen-only wild counterparts. |
 | `spice_road:spice_tree_leaves` | Contains all spice tree leaves blocks. |
 | `spice_road:spice_tree_logs` | Contains all spice tree log blocks. |
@@ -44,6 +47,7 @@ The following datapack taglists are created and managed by The Spice Road and ma
 | Tag | Description |
 | :-- | :-- |
 | `spice_road:no_region_heart` | Biomes that don't grow spices (like oceans) should be added to this list, so that the algorithm that finds spice region hearts (for `/locate` and the maps) doesn't yield them as a result. |
+| `spice_road:oasis/desert`, `spice_road:oasis/badlands`, `spice_road:oasis/coast`, `spice_road:oasis/stony` | Biomes whose heart groves, when they sit on unsuitable ground, carve the matching oasis variant. Checked in that order; biomes in none of them get the generic oasis. |
 | `spice_road:
 
 

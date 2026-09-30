@@ -127,6 +127,12 @@ public class AquaticSpiceRhizomeBlock extends SpicePlantBlock
         return super.canSurvive(state, level, pos) && !level.getFluidState(pos.above()).is(AQUATIC_SPICE_WATER);
     }
 
+    /** Also requires no {@link #AQUATIC_SPICE_WATER} directly above, see {@link #canSurvive}. */
+    @Override
+    public boolean canGenerateAt(BlockState state, LevelReader level, BlockPos pos) {
+        return super.canGenerateAt(state, level, pos) && !level.getFluidState(pos.above()).is(AQUATIC_SPICE_WATER);
+    }
+
     @Override
     protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
             LevelAccessor level, BlockPos pos, BlockPos neighborPos) {

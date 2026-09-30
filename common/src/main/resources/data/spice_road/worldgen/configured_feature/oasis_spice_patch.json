@@ -1,0 +1,12 @@
+{
+  "type": "spice_road:spice_plant",
+  "config": {
+    "tries": 8,
+    "xz_spread": 2,
+    "heart_spice_only": true,
+    "trees": {
+      "default": 1,
+      "spacing": 4
+    }
+  }
+}

@@ -18,6 +18,28 @@
         }
       ]
     },
-    "aquatic_pond": "spice_road:spice_heart_pond"
+    "aquatic_pond": "spice_road:spice_heart_pond",
+    "oasis": {
+      "min_growable_ground": 0.5,
+      "rules": [
+        {
+          "biomes": "#spice_road:oasis/desert",
+          "pond": "spice_road:oasis_desert"
+        },
+        {
+          "biomes": "#spice_road:oasis/badlands",
+          "pond": "spice_road:oasis_badlands"
+        },
+        {
+          "biomes": "#spice_road:oasis/coast",
+          "pond": "spice_road:oasis_coast"
+        },
+        {
+          "biomes": "#spice_road:oasis/stony",
+          "pond": "spice_road:oasis_stony"
+        }
+      ],
+      "default": "spice_road:oasis"
+    }
   }
 }
