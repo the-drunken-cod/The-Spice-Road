@@ -8,7 +8,7 @@ The following datapack taglists are created and managed by The Spice Road and ma
 | :-- | :-- |
 | `spice_road:spices` | Should contain all spice items that have a spice profile. |
 | `spice_road:spices/raw` | Contains all raw spices. |
-| `spice_road:spices/dried` | Contains all dried spices. |
+| `spice_road:spices/processed` | Contains all processed spices, like dried ones. |
 | `spice_road:retains_flavor` | Any item with this tag is a "flavor carrier", meaning that it can have an accumulated spice profile without being a food item itself (for example includes storage blocks like dried kelp). |
 | `spice_road:unseasonable` | Any item with this tag cannot be seasoned. Includes things like suspicious stew by default, as it uses a funky custom crafting recipe type. |
 | `spice_road:cutting_tools` | Any item that can be used on spice crops or leaves that require a cutting tool. Contains shears, swords and modded knives by default. |

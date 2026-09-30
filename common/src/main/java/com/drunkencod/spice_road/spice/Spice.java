@@ -28,7 +28,8 @@ import net.minecraft.world.item.Item;
  * fields consumed downstream are stored (e.g. no free-text
  * {@code harvestedPart} description).
  * <p>
- * Flavor Axis data is <b>not</b> stored here - a Spice's raw/dried item(s)
+ * Flavor Axis data is <b>not</b> stored here - a Spice's raw item and any
+ * {@link ProcessedSpice} items
  * get their {@link SpiceProfile} from the datapack-driven
  * {@code data/<namespace>/spice_profile/*.json} registry (see
  * {@link SpiceProfileRegistry}), keyed by item rather than by this enum, so
@@ -267,14 +268,6 @@ public enum Spice implements StringRepresentable {
      */
     public static @Nullable Item getRawById(String id) {
         return ModItems.byPath(id);
-    }
-
-    /**
-     * Returns the dried spice item with the given enum ID from the registry, if it
-     * exists.
-     */
-    public static @Nullable Item getDriedById(String id) {
-        return ModItems.byPath("dried_" + id);
     }
 
     /**

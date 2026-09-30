@@ -22,16 +22,17 @@ import com.drunkencod.spice_road.block.SpiceTree;
 import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.block.SpiceVines;
 import com.drunkencod.spice_road.item.SpiceItemTags;
+import com.drunkencod.spice_road.spice.ProcessedSpice;
 import com.drunkencod.spice_road.spice.Spice;
 import com.drunkencod.spice_road.spice.Tier;
 
 /**
  * Datagens the Spice item tags from the {@link Spice} enum:
- * {@link SpiceItemTags#RAW_SPICES} and {@link SpiceItemTags#DRIED_SPICES}
- * from each Spice's raw/dried item (skipping missing ones), plus
- * {@link SpiceItemTags#SPICES} including both, and each
- * {@link Tier#getItemTag() tier tag} from its Spices' raw, dried, seeds,
- * sapling and vine items. Also writes the (initially empty)
+ * {@link SpiceItemTags#RAW_SPICES} from each Spice's raw item (skipping
+ * missing ones) and {@link SpiceItemTags#PROCESSED_SPICES} from the
+ * {@link ProcessedSpice} enum, plus {@link SpiceItemTags#SPICES} including
+ * both, and each {@link Tier#getItemTag() tier tag} from its Spices' raw,
+ * processed, seeds, sapling and vine items. Also writes the (initially empty)
  * {@link SpiceItemTags#RETAINS_FLAVOR} and
  * {@link SpiceItemTags#UNSEASONABLE} tags so they exist for datapacks to
  * add to, and {@link SpiceItemTags#VOIDS_FLAVOR_WHEN_PLACED} with its one
@@ -51,11 +52,12 @@ public class SpiceItemTagProvider implements DataProvider {
         List<CompletableFuture<?>> futures = new ArrayList<>();
         futures.add(save(cachedOutput, SpiceItemTags.RAW_SPICES,
                 spiceItems(spice -> Spice.getRawById(spice.getId())).stream().map(TagValue::of).toList()));
-        futures.add(save(cachedOutput, SpiceItemTags.DRIED_SPICES,
-                spiceItems(spice -> Spice.getDriedById(spice.getId())).stream().map(TagValue::of).toList()));
+        futures.add(save(cachedOutput, SpiceItemTags.PROCESSED_SPICES,
+                itemIds(Arrays.stream(ProcessedSpice.values()).map(ProcessedSpice::getItem)).stream()
+                        .map(TagValue::of).toList()));
         futures.add(save(cachedOutput, SpiceItemTags.SPICES, List.of(
                 TagValue.of("#" + SpiceItemTags.RAW_SPICES.location()),
-                TagValue.of("#" + SpiceItemTags.DRIED_SPICES.location()))));
+                TagValue.of("#" + SpiceItemTags.PROCESSED_SPICES.location()))));
         futures.add(save(cachedOutput, SpiceItemTags.RETAINS_FLAVOR, List.of(
                 TagValue.of("#c:mushrooms"),
                 TagValue.optional("#c:crops/grain"))));
@@ -85,29 +87,31 @@ public class SpiceItemTagProvider implements DataProvider {
      * @return The IDs of every Spice's item of that state, in enum order.
      */
     private static List<String> spiceItems(Function<Spice, Item> itemGetter) {
-        return Arrays.stream(Spice.values())
-                .map(itemGetter)
-                .filter(Objects::nonNull)
-                .map(item -> BuiltInRegistries.ITEM.getKey(item).toString())
-                .toList();
+        return itemIds(Arrays.stream(Spice.values()).map(itemGetter));
     }
 
     /**
      * @param tier The tier to collect items for.
-     * @return The IDs of the raw, dried, seeds, sapling and vine items of every
-     *         Spice of {@code tier}, in enum order.
+     * @return The IDs of the raw, processed, seeds, sapling and vine items of
+     *         every Spice of {@code tier}, in enum order.
      */
     private static List<String> tierItems(Tier tier) {
-        return Arrays.stream(Spice.values())
+        return itemIds(Arrays.stream(Spice.values())
                 .filter(spice -> spice.getTier() == tier)
                 .flatMap(spice -> {
                     SpiceTree tree = SpiceTrees.getRegistered().get(spice);
                     SpiceVines.RegisteredSpiceVine vine = SpiceVines.getRegistered().get(spice);
-                    return Stream.of(Spice.getRawById(spice.getId()), Spice.getDriedById(spice.getId()),
-                            Spice.getSeedsById(spice.getId()), tree != null ? tree.getSaplingItem().get() : null,
-                            vine != null ? vine.vineItem().get() : null);
-                })
-                .filter(Objects::nonNull)
+                    Stream<Item> processed = ProcessedSpice.bySource(spice).stream().map(ProcessedSpice::getItem);
+                    return Stream.concat(Stream.of(Spice.getRawById(spice.getId())), Stream.concat(processed,
+                            Stream.of(Spice.getSeedsById(spice.getId()),
+                                    tree != null ? tree.getSaplingItem().get() : null,
+                                    vine != null ? vine.vineItem().get() : null)));
+                }));
+    }
+
+    /** @return The IDs of {@code items}, skipping {@code null}s, in order. */
+    private static List<String> itemIds(Stream<Item> items) {
+        return items.filter(Objects::nonNull)
                 .map(item -> BuiltInRegistries.ITEM.getKey(item).toString())
                 .toList();
     }

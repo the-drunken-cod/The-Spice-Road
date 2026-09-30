@@ -4,7 +4,7 @@
 - **Items**
     - [Spices](./items/spices.md)
         - [Raw Spices](./items/spices.md#raw-spices)
-        - [Dried Spices](./items/spices.md#dried-spices)
+        - [Processed Spices](./items/spices.md#processed-spices)
         - [Spice Regions](./items/spices.md#spice-regions)
         - [Spice Crops](./items/spices.md#spice-crops)
         - [Spice Trees](./items/spices.md#spice-trees)

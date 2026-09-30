@@ -5,6 +5,7 @@ import com.drunkencod.spice_road.advancement.ModCriteriaTriggers;
 import com.drunkencod.spice_road.block.SpicePlants;
 import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.block.SpiceVines;
+import com.drunkencod.spice_road.item.ProcessedSpiceItems;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.ModDataComponents;
 import com.drunkencod.spice_road.registry.ModLootConditions;
@@ -34,6 +35,7 @@ public class SpiceRoad {
         SpicePlants.bootstrap();
         SpiceTrees.bootstrap();
         SpiceVines.bootstrap();
+        ProcessedSpiceItems.bootstrap();
         ModFeatures.register();
         ModTreeDecorators.register();
         ModPlacementModifiers.register();

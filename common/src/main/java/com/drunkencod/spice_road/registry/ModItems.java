@@ -18,6 +18,7 @@ import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.SpiceTree;
 import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.block.SpiceVines;
+import com.drunkencod.spice_road.spice.ProcessedSpice;
 import com.drunkencod.spice_road.spice.Spice;
 
 /**
@@ -66,7 +67,7 @@ public class ModItems {
 
     /**
      * Fills the spices creative tab with every {@link Spice}'s seeds, tree
-     * blocks, vine, and raw/dried items, in enum order.
+     * blocks, vine, raw item and Processed Spice items, in enum order.
      *
      * @param output The tab's item output.
      */
@@ -74,7 +75,6 @@ public class ModItems {
         for (Spice spice : Spice.values()) {
             Item spiceSeeds = Spice.getSeedsById(spice.getId());
             Item spiceRaw = Spice.getRawById(spice.getId());
-            Item spiceDried = Spice.getDriedById(spice.getId());
 
             if (spiceSeeds != null)
                 output.accept(spiceSeeds.getDefaultInstance());
@@ -89,8 +89,11 @@ public class ModItems {
 
             if (spiceRaw != null)
                 output.accept(spiceRaw.getDefaultInstance());
-            if (spiceDried != null)
-                output.accept(spiceDried.getDefaultInstance());
+            for (ProcessedSpice processed : ProcessedSpice.bySource(spice)) {
+                Item processedItem = processed.getItem();
+                if (processedItem != null)
+                    output.accept(processedItem.getDefaultInstance());
+            }
         }
     }
 

@@ -23,18 +23,18 @@ public class ItemIdentification {
 
     /**
      * @param stack The stack to check
-     * @return {@code true} if {@code stack} is a dried Spice item
-     *         ({@link SpiceItemTags#DRIED_SPICES})
+     * @return {@code true} if {@code stack} is a Processed Spice item
+     *         ({@link SpiceItemTags#PROCESSED_SPICES})
      */
-    public static boolean isDriedSpice(ItemStack stack) {
-        return stack.is(SpiceItemTags.DRIED_SPICES);
+    public static boolean isProcessedSpice(ItemStack stack) {
+        return stack.is(SpiceItemTags.PROCESSED_SPICES);
     }
 
     /**
      * @param stack The stack to check
-     * @return {@code true} if {@code stack} is a raw or dried Spice item
+     * @return {@code true} if {@code stack} is a raw or Processed Spice item
      */
     public static boolean isAnySpice(ItemStack stack) {
-        return isRawSpice(stack) || isDriedSpice(stack);
+        return isRawSpice(stack) || isProcessedSpice(stack);
     }
 }

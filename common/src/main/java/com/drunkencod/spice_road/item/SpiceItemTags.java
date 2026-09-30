@@ -27,15 +27,15 @@ public class SpiceItemTags {
      * Every Spice Item, including datapack-registered ones. Mirrors the items
      * with a Default Profile for recipes and filtering - having a Default
      * Profile is what actually makes an item a Spice Item. Includes
-     * {@link #RAW_SPICES} and {@link #DRIED_SPICES}.
+     * {@link #RAW_SPICES} and {@link #PROCESSED_SPICES}.
      */
     public static final TagKey<Item> SPICES = create("spices");
 
     /** All raw (freshly harvested) Spice items. */
     public static final TagKey<Item> RAW_SPICES = create("spices/raw");
 
-    /** All dried Spice items (produced by the Drying Rack). */
-    public static final TagKey<Item> DRIED_SPICES = create("spices/dried");
+    /** All Processed Spice items, e.g. dried ones produced by the Drying Rack. */
+    public static final TagKey<Item> PROCESSED_SPICES = create("spices/processed");
 
     /** The seeds of every Spice that grows as a plant (i.e. not a tree or vine). */
     public static final TagKey<Item> SPICE_PLANT_SEEDS = create("spice_plant_seeds");

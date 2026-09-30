@@ -84,16 +84,16 @@ public class SpiceRoadAdvancements implements AdvancementSubProvider {
                                         .of(Spice.getRawById(Spice.NUTMEG.getId()))
                         // ItemPredicate.Builder.item()
                         // .of(Spice.getRawById(Spice.CINNAMON.getId()),
-                        // Spice.getDriedById(Spice.CINNAMON.getId())),
+                        // ProcessedSpice.DRIED_CINNAMON.getItem()),
                         // ItemPredicate.Builder.item()
                         // .of(Spice.getRawById(Spice.NUTMEG.getId()),
-                        // Spice.getDriedById(Spice.NUTMEG.getId()))
+                        // ProcessedSpice.DRIED_NUTMEG.getItem())
                         // ItemPredicate.Builder.item()
                         // .of(Spice.getRawById(Spice.GINGER.getId()),
-                        // Spice.getDriedById(Spice.GINGER.getId())),
+                        // ProcessedSpice.DRIED_GINGER.getItem()),
                         // ItemPredicate.Builder.item()
                         // .of(Spice.getRawById(Spice.CLOVES.getId()),
-                        // Spice.getDriedById(Spice.CLOVES.getId()))
+                        // ProcessedSpice.DRIED_CLOVES.getItem())
                         )))
                 .build(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "pumpkin_purist"));
         saver.accept(pumpkinPurist);
