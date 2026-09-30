@@ -33,6 +33,13 @@ The following datapack taglists are created and managed by The Spice Road and ma
 
 <br>
 
+## Vanilla Tags
+| Tag | Description |
+| :-- | :-- |
+| `minecraft:flowers` | Contains `#spice_road:spice_crops`, `#spice_road:spice_vines` and fruiting spice tree leaves, so bees can pollinate them. Bees only visit ripe spice plants unless the `cultivation.beesPollinateUnripe` config option is enabled. Remove entries to stop bees from visiting them at all. Spice crops are deliberately not in `minecraft:bee_growables`, since bee-grown crops would skip the spice region and growth-speed rules. |
+
+<br>
+
 ## Biome Tags
 | Tag | Description |
 | :-- | :-- |

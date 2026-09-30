@@ -151,6 +151,11 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean isUnripeSpicePollinationAllowed() {
+        return value(ConfigSchema.CULTIVATION_BEES_POLLINATE_UNRIPE, server().cultivation.beesPollinateUnripe);
+    }
+
+    @Override
     public double getSpicePlantHarvestYieldMultiplier() {
         return value(ConfigSchema.PLANT_HARVEST_YIELD_MULTIPLIER, server().plant.harvestYieldMultiplier);
     }
@@ -383,6 +388,8 @@ public class FabricConfigHelper implements IConfigHelper {
             public boolean aquaticRequiresWater = ConfigSchema.CULTIVATION_AQUATIC_REQUIRES_WATER.getDefault();
             @ConfigEntry.Gui.Tooltip
             public boolean aquaticFlowThrough = ConfigSchema.CULTIVATION_AQUATIC_FLOW_THROUGH.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public boolean beesPollinateUnripe = ConfigSchema.CULTIVATION_BEES_POLLINATE_UNRIPE.getDefault();
             @ConfigEntry.Gui.CollapsibleObject
             public PerTier growthSpeed = PerTier.of(ConfigSchema.CULTIVATION_GROWTH_SPEED_MULTIPLIER);
         }

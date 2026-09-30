@@ -118,6 +118,10 @@ public final class ConfigSchema {
     public static final ConfigOption<Boolean> CULTIVATION_AQUATIC_FLOW_THROUGH = add(
             ConfigOption.ofBoolean(CULTIVATION, "aquaticFlowThrough", true));
 
+    /** Whether bees may pollinate Spice plants that aren't ripe yet. */
+    public static final ConfigOption<Boolean> CULTIVATION_BEES_POLLINATE_UNRIPE = add(
+            ConfigOption.ofBoolean(CULTIVATION, "beesPollinateUnripe", false));
+
     /** Growth-speed multiplier of planted Spices per {@link Tier}. */
     public static final Map<Tier, ConfigOption<Double>> CULTIVATION_GROWTH_SPEED_MULTIPLIER = perTier(
             CULTIVATION_GROWTH_SPEED, 1.0, 1.0, 1.0, 1.0, 0.1, 5.0);

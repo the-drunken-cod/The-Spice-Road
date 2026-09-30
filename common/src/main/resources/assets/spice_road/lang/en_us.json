@@ -70,6 +70,8 @@
     "spice_road.configuration.cultivation.aquaticFlowThrough": "Water Flows Through Aquatic Spices",
     "spice_road.configuration.cultivation.aquaticRequiresWater.tooltip": "Whether Spices that grow in water, like Wasabi, stop growing while they aren't waterlogged. They can still be planted and kept on dry ground either way.",
     "spice_road.configuration.cultivation.aquaticRequiresWater": "Aquatic Spices Need Water",
+    "spice_road.configuration.cultivation.beesPollinateUnripe.tooltip": "Whether bees may collect nectar from Spice plants that aren't ripe yet. When disabled, bees only visit Spice plants, vines and fruiting leaves at their final growth stage.",
+    "spice_road.configuration.cultivation.beesPollinateUnripe": "Bees Pollinate Unripe Spices",
     "spice_road.configuration.cultivation.growthSpeed.common.tooltip": "Growth-speed multiplier for common Spice Plants.",
     "spice_road.configuration.cultivation.growthSpeed.common": "Common",
     "spice_road.configuration.cultivation.growthSpeed.epic.tooltip": "Growth-speed multiplier for epic Spice Plants.",

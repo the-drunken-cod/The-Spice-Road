@@ -9,6 +9,8 @@
     "FlowingFluidMixin",
     "ItemStackMixin",
     "ReloadableServerRegistriesMixin",
+    "bee.BeeMixin",
+    "bee.BeePollinateGoalMixin",
     "flavor.AbstractCookingRecipeMixin",
     "flavor.ShapedRecipeMixin",
     "flavor.ShapelessRecipeMixin",

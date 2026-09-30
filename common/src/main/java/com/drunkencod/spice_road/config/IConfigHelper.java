@@ -145,6 +145,15 @@ public interface IConfigHelper {
     boolean isAquaticSpiceFlowThroughEnabled();
 
     /**
+     * Whether bees treat Spice plants in {@code #minecraft:flowers} as flowers
+     * at any growth stage, instead of only once ripe. Read live whenever a bee
+     * checks a flower.
+     *
+     * @return Whether bees may pollinate unripe Spice plants.
+     */
+    boolean isUnripeSpicePollinationAllowed();
+
+    /**
      * Configured harvest yield multiplier for
      * {@code FLOWER_PATCH}/{@code CROP} Spice Plants. Note: loot table datagen does
      * not call this method directly (a pure {@code runData} pass may run before

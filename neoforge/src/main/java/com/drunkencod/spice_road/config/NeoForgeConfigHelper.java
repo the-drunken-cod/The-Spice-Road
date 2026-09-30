@@ -195,6 +195,11 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean isUnripeSpicePollinationAllowed() {
+        return value(ConfigSchema.CULTIVATION_BEES_POLLINATE_UNRIPE);
+    }
+
+    @Override
     public double getSpicePlantHarvestYieldMultiplier() {
         return value(ConfigSchema.PLANT_HARVEST_YIELD_MULTIPLIER);
     }
