@@ -69,3 +69,7 @@
     - [x] F3 lines don't adjust to what other mods add and end up positioned behind other lines, which mostly obscures them.
 - [x] Right-click harvest tool on any SpiceCrop to roll and drop its harvest loot and set it back to age0.
 - [x] Display flavor contributors at the bottom of the extended tooltip
+- [ ] Make spice plants valid "flowers" for bees
+    - [ ] Only allow bees to pollinate vines and leaves above age 1 and crops above age 3.
+- [ ] Publish built javadoc jar alongside mod releases.
+- [ ] Add desert oasis groves.

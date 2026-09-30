@@ -72,6 +72,13 @@ Warning: may contain outdated information, and is only to be used as a guideline
     - Record how many unique spice types were discovered for 100% purposes.
 12. **Advancements**
     - Set of advancements to help teach game mechanics and for some 100% goals.
+13. **Effects**
+    - Hot (eating something spicy):
+        - Adds an FOV vignette overlay (like when freezing is applied via powder snow).
+        - (maybe?) Impair vision past n blocks by adding a haze effect similar to a tiny render distance.
+        - (maybe?) Potion for pvp?
+    - 
+
 
 <br>
 
