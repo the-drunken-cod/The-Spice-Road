@@ -46,13 +46,16 @@
           "Name": "minecraft:coarse_dirt"
         },
         {
-          "Name": "minecraft:grass_block"
+          "Name": "minecraft:dirt"
         },
         {
-          "Name": "minecraft:rooted_dirt"
+          "Name": "minecraft:gravel"
         },
         {
           "Name": "minecraft:coarse_dirt"
+        },
+        {
+          "Name": "minecraft:dirt"
         }
       ]
     },
