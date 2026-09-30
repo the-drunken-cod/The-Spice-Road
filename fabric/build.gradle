@@ -43,6 +43,7 @@ loom {
             if (project.findProperty('fabric_debug') == 'true') {
                 vmArgs '-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005'
             }
+            vmArgs project.game_jvm_args.split(' ')
         }
         server {
             server()
