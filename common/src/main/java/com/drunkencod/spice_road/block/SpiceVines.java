@@ -85,8 +85,8 @@ public final class SpiceVines {
         Supplier<Item> vineItem = Services.REGISTRY.registerItem(vineId,
                 () -> new SpiceVineItem(block.get(), SpiceVineItem.defaultProperties(spice)));
 
-        ItemModelHelper.addFlatItem(id);
-        ItemModelHelper.addFlatItem(vineId);
+        ItemModelHelper.addFlatItem(id, spice);
+        ItemModelHelper.addFlatItem(vineId, spice);
 
         return new RegisteredSpiceVine(spice, hostTreeFeature, block, vineItem, productItem);
     }

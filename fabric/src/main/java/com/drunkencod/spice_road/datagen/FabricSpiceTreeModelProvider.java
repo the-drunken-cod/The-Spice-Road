@@ -31,6 +31,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.FruitingSpiceLeavesBlock;
 import com.drunkencod.spice_road.block.SpiceTrees;
+import com.drunkencod.spice_road.spice.Spice;
 
 /**
  * Datagens blockstates, block models, and log/leaves item models for every
@@ -57,17 +58,19 @@ public class FabricSpiceTreeModelProvider implements DataProvider {
                 .add(DataProvider.saveStable(cachedOutput, json.get(), modelPathProvider.json(modelLocation)));
 
         SpiceTrees.getRegistered().values().forEach(tree -> {
+            Spice spice = tree.getSpice();
             for (Block log : List.of(tree.getLog().get(), tree.getStrippedLog().get())) {
-                saveBlockState(cachedOutput, futures, log, createLog(log, modelOutput));
-                saveBlockItemModel(log, modelOutput);
+                saveBlockState(cachedOutput, futures, log, createLog(spice, log, modelOutput));
+                saveBlockItemModel(spice, log, modelOutput);
             }
 
             LeavesBlock leaves = tree.getLeaves().get();
-            saveBlockState(cachedOutput, futures, leaves, createLeaves(leaves, modelOutput));
-            saveBlockItemModel(leaves, modelOutput);
+            saveBlockState(cachedOutput, futures, leaves, createLeaves(spice, leaves, modelOutput));
+            saveBlockItemModel(spice, leaves, modelOutput);
 
             Block sapling = tree.getSapling().get();
-            ResourceLocation saplingModel = ModelTemplates.CROSS.create(sapling, TextureMapping.cross(sapling),
+            ResourceLocation saplingPath = SpiceAssetPaths.block(spice, tree.getSaplingId());
+            ResourceLocation saplingModel = ModelTemplates.CROSS.create(saplingPath, TextureMapping.cross(saplingPath),
                     modelOutput);
             saveBlockState(cachedOutput, futures, sapling, MultiVariantGenerator.multiVariant(sapling,
                     Variant.variant().with(VariantProperties.MODEL, saplingModel)));
@@ -77,11 +80,14 @@ public class FabricSpiceTreeModelProvider implements DataProvider {
     }
 
     /** Mirrors vanilla's axis-rotated log blockstate with a horizontal model variant. */
-    private static BlockStateGenerator createLog(Block log,
+    private static BlockStateGenerator createLog(Spice spice, Block log,
             BiConsumer<ResourceLocation, Supplier<JsonElement>> modelOutput) {
-        TextureMapping textures = TextureMapping.logColumn(log);
-        ResourceLocation vertical = ModelTemplates.CUBE_COLUMN.create(log, textures, modelOutput);
-        ResourceLocation horizontal = ModelTemplates.CUBE_COLUMN_HORIZONTAL.create(log, textures, modelOutput);
+        String id = idOf(log);
+        ResourceLocation side = SpiceAssetPaths.block(spice, id);
+        TextureMapping textures = TextureMapping.column(side, SpiceAssetPaths.block(spice, id + "_top"));
+        ResourceLocation vertical = ModelTemplates.CUBE_COLUMN.create(side, textures, modelOutput);
+        ResourceLocation horizontal = ModelTemplates.CUBE_COLUMN_HORIZONTAL
+                .create(SpiceAssetPaths.block(spice, id + "_horizontal"), textures, modelOutput);
 
         return MultiVariantGenerator.multiVariant(log).with(PropertyDispatch.property(BlockStateProperties.AXIS)
                 .select(Direction.Axis.Y, Variant.variant().with(VariantProperties.MODEL, vertical))
@@ -94,31 +100,38 @@ public class FabricSpiceTreeModelProvider implements DataProvider {
 
     /**
      * Plain leaves get a single {@code minecraft:block/leaves} model; fruiting
-     * leaves get one per stage, using {@code block/<id>_stage<n>} for stages
-     * above 0.
+     * leaves get one per stage, using {@code block/<spice>/<id>_stage<n>} for
+     * stages above 0.
      */
-    private static BlockStateGenerator createLeaves(LeavesBlock leaves,
+    private static BlockStateGenerator createLeaves(Spice spice, LeavesBlock leaves,
             BiConsumer<ResourceLocation, Supplier<JsonElement>> modelOutput) {
+        String id = idOf(leaves);
         if (!(leaves instanceof FruitingSpiceLeavesBlock)) {
-            ResourceLocation model = ModelTemplates.LEAVES.create(leaves, TextureMapping.cube(leaves), modelOutput);
+            ResourceLocation path = SpiceAssetPaths.block(spice, id);
+            ResourceLocation model = ModelTemplates.LEAVES.create(path, TextureMapping.cube(path), modelOutput);
             return MultiVariantGenerator.multiVariant(leaves, Variant.variant().with(VariantProperties.MODEL, model));
         }
 
         ResourceLocation[] stageModels = new ResourceLocation[Constants.SPICE_TREE_LEAF_GROWTH_STAGES + 1];
         for (int age = 0; age < stageModels.length; age++) {
-            String suffix = age == 0 ? "" : "_stage" + age;
-            stageModels[age] = ModelTemplates.LEAVES.createWithSuffix(leaves, suffix,
-                    TextureMapping.cube(TextureMapping.getBlockTexture(leaves, suffix)), modelOutput);
+            ResourceLocation path = SpiceAssetPaths.block(spice, age == 0 ? id : id + "_stage" + age);
+            stageModels[age] = ModelTemplates.LEAVES.create(path, TextureMapping.cube(path), modelOutput);
         }
         return MultiVariantGenerator.multiVariant(leaves).with(PropertyDispatch.property(FruitingSpiceLeavesBlock.AGE)
                 .generate(age -> Variant.variant().with(VariantProperties.MODEL, stageModels[age])));
     }
 
-    private static void saveBlockItemModel(Block block,
+    /** Writes {@code block}'s item model, which stays flat under {@code item/} and inherits its block model. */
+    private static void saveBlockItemModel(Spice spice, Block block,
             BiConsumer<ResourceLocation, Supplier<JsonElement>> modelOutput) {
         JsonObject itemModel = new JsonObject();
-        itemModel.addProperty("parent", ModelLocationUtils.getModelLocation(block).toString());
+        itemModel.addProperty("parent", SpiceAssetPaths.block(spice, idOf(block)).toString());
         modelOutput.accept(ModelLocationUtils.getModelLocation(block.asItem()), () -> itemModel);
+    }
+
+    /** @return {@code block}'s registry path, e.g. {@code cinnamon_log}. */
+    private static String idOf(Block block) {
+        return BuiltInRegistries.BLOCK.getKey(block).getPath();
     }
 
     private void saveBlockState(CachedOutput cachedOutput, List<CompletableFuture<?>> futures, Block block,

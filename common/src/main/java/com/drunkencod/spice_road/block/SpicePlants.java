@@ -112,8 +112,8 @@ public final class SpicePlants {
                 () -> new SpiceSeedItem(block.get(), SpiceSeedItem.defaultProperties(spice)));
         seedItemHolder[0] = seedItem;
 
-        ItemModelHelper.addFlatItem(id);
-        ItemModelHelper.addFlatItem(seedId);
+        ItemModelHelper.addFlatItem(id, spice);
+        ItemModelHelper.addFlatItem(seedId, spice);
 
         return new RegisteredSpicePlant(spice, block, worldgenBlock, seedItem, productItem);
     }

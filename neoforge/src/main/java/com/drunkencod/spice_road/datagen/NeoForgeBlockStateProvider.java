@@ -11,12 +11,14 @@ import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.block.SpiceVineBlock;
 import com.drunkencod.spice_road.block.SpiceVines;
 import com.drunkencod.spice_road.spice.SourceType;
+import com.drunkencod.spice_road.spice.Spice;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.VineBlock;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
@@ -65,9 +67,9 @@ public class NeoForgeBlockStateProvider extends BlockStateProvider {
                     : mcLoc("block/crop");
             ModelFile[] stageModels = new ModelFile[maxAge + 1];
             for (int age = 0; age <= maxAge; age++) {
-                String stageId = id.getPath() + "_stage" + age;
-                stageModels[age] = models().withExistingParent(stageId, parent)
-                        .texture("crop", modLoc("block/" + stageId))
+                ResourceLocation stage = SpiceAssetPaths.block(plant.spice(), id.getPath() + "_stage" + age);
+                stageModels[age] = models().withExistingParent(stage.toString(), parent)
+                        .texture("crop", stage)
                         .renderType("minecraft:cutout");
             }
 
@@ -77,23 +79,23 @@ public class NeoForgeBlockStateProvider extends BlockStateProvider {
         });
 
         SpiceTrees.getRegistered().values().forEach(this::registerSpiceTree);
-        SpiceVines.getRegistered().values().forEach(vine -> registerSpiceVine(vine.block().get()));
+        SpiceVines.getRegistered().values().forEach(vine -> registerSpiceVine(vine.spice(), vine.block().get()));
     }
 
     /**
      * Mirrors vanilla's multipart vine blockstate, with one
      * {@code minecraft:block/vine}-parented model per ripening stage
-     * ({@code block/<id>_stage<n>}). The vine item's flat model is generated
-     * through {@code ItemModelHelper}.
+     * ({@code block/<spice>/<id>_stage<n>}). The vine item's flat model is
+     * generated through {@code ItemModelHelper}.
      */
-    private void registerSpiceVine(SpiceVineBlock vine) {
+    private void registerSpiceVine(Spice spice, SpiceVineBlock vine) {
         String id = BuiltInRegistries.BLOCK.getKey(vine).getPath();
         MultiPartBlockStateBuilder builder = getMultipartBuilder(vine);
         for (int age = 0; age <= Constants.SPICE_VINE_GROWTH_STAGES; age++) {
-            String stageId = id + "_stage" + age;
-            ModelFile model = models().withExistingParent(stageId, "block/vine")
-                    .texture("vine", modLoc("block/" + stageId))
-                    .texture("particle", modLoc("block/" + stageId))
+            ResourceLocation stage = SpiceAssetPaths.block(spice, id + "_stage" + age);
+            ModelFile model = models().withExistingParent(stage.toString(), "block/vine")
+                    .texture("vine", stage)
+                    .texture("particle", stage)
                     .renderType("minecraft:cutout");
 
             for (Map.Entry<Direction, BooleanProperty> face : VineBlock.PROPERTY_BY_DIRECTION.entrySet()) {
@@ -125,16 +127,18 @@ public class NeoForgeBlockStateProvider extends BlockStateProvider {
 
     /**
      * Log/stripped log: vanilla-style axis-rotated columns
-     * ({@code block/<id>} sides, {@code block/<id>_top} ends). Leaves:
-     * {@code minecraft:block/leaves} with {@code block/<id>} (no biome tint),
-     * one model per fruiting stage for {@link FruitingSpiceLeavesBlock}
-     * ({@code block/<id>_stage<n>} for stages above 0). Sapling: cross model.
-     * Log and leaves items use their block model; the sapling's flat item model
-     * is generated through {@code ItemModelHelper}.
+     * ({@code block/<spice>/<id>} sides, {@code block/<spice>/<id>_top} ends).
+     * Leaves: {@code minecraft:block/leaves} with {@code block/<spice>/<id>}
+     * (no biome tint), one model per fruiting stage for
+     * {@link FruitingSpiceLeavesBlock} ({@code block/<spice>/<id>_stage<n>}
+     * for stages above 0). Sapling: cross model. Log and leaves items use
+     * their block model; the sapling's flat item model is generated through
+     * {@code ItemModelHelper}.
      */
     private void registerSpiceTree(SpiceTree tree) {
-        logBlock(tree.getLog().get());
-        logBlock(tree.getStrippedLog().get());
+        Spice spice = tree.getSpice();
+        spiceLogBlock(spice, tree.getLog().get(), tree.getLogId());
+        spiceLogBlock(spice, tree.getStrippedLog().get(), tree.getStrippedLogId());
 
         LeavesBlock leaves = tree.getLeaves().get();
         String leavesId = tree.getLeavesId();
@@ -142,25 +146,34 @@ public class NeoForgeBlockStateProvider extends BlockStateProvider {
             ModelFile[] stageModels = new ModelFile[Constants.SPICE_TREE_LEAF_GROWTH_STAGES + 1];
             for (int age = 0; age < stageModels.length; age++) {
                 String modelId = age == 0 ? leavesId : leavesId + "_stage" + age;
-                stageModels[age] = leavesModel(modelId);
+                stageModels[age] = leavesModel(SpiceAssetPaths.block(spice, modelId));
             }
             getVariantBuilder(leaves).forAllStates(state -> ConfiguredModel.builder()
                     .modelFile(stageModels[state.getValue(FruitingSpiceLeavesBlock.AGE)])
                     .build());
         } else {
-            simpleBlock(leaves, leavesModel(leavesId));
+            simpleBlock(leaves, leavesModel(SpiceAssetPaths.block(spice, leavesId)));
         }
 
-        simpleBlock(tree.getSapling().get(), models().cross(tree.getSaplingId(), modLoc("block/" + tree.getSaplingId()))
+        ResourceLocation sapling = SpiceAssetPaths.block(spice, tree.getSaplingId());
+        simpleBlock(tree.getSapling().get(), models().cross(sapling.toString(), sapling)
                 .renderType("minecraft:cutout"));
 
         for (String itemId : new String[] { tree.getLogId(), tree.getStrippedLogId(), leavesId })
-            itemModels().withExistingParent(itemId, modLoc("block/" + itemId));
+            itemModels().withExistingParent(itemId, SpiceAssetPaths.block(spice, itemId));
     }
 
-    private ModelFile leavesModel(String modelId) {
-        return models().withExistingParent(modelId, "block/leaves")
-                .texture("all", modLoc("block/" + modelId))
+    /** Equivalent of {@code logBlock}, with models and textures in {@code spice}'s folder. */
+    private void spiceLogBlock(Spice spice, RotatedPillarBlock log, String id) {
+        ResourceLocation side = SpiceAssetPaths.block(spice, id);
+        ResourceLocation end = SpiceAssetPaths.block(spice, id + "_top");
+        axisBlock(log, models().cubeColumn(side.toString(), side, end),
+                models().cubeColumnHorizontal(side + "_horizontal", side, end));
+    }
+
+    private ModelFile leavesModel(ResourceLocation path) {
+        return models().withExistingParent(path.toString(), "block/leaves")
+                .texture("all", path)
                 .renderType("minecraft:cutout_mipped");
     }
 }

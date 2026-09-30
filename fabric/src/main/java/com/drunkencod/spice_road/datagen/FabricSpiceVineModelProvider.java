@@ -17,8 +17,6 @@ import net.minecraft.data.models.blockstates.Condition;
 import net.minecraft.data.models.blockstates.MultiPartGenerator;
 import net.minecraft.data.models.blockstates.Variant;
 import net.minecraft.data.models.blockstates.VariantProperties;
-import net.minecraft.data.models.model.ModelLocationUtils;
-import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.VineBlock;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -59,11 +57,10 @@ public class FabricSpiceVineModelProvider implements DataProvider {
             SpiceVineBlock vine = registered.block().get();
             MultiPartGenerator blockState = MultiPartGenerator.multiPart(vine);
 
+            String vineId = BuiltInRegistries.BLOCK.getKey(vine).getPath();
             for (int age = 0; age <= Constants.SPICE_VINE_GROWTH_STAGES; age++) {
-                String suffix = "_stage" + age;
-                ResourceLocation model = ModelLocationUtils.getModelLocation(vine, suffix);
-                futures.add(DataProvider.saveStable(cachedOutput,
-                        createStageModel(TextureMapping.getBlockTexture(vine, suffix)),
+                ResourceLocation model = SpiceAssetPaths.block(registered.spice(), vineId + "_stage" + age);
+                futures.add(DataProvider.saveStable(cachedOutput, createStageModel(model),
                         modelPathProvider.json(model)));
 
                 for (Map.Entry<Direction, BooleanProperty> face : VineBlock.PROPERTY_BY_DIRECTION.entrySet()) {

@@ -101,8 +101,8 @@ public final class SpiceTree {
         this.saplingItem = Services.REGISTRY.registerItem(getSaplingId(),
                 () -> new SpiceSaplingItem(sapling.get(), SpiceSaplingItem.defaultProperties(spice)));
 
-        ItemModelHelper.addFlatItem(id);
-        ItemModelHelper.addFlatItem(getSaplingId());
+        ItemModelHelper.addFlatItem(id, spice);
+        ItemModelHelper.addFlatItem(getSaplingId(), spice);
     }
 
     private static Supplier<Item> registerBlockItem(String id, Supplier<? extends Block> block) {

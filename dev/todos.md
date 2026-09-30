@@ -69,10 +69,13 @@
     - [x] F3 lines don't adjust to what other mods add and end up positioned behind other lines, which mostly obscures them.
 - [x] Right-click harvest tool on any SpiceCrop to roll and drop its harvest loot and set it back to age0.
 - [x] Display flavor contributors at the bottom of the extended tooltip
-- [ ] Make spice plants valid "flowers" for bees
-    - [ ] Only allow bees to pollinate vines and leaves above age 1 and crops above age 3.
+- [ ] Make all spice plants valid "flowers" for bees
+    - [ ] (investigate first) Only allow bees to pollinate vines and leaves above age 1 and crops above age 3.
+- [ ] Add desert, badlands, etc. oasis groves.
+    - Move non-dirt blocks from being suitable ground for all spices to just for water-based plants.
+    - Make groves spawn a lake in biomes with unsuitable ground, just like wasabi already does.
+        - There should be different variants of groves depending on the biome (badlands, desert, rocky beach/stony and gravelly mountain biomes), with biome appropriate foliage.
+- [ ] Rework "dried" spices to instead be called "processed" and to be more independent of raw spices.
+    - Recipes to turn raw into processed spices should usually involve the drying rack, but could theoretically be done with other processes like soaking, smoking, cutting, etc. in the future.
+- [ ] Rework assets like textures and models to be separated into folders per spice (e.g. `textures/block/cinnamon/stripped_cinnamon_log.png`)
 - [ ] Publish built javadoc jar alongside mod releases.
-- [ ] Add desert oasis groves.
-- [ ] Rework "dried" spices to instead be called "processed" and to be more independent of spices.
-    - [ ] Recipes to turn raw into processed spices should usually involve the drying rack, but could theoretically be done with other processes like soaking, smoking, cutting, etc. in the future.
-- [ ] Rework textures to be separated into folders per spice (e.g. `textures/block/cinnamon/stripped_cinnamon_log.png`)

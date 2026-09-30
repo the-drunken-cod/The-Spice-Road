@@ -1,5 +1,7 @@
 package com.drunkencod.spice_road.datagen;
 
+import java.util.Map;
+
 import com.drunkencod.spice_road.Constants;
 
 import net.minecraft.data.PackOutput;
@@ -9,7 +11,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 /**
  * Datagens flat {@code minecraft:item/generated} item models for every item
- * queued via {@link ItemModelHelper#addFlatItem(String)}. See
+ * queued via {@link ItemModelHelper#addFlatItem}. See
  * {@code FabricItemModelProvider} for the Fabric counterpart.
  */
 public class NeoForgeItemModelProvider extends ItemModelProvider {
@@ -20,9 +22,9 @@ public class NeoForgeItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        for (String id : ItemModelHelper.getFlatItemIds()) {
-            withExistingParent(id, ResourceLocation.withDefaultNamespace("item/generated"))
-                    .texture("layer0", modLoc("item/" + id));
+        for (Map.Entry<String, ResourceLocation> item : ItemModelHelper.getFlatItems().entrySet()) {
+            withExistingParent(item.getKey(), ResourceLocation.withDefaultNamespace("item/generated"))
+                    .texture("layer0", item.getValue());
         }
     }
 }

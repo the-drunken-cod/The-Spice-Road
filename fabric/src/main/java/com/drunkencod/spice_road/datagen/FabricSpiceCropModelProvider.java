@@ -81,10 +81,10 @@ public class FabricSpiceCropModelProvider implements DataProvider {
                     ? RHIZOME
                     : ModelTemplates.CROP;
             Map<Integer, ResourceLocation> stageModels = new HashMap<>();
+            String blockId = BuiltInRegistries.BLOCK.getKey(block).getPath();
             for (int age = 0; age <= maxAge; age++) {
-                String suffix = "_stage" + age;
-                ResourceLocation model = template.createWithSuffix(
-                        block, suffix, TextureMapping.crop(TextureMapping.getBlockTexture(block, suffix)),
+                ResourceLocation stage = SpiceAssetPaths.block(plant.spice(), blockId + "_stage" + age);
+                ResourceLocation model = template.create(stage, TextureMapping.crop(stage),
                         (modelLocation, jsonSupplier) -> futures.add(DataProvider.saveStable(
                                 cachedOutput, jsonSupplier.get(), modelPathProvider.json(modelLocation))));
                 stageModels.put(age, model);

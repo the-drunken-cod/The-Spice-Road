@@ -39,7 +39,7 @@ public class SpiceRoadAdvancements implements AdvancementSubProvider {
                         Component.translatable("advancements.spice_road.root.title"),
                         Component.translatable("advancements.spice_road.root.description"),
                         ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID,
-                                "textures/block/stripped_cinnamon_log.png"),
+                                "textures/block/cinnamon/stripped_cinnamon_log.png"),
                         AdvancementType.TASK, false, false, true)
                 .addCriterion("tick", PlayerTrigger.TriggerInstance.tick())
                 .build(ROOT_ID);
