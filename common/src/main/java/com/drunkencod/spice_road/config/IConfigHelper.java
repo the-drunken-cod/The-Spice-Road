@@ -48,6 +48,18 @@ public interface IConfigHelper {
     double getSpiceRegionClusteringStrength();
 
     /**
+     * Chance of a Spice Region being a Spiceless Region, containing no Spices
+     * at all. See
+     * {@code com.drunkencod.spice_road.spice.region.SpiceRegionResolver#isSpiceless}.
+     * <p>
+     * <b>Affects world generation:</b> changing it turns more regions
+     * spiceless or restores some, including in already generated chunks.
+     *
+     * @return The configured chance, from {@code 0.0} to {@code 1.0}.
+     */
+    double getSpiceRegionSpicelessChance();
+
+    /**
      * Base pick weight of a Spice of {@code tier} when a Spice Region resolves
      * its Spice, before {@link #getSpiceRegionClusteringStrength()} is applied
      * as an exponent. Higher weights make that tier's Spices more common.

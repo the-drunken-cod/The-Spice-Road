@@ -75,6 +75,10 @@ public final class ConfigSchema {
     public static final ConfigOption<Double> REGION_CLUSTERING_STRENGTH = add(ConfigOption.ofDouble(REGION,
             "clusteringStrength", () -> Services.PLATFORM.isDedicatedServer() ? 1.75 : 0.8, 0.0, 10.0));
 
+    /** Chance of a Spice Region containing no Spices at all. */
+    public static final ConfigOption<Double> REGION_SPICELESS_CHANCE = add(
+            ConfigOption.ofDouble(REGION, "spicelessChance", 0.25, 0.0, 1.0).restart(ConfigOption.Restart.WORLD));
+
     /**
      * Base pick weight per {@link Tier} when a Spice Region resolves its Spice,
      * before the clustering strength is applied.

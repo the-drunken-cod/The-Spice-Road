@@ -145,6 +145,11 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public double getSpiceRegionSpicelessChance() {
+        return value(ConfigSchema.REGION_SPICELESS_CHANCE);
+    }
+
+    @Override
     public double getSpiceRegionTierWeight(Tier tier) {
         return value(ConfigSchema.REGION_TIER_WEIGHT.get(tier));
     }

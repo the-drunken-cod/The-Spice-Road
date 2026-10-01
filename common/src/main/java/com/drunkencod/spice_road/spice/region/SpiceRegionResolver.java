@@ -57,6 +57,9 @@ public final class SpiceRegionResolver {
      */
     private static final long CLIMATE_PICK_TAG = 0xC2B2AE3D27D4EB4FL;
 
+    /** Distinguishes a cell's spiceless roll from other uses of its seed. */
+    private static final long SPICELESS_TAG = 0x165667B19E3779F9L;
+
     /**
      * Resolves the {@link SpiceCell} a world position falls into.
      * <p>
@@ -144,6 +147,21 @@ public final class SpiceRegionResolver {
     }
 
     /**
+     * Checks whether {@code cell} is a Spiceless Region, containing no Spices in
+     * any {@link Climate}. Each cell has one stable roll derived from its seed,
+     * compared against the configured chance, so raising the chance only turns
+     * additional cells spiceless and never reshuffles the others.
+     *
+     * @param cell The {@link SpiceCell} to check.
+     * @return Whether {@code cell} is spiceless. Configurable, see
+     *         {@code IConfigHelper#getSpiceRegionSpicelessChance()}.
+     */
+    public static boolean isSpiceless(SpiceCell cell) {
+        double roll = SeededHash.toUnitDouble(SeededHash.mix64(cell.seed() ^ SPICELESS_TAG));
+        return roll < Services.CONFIG.getSpiceRegionSpicelessChance();
+    }
+
+    /**
      * Deterministically picks one {@link Spice} from {@code climate}'s
      * Climate Bucket for {@code cell}, weighted so rarer {@link Tier}s occur
      * less often across cells.
@@ -172,10 +190,14 @@ public final class SpiceRegionResolver {
      *                           Tier weight; see the design note above.
      *                           Configurable, see
      *                           {@code IConfigHelper#getSpiceRegionClusteringStrength()}.
-     * @return The resolved {@link Spice}, or empty if no {@link Spice}
-     *         belongs to {@code climate}'s Climate Bucket.
+     * @return The resolved {@link Spice}, or empty if {@code cell} is
+     *         {@linkplain #isSpiceless spiceless} or no {@link Spice} belongs to
+     *         {@code climate}'s Climate Bucket.
      */
     public static Optional<Spice> resolveSpice(SpiceCell cell, Climate climate, double clusteringStrength) {
+        if (isSpiceless(cell))
+            return Optional.empty();
+
         List<Spice> bucket = CLIMATE_BUCKETS.getOrDefault(climate, List.of());
         if (bucket.isEmpty())
             return Optional.empty();
@@ -228,6 +250,6 @@ public final class SpiceRegionResolver {
             Climate climate, int x, int z) {
         SpiceCell cell = resolveCell(worldSeed, salt, cellScale, x, z);
         Optional<Spice> spice = resolveSpice(cell, climate, clusteringStrength);
-        return new SpiceRegionResult(cell, climate, spice);
+        return new SpiceRegionResult(cell, climate, spice, isSpiceless(cell));
     }
 }

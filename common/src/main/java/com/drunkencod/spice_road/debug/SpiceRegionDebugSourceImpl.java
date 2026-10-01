@@ -72,7 +72,8 @@ public class SpiceRegionDebugSourceImpl implements SpiceRegionDebugSource {
                 Math.round(result.cell().centerX()) + ", " + Math.round(result.cell().centerZ())
                         + " (" + describeOffset(dx, dz) + ")"));
         lines.add(new SpiceRegionDebugInfo.Line("Resolved Spice",
-                result.spice().map(Enum::name).orElse("none (empty Climate Bucket)")));
+                result.spice().map(Enum::name)
+                        .orElse(result.spiceless() ? "NONE (spiceless region)" : "NONE (empty Climate Bucket)")));
         return new SpiceRegionDebugInfo(lines);
     }
 
