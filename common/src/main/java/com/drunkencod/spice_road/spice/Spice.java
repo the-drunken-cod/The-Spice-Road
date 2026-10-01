@@ -51,7 +51,7 @@ public enum Spice implements StringRepresentable {
             Season.SPRING, Season.SUMMER),
     CLOVE("clove", SourceType.TREE, HarvestAction.SHEAR, Climate.TROPICAL, 5, true, false, 1, false,
             Season.SUMMER, Season.AUTUMN),
-    CURRY_LEAF("curry_leaf", SourceType.TREE, HarvestAction.SHEAR, Climate.TROPICAL, 2, true, false, 2, false,
+    CURRY("curry", SourceType.TREE, HarvestAction.SHEAR, Climate.TROPICAL, 2, true, false, 2, false,
             Season.SPRING, Season.SUMMER),
     MASTIC("mastic", SourceType.TREE, HarvestAction.STRIP, Climate.ARID, 4, false, false, 1, false,
             Season.SUMMER),

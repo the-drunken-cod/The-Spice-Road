@@ -86,3 +86,6 @@
 - [ ] Max amount of spice applications for spices of the same type:
     - Configurable value, default 3. When applying the same spice for the 4th time, no values are applied from it. The upcoming spice grinder should stop allowing to add players to add spices past this number.
     - Update flavor_contributors tooltip to list spices with amounts (e.g. `3x Cinnamon, 2x Nutmeg, Cloves`), sorted by amount, then alphabetically (respecting translations). Use templates for the translations, e.g. `%sx %s`.
+- [ ] Investigate errors:
+    - [ ] [Server thread/INFO] [SeedRenderer/]: Seed Renderer could not grow a spice_road:spice_plant in memory (java.lang.ClassCastException: Cannot cast java.lang.Integer to java.lang.Long at java.base/java.lang.Class.cast(Class.java:3492)); it is drawn from its definition instead
+    - [ ] [main/WARN] [mixin/]: Reference map 'spice_road.refmap.json' for spice_road.mixins.json could not be read. If this is a development environment you can ignore this message
