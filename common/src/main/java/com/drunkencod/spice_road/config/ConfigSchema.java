@@ -81,7 +81,7 @@ public final class ConfigSchema {
      * before the clustering strength is applied.
      */
     public static final Map<Tier, ConfigOption<Double>> REGION_TIER_WEIGHT = perTier(REGION_TIER_WEIGHTS, 4.0, 3.0,
-            2.0, 1.5, 0.0, 100.0);
+            2.0, 1.25, 0.0, 100.0);
 
     // #region Spice Map
 
@@ -176,11 +176,11 @@ public final class ConfigSchema {
 
     /** Lower bound of the per-axis multipliers applied when cooking. */
     public static final ConfigOption<Double> COOKING_VARIANCE_MIN = add(
-            ConfigOption.ofDouble(COOKING, "varianceMin", 0.85, 0.0, 10.0));
+            ConfigOption.ofDouble(COOKING, "varianceMin", 0.95, 0.0, 10.0));
 
     /** Upper bound of the per-axis multipliers applied when cooking. */
     public static final ConfigOption<Double> COOKING_VARIANCE_MAX = add(
-            ConfigOption.ofDouble(COOKING, "varianceMax", 1.15, 0.0, 10.0));
+            ConfigOption.ofDouble(COOKING, "varianceMax", 1.25, 0.0, 10.0));
 
     // #region Tooltip
 

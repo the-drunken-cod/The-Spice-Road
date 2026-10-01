@@ -58,7 +58,7 @@
     "itemGroup.spice_road.spices": "Spice Road Crops",
     "spice_road.configuration.compat.sneakToPlaceFlavoredFood.tooltip": "Whether placing a food item carrying a Spice Profile override as a block that isn't a Block Entity (e.g. a Farmer's Delight-style placeable food) requires sneaking, so it isn't silently voided by an accidental right-click. Disable to place such items without sneaking, like vanilla.",
     "spice_road.configuration.compat.sneakToPlaceFlavoredFood": "Sneak to Place Flavored Food",
-    "spice_road.configuration.compat.tooltip": "Behavior around other mods' placeable food items.",
+    "spice_road.configuration.compat.tooltip": "Customize behavior when used with other mods.",
     "spice_road.configuration.compat": "Compatibility",
     "spice_road.configuration.cooking.tooltip": "How cooking alters the flavor an ingredient passes on.",
     "spice_road.configuration.cooking.varianceMax.tooltip": "Upper bound of the per-flavor multipliers applied to inherited flavor when cooking.",
