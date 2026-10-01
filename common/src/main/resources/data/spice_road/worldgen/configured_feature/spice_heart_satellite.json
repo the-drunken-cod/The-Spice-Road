@@ -8,6 +8,12 @@
       "default": 1,
       "spacing": 4
     },
-    "aquatic_pond": "spice_road:spice_heart_satellite_pond"
+    "aquatic_pond": "spice_road:spice_heart_satellite_pond",
+    "aquatic_pond_rules": [
+      {
+        "biomes": "#spice_road:hilly",
+        "pond": "spice_road:spice_heart_pond_hilly"
+      }
+    ]
   }
 }

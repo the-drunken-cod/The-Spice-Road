@@ -99,6 +99,11 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public double getSpiceRegionTierWeight(Tier tier) {
+        return value(ConfigSchema.REGION_TIER_WEIGHT.get(tier), server().region.tierWeights.of(tier));
+    }
+
+    @Override
     public int getSpiceMapSearchRadiusCells() {
         return value(ConfigSchema.SPICE_MAP_SEARCH_RADIUS_CELLS, server().spiceMap.searchRadiusCells);
     }
@@ -354,6 +359,8 @@ public class FabricConfigHelper implements IConfigHelper {
             public long salt = ConfigSchema.REGION_SALT.getDefault();
             @ConfigEntry.Gui.Tooltip
             public double clusteringStrength = ConfigSchema.REGION_CLUSTERING_STRENGTH.getDefault();
+            @ConfigEntry.Gui.CollapsibleObject
+            public PerTier tierWeights = PerTier.of(ConfigSchema.REGION_TIER_WEIGHT);
         }
 
         /** Finding Spice Regions, and the maps that point to them. */

@@ -19,6 +19,12 @@
       ]
     },
     "aquatic_pond": "spice_road:spice_heart_pond",
+    "aquatic_pond_rules": [
+      {
+        "biomes": "#spice_road:hilly",
+        "pond": "spice_road:spice_heart_pond_hilly"
+      }
+    ],
     "oasis": {
       "min_growable_ground": 0.5,
       "rules": [

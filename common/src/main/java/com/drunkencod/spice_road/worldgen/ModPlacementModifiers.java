@@ -20,6 +20,10 @@ public final class ModPlacementModifiers {
             Services.REGISTRY.registerPlacementModifierType("near_region_heart",
                     () -> () -> RegionHeartProximityPlacement.CODEC);
 
+    /** {@code spice_road:biome_tag} - see {@link BiomeTagPlacement}. */
+    public static final Supplier<PlacementModifierType<BiomeTagPlacement>> BIOME_TAG = Services.REGISTRY
+            .registerPlacementModifierType("biome_tag", () -> () -> BiomeTagPlacement.CODEC);
+
     private ModPlacementModifiers() {
     }
 

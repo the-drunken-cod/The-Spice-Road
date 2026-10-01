@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Climate;
 import com.drunkencod.spice_road.spice.Spice;
 import com.drunkencod.spice_road.spice.Tier;
@@ -38,19 +39,6 @@ public final class SpiceRegionResolver {
 
     private SpiceRegionResolver() {
     }
-
-    /**
-     * Base pick weight per {@link Tier}, before {@code clusteringStrength} is
-     * applied. Halves per rarity step (COMMON is 8x as likely as EPIC before
-     * clustering is applied) - hopefully an intuitive loot-weighting
-     * curve, not itself the tier-spacing mechanism (see
-     * {@link #resolveSpice(SpiceCell, Climate, double)}'s design note).
-     */
-    private static final Map<Tier, Double> BASE_TIER_WEIGHT = Map.of(
-            Tier.COMMON, 8.0,
-            Tier.UNCOMMON, 4.0,
-            Tier.RARE, 2.0,
-            Tier.EPIC, 1.0);
 
     /**
      * All {@link Spice}s grouped by {@link Climate}, i.e. the Climate
@@ -197,9 +185,15 @@ public final class SpiceRegionResolver {
         double[] weights = new double[bucket.size()];
         double totalWeight = 0;
         for (int i = 0; i < bucket.size(); i++) {
-            double weight = Math.pow(BASE_TIER_WEIGHT.get(bucket.get(i).getTier()), clusteringStrength);
+            double weight = Math.pow(Services.CONFIG.getSpiceRegionTierWeight(bucket.get(i).getTier()),
+                    clusteringStrength);
             weights[i] = weight;
             totalWeight += weight;
+        }
+        if (totalWeight <= 0) {
+            // Every tier in this bucket is weighted zero: pick uniformly instead.
+            Arrays.fill(weights, 1.0);
+            totalWeight = weights.length;
         }
 
         double roll = SeededHash.toUnitDouble(pickSeed) * totalWeight;

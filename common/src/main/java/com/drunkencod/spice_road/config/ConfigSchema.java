@@ -30,6 +30,8 @@ public final class ConfigSchema {
 
     /** Spice Region layout and identity. */
     public static final ConfigSection REGION = ConfigSection.root(ConfigFile.SERVER, "region");
+    /** Per-tier pick weights of Spices within a Region. */
+    public static final ConfigSection REGION_TIER_WEIGHTS = REGION.child("tierWeights");
     /** Finding Spice Regions, and the maps that point at them. */
     public static final ConfigSection SPICE_MAP = ConfigSection.root(ConfigFile.SERVER, "spiceMap");
     /** Cartographer Spice Map offers. */
@@ -73,6 +75,13 @@ public final class ConfigSchema {
     /** How strongly Region generation favors common Spices over rarer ones. */
     public static final ConfigOption<Double> REGION_CLUSTERING_STRENGTH = add(ConfigOption.ofDouble(REGION,
             "clusteringStrength", () -> Services.PLATFORM.isDedicatedServer() ? 1.75 : 1.0, 0.0, 10.0));
+
+    /**
+     * Base pick weight per {@link Tier} when a Spice Region resolves its Spice,
+     * before the clustering strength is applied.
+     */
+    public static final Map<Tier, ConfigOption<Double>> REGION_TIER_WEIGHT = perTier(REGION_TIER_WEIGHTS, 4.0, 3.0,
+            2.0, 1.5, 0.0, 100.0);
 
     // #region Spice Map
 

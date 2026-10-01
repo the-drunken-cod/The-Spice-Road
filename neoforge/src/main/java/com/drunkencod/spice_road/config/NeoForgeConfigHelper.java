@@ -145,6 +145,11 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public double getSpiceRegionTierWeight(Tier tier) {
+        return value(ConfigSchema.REGION_TIER_WEIGHT.get(tier));
+    }
+
+    @Override
     public int getSpiceMapSearchRadiusCells() {
         return value(ConfigSchema.SPICE_MAP_SEARCH_RADIUS_CELLS);
     }

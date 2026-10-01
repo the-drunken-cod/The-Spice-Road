@@ -120,7 +120,7 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
             FeaturePlaceContext<SpicePlantConfiguration> context, Spice spice, BlockPos originSurface) {
         SpicePlantConfiguration config = context.config();
         if (spice.isAquatic())
-            return config.aquaticPond();
+            return config.aquaticPondFor(context.level().getBiome(originSurface));
 
         WorldGenLevel level = context.level();
         return config.oasis()

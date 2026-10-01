@@ -48,6 +48,19 @@ public interface IConfigHelper {
     double getSpiceRegionClusteringStrength();
 
     /**
+     * Base pick weight of a Spice of {@code tier} when a Spice Region resolves
+     * its Spice, before {@link #getSpiceRegionClusteringStrength()} is applied
+     * as an exponent. Higher weights make that tier's Spices more common.
+     * <p>
+     * <b>Affects world generation:</b> changing it reshuffles which Spice
+     * grows where, including in already generated chunks.
+     *
+     * @param tier The tier of the Spice being weighed.
+     * @return The configured weight.
+     */
+    double getSpiceRegionTierWeight(Tier tier);
+
+    /**
      * Maximum distance, in Spice Region cells, searched for a Region Heart by
      * {@code /locate spice}, {@code /locate spice_climate}, and by Spice Map
      * loot. Measured in cells so changing {@link #getSpiceRegionCellScale()}

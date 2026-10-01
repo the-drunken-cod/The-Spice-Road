@@ -1,9 +1,9 @@
 {
   "feature": "spice_road:spice_heart_satellite",
   "placement": [
-    { "type": "spice_road:biome_tag", "tag": "#spice_road:hilly", "invert": true },
+    { "type": "spice_road:biome_tag", "tag": "#spice_road:hilly" },
     { "type": "minecraft:in_square" },
-    { "type": "spice_road:near_region_heart", "max_distance": 80, "chance": 3 },
+    { "type": "spice_road:near_region_heart", "max_distance": 48, "chance": 1 },
     { "type": "minecraft:heightmap", "heightmap": "WORLD_SURFACE_WG" },
     { "type": "minecraft:biome" }
   ]

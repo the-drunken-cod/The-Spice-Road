@@ -62,6 +62,9 @@ public class SpiceRoadMod implements ModInitializer {
                                 GenerationStep.Decoration.LOCAL_MODIFICATIONS, placedFeature("spice_heart_grove"));
                 BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
                                 GenerationStep.Decoration.VEGETAL_DECORATION, placedFeature("spice_heart_satellite"));
+                BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
+                                GenerationStep.Decoration.VEGETAL_DECORATION,
+                                placedFeature("spice_heart_satellite_hilly"));
 
                 registerSpiceMaps();
         }
