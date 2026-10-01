@@ -24,7 +24,8 @@ Adds rare spices to Minecraft that can enhance existing foods with a new buff me
 <br>
 
 ## Features:
-- **30 new spice plants now generate in dedicated regions throughout the overworld.** They are dependent on climate, but not bound to biomes and their size is configurable.
+- **36 new spice plants now generate in dedicated regions throughout the overworld.** They are dependent on climate, but not bound to biomes and their size is configurable.
+    - Spices can be harvested from trees (bark or fruiting leaves), crops, bushes and rhizomes (some of which need to grow submerged in shallow water).
 - **Common spices may be taken back home and grown**, but a good portion of them will **only mature if produced locally.**  
   This incentivizes exploration, as well as establishing trade routes and associations on servers. From Hanseatic League to West India Company, there's something for everyone.
     - **Spice plants are worldgen-reliant and finite**, so monopolizing them is a real thing players can do. Extra spice sources can always be added my modpack creators and server admins, like loot tables, villager trades, kubejs scripts, currency shops, etc.
@@ -58,14 +59,14 @@ Then simply place the downloaded JAR file into your Minecraft `mods` folder and 
   - Food block (pumpkin pie, etc.) placement is prevented by default unless sneaking to avoid accidentally voiding spiced foods.
   - Tag-level compatibility (knives as cutting tool, etc.).
 - [Cooking For Blockheads](https://modrinth.com/mod/cooking-for-blockheads)
-  - Recipe compatibility for the toaster and oven (ingredient spice profiles get correctly summed for the outputs).
+  - Recipe compatibility for the toaster and oven (ingredient spice profiles get correctly combined for the output, even if the GUI doesn't show it).
 - [Serene Seasons](https://modrinth.com/mod/serene-seasons)
-  - Spice crops have realistic season data attached to them, with plants growing throughout the whole year.
+  - Spice crops have realistic season data attached to them, with different sets of plants growing throughout the whole year.
 - [Create](https://modrinth.com/mod/create)
   - Spices can be harvested via deployers, unless they require hand-picking (like Vanilla and Saffron).
 - [Sable](https://modrinth.com/mod/sable) / [Create Aeronautics](https://modrinth.com/mod/create-aeronautics)
   - Sublevels sample the spice region from the correct overworld coordinates, meaning crops on mobile bases correctly react to the current spice region.
-  - TODO: adjusted block weights.
+  - Accurately scaled block weights.
 
 <br>
 
