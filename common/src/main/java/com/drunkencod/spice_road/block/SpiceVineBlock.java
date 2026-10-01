@@ -165,11 +165,13 @@ public class SpiceVineBlock extends VineBlock implements BonemealableBlock {
 
     /**
      * Advances the ripening stage by one (epic Spices only half of the time),
-     * if the segment is able to ripen.
+     * if the Spice may be cultivated here - see {@link Spice#canBeCultivatedAt}.
+     * Unlike natural ripening, this ignores {@link #isRipeningPosition}, so any
+     * segment in a suitable region (or of a hardy Spice) can be bonemealed.
      */
     @Override
     public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
-        if (!canRipen(level, pos))
+        if (!spice.canBeCultivatedAt(level, pos))
             return;
 
         int increase = spice.getTier().getRarity() == Rarity.EPIC ? random.nextInt(2) : 1;
