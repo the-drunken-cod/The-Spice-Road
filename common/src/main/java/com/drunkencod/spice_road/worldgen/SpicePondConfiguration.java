@@ -30,12 +30,22 @@ import com.drunkencod.spice_road.Constants;
  * @param shore       Block the ground around the pond is replaced with, if
  *                    any.
  * @param shoreWidth  Width of the {@code shore} ring, in blocks.
+ * @param maxSlope    Largest height difference, in blocks, between the pond's
+ *                    water level and any ground it covers. Steeper spots
+ *                    don't get a pond at all.
  * @param replaceable Ground the {@code shore} may replace.
  * @param decorations Features generated around the pond, e.g. trees, single
  *                    Spice Plants or small Spice patches.
  */
 public record SpicePondConfiguration(IntProvider radius, BlockStateProvider floor, Optional<BlockStateProvider> shore,
-        int shoreWidth, TagKey<Block> replaceable, List<Decoration> decorations) implements FeatureConfiguration {
+        int shoreWidth, int maxSlope, TagKey<Block> replaceable, List<Decoration> decorations)
+        implements FeatureConfiguration {
+
+    /** Default {@link #maxSlope()}, in blocks. */
+    public static final int DEFAULT_MAX_SLOPE = 2;
+
+    /** Largest accepted {@link #maxSlope()}. */
+    public static final int MAX_SLOPE = 3;
 
     /**
      * Largest accepted {@link #radius()}. A pond is shrunk further if needed
@@ -57,6 +67,8 @@ public record SpicePondConfiguration(IntProvider radius, BlockStateProvider floo
             BlockStateProvider.CODEC.optionalFieldOf("shore").forGetter(SpicePondConfiguration::shore),
             Codec.intRange(0, MAX_SHORE_WIDTH).optionalFieldOf("shore_width", 1)
                     .forGetter(SpicePondConfiguration::shoreWidth),
+            Codec.intRange(0, MAX_SLOPE).optionalFieldOf("max_slope", DEFAULT_MAX_SLOPE)
+                    .forGetter(SpicePondConfiguration::maxSlope),
             TagKey.hashedCodec(Registries.BLOCK).optionalFieldOf("replaceable", SHORE_REPLACEABLE)
                     .forGetter(SpicePondConfiguration::replaceable),
             Decoration.CODEC.listOf().optionalFieldOf("decorations", List.of())

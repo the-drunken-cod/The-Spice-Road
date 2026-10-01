@@ -93,6 +93,10 @@ public class SpicePondFeature extends Feature<SpicePondConfiguration> {
             return false;
 
         int waterY = ground.getY();
+        if (!isFlatEnough(level, origin, radius + (int) Math.ceil(EDGE_ROUGHNESS + BANK_WIDTH), waterY,
+                config.maxSlope()))
+            return false;
+
         float phaseA = random.nextFloat() * Mth.TWO_PI;
         float phaseB = random.nextFloat() * Mth.TWO_PI;
         int reach = radius + margin;
@@ -124,6 +128,25 @@ public class SpicePondFeature extends Feature<SpicePondConfiguration> {
     }
 
     // #region pond
+
+    /**
+     * @return Whether the ground within {@code reach} of {@code origin} stays
+     *         within {@code maxSlope} blocks of {@code waterY}, so the pond
+     *         sits in the terrain instead of hanging off a hillside.
+     */
+    private static boolean isFlatEnough(WorldGenLevel level, BlockPos origin, int reach, int waterY, int maxSlope) {
+        for (int dx = -reach; dx <= reach; dx++) {
+            for (int dz = -reach; dz <= reach; dz++) {
+                if ((dx * dx) + (dz * dz) > reach * reach)
+                    continue;
+                int groundY = level.getHeight(SurfaceHeightmaps.floor(level), origin.getX() + dx, origin.getZ() + dz)
+                        - 1;
+                if (Math.abs(groundY - waterY) > maxSlope)
+                    return false;
+            }
+        }
+        return true;
+    }
 
     /**
      * Turns the column at {@code (x, z)} into pond: water at {@code waterY}
