@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "CLI tools for The Spice Road's development",
   "scripts": {
-    "pad_csv": "node --no-warnings=ExperimentalWarning pad_csv.ts"
+    "pad_csv": "node --no-warnings=ExperimentalWarning pad_csv.ts",
+    "create_placeholder_texture": "node --no-warnings=ExperimentalWarning create_placeholder_texture.ts"
   },
   "keywords": [],
   "author": {
@@ -20,10 +21,12 @@
   },
   "type": "module",
   "dependencies": {
-    "@sv443-network/coreutils": "^3.8.0"
+    "@sv443-network/coreutils": "^3.8.0",
+    "pngjs": "^7.0.0"
   },
   "devDependencies": {
     "@types/node": "^26.6.3",
+    "@types/pngjs": "^6.0.5",
     "typescript": "^7.0.2"
   }
 }
