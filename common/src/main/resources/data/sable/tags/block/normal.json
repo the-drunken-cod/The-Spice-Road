@@ -1,0 +1,7 @@
+{
+    "replace": false,
+    "values": [
+        "#spice_road:spice_tree_leaves",
+        "#spice_road:spice_tree_logs"
+    ]
+}

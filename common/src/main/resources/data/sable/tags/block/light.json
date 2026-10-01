@@ -1,0 +1,8 @@
+{
+    "replace": false,
+    "values": [
+        "#spice_road:spice_crops",
+        "#spice_road:spice_tree_saplings",
+        "#spice_road:spice_vines"
+    ]
+}
