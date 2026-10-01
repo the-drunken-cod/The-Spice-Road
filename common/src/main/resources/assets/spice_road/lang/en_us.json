@@ -212,7 +212,7 @@
     "spice_road.configuration.plant": "Spice Plants",
     "spice_road.configuration.region.cellScale.tooltip": "Approximate edge length of a Spice Region, in blocks. Larger regions mean longer journeys between Spices, which suits multiplayer servers. 256-512 recommended for singleplayer, 512-1024 for multiplayer.",
     "spice_road.configuration.region.cellScale": "Spice Region Size",
-    "spice_road.configuration.region.clusteringStrength.tooltip": "How strongly Spice Region generation favors common Spices over rarer ones.",
+    "spice_road.configuration.region.clusteringStrength.tooltip": "How strongly Spice Region generation favors common Spices over rarer ones. For larger servers, this value can be increased for extra scarcity. 0.8 is recommended for singleplayer, 1.0-2.5 for multiplayer.",
     "spice_road.configuration.region.clusteringStrength": "Clustering Strength",
     "spice_road.configuration.region.salt.tooltip": "Salt mixed into the world seed when resolving Spice Regions. Change this to any random value to shuffle which Spice grows where.",
     "spice_road.configuration.region.salt.warning": "This affects existing worlds! Changing it reshuffles every Spice Region, including in already generated chunks.",

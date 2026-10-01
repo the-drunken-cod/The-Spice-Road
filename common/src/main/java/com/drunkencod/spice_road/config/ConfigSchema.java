@@ -6,7 +6,6 @@ import java.util.EnumMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 import com.drunkencod.spice_road.Constants;
@@ -69,19 +68,19 @@ public final class ConfigSchema {
 
     /** Salt mixed into the world seed when resolving Spice Regions. */
     public static final ConfigOption<Long> REGION_SALT = add(
-            ConfigOption.ofLong(REGION, "salt", () -> new Random().nextLong(), Long.MIN_VALUE, Long.MAX_VALUE)
+            ConfigOption.ofLong(REGION, "salt", () -> 0L, Long.MIN_VALUE, Long.MAX_VALUE)
                     .restart(ConfigOption.Restart.WORLD));
 
     /** How strongly Region generation favors common Spices over rarer ones. */
     public static final ConfigOption<Double> REGION_CLUSTERING_STRENGTH = add(ConfigOption.ofDouble(REGION,
-            "clusteringStrength", () -> Services.PLATFORM.isDedicatedServer() ? 1.75 : 1.0, 0.0, 10.0));
+            "clusteringStrength", () -> Services.PLATFORM.isDedicatedServer() ? 1.75 : 0.8, 0.0, 10.0));
 
     /**
      * Base pick weight per {@link Tier} when a Spice Region resolves its Spice,
      * before the clustering strength is applied.
      */
-    public static final Map<Tier, ConfigOption<Double>> REGION_TIER_WEIGHT = perTier(REGION_TIER_WEIGHTS, 3.0, 2.5,
-            2.0, 1.5, 0.0, 100.0);
+    public static final Map<Tier, ConfigOption<Double>> REGION_TIER_WEIGHT = perTier(REGION_TIER_WEIGHTS, 2.5, 2.0,
+            1.75, 1.5, 0.0, 100.0);
 
     // #region Spice Map
 

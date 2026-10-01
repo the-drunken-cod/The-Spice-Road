@@ -1,7 +1,7 @@
 {
   "type": "spice_road:spice_plant",
   "config": {
-    "tries": 12,
+    "tries": 14,
     "xz_spread": 4,
     "heart_spice_only": true,
     "trees": {

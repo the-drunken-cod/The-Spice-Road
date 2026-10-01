@@ -83,3 +83,6 @@
 - [ ] Elongate water-planted crops by around half a block in model and texture height, so their flowering parts poke out of the water.
 - [ ] Make mod blocks like the Thermal Expansion Phytogenic Insolator, Immersive Engineering Garden Cloche and Botany Pots respect spice regions and require water for planting water-based rhizomes.
     - TODO: investigate whether it'd be worth intentionally not extending abstract classes and taglists to prevent cheating the region-locking system with mods.
+- [ ] Max amount of spice applications for spices of the same type:
+    - Configurable value, default 3. When applying the same spice for the 4th time, no values are applied from it. The upcoming spice grinder should stop allowing to add players to add spices past this number.
+    - Update flavor_contributors tooltip to list spices with amounts (e.g. `3x Cinnamon, 2x Nutmeg, Cloves`), sorted by amount, then alphabetically (respecting translations). Use templates for the translations, e.g. `%sx %s`.
