@@ -64,7 +64,7 @@ public final class ConfigSchema {
 
     /** Approximate edge length of a Spice Region cell, in blocks. */
     public static final ConfigOption<Double> REGION_CELL_SCALE = add(
-            ConfigOption.ofDouble(REGION, "cellScale", 384.0, 64.0, 1_000_000.0));
+            ConfigOption.ofDouble(REGION, "cellScale", 256.0, 64.0, 1_000_000.0));
 
     /** Salt mixed into the world seed when resolving Spice Regions. */
     public static final ConfigOption<Long> REGION_SALT = add(
