@@ -1,11 +1,17 @@
 package com.drunkencod.spice_road.worldgen;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.Set;
+
 import com.mojang.serialization.Codec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.WorldGenRegion;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
@@ -13,6 +19,7 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.SnowyDirtBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -24,7 +31,8 @@ import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
  * origin. Higher ground within it is cut away, lower ground is filled up, and
  * wherever the water would spill out a bank is raised to hold it in. Then its
  * shore is painted, its decorations are generated around it, and its surface
- * is frozen and snowed on wherever the biome would (see {@link #freezeTopLayer}).
+ * is frozen and snowed on wherever the biome would (see
+ * {@link #freezeTopLayer}).
  * <p>
  * Only generates on dry, solid ground, so it never cuts into existing water.
  * Shrinks to fit the area worldgen may write to, so a pond near a chunk's edge
@@ -32,11 +40,21 @@ import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
  */
 public class SpicePondFeature extends Feature<SpicePondConfiguration> {
 
-    /** Highest ground above the water surface a pond still cuts through, in blocks. */
+    /**
+     * Highest ground above the water surface a pond still cuts through, in blocks.
+     */
     private static final int MAX_CUT_HEIGHT = 3;
 
-    /** Deepest ground below the water surface a pond still fills up from, in blocks. */
+    /**
+     * Deepest ground below the water surface a pond still fills up from, in blocks.
+     */
     private static final int MAX_FILL_DEPTH = 3;
+
+    /**
+     * Most logs of a single tree a pond removes, so a giant tree or log pile can't
+     * stall worldgen.
+     */
+    private static final int MAX_TREE_LOGS = 512;
 
     /** How far the pond's edge is pushed in or out at most, in blocks. */
     private static final float EDGE_ROUGHNESS = 1.0F;
@@ -89,7 +107,7 @@ public class SpicePondFeature extends Feature<SpicePondConfiguration> {
                 int z = origin.getZ() + dz;
 
                 if (distance <= edge) {
-                    carveWater(level, random, config, x, z, waterY);
+                    carveWater(level, area, random, config, x, z, waterY);
                     continue;
                 }
                 if (distance <= edge + BANK_WIDTH)
@@ -114,8 +132,8 @@ public class SpicePondFeature extends Feature<SpicePondConfiguration> {
      * instead.
      */
     @SuppressWarnings("deprecation") // blocksMotion() is what vanilla's heightmaps still use
-    private static void carveWater(WorldGenLevel level, RandomSource random, SpicePondConfiguration config, int x,
-            int z, int waterY) {
+    private static void carveWater(WorldGenLevel level, WritableArea area, RandomSource random,
+            SpicePondConfiguration config, int x, int z, int waterY) {
         int groundY = level.getHeight(SurfaceHeightmaps.floor(level), x, z) - 1;
         if (groundY > waterY + MAX_CUT_HEIGHT || groundY < waterY - MAX_FILL_DEPTH) {
             raiseBank(level, random, config, x, z, waterY);
@@ -130,6 +148,10 @@ public class SpicePondFeature extends Feature<SpicePondConfiguration> {
             BlockState state = level.getBlockState(pos);
             if (state.isAir() || !level.getFluidState(pos).isEmpty())
                 continue;
+            if (state.is(BlockTags.LOGS)) {
+                removeTree(level, area, pos);
+                continue;
+            }
             if (y <= groundY || !state.blocksMotion())
                 level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
         }
@@ -142,7 +164,55 @@ public class SpicePondFeature extends Feature<SpicePondConfiguration> {
         }
     }
 
-    /** Fills the column at {@code (x, z)} with floor blocks wherever pond water could spill through. */
+    /**
+     * Removes the whole tree that the log at {@code start} belongs to, so its
+     * trunk or canopy isn't left floating once the ground under it is cut away.
+     * Follows connected logs, then the leaves they support by their
+     * {@link LeavesBlock#DISTANCE} (leaves also held up by another tree stay).
+     * Blocks outside {@code area} are left alone.
+     */
+    private static void removeTree(WorldGenLevel level, WritableArea area, BlockPos start) {
+        Set<BlockPos> logs = new HashSet<>();
+        Deque<BlockPos> queue = new ArrayDeque<>();
+        logs.add(start.immutable());
+        queue.add(start.immutable());
+        while (!queue.isEmpty() && logs.size() < MAX_TREE_LOGS) {
+            BlockPos current = queue.poll();
+            for (BlockPos next : BlockPos.betweenClosed(current.offset(-1, -1, -1), current.offset(1, 1, 1))) {
+                if (area.reachFrom(next) < 0 || !level.getBlockState(next).is(BlockTags.LOGS))
+                    continue;
+                BlockPos key = next.immutable();
+                if (logs.add(key))
+                    queue.add(key);
+            }
+        }
+
+        Set<BlockPos> leaves = new HashSet<>();
+        Deque<BlockPos> frontier = new ArrayDeque<>(logs);
+        for (int distance = 1; distance <= LeavesBlock.DECAY_DISTANCE && !frontier.isEmpty(); distance++) {
+            Deque<BlockPos> nextFrontier = new ArrayDeque<>();
+            for (BlockPos current : frontier) {
+                for (Direction direction : Direction.values()) {
+                    BlockPos next = current.relative(direction);
+                    BlockState state = level.getBlockState(next);
+                    if (area.reachFrom(next) >= 0 && state.getBlock() instanceof LeavesBlock
+                            && state.getValue(LeavesBlock.DISTANCE) == distance && leaves.add(next))
+                        nextFrontier.add(next);
+                }
+            }
+            frontier = nextFrontier;
+        }
+
+        for (BlockPos pos : logs)
+            level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+        for (BlockPos pos : leaves)
+            level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+    }
+
+    /**
+     * Fills the column at {@code (x, z)} with floor blocks wherever pond water
+     * could spill through.
+     */
     private static void raiseBank(WorldGenLevel level, RandomSource random, SpicePondConfiguration config, int x,
             int z, int waterY) {
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, waterY - 1, z);
@@ -153,7 +223,10 @@ public class SpicePondFeature extends Feature<SpicePondConfiguration> {
         }
     }
 
-    /** Replaces the column's {@link SpicePondConfiguration#replaceable() replaceable} ground near the water level with shore. */
+    /**
+     * Replaces the column's {@link SpicePondConfiguration#replaceable()
+     * replaceable} ground near the water level with shore.
+     */
     private static void paintShore(WorldGenLevel level, RandomSource random, SpicePondConfiguration config, int x,
             int z, int waterY) {
         if (config.shore().isEmpty())
@@ -165,7 +238,10 @@ public class SpicePondFeature extends Feature<SpicePondConfiguration> {
         level.setBlock(pos, config.shore().get().getState(random, pos), Block.UPDATE_CLIENTS);
     }
 
-    /** @return Whether water could flow through {@code state}, e.g. air, a fluid, or a plant. */
+    /**
+     * @return Whether water could flow through {@code state}, e.g. air, a fluid, or
+     *         a plant.
+     */
     @SuppressWarnings("deprecation")
     private static boolean needsBank(BlockState state) {
         return !state.blocksMotion() || !state.getFluidState().isEmpty();
@@ -293,7 +369,10 @@ public class SpicePondFeature extends Feature<SpicePondConfiguration> {
                     SectionPos.sectionToBlockCoord(center.z + WRITE_RADIUS, 15));
         }
 
-        /** @return Horizontal distance from {@code pos} to this area's nearest edge, in blocks. */
+        /**
+         * @return Horizontal distance from {@code pos} to this area's nearest edge, in
+         *         blocks.
+         */
         int reachFrom(BlockPos pos) {
             long reach = Math.min(Math.min((long) pos.getX() - minX, (long) maxX - pos.getX()),
                     Math.min((long) pos.getZ() - minZ, (long) maxZ - pos.getZ()));
