@@ -34,7 +34,8 @@ import net.minecraft.resources.ResourceLocation;
  * {@code minecraft:block/crop}-parented model per growth stage (age
  * {@code 0..getMaxAge()}) for every registered Spice Plant block (see
  * {@link SpicePlants}) - {@code spice_road:block/rhizome}-parented instead for
- * {@code RHIZOME} Spices. Blockstate properties besides the age (e.g.
+ * {@code RHIZOME} Spices and {@code minecraft:block/cross}-parented for
+ * {@code FLOWER_PATCH} Spices. Blockstate properties besides the age (e.g.
  * {@code waterlogged}) don't affect the model. Mirrors vanilla crop blocks
  * (e.g. wheat) exactly; see
  * {@code NeoForgeBlockStateProvider} for the NeoForge counterpart.
@@ -56,7 +57,10 @@ import net.minecraft.resources.ResourceLocation;
  */
 public class FabricSpiceCropModelProvider implements DataProvider {
 
-    /** Stage model template of {@code RHIZOME} Spices, in place of vanilla's crop template. */
+    /**
+     * Stage model template of {@code RHIZOME} Spices, in place of vanilla's crop
+     * template.
+     */
     private static final ModelTemplate RHIZOME = new ModelTemplate(
             Optional.of(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "block/rhizome")),
             Optional.empty(), TextureSlot.CROP);
@@ -77,14 +81,20 @@ public class FabricSpiceCropModelProvider implements DataProvider {
             SpicePlantBlock block = plant.block().get();
             int maxAge = block.getMaxAge();
 
-            ModelTemplate template = plant.spice().getSourceType() == SourceType.RHIZOME
-                    ? RHIZOME
-                    : ModelTemplates.CROP;
+            SourceType sourceType = plant.spice().getSourceType();
+            ModelTemplate template = switch (sourceType) {
+                case RHIZOME -> RHIZOME;
+                case FLOWER_PATCH -> ModelTemplates.CROSS;
+                default -> ModelTemplates.CROP;
+            };
             Map<Integer, ResourceLocation> stageModels = new HashMap<>();
             String blockId = BuiltInRegistries.BLOCK.getKey(block).getPath();
             for (int age = 0; age <= maxAge; age++) {
                 ResourceLocation stage = SpiceAssetPaths.block(plant.spice(), blockId + "_stage" + age);
-                ResourceLocation model = template.create(stage, TextureMapping.crop(stage),
+                TextureMapping mapping = sourceType == SourceType.FLOWER_PATCH
+                        ? TextureMapping.cross(stage)
+                        : TextureMapping.crop(stage);
+                ResourceLocation model = template.create(stage, mapping,
                         (modelLocation, jsonSupplier) -> futures.add(DataProvider.saveStable(
                                 cachedOutput, jsonSupplier.get(), modelPathProvider.json(modelLocation))));
                 stageModels.put(age, model);

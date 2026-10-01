@@ -1,6 +1,5 @@
 package com.drunkencod.spice_road.datagen;
 
-
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.SpicePlantBlock;
 import com.drunkencod.spice_road.block.FruitingSpiceLeavesBlock;
@@ -31,8 +30,10 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
  * {@code minecraft:block/crop}-parented model per growth stage (age
  * {@code 0..getMaxAge()}) for every registered Spice Plant block (see
  * {@link SpicePlants}) - {@code spice_road:block/rhizome}-parented instead for
- * {@code RHIZOME} Spices. Blockstate properties besides the age (e.g.
- * {@code waterlogged}) don't affect the model. Mirrors vanilla crop blocks (e.g. wheat) exactly; see
+ * {@code RHIZOME} Spices and {@code minecraft:block/cross}-parented for
+ * {@code FLOWER_PATCH} Spices. Blockstate properties besides the age (e.g.
+ * {@code waterlogged}) don't affect the model. Mirrors vanilla crop blocks
+ * (e.g. wheat) exactly; see
  * {@code FabricSpiceCropModelProvider} for the Fabric counterpart
  * -
  * vanilla's own equivalent generator
@@ -60,14 +61,18 @@ public class NeoForgeBlockStateProvider extends BlockStateProvider {
             ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
             int maxAge = block.getMaxAge();
 
-            ResourceLocation parent = plant.spice().getSourceType() == SourceType.RHIZOME
-                    ? modLoc("block/rhizome")
-                    : mcLoc("block/crop");
+            SourceType sourceType = plant.spice().getSourceType();
+            ResourceLocation parent = switch (sourceType) {
+                case RHIZOME -> modLoc("block/rhizome");
+                case FLOWER_PATCH -> mcLoc("block/cross");
+                default -> mcLoc("block/crop");
+            };
+            String textureSlot = sourceType == SourceType.FLOWER_PATCH ? "cross" : "crop";
             ModelFile[] stageModels = new ModelFile[maxAge + 1];
             for (int age = 0; age <= maxAge; age++) {
                 ResourceLocation stage = SpiceAssetPaths.block(plant.spice(), id.getPath() + "_stage" + age);
                 stageModels[age] = models().withExistingParent(stage.toString(), parent)
-                        .texture("crop", stage)
+                        .texture(textureSlot, stage)
                         .renderType("minecraft:cutout");
             }
 
@@ -160,7 +165,10 @@ public class NeoForgeBlockStateProvider extends BlockStateProvider {
             itemModels().withExistingParent(itemId, SpiceAssetPaths.block(spice, itemId));
     }
 
-    /** Equivalent of {@code logBlock}, with models and textures in {@code spice}'s folder. */
+    /**
+     * Equivalent of {@code logBlock}, with models and textures in {@code spice}'s
+     * folder.
+     */
     private void spiceLogBlock(Spice spice, RotatedPillarBlock log, String id) {
         ResourceLocation side = SpiceAssetPaths.block(spice, id);
         ResourceLocation end = SpiceAssetPaths.block(spice, id + "_top");
