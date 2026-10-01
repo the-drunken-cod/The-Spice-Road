@@ -35,7 +35,7 @@ public class SpiceRoadAdvancements implements AdvancementSubProvider {
     @Override
     public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> saver) {
         AdvancementHolder root = Advancement.Builder.advancement()
-                .display(Spice.getRawById(Spice.CHILI_PEPPER.getId()),
+                .display(Spice.getRawById(Spice.HABANERO.getId()),
                         Component.translatable("advancements.spice_road.root.title"),
                         Component.translatable("advancements.spice_road.root.description"),
                         ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID,

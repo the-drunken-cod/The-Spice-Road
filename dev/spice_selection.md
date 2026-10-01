@@ -18,7 +18,7 @@
  ,flower_patch,Nigella     ,Seeds             ,Break mature crop     ,   2 ,temperate,spring;summer       ,  0.2 , -0.7 ,  0.0 ,  0.5 ,  0.2 ,  0.3 ,  0.1 ,  0.3 
  ,flower_patch,Safflower   ,Petals            ,Break mature crop     ,   2 ,arid     ,summer              ,  0.0 ,  0.1 , -0.2 , -0.6 , -0.3 , -0.5 , -0.4 , -0.7 
 /,flower_patch,Saffron     ,Stigmas           ,Hand-pick mature crop ,   5 ,arid     ,autumn              ,  0.0 , -0.1 , -0.3 , -1.0 , -0.2 , -0.4 , -0.3 , -0.6 
-/,crop        ,Chili Pepper,Fruit             ,Break mature crop     ,   2 ,temperate,summer              ,  1.0 ,  0.1 ,  0.2 ,  0.2 , -0.3 ,  0.4 , -0.2 ,  0.3 
+/,crop        ,Habanero,Fruit             ,Break mature crop     ,   2 ,temperate,summer              ,  1.0 ,  0.1 ,  0.2 ,  0.2 , -0.3 ,  0.4 , -0.2 ,  0.3 
  ,crop        ,Coriander   ,Seeds/leaves      ,Break mature crop     ,   1 ,temperate,spring;autumn       , -0.1 ,  0.3 ,  0.3 , -0.4 , -0.7 ,  0.0 , -0.6 , -0.3 
  ,crop        ,Cumin       ,Seeds             ,Break mature crop     ,   4 ,arid     ,spring;summer       ,  0.2 , -0.3 , -0.2 ,  0.9 ,  0.2 ,  0.3 ,  0.1 ,  0.6 
  ,crop        ,Dill        ,Seeds/leaves      ,Break mature crop     ,   1 ,cold     ,spring;summer       , -0.3 ,  0.1 ,  0.2 , -0.2 , -0.9 ,  0.0 , -0.3 , -0.2 
@@ -37,7 +37,7 @@
 ```csv
 source_type ,spice             ,harvested_part                  ,harvest_method        ,difficulty,climate  ,season              ,heat_cooling,sweet_bitter,sour_mellow,earthy_floral,woody_green,pungent_soft,resinous_clean,savory_delicate
 # heat:
-crop        ,Chili Pepper      ,Fruit                           ,Pick                  ,        2 ,temperate,summer              ,        1.0 ,        0.1 ,       0.2 ,         0.2 ,      -0.3 ,        0.4 ,         -0.2 ,           0.3
+crop        ,Habanero      ,Fruit                           ,Pick                  ,        2 ,temperate,summer              ,        1.0 ,        0.1 ,       0.2 ,         0.2 ,      -0.3 ,        0.4 ,         -0.2 ,           0.3
 vine        ,Long Pepper       ,Flower spikes                   ,Pick                  ,        4 ,tropical ,summer;autumn       ,        0.7 ,        0.3 ,      -0.1 ,         0.2 ,       0.4 ,        0.6 ,          0.2 ,           0.2 
 
 # cooling:

@@ -47,7 +47,7 @@ public enum Spice implements StringRepresentable {
             Season.SUMMER),
     SAFFRON("saffron", SourceType.FLOWER_PATCH, HarvestAction.PICK, Climate.ARID, 5, true, true, 1, false,
             Season.AUTUMN),
-    CHILI_PEPPER("chili_pepper", SourceType.CROP, HarvestAction.PICK, Climate.TEMPERATE, 2, false, false, 2, false,
+    HABANERO("habanero", SourceType.CROP, HarvestAction.PICK, Climate.ARID, 3, false, false, 2, false,
             Season.SUMMER),
     CUMIN("cumin", SourceType.CROP, HarvestAction.BREAK, Climate.ARID, 2, false, false, 1, false,
             Season.SPRING, Season.SUMMER),
@@ -85,16 +85,16 @@ public enum Spice implements StringRepresentable {
     private final boolean aquatic;
     private final Set<Season> seasons;
 
-    Spice(String id, SourceType sourceType, HarvestAction harAct, Climate climate, int rarity,
-            boolean harRqTool, boolean harHandPick, int harDrops, boolean aquatic, Season... seasons) {
+    Spice(String id, SourceType src, HarvestAction act, Climate climate, int rarity,
+            boolean reqTool, boolean handPick, int drops, boolean aquatic, Season... seasons) {
         this.id = id;
-        this.sourceType = sourceType;
-        this.harvestAction = harAct;
+        this.sourceType = src;
+        this.harvestAction = act;
         this.climate = climate;
         this.harvestDifficulty = rarity;
-        this.requiresHarvestTool = harRqTool;
-        this.requiresHandPick = harHandPick;
-        this.dropAmount = harDrops;
+        this.requiresHarvestTool = reqTool;
+        this.requiresHandPick = handPick;
+        this.dropAmount = drops;
         this.aquatic = aquatic;
         this.seasons = Collections.unmodifiableSet(EnumSet.copyOf(Arrays.asList(seasons)));
     }

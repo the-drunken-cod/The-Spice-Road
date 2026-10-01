@@ -110,7 +110,7 @@ public final class SpiceProfileTooltips {
      * @return The comma-separated contributor item names, word-wrapped at
      *         {@link #CONTRIBUTORS_LINE_WIDTH}, with the first line prefixed via
      *         {@link #FLAVOR_CONTRIBUTORS_KEY}, e.g. {@code "Contains: Cinnamon,
-     *         Nutmeg,"} followed by {@code "Chili Pepper"} on its own line.
+     *         Nutmeg,"} followed by {@code "Habanero"} on its own line.
      */
     private static List<Component> flavorContributorsLines(Set<Item> contributors) {
         Component space = Component.literal(" ");
