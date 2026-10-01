@@ -1,0 +1,13 @@
+{
+  "items": "spice_road:caraway",
+  "profile": {
+    "heat_cooling": 0,
+    "sweet_bitter": -0.2,
+    "sour_mellow": -0.1,
+    "earthy_floral": 0.4,
+    "woody_green": -0.2,
+    "pungent_soft": 0.3,
+    "resinous_clean": 0.1,
+    "savory_delicate": 0.3
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "items": "spice_road:coriander",
+  "profile": {
+    "heat_cooling": -0.1,
+    "sweet_bitter": 0.3,
+    "sour_mellow": 0.3,
+    "earthy_floral": -0.4,
+    "woody_green": -0.7,
+    "pungent_soft": 0,
+    "resinous_clean": -0.6,
+    "savory_delicate": -0.3
+  }
+}

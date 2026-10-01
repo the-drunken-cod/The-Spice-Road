@@ -1,0 +1,13 @@
+{
+  "items": "spice_road:long_pepper",
+  "profile": {
+    "heat_cooling": 0.7,
+    "sweet_bitter": 0.3,
+    "sour_mellow": -0.1,
+    "earthy_floral": 0.2,
+    "woody_green": 0.4,
+    "pungent_soft": 0.6,
+    "resinous_clean": 0.2,
+    "savory_delicate": 0.2
+  }
+}

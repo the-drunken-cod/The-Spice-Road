@@ -1,0 +1,13 @@
+{
+  "items": "spice_road:fenugreek",
+  "profile": {
+    "heat_cooling": 0,
+    "sweet_bitter": -0.8,
+    "sour_mellow": -0.3,
+    "earthy_floral": 0.6,
+    "woody_green": 0.1,
+    "pungent_soft": 0.1,
+    "resinous_clean": 0,
+    "savory_delicate": 0.7
+  }
+}

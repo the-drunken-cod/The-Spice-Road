@@ -1,0 +1,13 @@
+{
+  "items": "spice_road:licorice",
+  "profile": {
+    "heat_cooling": -0.6,
+    "sweet_bitter": 1,
+    "sour_mellow": -0.6,
+    "earthy_floral": 0.2,
+    "woody_green": 0.3,
+    "pungent_soft": -0.3,
+    "resinous_clean": 0,
+    "savory_delicate": 0
+  }
+}

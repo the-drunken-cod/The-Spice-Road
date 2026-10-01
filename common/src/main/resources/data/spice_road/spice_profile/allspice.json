@@ -1,0 +1,13 @@
+{
+  "items": "spice_road:allspice",
+  "profile": {
+    "heat_cooling": 0.4,
+    "sweet_bitter": 0.4,
+    "sour_mellow": -0.3,
+    "earthy_floral": 0.2,
+    "woody_green": 0.6,
+    "pungent_soft": 0.3,
+    "resinous_clean": 0.2,
+    "savory_delicate": 0.1
+  }
+}

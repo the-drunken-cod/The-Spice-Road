@@ -1,0 +1,13 @@
+{
+  "items": "spice_road:safflower",
+  "profile": {
+    "heat_cooling": 0,
+    "sweet_bitter": 0.1,
+    "sour_mellow": -0.2,
+    "earthy_floral": -0.6,
+    "woody_green": -0.3,
+    "pungent_soft": -0.5,
+    "resinous_clean": -0.4,
+    "savory_delicate": -0.7
+  }
+}

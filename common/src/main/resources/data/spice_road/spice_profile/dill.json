@@ -1,0 +1,13 @@
+{
+  "items": "spice_road:dill",
+  "profile": {
+    "heat_cooling": -0.3,
+    "sweet_bitter": 0.1,
+    "sour_mellow": 0.2,
+    "earthy_floral": -0.2,
+    "woody_green": -0.9,
+    "pungent_soft": 0,
+    "resinous_clean": -0.3,
+    "savory_delicate": -0.2
+  }
+}

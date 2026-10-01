@@ -1,0 +1,13 @@
+{
+  "items": "spice_road:mastic",
+  "profile": {
+    "heat_cooling": -0.1,
+    "sweet_bitter": -0.2,
+    "sour_mellow": -0.3,
+    "earthy_floral": -0.2,
+    "woody_green": 0.3,
+    "pungent_soft": 0,
+    "resinous_clean": 1,
+    "savory_delicate": -0.4
+  }
+}
