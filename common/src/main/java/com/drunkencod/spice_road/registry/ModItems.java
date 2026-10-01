@@ -21,7 +21,8 @@ import com.drunkencod.spice_road.spice.Spice;
 /**
  * Central item registry helpers: creative tab contents and item lookup.
  * <p>
- * Items are registered using {@link IRegistryHelper#registerItem(String, Supplier)};
+ * Items are registered using
+ * {@link IRegistryHelper#registerItem(String, Supplier)};
  * items that need a flat item model are queued via
  * {@link com.drunkencod.spice_road.datagen.ItemModelHelper#addFlatItem}.
  */
@@ -49,6 +50,15 @@ public class ModItems {
             Item spiceSeeds = Spice.getSeedsById(spice.getId());
             Item spiceRaw = Spice.getRawById(spice.getId());
 
+            if (spiceRaw != null)
+                output.accept(spiceRaw.getDefaultInstance());
+
+            for (ProcessedSpice processed : ProcessedSpice.bySource(spice)) {
+                Item processedItem = processed.getItem();
+                if (processedItem != null)
+                    output.accept(processedItem.getDefaultInstance());
+            }
+
             if (spiceSeeds != null)
                 output.accept(spiceSeeds.getDefaultInstance());
 
@@ -59,14 +69,6 @@ public class ModItems {
             SpiceVines.RegisteredSpiceVine vine = SpiceVines.getRegistered().get(spice);
             if (vine != null)
                 output.accept(vine.vineItem().get().getDefaultInstance());
-
-            if (spiceRaw != null)
-                output.accept(spiceRaw.getDefaultInstance());
-            for (ProcessedSpice processed : ProcessedSpice.bySource(spice)) {
-                Item processedItem = processed.getItem();
-                if (processedItem != null)
-                    output.accept(processedItem.getDefaultInstance());
-            }
         }
     }
 
