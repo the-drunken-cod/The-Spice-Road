@@ -2,6 +2,7 @@ package com.drunkencod.spice_road.debug;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -65,12 +66,29 @@ public class SpiceRegionDebugSourceImpl implements SpiceRegionDebugSource {
         lines.add(new SpiceRegionDebugInfo.Line("Climate", climate.name()));
         lines.add(new SpiceRegionDebugInfo.Line("Cell",
                 result.cell().gridX() + ", " + result.cell().gridZ() + " (seed " + result.cell().seed() + ")"));
+        double dx = result.cell().centerX() - effectivePos.getX();
+        double dz = result.cell().centerZ() - effectivePos.getZ();
         lines.add(new SpiceRegionDebugInfo.Line("Cell center",
                 Math.round(result.cell().centerX()) + ", " + Math.round(result.cell().centerZ())
-                        + " (dist " + String.format("%.1f", result.cell().distance()) + ")"));
+                        + " (" + describeOffset(dx, dz) + ")"));
         lines.add(new SpiceRegionDebugInfo.Line("Resolved Spice",
                 result.spice().map(Enum::name).orElse("none (empty Climate Bucket)")));
         return new SpiceRegionDebugInfo(lines);
+    }
+
+    /**
+     * Formats the offset to a target as compass directions plus direct distance,
+     * e.g. {@code north 14.5, west 13.1, dist 19.54}.
+     *
+     * @param dx Block offset on the X axis (positive is east).
+     * @param dz Block offset on the Z axis (positive is south).
+     * @return The formatted offset description.
+     */
+    private static String describeOffset(double dx, double dz) {
+        return String.format(Locale.ROOT, "%s %.1f, %s %.1f, dist %.2f",
+                dz <= 0 ? "north" : "south", Math.abs(dz),
+                dx >= 0 ? "east" : "west", Math.abs(dx),
+                Math.sqrt(dx * dx + dz * dz));
     }
 
     private static Long resolveWorldSeed(Level level) {
