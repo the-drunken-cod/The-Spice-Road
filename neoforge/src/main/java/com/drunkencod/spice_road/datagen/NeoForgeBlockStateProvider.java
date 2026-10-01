@@ -64,10 +64,10 @@ public class NeoForgeBlockStateProvider extends BlockStateProvider {
             SourceType sourceType = plant.spice().getSourceType();
             ResourceLocation parent = switch (sourceType) {
                 case RHIZOME -> modLoc("block/rhizome");
-                case FLOWER_PATCH -> mcLoc("block/cross");
+                case FLOWER_PATCH, BUSH -> mcLoc("block/cross");
                 default -> mcLoc("block/crop");
             };
-            String textureSlot = sourceType == SourceType.FLOWER_PATCH ? "cross" : "crop";
+            String textureSlot = isCross(sourceType) ? "cross" : "crop";
             ModelFile[] stageModels = new ModelFile[maxAge + 1];
             for (int age = 0; age <= maxAge; age++) {
                 ResourceLocation stage = SpiceAssetPaths.block(plant.spice(), id.getPath() + "_stage" + age);
@@ -83,6 +83,11 @@ public class NeoForgeBlockStateProvider extends BlockStateProvider {
 
         SpiceTrees.getRegistered().values().forEach(this::registerSpiceTree);
         SpiceVines.getRegistered().values().forEach(vine -> registerSpiceVine(vine.spice(), vine.block().get()));
+    }
+
+    /** @return Whether {@code sourceType} uses the {@code minecraft:block/cross} model. */
+    private static boolean isCross(SourceType sourceType) {
+        return sourceType == SourceType.FLOWER_PATCH || sourceType == SourceType.BUSH;
     }
 
     /**

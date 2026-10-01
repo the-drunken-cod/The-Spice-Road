@@ -84,14 +84,14 @@ public class FabricSpiceCropModelProvider implements DataProvider {
             SourceType sourceType = plant.spice().getSourceType();
             ModelTemplate template = switch (sourceType) {
                 case RHIZOME -> RHIZOME;
-                case FLOWER_PATCH -> ModelTemplates.CROSS;
+                case FLOWER_PATCH, BUSH -> ModelTemplates.CROSS;
                 default -> ModelTemplates.CROP;
             };
             Map<Integer, ResourceLocation> stageModels = new HashMap<>();
             String blockId = BuiltInRegistries.BLOCK.getKey(block).getPath();
             for (int age = 0; age <= maxAge; age++) {
                 ResourceLocation stage = SpiceAssetPaths.block(plant.spice(), blockId + "_stage" + age);
-                TextureMapping mapping = sourceType == SourceType.FLOWER_PATCH
+                TextureMapping mapping = sourceType == SourceType.FLOWER_PATCH || sourceType == SourceType.BUSH
                         ? TextureMapping.cross(stage)
                         : TextureMapping.crop(stage);
                 ResourceLocation model = template.create(stage, mapping,

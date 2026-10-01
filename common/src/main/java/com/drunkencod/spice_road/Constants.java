@@ -25,6 +25,12 @@ public class Constants {
     public static final int SPICE_PLANT_GROWTH_STAGES = 4;
 
     /**
+     * Growth stage count (highest age value) for {@code BUSH} Spice Plants.
+     * Fixed for the same reason as {@link #SPICE_PLANT_GROWTH_STAGES}.
+     */
+    public static final int SPICE_BUSH_GROWTH_STAGES = 2;
+
+    /**
      * Default harvest yield multiplier for {@code FLOWER_PATCH}/{@code CROP}
      * Spice Plants. Loot table datagen bakes this value in directly rather than
      * reading it from {@code IConfigHelper} at datagen time, since a pure

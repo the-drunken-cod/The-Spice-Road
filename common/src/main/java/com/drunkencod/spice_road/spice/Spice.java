@@ -51,6 +51,9 @@ public enum Spice implements StringRepresentable {
             Season.SUMMER),
     CUMIN("cumin", SourceType.CROP, HarvestAction.BREAK, Climate.ARID, 2, false, false, 1, false,
             Season.SPRING, Season.SUMMER),
+    // bushes
+    SAGE("sage", SourceType.BUSH, HarvestAction.PICK, Climate.TEMPERATE, 1, true, false, 2, false,
+            Season.SPRING, Season.SUMMER),
     // rhizomes
     WASABI("wasabi", SourceType.RHIZOME, HarvestAction.BREAK, Climate.COLD, 5, true, true, 1, true,
             Season.AUTUMN, Season.WINTER, Season.SPRING),

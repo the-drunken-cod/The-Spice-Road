@@ -23,8 +23,8 @@ import com.drunkencod.spice_road.spice.SourceType;
  * spice.
  * <p>
  * {@code TREE} and {@code VINE} members are registered by {@link SpiceTrees}
- * and {@link SpiceVines} instead. {@code BUSH} members are deliberately
- * skipped - they need mechanics not implemented yet.
+ * and {@link SpiceVines} instead. A {@code BUSH} Spice grows like a
+ * {@code FLOWER_PATCH} one, see {@link SpiceBushBlock}.
  * <p>
  * A {@code RHIZOME} Spice grows exactly like a {@code CROP} one - only its
  * model differs, which datagen picks by Source Type - so it reuses the crop
@@ -40,7 +40,7 @@ public final class SpicePlants {
      * @param block         The block its planting item places.
      * @param worldgenBlock The block {@code SpicePlantFeature} actually
      *                      places. Equal to {@code block} for
-     *                      {@code FLOWER_PATCH} and Aquatic Spices; a
+     *                      {@code FLOWER_PATCH}, {@code BUSH} and Aquatic Spices; a
      *                      separate {@link WildSpiceCropBlock} for other
      *                      {@code CROP}/{@code RHIZOME} Spices (see
      *                      {@link SpiceCropBlock}).
@@ -67,8 +67,8 @@ public final class SpicePlants {
     public static void bootstrap() {
         for (Spice spice : Spice.values()) {
             SourceType sourceType = spice.getSourceType();
-            if (sourceType != SourceType.FLOWER_PATCH && sourceType != SourceType.CROP
-                    && sourceType != SourceType.RHIZOME)
+            if (sourceType != SourceType.FLOWER_PATCH && sourceType != SourceType.BUSH
+                    && sourceType != SourceType.CROP && sourceType != SourceType.RHIZOME)
                 continue;
 
             REGISTERED.put(spice, register(spice));
@@ -80,6 +80,7 @@ public final class SpicePlants {
         String seedId = id + spice.getPlantingItemSuffix();
         String blockId = id + switch (spice.getSourceType()) {
             case FLOWER_PATCH -> "_flower";
+            case BUSH -> "_bush";
             case RHIZOME -> "_rhizome";
             default -> "_crop";
         };
@@ -96,6 +97,10 @@ public final class SpicePlants {
         if (spice.getSourceType() == SourceType.FLOWER_PATCH) {
             block = Services.REGISTRY.registerBlock(blockId,
                     () -> new FlowerPatchBlock(SpicePlantBlock.defaultProperties(), seedItemRef, spice));
+            worldgenBlock = block;
+        } else if (spice.getSourceType() == SourceType.BUSH) {
+            block = Services.REGISTRY.registerBlock(blockId,
+                    () -> new SpiceBushBlock(SpicePlantBlock.defaultProperties(), seedItemRef, spice));
             worldgenBlock = block;
         } else if (spice.isAquatic()) {
             block = Services.REGISTRY.registerBlock(blockId,

@@ -228,9 +228,8 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
     private boolean tryPlaceOne(WorldGenLevel level, RandomSource random, BlockPos surfacePos, Spice spice) {
         SpicePlants.RegisteredSpicePlant plant = SpicePlants.getRegistered().get(spice);
         if (plant == null) {
-            // Resolved Spice isn't a patch/crop/rhizome plant (trees and Host
-            // Trees are placed separately, BUSH has no block yet) - nothing to
-            // place.
+            // Resolved Spice isn't a patch/bush/crop/rhizome plant (trees and
+            // Host Trees are placed separately) - nothing to place.
             return false;
         }
 

@@ -79,3 +79,4 @@
     - Recipes to turn raw into processed spices should usually involve the drying rack, but could theoretically be done with other processes like soaking, smoking, cutting, etc. in the future.
 - [x] Rework assets like textures and models to be separated into folders per spice (e.g. `textures/block/cinnamon/stripped_cinnamon_log.png`)
 - [x] Prevent other spices from spawning when a spice grove borders two different buckets, so groves only yield a single spice plant.
+- [ ] Rework seed loot, so there's only a chance to drop 1 seeds (or cutting for rhizomes) item when harvesting spices, decreases by tier. Excludes trees and vines.

@@ -376,8 +376,7 @@ public final class RegionHeartSearch {
 
     /**
      * @return Whether {@code spice} has a plant, tree or Host Tree worldgen can
-     *         place. Spices without one (currently {@code BUSH}) would yield a
-     *         Heart that leads nowhere.
+     *         place. Spices without one would yield a Heart that leads nowhere.
      */
     private static boolean hasWorldgenPlant(Spice spice) {
         return SpicePlants.getRegistered().containsKey(spice) || SpiceTrees.getRegistered().containsKey(spice)
