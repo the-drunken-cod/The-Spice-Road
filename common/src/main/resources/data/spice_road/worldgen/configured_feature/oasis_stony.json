@@ -4,7 +4,7 @@
     "radius": {
       "type": "minecraft:uniform",
       "min_inclusive": 1,
-      "max_inclusive": 3
+      "max_inclusive": 4
     },
     "floor": {
       "type": "minecraft:noise_provider",

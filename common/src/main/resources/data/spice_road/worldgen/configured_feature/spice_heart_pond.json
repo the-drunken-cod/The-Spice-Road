@@ -1,10 +1,11 @@
 {
   "type": "spice_road:spice_pond",
   "config": {
+    "max_slope": 2,
     "radius": {
       "type": "minecraft:uniform",
       "min_inclusive": 1,
-      "max_inclusive": 3
+      "max_inclusive": 4
     },
     "floor": {
       "type": "minecraft:noise_provider",

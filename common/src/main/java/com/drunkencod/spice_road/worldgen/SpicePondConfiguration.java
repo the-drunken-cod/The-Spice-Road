@@ -21,7 +21,8 @@ import com.drunkencod.spice_road.Constants;
 /**
  * Configuration of a {@link SpicePondFeature} Spice Pond, read from its
  * {@code configured_feature} JSON. Splotchy floors and shores come from
- * noise-based block state providers (e.g. {@code minecraft:noise_threshold_provider}).
+ * noise-based block state providers (e.g.
+ * {@code minecraft:noise_threshold_provider}).
  *
  * @param radius      Radius of the water surface, in blocks, before its edge
  *                    is roughened.
@@ -42,10 +43,10 @@ public record SpicePondConfiguration(IntProvider radius, BlockStateProvider floo
         implements FeatureConfiguration {
 
     /** Default {@link #maxSlope()}, in blocks. */
-    public static final int DEFAULT_MAX_SLOPE = 2;
+    public static final int DEFAULT_MAX_SLOPE = 4;
 
     /** Largest accepted {@link #maxSlope()}. */
-    public static final int MAX_SLOPE = 3;
+    public static final int MAX_SLOPE = 6;
 
     /**
      * Largest accepted {@link #radius()}. A pond is shrunk further if needed
@@ -53,7 +54,10 @@ public record SpicePondConfiguration(IntProvider radius, BlockStateProvider floo
      */
     public static final int MAX_RADIUS = 8;
 
-    /** Default {@link #replaceable()} ground: natural surface blocks a pond's shore may paint over. */
+    /**
+     * Default {@link #replaceable()} ground: natural surface blocks a pond's shore
+     * may paint over.
+     */
     public static final TagKey<Block> SHORE_REPLACEABLE = TagKey.create(Registries.BLOCK,
             ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "pond_shore_replaceable"));
 
