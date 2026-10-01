@@ -210,7 +210,7 @@
     "spice_road.configuration.plant.harvestYieldMultiplier": "Harvest Yield",
     "spice_road.configuration.plant.tooltip": "Harvesting Spices that grow on the ground.",
     "spice_road.configuration.plant": "Spice Plants",
-    "spice_road.configuration.region.cellScale.tooltip": "Approximate edge length of a Spice Region, in blocks. Larger regions mean longer journeys between Spices, which suits multiplayer servers.",
+    "spice_road.configuration.region.cellScale.tooltip": "Approximate edge length of a Spice Region, in blocks. Larger regions mean longer journeys between Spices, which suits multiplayer servers. 256-512 recommended for singleplayer, 512-1024 for multiplayer.",
     "spice_road.configuration.region.cellScale": "Spice Region Size",
     "spice_road.configuration.region.clusteringStrength.tooltip": "How strongly Spice Region generation favors common Spices over rarer ones.",
     "spice_road.configuration.region.clusteringStrength": "Clustering Strength",
