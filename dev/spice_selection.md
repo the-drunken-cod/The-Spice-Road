@@ -1,18 +1,18 @@
 ## Locked in Spices:
 ```csv
 ?,source_type ,spice       ,harvested_part    ,harvest_method        ,diff.,climate  ,season              ,ht_cl ,sw_bt ,sr_ml ,er_fl ,wo_gr ,pg_sf ,re_cl ,sv_dl 
-/,tree        ,Allspice    ,Berries           ,Pick                  ,   2 ,tropical ,summer              ,  0.4 ,  0.4 , -0.3 ,  0.2 ,  0.6 ,  0.3 ,  0.2 ,  0.1 
+ ,tree        ,Allspice    ,Berries           ,Pick                  ,   2 ,tropical ,summer              ,  0.4 ,  0.4 , -0.3 ,  0.2 ,  0.6 ,  0.3 ,  0.2 ,  0.1 
 /,tree        ,Cassia      ,Bark              ,Strip with axe        ,   3 ,tropical ,spring;summer       ,  0.4 ,  0.6 , -0.2 ,  0.2 ,  1.0 ,  0.3 ,  0.2 ,  0.0 
- ,tree        ,Cinnamon    ,Bark              ,Strip with axe        ,   5 ,tropical ,spring;summer       ,  0.3 ,  0.8 , -0.3 ,  0.1 ,  0.9 ,  0.1 ,  0.2 , -0.2 
+/,tree        ,Cinnamon    ,Bark              ,Strip with axe        ,   5 ,tropical ,spring;summer       ,  0.3 ,  0.8 , -0.3 ,  0.1 ,  0.9 ,  0.1 ,  0.2 , -0.2 
  ,tree        ,Clove       ,Flower buds       ,Pick mature leaves    ,   5 ,tropical ,summer;autumn       ,  0.5 ,  0.2 , -0.2 ,  0.3 ,  0.8 ,  0.6 ,  0.4 ,  0.1 
  ,tree        ,Curry Leaf  ,Leaves            ,Pick mature leaves    ,   2 ,tropical ,spring;summer       ,  0.1 , -0.1 ,  0.1 ,  0.3 , -0.6 ,  0.1 ,  0.2 ,  0.7 
-/,tree        ,Mastic      ,Resin tears       ,Strip with axe        ,   4 ,arid     ,summer              , -0.1 , -0.2 , -0.3 , -0.2 ,  0.3 ,  0.0 ,  1.0 , -0.4 
- ,tree        ,Nutmeg      ,Seed              ,Pick mature leaves    ,   5 ,tropical ,summer;autumn       ,  0.2 ,  0.4 , -0.5 ,  0.3 ,  0.5 ,  0.1 ,  0.3 ,  0.1 
+ ,tree        ,Mastic      ,Resin tears       ,Strip with axe        ,   4 ,arid     ,summer              , -0.1 , -0.2 , -0.3 , -0.2 ,  0.3 ,  0.0 ,  1.0 , -0.4 
+/,tree        ,Nutmeg      ,Seed              ,Pick mature leaves    ,   5 ,tropical ,summer;autumn       ,  0.2 ,  0.4 , -0.5 ,  0.3 ,  0.5 ,  0.1 ,  0.3 ,  0.1 
  ,tree        ,Star Anise  ,Star-shaped fruit ,Pick                  ,   4 ,temperate,spring;autumn       , -0.3 ,  0.7 , -0.3 , -0.2 ,  0.4 ,  0.0 ,  0.1 , -0.5 
  ,tree        ,Tamarind    ,Pulpy seeds       ,Pick                  ,   3 ,tropical ,summer;autumn       ,  0.0 ,  0.3 ,  0.6 ,  0.4 ,  0.5 ,  0.2 ,  0.3 ,  0.4 
  ,bush        ,Caper       ,Flower buds       ,Pick with cutting tool,   3 ,arid     ,summer              ,  0.0 , -0.3 ,  0.8 ,  0.2 , -0.4 ,  0.3 ,  0.0 ,  0.6 
  ,bush        ,Rosemary    ,Sprigs            ,Pick with cutting tool,   1 ,arid     ,winter;spring;summer,  0.0 , -0.4 , -0.1 ,  0.2 , -0.3 ,  0.2 ,  0.8 ,  0.3 
- ,bush        ,Sage        ,Leaves            ,Pick with cutting tool,   1 ,temperate,spring;summer       ,  0.0 , -0.4 , -0.2 ,  0.3 , -0.5 ,  0.1 ,  0.5 ,  0.5 
+/,bush        ,Sage        ,Leaves            ,Pick with cutting tool,   1 ,temperate,spring;summer       ,  0.0 , -0.4 , -0.2 ,  0.3 , -0.5 ,  0.1 ,  0.5 ,  0.5 
  ,bush        ,Sumac       ,Berry clusters    ,Pick with cutting tool,   2 ,arid     ,summer;autumn       ,  0.0 ,  0.0 ,  1.0 ,  0.1 , -0.2 ,  0.0 ,  0.0 ,  0.3 
  ,bush        ,Thyme       ,Sprigs            ,Pick with cutting tool,   1 ,arid     ,spring;summer       ,  0.1 , -0.3 ,  0.0 ,  0.3 , -0.6 ,  0.2 ,  0.4 ,  0.4 
  ,vine        ,Long Pepper ,Flower spikes     ,Pick mature vines     ,   4 ,tropical ,summer;autumn       ,  0.7 ,  0.3 , -0.1 ,  0.2 ,  0.4 ,  0.6 ,  0.2 ,  0.2 
@@ -21,9 +21,9 @@
  ,flower_patch,Nigella     ,Seeds             ,Break mature crop     ,   2 ,temperate,spring;summer       ,  0.2 , -0.7 ,  0.0 ,  0.5 ,  0.2 ,  0.3 ,  0.1 ,  0.3 
  ,flower_patch,Safflower   ,Petals            ,Break mature crop     ,   2 ,arid     ,summer              ,  0.0 ,  0.1 , -0.2 , -0.6 , -0.3 , -0.5 , -0.4 , -0.7 
 /,flower_patch,Saffron     ,Stigmas           ,Hand-pick mature crop ,   5 ,arid     ,autumn              ,  0.0 , -0.1 , -0.3 , -1.0 , -0.2 , -0.4 , -0.3 , -0.6 
-/,crop        ,Caraway     ,Seeds             ,Break mature crop     ,   1 ,cold     ,spring;autumn       ,  0.0 , -0.2 , -0.1 ,  0.4 , -0.2 ,  0.3 ,  0.1 ,  0.3 
+ ,crop        ,Caraway     ,Seeds             ,Break mature crop     ,   1 ,cold     ,spring;autumn       ,  0.0 , -0.2 , -0.1 ,  0.4 , -0.2 ,  0.3 ,  0.1 ,  0.3 
  ,crop        ,Coriander   ,Seeds/leaves      ,Break mature crop     ,   1 ,temperate,spring;autumn       , -0.1 ,  0.3 ,  0.3 , -0.4 , -0.7 ,  0.0 , -0.6 , -0.3 
- ,crop        ,Cumin       ,Seeds             ,Break mature crop     ,   4 ,arid     ,spring;summer       ,  0.2 , -0.3 , -0.2 ,  0.9 ,  0.2 ,  0.3 ,  0.1 ,  0.6 
+/,crop        ,Cumin       ,Seeds             ,Break mature crop     ,   4 ,arid     ,spring;summer       ,  0.2 , -0.3 , -0.2 ,  0.9 ,  0.2 ,  0.3 ,  0.1 ,  0.6 
  ,crop        ,Dill        ,Seeds/leaves      ,Break mature crop     ,   1 ,cold     ,spring;summer       , -0.3 ,  0.1 ,  0.2 , -0.2 , -0.9 ,  0.0 , -0.3 , -0.2 
  ,crop        ,Fennel      ,Seeds             ,Break mature crop     ,   1 ,temperate,spring;summer;autumn, -0.7 ,  0.6 , -0.2 , -0.3 , -0.4 , -0.2 , -0.3 , -0.4 
  ,crop        ,Fenugreek   ,Seeds             ,Break mature crop     ,   2 ,arid     ,spring;autumn       ,  0.0 , -0.8 , -0.3 ,  0.6 ,  0.1 ,  0.1 ,  0.0 ,  0.7 
@@ -34,8 +34,8 @@
  ,rhizome     ,Horseradish ,Root              ,Break mature crop     ,   2 ,cold     ,autumn;winter       ,  0.3 , -0.3 ,  0.1 ,  0.4 , -0.3 ,  0.8 , -0.4 ,  0.2 
  ,rhizome     ,Licorice    ,Root              ,Break mature crop     ,   3 ,temperate,spring;summer;autumn, -0.6 ,  1.0 , -0.6 ,  0.2 ,  0.3 , -0.3 ,  0.0 ,  0.0 
  ,rhizome     ,Sweet Flag  ,Rhizome (in water),Break mature crop     ,   2 ,cold     ,spring;autumn;winter,  0.3 ,  0.2 ,  0.4 ,  0.3 , -0.1 , -0.1 ,  0.2 , -0.1 
-/,rhizome     ,Turmeric    ,Rhizome           ,Break mature crop     ,   3 ,tropical ,summer;autumn       ,  0.1 , -0.5 , -0.2 ,  0.9 ,  0.0 ,  0.1 ,  0.0 ,  0.3 
- ,rhizome     ,Wasabi      ,Rhizome (in water),Break mature crop     ,   5 ,cold     ,autumn;winter;spring,  0.5 , -0.1 ,  0.1 , -0.4 , -0.6 ,  1.0 , -0.9 , -0.3 
+ ,rhizome     ,Turmeric    ,Rhizome           ,Break mature crop     ,   3 ,tropical ,summer;autumn       ,  0.1 , -0.5 , -0.2 ,  0.9 ,  0.0 ,  0.1 ,  0.0 ,  0.3 
+/,rhizome     ,Wasabi      ,Rhizome (in water),Break mature crop     ,   5 ,cold     ,autumn;winter;spring,  0.5 , -0.1 ,  0.1 , -0.4 , -0.6 ,  1.0 , -0.9 , -0.3 
  ,rhizome     ,Water Pepper,Rhizome (in water),Break mature crop     ,   3 ,temperate,spring;summer;autumn,  0.4 , -0.2 ,  0.3 ,  0.1 , -0.3 ,  0.6 , -0.1 , -0.2 
 
 ```
