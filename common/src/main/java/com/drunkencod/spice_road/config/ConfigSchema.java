@@ -80,18 +80,18 @@ public final class ConfigSchema {
      * Base pick weight per {@link Tier} when a Spice Region resolves its Spice,
      * before the clustering strength is applied.
      */
-    public static final Map<Tier, ConfigOption<Double>> REGION_TIER_WEIGHT = perTier(REGION_TIER_WEIGHTS, 4.0, 3.0,
-            2.0, 1.25, 0.0, 100.0);
+    public static final Map<Tier, ConfigOption<Double>> REGION_TIER_WEIGHT = perTier(REGION_TIER_WEIGHTS, 3.0, 2.5,
+            2.0, 1.5, 0.0, 100.0);
 
     // #region Spice Map
 
     /** Search radius, in cells, for {@code /locate} and Spice Map loot. */
     public static final ConfigOption<Integer> SPICE_MAP_SEARCH_RADIUS_CELLS = add(
-            ConfigOption.ofInt(SPICE_MAP, "searchRadiusCells", 25, 1, 1000));
+            ConfigOption.ofInt(SPICE_MAP, "searchRadiusCells", 28, 1, 1000));
 
     /** Search radius, in cells, for cartographer Spice Map offers. */
     public static final ConfigOption<Integer> SPICE_MAP_VILLAGER_SEARCH_RADIUS_CELLS = add(
-            ConfigOption.ofInt(SPICE_MAP, "villagerSearchRadiusCells", 12, 1, 1000));
+            ConfigOption.ofInt(SPICE_MAP, "villagerSearchRadiusCells", 14, 1, 1000));
 
     /** Whether Spice Maps can generate as chest loot. */
     public static final ConfigOption<Boolean> SPICE_MAP_LOOT_ENABLED = add(
@@ -136,7 +136,7 @@ public final class ConfigSchema {
 
     /** Growth-speed multiplier of planted Spices per {@link Tier}. */
     public static final Map<Tier, ConfigOption<Double>> CULTIVATION_GROWTH_SPEED_MULTIPLIER = perTier(
-            CULTIVATION_GROWTH_SPEED, 1.0, 1.0, 1.0, 1.0, 0.1, 5.0);
+            CULTIVATION_GROWTH_SPEED, 1.75, 1.5, 1.25, 1.0, 0.01, 100.0);
 
     // #region Harvesting
 
@@ -152,7 +152,7 @@ public final class ConfigSchema {
      * Fraction of a fruiting Spice Tree's leaves that bear fruit, per {@link Tier}.
      */
     public static final Map<Tier, ConfigOption<Double>> TREE_FRUITING_LEAVES_CHANCE = perTier(TREE_FRUITING_LEAVES,
-            0.3, 0.2, 0.15, 0.1, 0.0, 1.0);
+            0.35, 0.25, 0.2, 0.15, 0.0, 1.0);
 
     /** Fraction of a Spice Vine's segments that can ripen, per {@link Tier}. */
     public static final Map<Tier, ConfigOption<Double>> VINE_RIPENING_SEGMENTS_CHANCE = perTier(
@@ -180,7 +180,7 @@ public final class ConfigSchema {
 
     /** Upper bound of the per-axis multipliers applied when cooking. */
     public static final ConfigOption<Double> COOKING_VARIANCE_MAX = add(
-            ConfigOption.ofDouble(COOKING, "varianceMax", 1.25, 0.0, 10.0));
+            ConfigOption.ofDouble(COOKING, "varianceMax", 1.3, 0.0, 10.0));
 
     // #region Tooltip
 
