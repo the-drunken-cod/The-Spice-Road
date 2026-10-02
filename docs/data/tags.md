@@ -47,6 +47,7 @@ The following datapack taglists are created and managed by The Spice Road and ma
 | Tag | Description |
 | :-- | :-- |
 | `spice_road:no_region_heart` | Biomes that don't grow spices (like oceans) should be added to this list, so that the algorithm that finds spice region hearts (for `/locate` and the maps) doesn't yield them as a result. |
+| `spice_road:no_spice_plants` | Biomes where no spice plant, tree or grove generates, even if the spice region would allow one. Contains mushroom fields by default. Entries also count as `#spice_road:no_region_heart`. |
 | `spice_road:oasis/desert`, `spice_road:oasis/badlands`, `spice_road:oasis/coast`, `spice_road:oasis/stony` | Biomes whose heart groves, when they sit on unsuitable ground, carve the matching oasis variant. Checked in that order; biomes in none of them get the generic oasis. |
 | `spice_road:
 

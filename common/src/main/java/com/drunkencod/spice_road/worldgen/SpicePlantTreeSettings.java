@@ -19,21 +19,33 @@ import net.minecraft.world.level.biome.Biome;
  * groves in sparse biomes like plains or savannas don't turn into small
  * forests.
  *
- * @param fallback Tree count for biomes no rule matches.
- * @param rules    Biome-specific tree counts. The first rule whose biome tag
- *                 contains the patch's biome wins.
- * @param spacing  Minimum horizontal distance between two trunks, in blocks.
+ * @param fallback     Tree count for biomes no rule matches.
+ * @param rules        Biome-specific tree counts. The first rule whose biome
+ *                     tag
+ *                     contains the patch's biome wins.
+ * @param spacing      Minimum horizontal distance between two trunks, in
+ *                     blocks.
+ * @param groundRadius Radius, in blocks, of the square of dry columns that has
+ *                     to surround a trunk, so trees don't grow on lone blocks
+ *                     sticking out of water. {@code 0} only checks the trunk's
+ *                     own column.
  */
-public record SpicePlantTreeSettings(IntProvider fallback, List<Rule> rules, int spacing) {
+public record SpicePlantTreeSettings(IntProvider fallback, List<Rule> rules, int spacing, int groundRadius) {
+
+    /** Default for {@link #groundRadius()}. */
+    public static final int DEFAULT_GROUND_RADIUS = 2;
 
     /** A single tree, no spacing - the default for scattered patches. */
-    public static final SpicePlantTreeSettings SINGLE = new SpicePlantTreeSettings(ConstantInt.of(1), List.of(), 0);
+    public static final SpicePlantTreeSettings SINGLE = new SpicePlantTreeSettings(ConstantInt.of(1), List.of(), 0,
+            DEFAULT_GROUND_RADIUS);
 
     /** Codec of these settings' JSON fields. */
     public static final Codec<SpicePlantTreeSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             IntProvider.codec(0, 64).fieldOf("default").forGetter(SpicePlantTreeSettings::fallback),
             Rule.CODEC.listOf().optionalFieldOf("rules", List.of()).forGetter(SpicePlantTreeSettings::rules),
-            Codec.intRange(0, 16).optionalFieldOf("spacing", 0).forGetter(SpicePlantTreeSettings::spacing))
+            Codec.intRange(0, 16).optionalFieldOf("spacing", 0).forGetter(SpicePlantTreeSettings::spacing),
+            Codec.intRange(0, 8).optionalFieldOf("ground_radius", DEFAULT_GROUND_RADIUS)
+                    .forGetter(SpicePlantTreeSettings::groundRadius))
             .apply(instance, SpicePlantTreeSettings::new));
 
     /**

@@ -12,8 +12,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -23,6 +26,7 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 
+import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.AquaticSpiceRhizomeBlock;
 import com.drunkencod.spice_road.block.SpicePlantBlock;
 import com.drunkencod.spice_road.block.SpicePlants;
@@ -62,6 +66,13 @@ import com.drunkencod.spice_road.spice.region.SpiceRegionResolver;
  */
 public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
 
+    /**
+     * Biomes where no patch, tree or grove generates, whatever Spice the region
+     * resolves to.
+     */
+    public static final TagKey<Biome> NO_SPICE_PLANTS = TagKey.create(Registries.BIOME,
+            ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "no_spice_plants"));
+
     public SpicePlantFeature(Codec<SpicePlantConfiguration> codec) {
         super(codec);
     }
@@ -72,6 +83,8 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
         RandomSource random = context.random();
         SpicePlantConfiguration config = context.config();
         BlockPos originSurface = level.getHeightmapPos(SurfaceHeightmaps.surface(level), context.origin());
+        if (level.getBiome(originSurface).is(NO_SPICE_PLANTS))
+            return false;
 
         Optional<Spice> heartSpice = Optional.empty();
         if (config.heartSpiceOnly()) {
@@ -185,7 +198,8 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
         for (int i = 0; i < config.tries() && trunks.size() < maxTrees; i++) {
             BlockPos surfacePos = i == 0 ? originSurface
                     : randomSurfacePos(context.level(), context.random(), context.origin(), config.xzSpread());
-            boolean tooClose = trunks.stream().anyMatch(trunk -> horizontalDistanceSq(trunk, surfacePos) < minDistanceSq);
+            boolean tooClose = trunks.stream()
+                    .anyMatch(trunk -> horizontalDistanceSq(trunk, surfacePos) < minDistanceSq);
             if (!tooClose && tryPlaceTree(context, treeFeature, sapling, surfacePos))
                 trunks.add(surfacePos);
         }
@@ -202,7 +216,8 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
      * Places a single tree using its datapack-defined configured feature (see
      * {@link SpiceTree#getTreeFeature()} /
      * {@link com.drunkencod.spice_road.block.SpiceVines.RegisteredSpiceVine#hostTreeFeature()}),
-     * if {@code sapling} could survive at {@code surfacePos}.
+     * if {@code sapling} could survive at {@code surfacePos} and the trunk stands
+     * on {@link #isSolidGround solid ground}.
      */
     private boolean tryPlaceTree(FeaturePlaceContext<SpicePlantConfiguration> context,
             ResourceKey<ConfiguredFeature<?, ?>> treeFeature, @Nullable Block sapling, BlockPos surfacePos) {
@@ -211,11 +226,36 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
             return false;
         if (sapling != null && !sapling.defaultBlockState().canSurvive(level, surfacePos))
             return false;
+        if (!isSolidGround(level, surfacePos, context.config().trees().groundRadius()))
+            return false;
 
         return level.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE)
                 .getHolder(treeFeature)
                 .map(feature -> feature.value().place(level, context.chunkGenerator(), context.random(), surfacePos))
                 .orElse(false);
+    }
+
+    /**
+     * Checks that {@code pos} isn't a lone patch of ground, like a single
+     * dirt block in the middle of a lake or ocean: every column within
+     * {@code radius} blocks must be topped by a non-fluid block, judged like
+     * {@link #lacksGrowableGround} does.
+     *
+     * @param pos    The surface position a trunk would stand at.
+     * @param radius Half-width of the square of columns to check.
+     * @return Whether all those columns are dry.
+     */
+    private static boolean isSolidGround(WorldGenLevel level, BlockPos pos, int radius) {
+        BlockPos.MutableBlockPos column = new BlockPos.MutableBlockPos();
+        for (int dx = -radius; dx <= radius; dx++) {
+            for (int dz = -radius; dz <= radius; dz++) {
+                column.set(pos.getX() + dx, pos.getY(), pos.getZ() + dz);
+                BlockPos ground = level.getHeightmapPos(SurfaceHeightmaps.surface(level), column).below();
+                if (!level.getFluidState(ground).isEmpty())
+                    return false;
+            }
+        }
+        return true;
     }
 
     // #region plants
@@ -282,7 +322,10 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
         return null;
     }
 
-    /** @return The Spice the Spice Region resolves to at {@code pos}, using the climate found there. */
+    /**
+     * @return The Spice the Spice Region resolves to at {@code pos}, using the
+     *         climate found there.
+     */
     private static Optional<Spice> resolveSpiceAt(WorldGenLevel level, BlockPos pos) {
         return SpiceRegionResolver
                 .resolve(level.getSeed(), Services.CONFIG.getSpiceRegionSalt(),
@@ -292,7 +335,10 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
                 .spice();
     }
 
-    /** @return The surface position of a random column within {@code spread} blocks of {@code origin}. */
+    /**
+     * @return The surface position of a random column within {@code spread} blocks
+     *         of {@code origin}.
+     */
     private static BlockPos randomSurfacePos(WorldGenLevel level, RandomSource random, BlockPos origin, int spread) {
         int dx = random.nextInt(spread * 2 + 1) - spread;
         int dz = random.nextInt(spread * 2 + 1) - spread;
