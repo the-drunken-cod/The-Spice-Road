@@ -1,0 +1,29 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:desert",
+    "#minecraft:is_badlands",
+    "#minecraft:is_savanna",
+    "minecraft:snowy_plains",
+    "minecraft:ice_spikes",
+    "minecraft:snowy_taiga",
+    "minecraft:snowy_beach",
+    "minecraft:frozen_river",
+    "minecraft:grove",
+    "minecraft:snowy_slopes",
+    "minecraft:frozen_peaks",
+    "minecraft:jagged_peaks",
+    {
+      "id": "#c:is_desert",
+      "required": false
+    },
+    {
+      "id": "#c:is_dry",
+      "required": false
+    },
+    {
+      "id": "#c:is_cold",
+      "required": false
+    }
+  ]
+}

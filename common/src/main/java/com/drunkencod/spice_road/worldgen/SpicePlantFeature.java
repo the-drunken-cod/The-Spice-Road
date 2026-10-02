@@ -223,7 +223,8 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
     /**
      * Places one {@code spice} plant at a random growth stage, if it can
      * survive at {@code surfacePos} - or, for an Aquatic Spice, waterlogged in
-     * the water just below it (see {@link #findShallowWater}).
+     * the water just below it (see {@link #findShallowWater}), displacing any
+     * {@link AquaticSpiceRhizomeBlock#WATER_SURFACE_VEGETATION} above it.
      */
     private boolean tryPlaceOne(WorldGenLevel level, RandomSource random, BlockPos surfacePos, Spice spice) {
         SpicePlants.RegisteredSpicePlant plant = SpicePlants.getRegistered().get(spice);
@@ -250,6 +251,9 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
 
         int age = random.nextInt(block.getMaxAge() + 1);
         BlockState state = defaultState.setValue(block.getAgeProperty(), age);
+        if (block instanceof AquaticSpiceRhizomeBlock && level.getBlockState(pos.above())
+                .is(AquaticSpiceRhizomeBlock.WATER_SURFACE_VEGETATION))
+            level.setBlock(pos.above(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
         return level.setBlock(pos, state, Block.UPDATE_CLIENTS);
     }
 

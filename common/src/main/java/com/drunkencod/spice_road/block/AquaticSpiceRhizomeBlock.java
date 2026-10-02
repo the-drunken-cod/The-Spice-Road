@@ -71,6 +71,14 @@ public class AquaticSpiceRhizomeBlock extends SpicePlantBlock
     public static final TagKey<Fluid> AQUATIC_SPICE_WATER = TagKey.create(Registries.FLUID,
             ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "aquatic_spice_water"));
 
+    /**
+     * Plants resting on a water surface, e.g. lily pads. Worldgen removes one
+     * directly above an Aquatic Spice it places, since the plant is drawn
+     * taller than its block.
+     */
+    public static final TagKey<Block> WATER_SURFACE_VEGETATION = TagKey.create(Registries.BLOCK,
+            ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "water_surface_vegetation"));
+
     /** Whether this plant holds a water source. Never true together with {@link #FLOW}. */
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 

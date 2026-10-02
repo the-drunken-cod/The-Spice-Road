@@ -24,13 +24,15 @@ import net.minecraft.world.level.block.SnowyDirtBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.world.level.material.Fluids;
 
 /**
  * Carves a Spice Pond, shaped by a {@link SpicePondConfiguration}: a roughly
  * round pond exactly one block of water deep, level with the ground at its
  * origin. Higher ground within it is cut away, lower ground is filled up, and
  * wherever the water would spill out a bank is raised to hold it in. Then its
- * shore is painted, its decorations are generated around it, and its surface
+ * shore is painted, its decorations are generated around it and on its water
+ * (biome permitting, see {@link #placeWaterDecorations}), and its surface
  * is frozen and snowed on wherever the biome would (see
  * {@link #freezeTopLayer}).
  * <p>
@@ -122,6 +124,7 @@ public class SpicePondFeature extends Feature<SpicePondConfiguration> {
         }
 
         placeDecorations(context, area, origin, radius);
+        placeWaterDecorations(context, area, origin, radius, waterY);
         // After decorations, since trees checked against a sapling won't grow on snow.
         freezeTopLayer(level, area, origin, reach, waterY);
         return true;
@@ -359,6 +362,37 @@ public class SpicePondFeature extends Feature<SpicePondConfiguration> {
                     continue;
 
                 BlockPos surface = level.getHeightmapPos(SurfaceHeightmaps.surface(level), column);
+                decoration.feature().value().place(level, context.chunkGenerator(), random, surface);
+            }
+        }
+    }
+
+    /**
+     * Generates every {@link SpicePondConfiguration#waterDecorations() water
+     * decoration} one block above the water, at random columns within
+     * {@code radius} of {@code origin}, unless the origin's biome is in
+     * {@link SpicePondConfiguration#noWaterDecorationBiomes()}. Columns that
+     * aren't water, e.g. past the roughened edge, and columns within
+     * {@link #DECORATION_MARGIN} of {@code area}'s edge are skipped.
+     */
+    private static void placeWaterDecorations(FeaturePlaceContext<SpicePondConfiguration> context,
+            WritableArea area, BlockPos origin, int radius, int waterY) {
+        WorldGenLevel level = context.level();
+        RandomSource random = context.random();
+        SpicePondConfiguration config = context.config();
+        if (config.waterDecorations().isEmpty() || level.getBiome(origin).is(config.noWaterDecorationBiomes()))
+            return;
+
+        for (SpicePondConfiguration.Decoration decoration : config.waterDecorations()) {
+            int count = decoration.count().sample(random);
+            for (int i = 0; i < count; i++) {
+                float angle = random.nextFloat() * Mth.TWO_PI;
+                double distance = Math.sqrt(random.nextFloat()) * radius;
+                BlockPos surface = new BlockPos(origin.getX() + Mth.floor(Mth.cos(angle) * distance), waterY + 1,
+                        origin.getZ() + Mth.floor(Mth.sin(angle) * distance));
+                if (area.reachFrom(surface) < DECORATION_MARGIN || !level.getFluidState(surface.below()).is(Fluids.WATER))
+                    continue;
+
                 decoration.feature().value().place(level, context.chunkGenerator(), random, surface);
             }
         }

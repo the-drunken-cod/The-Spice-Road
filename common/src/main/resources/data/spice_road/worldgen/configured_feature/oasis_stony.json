@@ -117,6 +117,16 @@
           "max_inclusive": 2
         }
       }
+    ],
+    "water_decorations": [
+      {
+        "feature": "spice_road:pond_lily_pad",
+        "count": {
+          "type": "minecraft:uniform",
+          "min_inclusive": 1,
+          "max_inclusive": 2
+        }
+      }
     ]
   }
 }

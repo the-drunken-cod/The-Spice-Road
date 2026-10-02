@@ -11,6 +11,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
@@ -37,9 +38,14 @@ import com.drunkencod.spice_road.Constants;
  * @param replaceable Ground the {@code shore} may replace.
  * @param decorations Features generated around the pond, e.g. trees, single
  *                    Spice Plants or small Spice patches.
+ * @param waterDecorations Features generated on the pond's water surface,
+ *                    e.g. lily pads. Placed one block above the water.
+ * @param noWaterDecorationBiomes Biomes the pond's origin must not be in for
+ *                    its {@code waterDecorations} to generate.
  */
 public record SpicePondConfiguration(IntProvider radius, BlockStateProvider floor, Optional<BlockStateProvider> shore,
-        int shoreWidth, int maxSlope, TagKey<Block> replaceable, List<Decoration> decorations)
+        int shoreWidth, int maxSlope, TagKey<Block> replaceable, List<Decoration> decorations,
+        List<Decoration> waterDecorations, TagKey<Biome> noWaterDecorationBiomes)
         implements FeatureConfiguration {
 
     /** Default {@link #maxSlope()}, in blocks. */
@@ -61,6 +67,13 @@ public record SpicePondConfiguration(IntProvider radius, BlockStateProvider floo
     public static final TagKey<Block> SHORE_REPLACEABLE = TagKey.create(Registries.BLOCK,
             ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "pond_shore_replaceable"));
 
+    /**
+     * Default {@link #noWaterDecorationBiomes()}: arid and cold biomes, where
+     * water plants don't belong.
+     */
+    public static final TagKey<Biome> NO_WATER_DECORATIONS = TagKey.create(Registries.BIOME,
+            ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "no_pond_water_vegetation"));
+
     /** Largest accepted {@link #shoreWidth()}. */
     public static final int MAX_SHORE_WIDTH = 3;
 
@@ -76,7 +89,11 @@ public record SpicePondConfiguration(IntProvider radius, BlockStateProvider floo
             TagKey.hashedCodec(Registries.BLOCK).optionalFieldOf("replaceable", SHORE_REPLACEABLE)
                     .forGetter(SpicePondConfiguration::replaceable),
             Decoration.CODEC.listOf().optionalFieldOf("decorations", List.of())
-                    .forGetter(SpicePondConfiguration::decorations))
+                    .forGetter(SpicePondConfiguration::decorations),
+            Decoration.CODEC.listOf().optionalFieldOf("water_decorations", List.of())
+                    .forGetter(SpicePondConfiguration::waterDecorations),
+            TagKey.hashedCodec(Registries.BIOME).optionalFieldOf("no_water_decoration_biomes", NO_WATER_DECORATIONS)
+                    .forGetter(SpicePondConfiguration::noWaterDecorationBiomes))
             .apply(instance, SpicePondConfiguration::new));
 
     /**
