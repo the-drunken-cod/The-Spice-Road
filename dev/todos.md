@@ -89,3 +89,55 @@
 - [ ] Investigate errors:
     - [ ] [Server thread/INFO] [SeedRenderer/]: Seed Renderer could not grow a spice_road:spice_plant in memory (java.lang.ClassCastException: Cannot cast java.lang.Integer to java.lang.Long at java.base/java.lang.Class.cast(Class.java:3492)); it is drawn from its definition instead
     - [ ] [main/WARN] [mixin/]: Reference map 'spice_road.refmap.json' for spice_road.mixins.json could not be read. If this is a development environment you can ignore this message
+- [ ] Animate tooltip: increment rendered axis values by 0.1 per tick until reaching the final value, with an ease-out timeout function.
+- [ ] Rework spice profile system for the seasoning minigame:
+    - Only Spice Items keep a Spice Profile. Foods no longer carry a Profile Override; instead they carry Seasoning Effects and *counted* Flavor Contributors (item + amount).
+    - Recipes (any mod) sum the counted contributors of all inputs (spice items and seasoned foods), drop the inputs' old effects and re-solve the output's effects with the automatic minigame. Spices are never voided or duplicated.
+    - Rework everything reading food profiles: tooltips, Sufficiently Seasoned, cooking variance (replaced by the automatic minigame), advancement triggers.
+    - "Everything Bagel" advancement becomes e.g. "eat a food with at least 10 flavor contributors".
+    - Flavor contributor tooltip lists amounts (see the max-applications item above).
+- [ ] Spice Grinder minigame:
+    - Implementation order:
+        1. [ ] Counted flavor contributors, strip the flavor profile from food.
+        2. [ ] Effect catalog, datagen and eat-time application.
+        3. [ ] Board generation, the automatic bot as pure, testable logic.
+        4. [ ] The session and GUI using script-generated placeholder assets.
+        5. [ ] Discovery storage and sync.
+        6. [ ] Real assets.
+    - Spice Grinder is a hand-held, non-stackable item. Using it opens the GUI. A paused session (food, consumed spices, pawn position, points, locked cells) lives in a data component on the item. The server validates and commits every move immediately; there is no reset or cancel once a run has started, and cashing out is always possible. No timeout: a session lasts until the player cashes out.
+    - A food can be seasoned once. The Grinder refuses food that already has Seasoning Effects. One run seasons a whole stack; each spice consumes one per food in the stack. Limits per run (counted per food), configurable: ~16 spices in total, ~3 of the same kind.
+    - Foods created in other mods' recipes are seasoned by the automatic minigame: a fixed, seeded, deliberately mediocre bot (ignores landmines and the player's knowledge), a pure function of the counted contributors and world.
+    - Board: 9x9 cells = nine 3x3 zones (a neutral center plus one zone per flavor axis, laid out around it). The axis layout is fixed in code from the FlavorAxis enum order, in reading order from the top left (skipping the center): heat_cooling, sweet_bitter, sour_mellow / earthy_floral, (neutral), woody_green / pungent_soft, resinous_clean, savory_delicate. Opposite zones (retreat pairs): heat/savory, sweet_bitter/resinous, sour/pungent, earthy/woody. Not configurable. The pawn starts on the center cell. Which pole's effects a zone gives is decided by the sign of the food's value on that axis at the start of the run (an axis starting at 0 has no pole).
+    - The whole board (cell kinds, positions, effects) is a pure function of world seed + configured salt + the food item being seasoned. Same for every player, no per-attempt shuffling; salt warning like the region salt.
+    - Generation is quota-based and datapack-driven: each zone/ring gets a fixed number of each cell kind (walls, landmines, boons, banes, vanilla-random, empty), the seed picks which cells. Boards with unreachable cells are re-seeded deterministically until valid. Balancing: all 8 zones equally rich in boons and banes by construction.
+    - Effects: 16 boons + 16 banes, one of each per axis pole (banes may be vanilla effects, boons mostly custom with a few vanilla stand-ins). A "vanilla-random" cell picks from a datapack pool, but fixed per cell by the seed. Outer ring only boons, inner ring the most banes (exact distribution open). The two outer rings give level 2 effects.
+    - Movement: WASD, arrow keys or eight GUI arrow buttons; keypresses are buffered so W+A moves diagonally. Each of the 8 directions is bound to the axis whose zone lies in that direction (up = sweet_bitter, up-left = heat_cooling, ...). A step pays from that axis's points towards 0, wherever the pawn stands.
+        - Starting points per axis = the Effective Profile (soft-capped). Step cost is configurable, proportional to soft cap / max distance (4).
+        - Buttons turn yellow when only 1 step is left and gray when none are left.
+        - Retreating is a step in the opposite direction, bound to a different axis, so it needs points on that axis: routes are mostly one-way, no undo, no free backtracking. Players with points on opposing axes can retreat.
+    - Neutral zone (rings 0-1): only walls and bare cells. No effects, no landmines. Rings are Chebyshev distance from the center cell, so orthogonal zones have 3/3/3 cells in rings 2/3/4 and diagonal zones 1/3/5.
+    - Lock-in: standing on a cell, the player can spend points to take its effects. Cost is paid from the cell's own zone axis and grows towards the outer rings. Walking over a cell gives no effects, except landmines.
+    - Landmines: only in the 3 outer rings, more likely further out. Invisible until stepped on, then their bane is forced onto the food, sampled from the zone's axis pole. Hits of the same type raise the effect level. Over the effect cap, a mine replaces the weakest boon.
+    - Default quotas per axis zone: 4 effect cells (1 / 1 / 2 across rings 2 / 3 / 4), 1 landmine (placed biased to outer rings), 2 walls, 2 bare cells. Neutral zone: 2 walls. Datapack-configurable.
+    - Walls: block movement, always visible, must be navigated around.
+    - Effect cap: configurable max distinct effects per food (default ~4). Duplicates merge into one entry with a higher level at a fixed duration. Each catalog entry (datapack) declares its own base duration, level behaviour and max level, with a global config multiplier. Effects are stored in a canonical order so identical routes stack.
+    - Effect cells hold a bundle of 1-3 effects, graded by ring. Ring 2: 1 boon + 1 bane (level 1). Ring 3: 1-2 boons + 1 vanilla-random (level 2). Ring 4: 1-2 boons only (level 2). Locking in takes the whole bundle. A landmine holds one bane at its ring's level instead. Defaults: step cost 1.0, lock-in cost 1.5 / 2.5 / 3.5 for rings 2 / 3 / 4 (all configurable).
+    - Hidden cells: shown as "???". The tooltip shows the total effect count; within 2 cells (Chebyshev) of the pawn it also shows the count per kind ("1 beneficial, 1 negative, 1 ???"). Landmines have no tooltip and look like bare cells until stepped on. Locking one in reveals it for that player, but only on that food item's board in that world. Store only locked-in cells (food item + cell) per player, size-capped with oldest-first eviction; synced to the client.
+    - The Spice Profile of the food is shown in the GUI, and the Hot effect (also from eating raw habaneros) becomes the `heat` + bane (a `heat` - bane is still needed).
+    - Accessibility: everything doable via keyboard (no gamepad; vanilla has no real gamepad support).
+    - Example happy path (updated):
+        1. Player opens the Grinder, adds 2x habanero and 3x cinnamon to a loaf of bread by clicking spices in the left panel; the right panel shows the resulting profile. "Season" starts the run (before that, "Cancel" returns everything).
+        2. The right panel turns into the board. Arrow buttons are grayed out except up-left, which is yellow ("1 move left").
+        3. Up is blocked by a visible wall.
+        4. Player moves up-left (heat points -1.5) onto a bare neutral cell.
+        5. Player moves up (sweet_bitter points -1.5) into the sweet_bitter zone; the hidden cell hints "1 ??? effect, 1 negative effect". Player locks it in, spending sweet_bitter points: the cell is revealed and its effects are added to the list. Adding another habanero mid-run re-enables up-left.
+        6. Player moves up-left (heat points -1.5) onto a heat_cooling zone cell, which is a landmine: sound, "You hit a mine!", its bane is added to the effect list. Accept is enabled and no moves are left.
+        7. "Accept" closes the GUI and yields the seasoned food.
+    - Extra concerns:
+        - Reproducibility: equal routes give equal, stackable results (the board is deterministic).
+        - Sudden disconnects: all state is server-side in the Grinder item, saved together with the spices and food, so a crash or rollback can neither void spices nor duplicate effects.
+    - Spice caps (3 per kind, ~16 total) are only applied when deriving points: foods keep their true counted amounts, each kind counts at most 3, and over-total kinds are trimmed deterministically (largest amount first, ties by item id). The Grinder GUI refuses to add past the caps. Tooltip can show the true amount and the counted amount.
+    - Contributor amounts are fractional shares: a recipe's summed amounts are split evenly across the output items (2 decimals, truncated), as `Flavoring` already does for the profile.
+    - Automatic bot policy: straight-line walker. Strongest axis (ties: FlavorAxis order), walks straight in that direction while it can pay, locks in every affordable effect cell it lands on, stops at a wall, never detours or retreats, ignores mines and hidden info.
+    - Participation award: a seasoned food with no effects at all gets bonus saturation from a configurable seeded range (default ~0.5-1.5), scaled by spice amount relative to a configurable full dose (default 4 spices per food, capped at 1x), seeded by food item + contributors so equal foods stack. "Seasoned" is its own marker, so such a food still can't be seasoned again.
+    - Open: vanilla-random pool, `heat` - bane.
