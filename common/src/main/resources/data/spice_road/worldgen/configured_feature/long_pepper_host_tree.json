@@ -69,6 +69,11 @@
             }
           }
         }
+      },
+      {
+        "type": "spice_road:leaf_vines",
+        "probability": 0.25,
+        "block": "spice_road:long_pepper_vine"
       }
     ],
     "dirt_provider": {

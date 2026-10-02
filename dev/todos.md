@@ -34,6 +34,7 @@
 - [x] Nerf bonemeal for spice crops, since their age range is reduced. Prevent bone mealing on higher tier crops by default (configurable per-tier).
 - [x] VINE Spice worldgen via Host Trees: a VINE Spice's Region resolves to its own `<id>_host_tree` configured feature, placed by `SpicePlantFeature` through the same `trees` count/spacing settings TREE Spices use.
     - `spice_road:attached_to_logs` tree decorator (backport), seeding vine segments on a Host Tree's trunk logs. Needs an AT/access widener, since vanilla's `TreeDecoratorType` constructor is private.
+    - `spice_road:leaf_vines` tree decorator, hanging vines off a Host Tree's leaves like vanilla jungle trees do (`vanilla_host_tree`, `long_pepper_host_tree`).
     - `vanilla_host_tree`: small jungle tree, cocoa kept, vanilla trunk/leave vine decorators dropped, vines at 0.45 per log side.
 - [x] Breaking a mature Spice with its harvest tool in the main hand drops the Spice and costs the tool a durability point, instead of only the seed.
     - Gated per Source Type by `SpiceBreakHarvest`: `minecraft:match_tool` on the harvest tool tag, plus a `spice_road:connected_player` condition for Hand-Pick Spices so automation still can't farm them by breaking. Pistons drop seeds only either way.

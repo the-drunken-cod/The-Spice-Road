@@ -25,12 +25,20 @@ public final class ModTreeDecorators {
             .registerTreeDecoratorType("attached_to_logs",
                     () -> new TreeDecoratorType<AttachedToLogsDecorator>(AttachedToLogsDecorator.CODEC));
 
+    /**
+     * {@code spice_road:leaf_vines} - see {@link LeafVinesDecorator}.
+     */
+    public static final Supplier<TreeDecoratorType<LeafVinesDecorator>> LEAF_VINES = Services.REGISTRY
+            .registerTreeDecoratorType("leaf_vines",
+                    () -> new TreeDecoratorType<LeafVinesDecorator>(LeafVinesDecorator.CODEC));
+
     private ModTreeDecorators() {
     }
 
     /**
      * No-op other than forcing this class (and therefore
-     * {@link #ATTACHED_TO_LOGS}'s static initializer) to load.
+     * {@link #ATTACHED_TO_LOGS}'s and {@link #LEAF_VINES}'s static initializers)
+     * to load.
      */
     public static void register() {
     }

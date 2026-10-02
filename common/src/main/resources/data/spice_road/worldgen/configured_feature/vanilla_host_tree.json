@@ -97,6 +97,11 @@
             "Properties": { "age": "0", "east": "true" }
           }
         }
+      },
+      {
+        "type": "spice_road:leaf_vines",
+        "probability": 0.25,
+        "block": "spice_road:vanilla_vine"
       }
     ],
     "dirt_provider": {
