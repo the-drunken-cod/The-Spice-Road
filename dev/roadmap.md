@@ -9,20 +9,8 @@ Warning: may contain outdated information, and is only to be used as a guideline
     - [x] Spice Profiles contain an assortment of double values of certain "flavor components" (like spicy, sweet, umami, but also fresh, strong, persistent, etc.).  
     The range of the values is -1 to +1, which allows spices to negatively stack. In order to do this in an intuitive way, spice profiles need to correspond to how the spices would interact in real life.
         - [ ] TODO: find an easy way of creating this system, i.e. a geometrical diagram or tree that will be traversed by the mechanic's algorithm.
-    - [ ] Make certain spices non-automatable.
+    - [x] Make certain spices non-automatable.
         - Vanilla and Saffron need to be hand-picked by an actual living player (no Create deployers).
-<!-- 2. **Spice Amplifiers**
-    - [ ] Materials that aren't usually eaten on their own, but also don't count as spices. Instead, they apply a multiplier onto the current flavor profile. If amplifiers are used more than n times (configurable, default 2), they harshly sway all values back towards zero.
-    - [ ] Data-driven in the same way spice profiles are.
-    - [ ] Items:
-        - Solar Salt (from drying): boosts all with a tiny multiplier.
-        - Kombu / MSG: boosts all with a small multiplier.
-        - Oil / Fat: boosts heat, clean, woody, earthy, floral, savory with a medium multiplier.
-            - 
-        - Acid: boosts sour, green & pungent with a medium multiplier.
-            - Vinegar
-            - Citrus
-        - Sugar / Honey: boosts sweet, lowers heat with a small multiplier. -->
 2. [ ] **Drying Rack**
     - Note: mostly already implemented in Mycomancy, needs to be ported, except for the model, since it's limited to 2 inputs and outputs, and since Mycomancy only runs on NeoForge.
     - Dries up to 2 items at the same time, hard limited by the model and renderer.
@@ -30,7 +18,7 @@ Warning: may contain outdated information, and is only to be used as a guideline
         - 1 input slot, 1 output slot, 1 extra slot per side, so 6 slots in total. This is an intentional deviation from Mycomancy's 4 slots.
     - Add Processed Spice items made by drying (e.g. dried nutmeg), each its own item with its own spice profile values.
         - Some spices will have more beneficial values when dried, others will have less.
-        - Not all spices are dried. Other processing methods (soaking, smoking, cutting, etc.) may follow.
+        - Not all spices can be dried. Other processing methods (soaking, smoking, cutting, etc.) may follow in the future .
     - Drying Rack will be faster when placed next to a hot block (identified by a tag, again, refer to Mycomancy).
 3. [ ] **Spice Rack**
     - Way to store and display spices.
@@ -38,13 +26,15 @@ Warning: may contain outdated information, and is only to be used as a guideline
     - Similar in shape to vanilla shelves in 1.21.whatever.
 4. [ ] **Spice Grinder**
     - Note: texture and sounds already implemented in Mycomancy, need to be ported.
-    - Used to apply spices to food items.
-        - Spice profile is stored via a data component. Items with the component render a custom tooltip when holding shift, displaying the final spice profile, and buffs.
+    - Used to apply spices to food items using a custom roguelite minigame.
+        - Spice profile is stored via a data component. Items with the component render a custom tooltip when holding shift, displaying the final spice profile, effect buffs and spice contributors.
     - When used, opens a GUI that shows all available spices and their amounts in a scrollable container on the left (grouped by "raw", "processed" and "crushed"), a food slot in the top right, and an info panel (displaying the current spice profile) in the bottom right. Below this, the regular inventory is rendered, as usual.
         - Food slot accepts any food item that is not on an exclude-taglist (`spice_road:unseasonable`). ItemStack can be up to 64 in size.
         - Pulls all items from the player inventory, as well as all nearby (configurable radius) spice racks. When the player position changes, update the list (debounced by 10 ticks). Spice racks are a blockentity added by The Spice Road, but also exist in the mod cooking for blockheads, which should be included in this functionality and made compatible.
         - Hovering over a spice shows its rarity and spice profile levels tooltip.
         - Clicking a spice adds it to the food item stack's spice profile. When more food items are in the food slot than there are of the selected spice, nothing happens and a different click sound plays that indicates the action failed.
+        - Applying more and more spices gives higher value profiles whose points can be spent in the minigame.
+        - Pressing an "Apply" button below the info panel modifies the GUI to show the minigame screen, which can then be played to turn the spice profile values into actual effects. See [todos.md](./todos.md) for more info.
 5. [ ] **Spice Buffs**
     - Each spice gets a spice profile for its raw item and each of its processed items.
     - There is a mechanic that makes different kinds of spices interact differently and yield different buffs of different levels.
