@@ -87,9 +87,6 @@
 - [x] Adjust hitboxes:
     - [x] Change spice bushes to be taller at the start (age0=9px, age1=12px, age2=15px texture height).
     - [x] Change all splice crops to be 14x14 in horizontal footprint.
-- [ ] Max amount of spice applications for spices of the same type:
-    - Configurable value, default 3. When applying the same spice for the 4th time, no values are applied from it. The upcoming spice grinder should stop allowing to add players to add spices past this number.
-    - Update flavor_contributors tooltip to list spices with amounts (e.g. `3x Cinnamon, 2x Nutmeg, Cloves`), sorted by amount, then alphabetically (respecting translations). Use templates for the translations, e.g. `%sx %s`.
 - [ ] Investigate errors:
     - [ ] [Server thread/INFO] [SeedRenderer/]: Seed Renderer could not grow a spice_road:spice_plant in memory (java.lang.ClassCastException: Cannot cast java.lang.Integer to java.lang.Long at java.base/java.lang.Class.cast(Class.java:3492)); it is drawn from its definition instead
     - [ ] [main/WARN] [mixin/]: Reference map 'spice_road.refmap.json' for spice_road.mixins.json could not be read. If this is a development environment you can ignore this message
@@ -100,6 +97,9 @@
     - Rework everything reading food profiles: tooltips, Sufficiently Seasoned, cooking variance (replaced by the automatic minigame), advancement triggers.
     - "Everything Bagel" advancement becomes e.g. "eat a food with at least 10 flavor contributors".
     - Flavor contributor tooltip lists amounts (see the max-applications item above).
+- [ ] Max amount of spice applications for spices of the same type:
+    - Configurable value, default 3. When applying the same spice for the 4th time, no values are applied from it. The upcoming spice grinder should stop allowing to add players to add spices past this number.
+    - Update flavor_contributors tooltip to list spices with amounts (e.g. `3x Cinnamon, 2x Nutmeg, Cloves`), sorted by amount, then alphabetically (respecting translations). Use templates for the translations, e.g. `%sx %s`.
 - [ ] Spice Grinder minigame:
     - Implementation order:
         1. [ ] Counted flavor contributors, strip the flavor profile from food.
