@@ -18,8 +18,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.VineBlock;
+import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
+import net.neoforged.neoforge.client.model.generators.ModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.client.model.generators.MultiPartBlockStateBuilder;
 import net.neoforged.neoforge.client.model.generators.VariantBlockStateBuilder;
@@ -30,8 +32,10 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
  * {@code minecraft:block/crop}-parented model per growth stage (age
  * {@code 0..getMaxAge()}) for every registered Spice Plant block (see
  * {@link SpicePlants}) - {@code spice_road:block/rhizome}-parented instead for
- * {@code RHIZOME} Spices and {@code minecraft:block/cross}-parented for
- * {@code FLOWER_PATCH} Spices. Blockstate properties besides the age (e.g.
+ * {@code RHIZOME} Spices ({@code spice_road:block/rhizome_aquatic}-parented,
+ * with an extra {@code _top} texture per stage, for Aquatic Spices) and
+ * {@code minecraft:block/cross}-parented for {@code FLOWER_PATCH} Spices.
+ * Blockstate properties besides the age (e.g.
  * {@code waterlogged}) don't affect the model. Mirrors vanilla crop blocks
  * (e.g. wheat) exactly; see
  * {@code FabricSpiceCropModelProvider} for the Fabric counterpart
@@ -62,8 +66,9 @@ public class NeoForgeBlockStateProvider extends BlockStateProvider {
             int maxAge = block.getMaxAge();
 
             SourceType sourceType = plant.spice().getSourceType();
+            boolean aquatic = plant.spice().isAquatic();
             ResourceLocation parent = switch (sourceType) {
-                case RHIZOME -> modLoc("block/rhizome");
+                case RHIZOME -> modLoc(aquatic ? "block/rhizome_aquatic" : "block/rhizome");
                 case FLOWER_PATCH, BUSH -> mcLoc("block/cross");
                 default -> mcLoc("block/crop");
             };
@@ -71,9 +76,12 @@ public class NeoForgeBlockStateProvider extends BlockStateProvider {
             ModelFile[] stageModels = new ModelFile[maxAge + 1];
             for (int age = 0; age <= maxAge; age++) {
                 ResourceLocation stage = SpiceAssetPaths.block(plant.spice(), id.getPath() + "_stage" + age);
-                stageModels[age] = models().withExistingParent(stage.toString(), parent)
+                ModelBuilder<BlockModelBuilder> model = models().withExistingParent(stage.toString(), parent)
                         .texture(textureSlot, stage)
                         .renderType("minecraft:cutout");
+                if (aquatic)
+                    model.texture("top", SpiceAssetPaths.block(plant.spice(), id.getPath() + "_stage" + age + "_top"));
+                stageModels[age] = model;
             }
 
             applyCropVariants(block, stageModels, maxAge);

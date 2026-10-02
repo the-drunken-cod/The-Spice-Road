@@ -34,8 +34,10 @@ import net.minecraft.resources.ResourceLocation;
  * {@code minecraft:block/crop}-parented model per growth stage (age
  * {@code 0..getMaxAge()}) for every registered Spice Plant block (see
  * {@link SpicePlants}) - {@code spice_road:block/rhizome}-parented instead for
- * {@code RHIZOME} Spices and {@code minecraft:block/cross}-parented for
- * {@code FLOWER_PATCH} Spices. Blockstate properties besides the age (e.g.
+ * {@code RHIZOME} Spices ({@code spice_road:block/rhizome_aquatic}-parented,
+ * with an extra {@code _top} texture per stage, for Aquatic Spices) and
+ * {@code minecraft:block/cross}-parented for {@code FLOWER_PATCH} Spices.
+ * Blockstate properties besides the age (e.g.
  * {@code waterlogged}) don't affect the model. Mirrors vanilla crop blocks
  * (e.g. wheat) exactly; see
  * {@code NeoForgeBlockStateProvider} for the NeoForge counterpart.
@@ -57,6 +59,9 @@ import net.minecraft.resources.ResourceLocation;
  */
 public class FabricSpiceCropModelProvider implements DataProvider {
 
+    /** Texture slot of the upper sprite of an Aquatic Spice's stage model. */
+    private static final TextureSlot TOP = TextureSlot.create("top");
+
     /**
      * Stage model template of {@code RHIZOME} Spices, in place of vanilla's crop
      * template.
@@ -64,6 +69,11 @@ public class FabricSpiceCropModelProvider implements DataProvider {
     private static final ModelTemplate RHIZOME = new ModelTemplate(
             Optional.of(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "block/rhizome")),
             Optional.empty(), TextureSlot.CROP);
+
+    /** Stage model template of Aquatic {@code RHIZOME} Spices, which also has an upper {@link #TOP} sprite. */
+    private static final ModelTemplate RHIZOME_AQUATIC = new ModelTemplate(
+            Optional.of(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "block/rhizome_aquatic")),
+            Optional.empty(), TextureSlot.CROP, TOP);
 
     private final PackOutput.PathProvider blockStatePathProvider;
     private final PackOutput.PathProvider modelPathProvider;
@@ -82,8 +92,9 @@ public class FabricSpiceCropModelProvider implements DataProvider {
             int maxAge = block.getMaxAge();
 
             SourceType sourceType = plant.spice().getSourceType();
+            boolean aquatic = plant.spice().isAquatic();
             ModelTemplate template = switch (sourceType) {
-                case RHIZOME -> RHIZOME;
+                case RHIZOME -> aquatic ? RHIZOME_AQUATIC : RHIZOME;
                 case FLOWER_PATCH, BUSH -> ModelTemplates.CROSS;
                 default -> ModelTemplates.CROP;
             };
@@ -94,6 +105,8 @@ public class FabricSpiceCropModelProvider implements DataProvider {
                 TextureMapping mapping = sourceType == SourceType.FLOWER_PATCH || sourceType == SourceType.BUSH
                         ? TextureMapping.cross(stage)
                         : TextureMapping.crop(stage);
+                if (aquatic)
+                    mapping.put(TOP, SpiceAssetPaths.block(plant.spice(), blockId + "_stage" + age + "_top"));
                 ResourceLocation model = template.create(stage, mapping,
                         (modelLocation, jsonSupplier) -> futures.add(DataProvider.saveStable(
                                 cachedOutput, jsonSupplier.get(), modelPathProvider.json(modelLocation))));
