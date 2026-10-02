@@ -44,6 +44,7 @@ import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.item.SpiceItemTags;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Spice;
+import com.drunkencod.spice_road.spice.Tier;
 
 /**
  * Shared growth-stage/interaction template for the {@code flower_patch},
@@ -349,12 +350,12 @@ public abstract class SpicePlantBlock extends CropBlock {
      * Drops the plant's Spice from the clicked face if the Spice Region
      * supports it here (see {@link Spice#canBeCultivatedAt}, the same check
      * as the break loot table's), then resets the plant to age {@code 0} so
-     * it regrows instead of breaking. If the Spice
-     * {@link Spice#harvestYieldsPlantingItem() yields its planting item}, as
-     * many of those drop alongside it. The break loot table of a Hand-Pick
-     * Spice only drops the seed, so this is the only way to obtain its Spice;
-     * for every other Spice, it's a shortcut that spares the plant instead of
-     * breaking it.
+     * it regrows instead of breaking. Like the break loot table, it also
+     * drops one seed with the {@link Tier#getSeedDropChance() seed drop
+     * chance} of the Spice's tier, wherever it was harvested. The break loot
+     * table of a Hand-Pick Spice only drops the seed, so this is the only way
+     * to obtain its Spice; for every other Spice, it's a shortcut that spares
+     * the plant instead of breaking it.
      *
      * @param sound The harvest sound, played at the plant's position.
      */
@@ -364,12 +365,12 @@ public abstract class SpicePlantBlock extends CropBlock {
             return;
 
         int yield = SpiceHarvesting.getPlantYield(spice);
-        if (yield > 0 && spice.canBeCultivatedAt(serverLevel, pos)) {
+        if (yield > 0 && spice.canBeCultivatedAt(serverLevel, pos))
             popResourceFromFace(level, pos, hitResult.getDirection(),
                     new ItemStack(Spice.getRawById(spice.getId()), yield));
-            if (spice.harvestYieldsPlantingItem())
-                popResourceFromFace(level, pos, hitResult.getDirection(), new ItemStack(seedItem.get(), yield));
-        }
+
+        if (level.getRandom().nextFloat() < spice.getTier().getSeedDropChance())
+            popResourceFromFace(level, pos, hitResult.getDirection(), new ItemStack(seedItem.get()));
 
         level.playSound(null, pos, sound, SoundSource.BLOCKS, 1.0F, 0.8F + level.getRandom().nextFloat() * 0.4F);
 

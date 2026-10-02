@@ -19,18 +19,29 @@ import com.drunkencod.spice_road.Constants;
  */
 public enum Tier implements StringRepresentable {
 
-    COMMON(Rarity.COMMON),
-    UNCOMMON(Rarity.UNCOMMON),
-    RARE(Rarity.RARE),
-    EPIC(Rarity.EPIC);
+    COMMON(Rarity.COMMON, 0.5F),
+    UNCOMMON(Rarity.UNCOMMON, 0.4F),
+    RARE(Rarity.RARE, 0.3F),
+    EPIC(Rarity.EPIC, 0.2F);
 
     /** Codec reading and writing a {@link Tier} by its lowercase name, e.g. {@code "epic"}. */
     public static final Codec<Tier> CODEC = StringRepresentable.fromEnum(Tier::values);
 
     private final Rarity rarity;
+    private final float seedDropChance;
 
-    Tier(Rarity rarity) {
+    Tier(Rarity rarity, float seedDropChance) {
         this.rarity = rarity;
+        this.seedDropChance = seedDropChance;
+    }
+
+    /**
+     * @return The chance, from {@code 0.0} to {@code 1.0}, that harvesting a
+     *         mature plant of this tier drops its planting item. Rarer tiers
+     *         are less likely to give their seeds back.
+     */
+    public float getSeedDropChance() {
+        return seedDropChance;
     }
 
     /** @return The vanilla item {@link Rarity} matching this tier, which colors item names. */

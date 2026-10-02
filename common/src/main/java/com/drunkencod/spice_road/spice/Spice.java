@@ -246,16 +246,6 @@ public enum Spice implements StringRepresentable {
     }
 
     /**
-     * @return Whether a harvest of this Spice's mature plant yields its
-     *         planting item at the same rate as the Spice itself - true for
-     *         {@link SourceType#RHIZOME} Spices, whose cuttings are sliced off
-     *         together with the harvested part.
-     */
-    public boolean harvestYieldsPlantingItem() {
-        return sourceType == SourceType.RHIZOME;
-    }
-
-    /**
      * @return The registry path suffix of this Spice's planting item:
      *         {@code "_cuttings"} for {@link SourceType#RHIZOME} Spices,
      *         {@code "_seeds"} otherwise.
