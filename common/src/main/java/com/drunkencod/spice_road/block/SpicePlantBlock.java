@@ -78,10 +78,8 @@ public abstract class SpicePlantBlock extends CropBlock {
     private static final VoxelShape[] SHAPE_BY_AGE = new VoxelShape[8];
 
     static {
-        for (int age = 0; age < SHAPE_BY_AGE.length; age++) {
-            double height = Math.min(16.0D, (age + 1) * 3.0D);
-            SHAPE_BY_AGE[age] = Block.box(0.0D, 0.0D, 0.0D, 16.0D, height, 16.0D);
-        }
+        for (int age = 0; age < SHAPE_BY_AGE.length; age++)
+            SHAPE_BY_AGE[age] = shapeOfHeight(Math.min(16.0D, (age + 1) * 3.0D));
     }
 
     private final Supplier<? extends ItemLike> seedItem;
@@ -156,11 +154,19 @@ public abstract class SpicePlantBlock extends CropBlock {
     /**
      * Reimplements {@code CropBlock#getShape} against {@link #SHAPE_BY_AGE}
      * instead of vanilla's {@code SHAPE_BY_AGE}, since Spice Plants use a
-     * steeper per-age height formula.
+     * steeper per-age height formula and a narrower footprint.
      */
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE_BY_AGE[getAge(state)];
+    }
+
+    /**
+     * @param height The outline height in pixels ({@code 0-16}).
+     * @return A {@code 14x14} pixel wide outline centered in the block, {@code height} pixels tall.
+     */
+    protected static VoxelShape shapeOfHeight(double height) {
+        return Block.box(1.0D, 0.0D, 1.0D, 15.0D, height, 15.0D);
     }
 
     /**
