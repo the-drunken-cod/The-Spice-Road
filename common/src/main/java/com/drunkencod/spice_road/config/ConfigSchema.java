@@ -77,7 +77,7 @@ public final class ConfigSchema {
 
     /** Chance of a Spice Region containing no Spices at all. */
     public static final ConfigOption<Double> REGION_SPICELESS_CHANCE = add(
-            ConfigOption.ofDouble(REGION, "spicelessChance", 0.25, 0.0, 1.0).restart(ConfigOption.Restart.WORLD));
+            ConfigOption.ofDouble(REGION, "spicelessChance", 0.15, 0.0, 1.0).restart(ConfigOption.Restart.WORLD));
 
     /**
      * Base pick weight per {@link Tier} when a Spice Region resolves its Spice,
