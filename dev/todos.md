@@ -87,8 +87,8 @@
     - [x] Change all splice crops to be 14x14 in horizontal footprint.
 - [x] Animate tooltip: increment rendered axis values by 0.1 per tick until reaching the final value, with an ease-out timeout function.
 - [ ] Investigate errors:
-    - [ ] [Server thread/INFO] [SeedRenderer/]: Seed Renderer could not grow a spice_road:spice_plant in memory (java.lang.ClassCastException: Cannot cast java.lang.Integer to java.lang.Long at java.base/java.lang.Class.cast(Class.java:3492)); it is drawn from its definition instead
-    - [ ] [main/WARN] [mixin/]: Reference map 'spice_road.refmap.json' for spice_road.mixins.json could not be read. If this is a development environment you can ignore this message
+    - [x] [Server thread/INFO] [SeedRenderer/]: Seed Renderer could not grow a spice_road:spice_plant in memory (java.lang.ClassCastException: Cannot cast java.lang.Integer to java.lang.Long at java.base/java.lang.Class.cast(Class.java:3492)); it is drawn from its definition instead
+    - [x] [main/WARN] [mixin/]: Reference map 'spice_road.refmap.json' for spice_road.mixins.json could not be read. If this is a development environment you can ignore this message
 - [ ] Make mod blocks like the Thermal Expansion Phytogenic Insolator, Immersive Engineering Garden Cloche and Botany Pots respect spice regions and require water for planting water-based rhizomes.
     - TODO: investigate whether it'd be worth intentionally not extending abstract classes and taglists to prevent cheating the region-locking system with mods.
 - [ ] Rework spice profile system for the seasoning minigame:

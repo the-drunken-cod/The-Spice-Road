@@ -95,10 +95,28 @@ public class NeoForgeConfigHelper implements IConfigHelper {
         return defineInRange(builder, entry);
     }
 
-    private static <T extends Comparable<T>> ModConfigSpec.ConfigValue<T> defineInRange(ModConfigSpec.Builder builder,
-            ConfigOption<T> entry) {
-        return builder.defineInRange(entry.getKey(), entry.getDefault(), entry.getMin(), entry.getMax(),
-                entry.getType());
+    /**
+     * Defines a numeric option through the primitive overloads on purpose: the generic
+     * {@code defineInRange(..., Class)} overload hands back whatever boxed type the TOML
+     * parser produced, so a small {@code long} comes back as an {@code Integer} and
+     * fails the cast in {@link #value}.
+     */
+    private static ModConfigSpec.ConfigValue<?> defineInRange(ModConfigSpec.Builder builder, ConfigOption<?> entry) {
+        String key = entry.getKey();
+        Class<?> type = entry.getType();
+        if (type == Long.class) {
+            return builder.defineInRange(key, (Long) entry.getDefault(), (Long) entry.getMin(),
+                    (Long) entry.getMax());
+        }
+        if (type == Integer.class) {
+            return builder.defineInRange(key, (Integer) entry.getDefault(), (Integer) entry.getMin(),
+                    (Integer) entry.getMax());
+        }
+        if (type == Double.class) {
+            return builder.defineInRange(key, (Double) entry.getDefault(), (Double) entry.getMin(),
+                    (Double) entry.getMax());
+        }
+        throw new IllegalArgumentException("Unsupported config option type " + type.getName() + " for " + key);
     }
 
     /**
