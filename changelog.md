@@ -1,4 +1,27 @@
 ## 0.1.0
+### 0.1.0-alpha.2
+- Features:
+    - Added mod icon for in-game mod list.
+    - Added spiceless regions with a configurable chance percentage.
+    - Added water surface decorations to spice ponds. Currently only includes lily pads.
+    - Rare spice maps now also spawn in shipwreck map chests, desert pyramids, pillager outposts, and woodland mansions. They are slightly more common than epic tier maps.
+- Changes:
+    - ⚠️ **BREAKING:** renamed `curry_leaf` to just `curry`.
+    - Aquatic rhizomes now have a 2-block tall model, so they poke outside their water block.
+    - Spice crops and rhizomes now drop seeds based on the tier and a configurable chance.
+    - Reordered creative mode tab items.
+    - Adjusted a whole bunch of textures.
+    - Adjusted many default config values, especially regarding worldgen.
+    - Tweaked amounts and sizes of spice ponds and satellite ponds generating.
+    - (Debug mode) improved F3 spice heart directions.
+- Fixes:
+    - Bonemealing vines outside their "natural randomTick" coords is now possible.
+    - Vine-type spice trees growing on the same spot as other trees no longer generate floating vines.
+    - Spice crop hitboxes now have a 14x14 footprint.
+    - Spice bush hitboxes now start higher.
+    - Spice bush with out-of-range age property used to crash the game (like when cycling it with the debug stick).
+    - Random errors; missing refmap and implicit config long->int cast.
+
 ### 0.1.0-alpha.1
 Features:
 - Items/Blocks:
