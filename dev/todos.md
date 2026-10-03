@@ -86,11 +86,9 @@
     - [x] Change spice bushes to be taller at the start (age0=9px, age1=12px, age2=15px texture height).
     - [x] Change all splice crops to be 14x14 in horizontal footprint.
 - [x] Animate tooltip: increment rendered axis values by 0.1 per tick until reaching the final value, with an ease-out timeout function.
-- [ ] Investigate errors:
+- [x] Investigate errors:
     - [x] [Server thread/INFO] [SeedRenderer/]: Seed Renderer could not grow a spice_road:spice_plant in memory (java.lang.ClassCastException: Cannot cast java.lang.Integer to java.lang.Long at java.base/java.lang.Class.cast(Class.java:3492)); it is drawn from its definition instead
     - [x] [main/WARN] [mixin/]: Reference map 'spice_road.refmap.json' for spice_road.mixins.json could not be read. If this is a development environment you can ignore this message
-- [ ] Make mod blocks like the Thermal Expansion Phytogenic Insolator, Immersive Engineering Garden Cloche and Botany Pots respect spice regions and require water for planting water-based rhizomes.
-    - TODO: investigate whether it'd be worth intentionally not extending abstract classes and taglists to prevent cheating the region-locking system with mods.
 - [ ] Rework spice profile system for the seasoning minigame:
     - Only Spice Items keep a Spice Profile. Foods no longer carry a Profile Override; instead they carry Seasoning Effects and *counted* Flavor Contributors (item + amount).
     - Recipes (any mod) sum the counted contributors of all inputs (spice items and seasoned foods), drop the inputs' old effects and re-solve the output's effects with the automatic minigame. Spices are never voided or duplicated.
@@ -98,6 +96,9 @@
     - "Everything Bagel" advancement becomes e.g. "eat a food with at least 10 flavor contributors".
     - Flavor contributor tooltip lists amounts (see the max-applications item above).
     - Max amount of spice applications for spices of the same type. Configurable value, default 3. When applying the same spice for the 4th time, no values are applied from it. The upcoming spice grinder should stop allowing to add players to add spices past this number.
+- [ ] Make mod blocks like the Immersive Engineering Garden Cloche and Botany Pots respect spice regions and require water for planting water-based rhizomes.
+    - [ ] Botany Pots: seeds don't grow out of the box. TODO: add support for all non-hand-picked crops (see https://github.com/Darkhax-Minecraft/BotanyPots/blob/1.21.1/common/src/main/resources/data/botanypots/recipe/minecraft/crop/torchflower.json and https://github.com/Darkhax-Minecraft/BotanyPots/blob/1.21.1/common/src/main/resources/data/botanypots/recipe/farmersdelight/crop/rice.json).
+    - [ ] Immersive Engineering: seeds don't grow out of the box. TODO: add support for all non-hand-picked crops (see https://github.com/vectorwing/FarmersDelight/blob/1.21/src/main/resources/data/farmersdelight/recipe/integration/immersiveengineering/cloche/cabbage.json and https://github.com/vectorwing/FarmersDelight/blob/1.21/src/main/resources/data/farmersdelight/recipe/integration/immersiveengineering/cloche/rice.json)
 - [ ] Spice Grinder minigame:
     - Implementation order:
         1. [ ] Counted flavor contributors, strip the flavor profile from food.
