@@ -120,7 +120,7 @@ public final class ConfigSchema {
 
     /** Harvest difficulty at or below which a Spice may be planted anywhere. */
     public static final ConfigOption<Integer> CULTIVATION_HARDY_HARVEST_DIFFICULTY = add(
-            ConfigOption.ofInt(CULTIVATION, "hardyHarvestDifficulty", 2, 1, 5));
+            ConfigOption.ofInt(CULTIVATION, "hardyHarvestDifficulty", 3, 1, 5));
 
     /** Whether Aquatic Spices only grow while waterlogged. */
     public static final ConfigOption<Boolean> CULTIVATION_AQUATIC_REQUIRES_WATER = add(
