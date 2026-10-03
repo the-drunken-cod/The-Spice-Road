@@ -73,7 +73,7 @@ public final class ConfigSchema {
 
     /** How strongly Region generation favors common Spices over rarer ones. */
     public static final ConfigOption<Double> REGION_CLUSTERING_STRENGTH = add(ConfigOption.ofDouble(REGION,
-            "clusteringStrength", () -> Services.PLATFORM.isDedicatedServer() ? 1.75 : 0.8, 0.0, 10.0));
+            "clusteringStrength", () -> Services.PLATFORM.isDedicatedServer() ? 1.5 : 0.9, 0.0, 10.0));
 
     /** Chance of a Spice Region containing no Spices at all. */
     public static final ConfigOption<Double> REGION_SPICELESS_CHANCE = add(
@@ -139,7 +139,7 @@ public final class ConfigSchema {
 
     /** Growth-speed multiplier of planted Spices per {@link Tier}. */
     public static final Map<Tier, ConfigOption<Double>> CULTIVATION_GROWTH_SPEED_MULTIPLIER = perTier(
-            CULTIVATION_GROWTH_SPEED, 1.75, 1.5, 1.25, 1.0, 0.01, 100.0);
+            CULTIVATION_GROWTH_SPEED, 3.0, 2.5, 1.75, 1.25, 0.01, 100.0);
 
     // #region Harvesting
 
