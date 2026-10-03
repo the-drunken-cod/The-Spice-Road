@@ -15,14 +15,13 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import com.drunkencod.spice_road.spice.Flavoring;
 
 /**
- * Carries ingredient flavor over to Cooking for Blockheads Toaster outputs,
- * applying the cooking variance.
+ * Carries ingredient flavor over to Cooking for Blockheads Toaster outputs.
  */
 @Mixin(ToasterRecipe.class)
 public abstract class ToasterRecipeMixin {
 
     @ModifyReturnValue(method = "assemble(Lnet/minecraft/world/item/crafting/SingleRecipeInput;Lnet/minecraft/core/HolderLookup$Provider;)Lnet/minecraft/world/item/ItemStack;", at = @At("RETURN"))
     private ItemStack spice_road$applyFlavor(ItemStack result, @Local(argsOnly = true) SingleRecipeInput input) {
-        return Flavoring.apply(result, List.of(input.item()), true);
+        return Flavoring.apply(result, List.of(input.item()));
     }
 }

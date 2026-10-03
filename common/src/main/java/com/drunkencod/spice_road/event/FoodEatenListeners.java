@@ -12,8 +12,7 @@ import com.drunkencod.spice_road.Constants;
  * Consumers (advancement triggers, the eventual Spice Buffs and stats
  * screen) each {@link #register} their own listener at mod init and decide
  * for themselves whether an event is relevant - e.g. filtering to
- * {@code ServerPlayer}, server-side only, or a non-zero
- * {@link com.drunkencod.spice_road.spice.SpiceProfile} - rather than this
+ * {@code ServerPlayer}, server-side only, or seasoned food - rather than this
  * registry pre-filtering for them.
  */
 public final class FoodEatenListeners {

@@ -25,7 +25,7 @@ public abstract class CuttingBoardRecipeMixin {
     @ModifyReturnValue(method = "rollResults", at = @At("RETURN"))
     private List<ItemStack> spice_road$applyFlavor(List<ItemStack> results,
             @Local(argsOnly = true) RecipeWrapper input) {
-        Flavoring.applyAll(results, List.of(input.getItem(0)), false);
+        Flavoring.applyAll(results, List.of(input.getItem(0)));
         return results;
     }
 }

@@ -16,8 +16,7 @@ import vectorwing.farmersdelight.common.crafting.CookingPotRecipe;
 import com.drunkencod.spice_road.spice.Flavoring;
 
 /**
- * Carries ingredient flavor over to Farmer's Delight Cooking Pot meals,
- * applying the cooking variance. The pot passes its whole inventory, so only
+ * Carries ingredient flavor over to Farmer's Delight Cooking Pot meals. The pot passes its whole inventory, so only
  * the ingredient slots are read - the others hold finished meals, the
  * container and the output.
  */
@@ -30,6 +29,6 @@ public abstract class CookingPotRecipeMixin {
         List<ItemStack> ingredients = new ArrayList<>(slots);
         for (int i = 0; i < slots; i++)
             ingredients.add(input.getItem(i));
-        return Flavoring.apply(result, ingredients, true);
+        return Flavoring.apply(result, ingredients);
     }
 }

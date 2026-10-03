@@ -192,16 +192,6 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
-    public double getCookingVarianceMin() {
-        return value(ConfigSchema.COOKING_VARIANCE_MIN, server().cooking.varianceMin);
-    }
-
-    @Override
-    public double getCookingVarianceMax() {
-        return value(ConfigSchema.COOKING_VARIANCE_MAX, server().cooking.varianceMax);
-    }
-
-    @Override
     public double getFlavorSoftCap() {
         return value(ConfigSchema.FLAVOR_SOFT_CAP, server().flavor.softCap);
     }
@@ -209,11 +199,6 @@ public class FabricConfigHelper implements IConfigHelper {
     @Override
     public double getFlavorMinimumAxisValue() {
         return value(ConfigSchema.FLAVOR_MINIMUM_AXIS_VALUE, server().flavor.minimumAxisValue);
-    }
-
-    @Override
-    public double getSufficientlySeasoned() {
-        return value(ConfigSchema.FLAVOR_SUFFICIENTLY_SEASONED, server().flavor.sufficientlySeasoned);
     }
 
     @Override
@@ -356,8 +341,6 @@ public class FabricConfigHelper implements IConfigHelper {
         @ConfigEntry.Gui.CollapsibleObject
         public Flavor flavor = new Flavor();
         @ConfigEntry.Gui.CollapsibleObject
-        public Cooking cooking = new Cooking();
-        @ConfigEntry.Gui.CollapsibleObject
         public Compat compat = new Compat();
 
         @Override
@@ -444,16 +427,6 @@ public class FabricConfigHelper implements IConfigHelper {
             public double softCap = ConfigSchema.FLAVOR_SOFT_CAP.getDefault();
             @ConfigEntry.Gui.Tooltip
             public double minimumAxisValue = ConfigSchema.FLAVOR_MINIMUM_AXIS_VALUE.getDefault();
-            @ConfigEntry.Gui.Tooltip
-            public double sufficientlySeasoned = ConfigSchema.FLAVOR_SUFFICIENTLY_SEASONED.getDefault();
-        }
-
-        /** How cooking alters inherited flavor. */
-        public static class Cooking {
-            @ConfigEntry.Gui.Tooltip
-            public double varianceMin = ConfigSchema.COOKING_VARIANCE_MIN.getDefault();
-            @ConfigEntry.Gui.Tooltip
-            public double varianceMax = ConfigSchema.COOKING_VARIANCE_MAX.getDefault();
         }
 
         /** Behavior around other mods' placeable food items. */

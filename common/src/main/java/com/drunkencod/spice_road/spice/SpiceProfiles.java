@@ -5,18 +5,16 @@ import java.util.Optional;
 import net.minecraft.world.item.ItemStack;
 
 import com.drunkencod.spice_road.platform.Services;
-import com.drunkencod.spice_road.registry.ModDataComponents;
 
 /**
- * Single choke point for reading an {@link ItemStack}'s {@link SpiceProfile},
- * regardless of whether it comes from a per-stack
- * {@code spice_road:spice_profile} data component override or from the
- * datapack-registered default for its item ({@link SpiceProfileRegistry}).
+ * Single choke point for reading an {@link ItemStack}'s {@link SpiceProfile}.
+ * Only Spice Items have one: the datapack-registered default for their item
+ * ({@link SpiceProfileRegistry}). Seasoned food carries counted contributors
+ * instead (see {@link Seasoning}).
  * <p>
- * Every place that needs a stack's flavor axis values (tooltips, future
- * economy/quality mechanics) should go through this rather than reading the
- * component or the registry directly, so a datapack-registered spice behaves
- * identically everywhere.
+ * Every place that needs a stack's flavor axis values (tooltips, the Spice
+ * Grinder) should go through this rather than reading the registry directly,
+ * so a datapack-registered spice behaves identically everywhere.
  */
 public final class SpiceProfiles {
 
@@ -25,34 +23,17 @@ public final class SpiceProfiles {
 
     /**
      * @param stack The stack to look up.
-     * @return {@code stack}'s {@link SpiceProfile}: its own data component
-     *         value if present, otherwise the datapack-registered default
-     *         for {@code stack.getItem()}. Empty if {@code stack} isn't
-     *         registered as a spice at all.
+     * @return The datapack-registered {@link SpiceProfile} of
+     *         {@code stack.getItem()}. Empty if {@code stack} isn't a Spice Item.
      */
     public static Optional<SpiceProfile> get(ItemStack stack) {
-        SpiceProfile override = stack.get(ModDataComponents.SPICE_PROFILE.get());
-        if (override != null)
-            return Optional.of(override);
         return SpiceProfileRegistry.getDefault(stack.getItem());
     }
 
     /**
-     * @param stack The stack to check.
-     * @return Whether {@code stack} carries its own {@code spice_road:spice_profile}
-     *         override, as opposed to only its item's datapack-registered
-     *         default. A stack turned into a block that isn't a
-     *         {@code BlockEntity} (e.g. a mod's placeable food) would silently
-     *         discard this data, since it has nowhere to go.
-     */
-    public static boolean hasOverride(ItemStack stack) {
-        return stack.has(ModDataComponents.SPICE_PROFILE.get());
-    }
-
-    /**
      * @param stack The stack to look up.
-     * @return The Effective Profile of {@code stack}'s {@link #get stored
-     *         profile}, which is what effects and tooltips should use.
+     * @return The Effective Profile of {@code stack}'s {@link #get profile},
+     *         which is what effects and tooltips should use.
      */
     public static Optional<SpiceProfile> getEffective(ItemStack stack) {
         return get(stack).map(SpiceProfiles::effective);

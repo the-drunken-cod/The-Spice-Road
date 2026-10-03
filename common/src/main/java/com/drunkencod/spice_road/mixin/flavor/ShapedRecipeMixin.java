@@ -21,6 +21,6 @@ public abstract class ShapedRecipeMixin {
 
     @ModifyReturnValue(method = "assemble(Lnet/minecraft/world/item/crafting/CraftingInput;Lnet/minecraft/core/HolderLookup$Provider;)Lnet/minecraft/world/item/ItemStack;", at = @At("RETURN"))
     private ItemStack spice_road$applyFlavor(ItemStack result, @Local(argsOnly = true) CraftingInput input) {
-        return Flavoring.apply(result, input.items(), false);
+        return Flavoring.apply(result, input.items());
     }
 }

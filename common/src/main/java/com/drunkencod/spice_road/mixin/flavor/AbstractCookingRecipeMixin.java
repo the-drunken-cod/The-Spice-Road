@@ -15,15 +15,14 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import com.drunkencod.spice_road.spice.Flavoring;
 
 /**
- * Carries ingredient flavor over to cooking outputs (furnace, smoker, blast
- * furnace, campfire, and modded machines running these recipes), applying
- * the cooking variance.
+ * Carries ingredient spices over to cooking outputs (furnace, smoker, blast
+ * furnace, campfire, and modded machines running these recipes).
  */
 @Mixin(AbstractCookingRecipe.class)
 public abstract class AbstractCookingRecipeMixin {
 
     @ModifyReturnValue(method = "assemble(Lnet/minecraft/world/item/crafting/SingleRecipeInput;Lnet/minecraft/core/HolderLookup$Provider;)Lnet/minecraft/world/item/ItemStack;", at = @At("RETURN"))
     private ItemStack spice_road$applyFlavor(ItemStack result, @Local(argsOnly = true) SingleRecipeInput input) {
-        return Flavoring.apply(result, List.of(input.item()), true);
+        return Flavoring.apply(result, List.of(input.item()));
     }
 }

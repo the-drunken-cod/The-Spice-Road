@@ -12,8 +12,6 @@ import net.minecraft.world.level.Level;
 
 import com.drunkencod.spice_road.event.FoodEatenEvent;
 import com.drunkencod.spice_road.event.FoodEatenListeners;
-import com.drunkencod.spice_road.spice.SpiceProfile;
-import com.drunkencod.spice_road.spice.SpiceProfiles;
 
 /**
  * Fires {@link FoodEatenListeners} from the single vanilla method both
@@ -27,9 +25,6 @@ public abstract class LivingEntityMixin {
     @Inject(method = "eat(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/food/FoodProperties;)Lnet/minecraft/world/item/ItemStack;", at = @At("HEAD"))
     private void spice_road$fireFoodEaten(Level level, ItemStack itemStack, FoodProperties foodProperties,
             CallbackInfoReturnable<ItemStack> cir) {
-        SpiceProfile profile = SpiceProfiles.get(itemStack).orElse(SpiceProfile.ZERO);
-        SpiceProfile effectiveProfile = SpiceProfiles.getEffective(itemStack).orElse(SpiceProfile.ZERO);
-        FoodEatenListeners.fire(new FoodEatenEvent((LivingEntity) (Object) this, level, itemStack, foodProperties,
-                profile, effectiveProfile));
+        FoodEatenListeners.fire(new FoodEatenEvent((LivingEntity) (Object) this, level, itemStack, foodProperties));
     }
 }

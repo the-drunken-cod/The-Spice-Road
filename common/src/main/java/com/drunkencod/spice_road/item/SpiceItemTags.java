@@ -70,7 +70,7 @@ public class SpiceItemTags {
     public static final TagKey<Item> RETAINS_FLAVOR = create("retains_flavor");
 
     /**
-     * Items that never hold a Profile Override, even if edible or in
+     * Items that never hold a Seasoning, even if edible or in
      * {@link #RETAINS_FLAVOR}.
      */
     public static final TagKey<Item> UNSEASONABLE = create("unseasonable");

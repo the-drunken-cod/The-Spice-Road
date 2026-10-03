@@ -34,7 +34,7 @@ import com.drunkencod.spice_road.item.SpiceItemTags;
  * entirely, as usual).
  * <p>
  * Use {@link SpiceProfiles#get(net.minecraft.world.item.ItemStack)} rather
- * than this class directly - it also accounts for Profile Overrides.
+ * than this class directly.
  */
 public final class SpiceProfileRegistry {
 

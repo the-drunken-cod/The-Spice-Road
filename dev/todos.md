@@ -3,7 +3,7 @@
     - [x] When crafting, any ingredients with the spice profile component add up together for the crafting output.
     - [x] When cooking in a furnace, the spice profile values get multiplied with a set of randomly generated double values in the range of 0.85 to 1.15 (configurable), seeded by the current profile values, to yield reproducible results.
     - [x] Compat: Farmer's Delight (cooking pot, cutting board; skillet via vanilla campfire recipes), Cooking for Blockheads (oven, toaster; kitchen crafting via vanilla recipes).
-    - [x] Tooltip bars scale to the flavor soft cap for Profile Overrides (seasoned food), and to ±1 for plain Spice Items.
+    - [x] Tooltip bars scale to ±1 for Spice Items. (Seasoned food has no bars any more, it lists its counted Flavor Contributors.)
 - [x] Diminishing returns:
     - [x] Apply a per-axis soft cap when reading a profile for effects/tooltips (e.g. `C * tanh(raw / C)`, `C` configurable, default 10), so ~10 spices is the "average maximum". Stored values stay uncapped.
 - [x] Locate Spice Regions via their Region Heart - no vanilla POIs.
@@ -101,7 +101,7 @@
     - [ ] Immersive Engineering: seeds don't grow out of the box. TODO: add support for all non-hand-picked crops (see https://github.com/vectorwing/FarmersDelight/blob/1.21/src/main/resources/data/farmersdelight/recipe/integration/immersiveengineering/cloche/cabbage.json and https://github.com/vectorwing/FarmersDelight/blob/1.21/src/main/resources/data/farmersdelight/recipe/integration/immersiveengineering/cloche/rice.json)
 - [ ] Spice Grinder minigame:
     - Implementation order:
-        1. [ ] Counted flavor contributors, strip the flavor profile from food.
+        1. [x] Counted flavor contributors, strip the flavor profile from food.
         2. [ ] Effect catalog, datagen and eat-time application.
         3. [ ] Board generation, the automatic bot as pure, testable logic.
         4. [ ] The session and GUI using script-generated placeholder assets.
@@ -115,7 +115,7 @@
     - Generation is quota-based and datapack-driven: each zone/ring gets a fixed number of each cell kind (walls, landmines, boons, banes, vanilla-random, empty), the seed picks which cells. Boards with unreachable cells are re-seeded deterministically until valid. Balancing: all 8 zones equally rich in boons and banes by construction.
     - Effects: 16 boons + 16 banes, one of each per axis pole (banes may be vanilla effects, boons mostly custom with a few vanilla stand-ins). A "vanilla-random" cell picks from a datapack pool, but fixed per cell by the seed. Outer ring only boons, inner ring the most banes (exact distribution open). The two outer rings give level 2 effects.
     - Movement: WASD, arrow keys or eight GUI arrow buttons; keypresses are buffered so W+A moves diagonally. Each of the 8 directions is bound to the axis whose zone lies in that direction (up = sweet_bitter, up-left = heat_cooling, ...). A step pays from that axis's points towards 0, wherever the pawn stands.
-        - Starting points per axis = the Effective Profile (soft-capped). Step cost is configurable, proportional to soft cap / max distance (4).
+        - Starting points per axis = the Effective Profile (soft-capped). Step cost is a plain configurable value (default 1.0), not linked to the soft cap.
         - Buttons turn yellow when only 1 step is left and gray when none are left.
         - Retreating is a step in the opposite direction, bound to a different axis, so it needs points on that axis: routes are mostly one-way, no undo, no free backtracking. Players with points on opposing axes can retreat.
     - Neutral zone (rings 0-1): only walls and bare cells. No effects, no landmines. Rings are Chebyshev distance from the center cell, so orthogonal zones have 3/3/3 cells in rings 2/3/4 and diagonal zones 1/3/5.
@@ -126,15 +126,15 @@
     - Effect cap: configurable max distinct effects per food (default ~4). Duplicates merge into one entry with a higher level at a fixed duration. Each catalog entry (datapack) declares its own base duration, level behaviour and max level, with a global config multiplier. Effects are stored in a canonical order so identical routes stack.
     - Effect cells hold a bundle of 1-3 effects, graded by ring. Ring 2: 1 boon + 1 bane (level 1). Ring 3: 1-2 boons + 1 vanilla-random (level 2). Ring 4: 1-2 boons only (level 2). Locking in takes the whole bundle. A landmine holds one bane at its ring's level instead. Defaults: step cost 1.0, lock-in cost 1.5 / 2.5 / 3.5 for rings 2 / 3 / 4 (all configurable).
     - Hidden cells: shown as "???". The tooltip shows the total effect count; within 2 cells (Chebyshev) of the pawn it also shows the count per kind ("1 beneficial, 1 negative, 1 ???"). Landmines have no tooltip and look like bare cells until stepped on. Locking one in reveals it for that player, but only on that food item's board in that world. Store only locked-in cells (food item + cell) per player, size-capped with oldest-first eviction; synced to the client.
-    - The Spice Profile of the food is shown in the GUI, and the Hot effect (also from eating raw habaneros) becomes the `heat` + bane (a `heat` - bane is still needed).
+    - The Spice Profile of the food is shown in the GUI, and the Hot effect (also from eating raw habaneros) becomes the `heat` + bane (its cooling twin, the `heat` - bane, is the custom Chilled effect: freeze ticks like powder snow).
     - Accessibility: everything doable via keyboard (no gamepad; vanilla has no real gamepad support).
     - Example happy path (updated):
         1. Player opens the Grinder, adds 2x habanero and 3x cinnamon to a loaf of bread by clicking spices in the left panel; the right panel shows the resulting profile. "Season" starts the run (before that, "Cancel" returns everything).
         2. The right panel turns into the board. Arrow buttons are grayed out except up-left, which is yellow ("1 move left").
         3. Up is blocked by a visible wall.
-        4. Player moves up-left (heat points -1.5) onto a bare neutral cell.
-        5. Player moves up (sweet_bitter points -1.5) into the sweet_bitter zone; the hidden cell hints "1 ??? effect, 1 negative effect". Player locks it in, spending sweet_bitter points: the cell is revealed and its effects are added to the list. Adding another habanero mid-run re-enables up-left.
-        6. Player moves up-left (heat points -1.5) onto a heat_cooling zone cell, which is a landmine: sound, "You hit a mine!", its bane is added to the effect list. Accept is enabled and no moves are left.
+        4. Player moves up-left (heat points -1.0) onto a bare neutral cell.
+        5. Player moves up (sweet_bitter points -1.0) into the sweet_bitter zone; the hidden cell hints "1 ??? effect, 1 negative effect". Player locks it in, spending sweet_bitter points: the cell is revealed and its effects are added to the list. Adding another habanero mid-run re-enables up-left.
+        6. Player moves up-left (heat points -1.0) onto a heat_cooling zone cell, which is a landmine: sound, "You hit a mine!", its bane is added to the effect list. Accept is enabled and no moves are left.
         7. "Accept" closes the GUI and yields the seasoned food.
     - Extra concerns:
         - Reproducibility: equal routes give equal, stackable results (the board is deterministic).
@@ -143,4 +143,4 @@
     - Contributor amounts are fractional shares: a recipe's summed amounts are split evenly across the output items (2 decimals, truncated), as `Flavoring` already does for the profile.
     - Automatic bot policy: straight-line walker. Strongest axis (ties: FlavorAxis order), walks straight in that direction while it can pay, locks in every affordable effect cell it lands on, stops at a wall, never detours or retreats, ignores mines and hidden info.
     - Participation award: a seasoned food with no effects at all gets bonus saturation from a configurable seeded range (default ~0.5-1.5), scaled by spice amount relative to a configurable full dose (default 4 spices per food, capped at 1x), seeded by food item + contributors so equal foods stack. "Seasoned" is its own marker, so such a food still can't be seasoned again.
-    - Open: vanilla-random pool, `heat` - bane.
+    - Vanilla-random pool (datapack, weighted): default is a ~50/50 mix of vanilla boons and mild banes, excluding instant and lethal effects (instant damage, wither, poison, levitation).

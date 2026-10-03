@@ -1,8 +1,6 @@
 package com.drunkencod.spice_road.datagen;
 
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -19,13 +17,12 @@ import net.minecraft.world.item.Items;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.advancement.FoodEatenTrigger;
-import com.drunkencod.spice_road.spice.FlavorAxis;
 import com.drunkencod.spice_road.spice.Spice;
 
 /**
  * Datagens the {@code spice_road} advancement tab: a hidden, auto-granted
  * root (own tab, so future advancements don't crowd a vanilla one) plus
- * Everything Bagel (see {@code dev/todos.md}). Plain vanilla
+ * Everything Bagel and Pumpkin Purist (see {@code dev/todos.md}). Plain vanilla
  * {@code AdvancementProvider}, so this runs unchanged on both loaders.
  */
 public class SpiceRoadAdvancements implements AdvancementSubProvider {
@@ -45,11 +42,6 @@ public class SpiceRoadAdvancements implements AdvancementSubProvider {
                 .build(ROOT_ID);
         saver.accept(root);
 
-        Map<FlavorAxis, FoodEatenTrigger.AxisThreshold> everyAxisSufficientlySeasoned = new EnumMap<>(
-                FlavorAxis.class);
-        for (FlavorAxis axis : FlavorAxis.values())
-            everyAxisSufficientlySeasoned.put(axis, new FoodEatenTrigger.AxisThreshold(Optional.empty()));
-
         AdvancementHolder everythingBagel = Advancement.Builder.advancement()
                 .parent(root)
                 .display(Items.BREAD,
@@ -60,9 +52,8 @@ public class SpiceRoadAdvancements implements AdvancementSubProvider {
                         null, AdvancementType.CHALLENGE, true, true, false)
                 .addCriterion("everything_bagel", FoodEatenTrigger.TriggerInstance.foodEaten(
                         Optional.of(ItemPredicate.Builder.item().of(Items.BREAD)),
-                        everyAxisSufficientlySeasoned,
-                        Optional.empty(),
-                        List.of()))
+                        List.of(),
+                        Optional.of(10D)))
                 .build(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "everything_bagel"));
         saver.accept(everythingBagel);
 
@@ -75,8 +66,6 @@ public class SpiceRoadAdvancements implements AdvancementSubProvider {
                         null, AdvancementType.CHALLENGE, true, true, false)
                 .addCriterion("pumpkin_purist", FoodEatenTrigger.TriggerInstance.foodEaten(
                         Optional.of(ItemPredicate.Builder.item().of(Items.PUMPKIN_PIE)),
-                        Map.of(),
-                        Optional.empty(),
                         List.of(
                                 ItemPredicate.Builder.item()
                                         .of(Spice.getRawById(Spice.CINNAMON.getId())),
@@ -94,7 +83,8 @@ public class SpiceRoadAdvancements implements AdvancementSubProvider {
                         // ItemPredicate.Builder.item()
                         // .of(Spice.getRawById(Spice.CLOVES.getId()),
                         // ProcessedSpice.DRIED_CLOVES.getItem())
-                        )))
+                        ),
+                        Optional.empty()))
                 .build(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "pumpkin_purist"));
         saver.accept(pumpkinPurist);
     }

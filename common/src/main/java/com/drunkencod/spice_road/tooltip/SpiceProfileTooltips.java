@@ -1,10 +1,11 @@
 package com.drunkencod.spice_road.tooltip;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -15,16 +16,16 @@ import net.minecraft.world.item.ItemStack;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.item.SpiceItemTags;
-import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.ModDataComponents;
+import com.drunkencod.spice_road.spice.Seasoning;
 import com.drunkencod.spice_road.spice.SpiceProfiles;
 import com.drunkencod.spice_road.spice.Tier;
 
 /**
  * Registers the global {@link TooltipUtil} contributions that show a stack's
  * {@link Tier} (for items in a {@link Tier#getItemTag() tier tag}) and its
- * {@link SpiceProfiles Spice Profile} flavor axis values on Shift, for any
- * item that has one.
+ * {@link SpiceProfiles Spice Profile} flavor axis values on Shift for Spice
+ * Items, and the counted Flavor Contributors of seasoned food.
  * <p>
  * Actually appending the tooltip to a given stack's hover text still needs a
  * per-loader hook into a global item tooltip event (there's no vanilla/common
@@ -57,14 +58,23 @@ public final class SpiceProfileTooltips {
     private static final String TIER_LINE_KEY = Constants.MOD_ID + ".tooltip.spice_tier.line";
 
     /**
+     * Translation key of one Flavor Contributor, taking its item name and its
+     * amount as arguments (e.g. {@code "Cinnamon x2"}).
+     */
+    private static final String FLAVOR_CONTRIBUTOR_KEY = Constants.MOD_ID + ".tooltip.flavor_contributor";
+
+    /**
      * Translation key of the first Flavor Contributors line, taking as many
-     * comma-separated item names as fit on it as its only argument (see
+     * comma-separated contributors as fit on it as its only argument (see
      * {@link #flavorContributorsLines}).
      */
     private static final String FLAVOR_CONTRIBUTORS_KEY = Constants.MOD_ID + ".tooltip.flavor_contributors";
 
-    /** Pixel width a Flavor Contributors name list wraps at. */
+    /** Pixel width a Flavor Contributors list wraps at. */
     private static final int CONTRIBUTORS_LINE_WIDTH = 200;
+
+    /** Score magnitude at which a Spice Item's flavor bar is full. */
+    private static final double SPICE_ITEM_BAR_SCALE = 1D;
 
     private SpiceProfileTooltips() {
     }
@@ -80,39 +90,43 @@ public final class SpiceProfileTooltips {
                 stack -> tierOf(stack)
                         .map(tier -> List.of(tierLine(tier, lineKeyOf(stack))))
                         .orElse(List.of()));
-        TooltipUtil.register(stack -> SpiceProfiles.get(stack).isPresent(), TooltipUtil.Visibility.SHIFT_ONLY,
+        TooltipUtil.register(stack -> SpiceProfiles.get(stack).isPresent() || stack.has(ModDataComponents.SEASONING.get()),
+                TooltipUtil.Visibility.SHIFT_ONLY,
                 SpiceProfileTooltips::shiftLines, SpiceProfileTooltips::shiftHintLine);
     }
 
     /**
      * @param stack The stack being hovered.
-     * @return The lines shown while Shift is held: the flavor axes, preceded by
-     *         a Spice Item's tier line (which is merged into
-     *         {@link #shiftHintLine(ItemStack)} while Shift isn't held).
+     * @return The lines shown while Shift is held: a Spice Item's tier line
+     *         (which is merged into {@link #shiftHintLine(ItemStack)} while Shift
+     *         isn't held) and flavor axes, or a seasoned food's Flavor
+     *         Contributors.
      */
     private static List<Component> shiftLines(ItemStack stack) {
         List<Component> lines = new ArrayList<>();
         if (stack.is(SpiceItemTags.SPICES))
             tierOf(stack).map(tier -> tierLine(tier, lineKeyOf(stack))).ifPresent(lines::add);
         SpiceProfiles.getEffective(stack)
-                .map(profile -> SpiceFlavorTooltips.formatFlavorAxes(profile, barScale(stack)))
+                .map(profile -> SpiceFlavorTooltips.formatFlavorAxes(profile, SPICE_ITEM_BAR_SCALE))
                 .ifPresent(lines::addAll);
 
-        Set<Item> contributors = stack.getOrDefault(ModDataComponents.FLAVOR_CONTRIBUTORS.get(), Set.of());
-        if (!contributors.isEmpty())
-            lines.addAll(flavorContributorsLines(contributors));
+        Seasoning seasoning = stack.get(ModDataComponents.SEASONING.get());
+        if (seasoning != null && !seasoning.contributors().isEmpty())
+            lines.addAll(flavorContributorsLines(seasoning));
 
         return lines;
     }
 
     /**
-     * @param contributors The stack's {@link ModDataComponents#FLAVOR_CONTRIBUTORS}.
-     * @return The comma-separated contributor item names, word-wrapped at
-     *         {@link #CONTRIBUTORS_LINE_WIDTH}, with the first line prefixed via
-     *         {@link #FLAVOR_CONTRIBUTORS_KEY}, e.g. {@code "Contains: Cinnamon,
-     *         Nutmeg,"} followed by {@code "Habanero"} on its own line.
+     * @param seasoning The stack's {@link ModDataComponents#SEASONING}.
+     * @return The comma-separated contributors with their amounts,
+     *         word-wrapped at {@link #CONTRIBUTORS_LINE_WIDTH}, with the first
+     *         line prefixed via {@link #FLAVOR_CONTRIBUTORS_KEY}, e.g.
+     *         {@code "Seasoned with: Cinnamon x2, Nutmeg x1.5,"} followed by
+     *         {@code "Habanero x1"} on its own line.
      */
-    private static List<Component> flavorContributorsLines(Set<Item> contributors) {
+    private static List<Component> flavorContributorsLines(Seasoning seasoning) {
+        Map<Item, Double> contributors = seasoning.contributors();
         Component space = Component.literal(" ");
         int spaceWidth = SpiceFlavorTooltips.measureWidth(space);
 
@@ -120,9 +134,11 @@ public final class SpiceProfileTooltips {
         MutableComponent line = Component.empty();
         int lineWidth = 0;
         int index = 0;
-        for (Item item : contributors) {
+        for (Map.Entry<Item, Double> contributor : contributors.entrySet()) {
             boolean isLast = ++index == contributors.size();
-            MutableComponent token = item.getDefaultInstance().getHoverName().copy();
+            MutableComponent token = Component.translatable(FLAVOR_CONTRIBUTOR_KEY,
+                    contributor.getKey().getDefaultInstance().getHoverName(),
+                    BigDecimal.valueOf(contributor.getValue()).stripTrailingZeros().toPlainString());
             if (!isLast)
                 token.append(",");
             int tokenWidth = SpiceFlavorTooltips.measureWidth(token);
@@ -228,15 +244,5 @@ public final class SpiceProfileTooltips {
      */
     private static MutableComponent tierName(Tier tier) {
         return Component.translatable(Constants.MOD_ID + ".tooltip.spice_tier." + tier.getSerializedName());
-    }
-
-    /**
-     * @param stack The stack whose profile is shown.
-     * @return The flavor soft cap for a Profile Override (e.g. seasoned food,
-     *         whose flavor adds up across many spices), otherwise {@code 1},
-     *         the conventional range of a single Spice Item.
-     */
-    private static double barScale(ItemStack stack) {
-        return stack.has(ModDataComponents.SPICE_PROFILE.get()) ? Services.CONFIG.getFlavorSoftCap() : 1D;
     }
 }

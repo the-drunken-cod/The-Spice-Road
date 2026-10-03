@@ -14,13 +14,13 @@ import net.minecraft.world.level.block.EntityBlock;
 
 import com.drunkencod.spice_road.item.SpiceItemTags;
 import com.drunkencod.spice_road.platform.Services;
-import com.drunkencod.spice_road.spice.SpiceProfiles;
+import com.drunkencod.spice_road.registry.ModDataComponents;
 
 /**
  * Requires sneaking to place a stack carrying a
- * {@code spice_road:spice_profile}
- * override as a block that isn't a {@code BlockEntity}, since such a block has
- * nowhere to keep that data and would otherwise silently discard it - notably
+ * {@code spice_road:seasoning} as a block that isn't a {@code BlockEntity},
+ * since such a block has nowhere to keep that data and would otherwise
+ * silently discard it - notably
  * Farmer's Delight-style placeable food (pie slices, food bowls). Cancelling
  * the placement (returning {@code PASS}) falls through to vanilla's own eat
  * fallback, so the stack is eaten instead.
@@ -42,7 +42,7 @@ public abstract class FlavoredFoodPlacementMixin {
         Player player = context.getPlayer();
         if (player == null || player.isShiftKeyDown() || !Services.CONFIG.isSneakRequiredToPlaceFlavoredFood())
             return;
-        if (!placesAsBlock(stack) || !SpiceProfiles.hasOverride(stack))
+        if (!placesAsBlock(stack) || !stack.has(ModDataComponents.SEASONING.get()))
             return;
         cir.setReturnValue(InteractionResult.PASS);
         cir.cancel();
@@ -51,8 +51,8 @@ public abstract class FlavoredFoodPlacementMixin {
     /**
      * @param stack The stack about to be used on a block.
      * @return Whether {@code stack} would place a block that can't be a
-     *         {@code BlockEntity}, and would therefore discard any Profile
-     *         Override it carries.
+     *         {@code BlockEntity}, and would therefore discard any Seasoning
+     *         it carries.
      */
     private static boolean placesAsBlock(ItemStack stack) {
         if (stack.getItem() instanceof BlockItem blockItem)

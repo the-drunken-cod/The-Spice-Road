@@ -53,8 +53,6 @@ public final class ConfigSchema {
     public static final ConfigSection VINE_RIPENING_SEGMENTS = VINE.child("ripeningSegments");
     /** How stored Spice Profiles turn into the flavor a player actually gets. */
     public static final ConfigSection FLAVOR = ConfigSection.root(ConfigFile.SERVER, "flavor");
-    /** How cooking alters inherited flavor. */
-    public static final ConfigSection COOKING = ConfigSection.root(ConfigFile.SERVER, "cooking");
     /** Client-side tooltip display. */
     public static final ConfigSection TOOLTIP = ConfigSection.root(ConfigFile.CLIENT, "tooltip");
     /** Behavior around other mods' placeable food items. */
@@ -170,20 +168,6 @@ public final class ConfigSchema {
     /** Magnitude any non-zero flavor axis counts as at least. */
     public static final ConfigOption<Double> FLAVOR_MINIMUM_AXIS_VALUE = add(
             ConfigOption.ofDouble(FLAVOR, "minimumAxisValue", 0.05, 0.0, 1.0));
-
-    /** Magnitude a raw flavor axis must reach to count as Sufficiently Seasoned. */
-    public static final ConfigOption<Double> FLAVOR_SUFFICIENTLY_SEASONED = add(
-            ConfigOption.ofDouble(FLAVOR, "sufficientlySeasoned", 7.0, 0.1, 1000.0));
-
-    // #region Cooking
-
-    /** Lower bound of the per-axis multipliers applied when cooking. */
-    public static final ConfigOption<Double> COOKING_VARIANCE_MIN = add(
-            ConfigOption.ofDouble(COOKING, "varianceMin", 0.95, 0.0, 10.0));
-
-    /** Upper bound of the per-axis multipliers applied when cooking. */
-    public static final ConfigOption<Double> COOKING_VARIANCE_MAX = add(
-            ConfigOption.ofDouble(COOKING, "varianceMax", 1.3, 0.0, 10.0));
 
     // #region Tooltip
 

@@ -253,16 +253,6 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
-    public double getCookingVarianceMin() {
-        return value(ConfigSchema.COOKING_VARIANCE_MIN);
-    }
-
-    @Override
-    public double getCookingVarianceMax() {
-        return value(ConfigSchema.COOKING_VARIANCE_MAX);
-    }
-
-    @Override
     public double getFlavorSoftCap() {
         return value(ConfigSchema.FLAVOR_SOFT_CAP);
     }
@@ -270,11 +260,6 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     @Override
     public double getFlavorMinimumAxisValue() {
         return value(ConfigSchema.FLAVOR_MINIMUM_AXIS_VALUE);
-    }
-
-    @Override
-    public double getSufficientlySeasoned() {
-        return value(ConfigSchema.FLAVOR_SUFFICIENTLY_SEASONED);
     }
 
     @Override

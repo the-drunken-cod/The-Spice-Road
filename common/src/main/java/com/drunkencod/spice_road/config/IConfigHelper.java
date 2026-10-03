@@ -237,24 +237,6 @@ public interface IConfigHelper {
     double getSpiceVineRipeningSegmentsChance(Tier tier);
 
     /**
-     * Lower bound of the per-axis multipliers applied to inherited flavor
-     * when cooking (furnace, smoker, blast furnace, campfire and compatible
-     * mod machines). If greater than {@link #getCookingVarianceMax()}, the two
-     * are swapped.
-     *
-     * @return The configured lower cooking variance multiplier.
-     */
-    double getCookingVarianceMin();
-
-    /**
-     * Upper bound of the per-axis multipliers applied to inherited flavor
-     * when cooking. See {@link #getCookingVarianceMin()}.
-     *
-     * @return The configured upper cooking variance multiplier.
-     */
-    double getCookingVarianceMax();
-
-    /**
      * Magnitude each axis of an Effective Profile saturates towards, giving
      * diminishing returns when stacking many spices. Stored profiles are never
      * capped.
@@ -270,16 +252,6 @@ public interface IConfigHelper {
      * @return The configured minimum axis magnitude.
      */
     double getFlavorMinimumAxisValue();
-
-    /**
-     * Magnitude a raw Spice Profile axis must reach, in either direction, to
-     * count as Sufficiently Seasoned - used by pass/fail checks like the
-     * {@code spice_road:food_eaten} advancement criterion, not by tooltips or
-     * the Effective Profile's diminishing-returns cap ({@link #getFlavorSoftCap()}).
-     *
-     * @return The configured Sufficiently Seasoned threshold.
-     */
-    double getSufficientlySeasoned();
 
     /**
      * Client-side. Whether Flavor Axis tooltips show both pole labels of each
