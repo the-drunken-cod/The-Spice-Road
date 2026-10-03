@@ -38,9 +38,16 @@ public class SpiceBushBlock extends FlowerPatchBlock {
         return Constants.SPICE_BUSH_GROWTH_STAGES;
     }
 
-    /** Bushes start taller than other Spice Plants, see {@link #SHAPE_BY_AGE}. */
+    /**
+     * Bushes start taller than other Spice Plants, see {@link #SHAPE_BY_AGE}.
+     * Since bushes can serialize with any 0-7 age, like when using a debug stick,
+     * those values need to be accounted for here.
+     */
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return SHAPE_BY_AGE[getAge(state)];
+        int age = getAge(state);
+        if (age > (SHAPE_BY_AGE.length - 1))
+            return SHAPE_BY_AGE[SHAPE_BY_AGE.length - 1];
+        return SHAPE_BY_AGE[age];
     }
 }
