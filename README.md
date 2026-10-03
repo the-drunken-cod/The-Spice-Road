@@ -24,10 +24,10 @@ Adds rare spices to Minecraft that can enhance existing foods with a new buff me
 <br>
 
 ## Features:
-- **36 new spice plants now generate in dedicated regions throughout the overworld.** They are dependent on climate, but not bound to biomes and their size is configurable.
+- **36 new spice plants now generate in dedicated regions throughout the overworld.** They are dependent on climate, but not bound to biomes and the region size is configurable.
     - Spices can be harvested from trees (bark or fruiting leaves), crops, bushes and rhizomes (some of which need to grow submerged in shallow water).
 - **Common spices may be taken back home and grown**, but a good portion of them will **only mature if produced locally.**  
-  This incentivizes exploration, as well as establishing trade routes and associations on servers. From Hanseatic League to West India Company, there's something for everyone.
+  This incentivizes exploration, as well as establishing trade routes and associations on servers. From Hanseatic League to East India Company, there's something for everyone.
     - **Spice plants are worldgen-reliant and finite**, so monopolizing them is a real thing players can do. Extra spice sources can always be added my modpack creators and server admins, like loot tables, villager trades, kubejs scripts, currency shops, etc.
     - Maps can be **traded for or found as loot** to help find certain spices. Epic tier spices can only be found via maps found in treasure loot by default.
 - **New mechanic that allows spices to be mixed and matched and applied to existing foods** of any mod to **imbue them with beneficial custom effects.** Players can also create spice mixes and specialize in cultivating the rarest spice plants.
