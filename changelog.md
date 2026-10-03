@@ -5,6 +5,7 @@
     - Added spiceless regions with a configurable chance percentage.
     - Added water surface decorations to spice ponds. Currently only includes lily pads.
     - Rare spice maps now also spawn in shipwreck map chests, desert pyramids, pillager outposts, and woodland mansions. They are slightly more common than epic tier maps.
+    - TODO: Added textures for the spice plants `Nigella`.
 - Changes:
     - ⚠️ **BREAKING:** renamed `curry_leaf` to just `curry`.
     - Aquatic rhizomes now have a 2-block tall model, so they poke outside their water block.
