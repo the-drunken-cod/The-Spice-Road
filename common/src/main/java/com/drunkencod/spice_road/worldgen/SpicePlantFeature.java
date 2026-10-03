@@ -10,6 +10,7 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -20,6 +21,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.VineBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -72,6 +74,20 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
      */
     public static final TagKey<Biome> NO_SPICE_PLANTS = TagKey.create(Registries.BIOME,
             ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "no_spice_plants"));
+
+    /**
+     * Horizontal reach, in blocks, of {@link #removeOrphanedVines} around a trunk.
+     */
+    private static final int ORPHANED_VINE_RADIUS = 5;
+
+    /**
+     * How far below the trunk's base {@link #removeOrphanedVines} looks, for
+     * hanging vine chains.
+     */
+    private static final int ORPHANED_VINE_DEPTH = 8;
+
+    /** How far above the trunk's base {@link #removeOrphanedVines} looks. */
+    private static final int ORPHANED_VINE_HEIGHT = 24;
 
     public SpicePlantFeature(Codec<SpicePlantConfiguration> codec) {
         super(codec);
@@ -229,10 +245,47 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
         if (!isSolidGround(level, surfacePos, context.config().trees().groundRadius()))
             return false;
 
-        return level.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE)
+        boolean placed = level.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE)
                 .getHolder(treeFeature)
                 .map(feature -> feature.value().place(level, context.chunkGenerator(), context.random(), surfacePos))
                 .orElse(false);
+        if (placed)
+            removeOrphanedVines(level, surfacePos);
+        return placed;
+    }
+
+    /**
+     * Removes vines left hanging in mid-air around a freshly placed tree. A
+     * tree can replace part of another tree's vine (e.g. a jungle tree's), but
+     * vanilla only revalidates the vines touching the tree's own blocks, and
+     * worldgen doesn't cascade block updates, so the segments below stay behind
+     * unsupported.
+     * <p>
+     * Sweeps {@link #ORPHANED_VINE_RADIUS} blocks around the trunk and
+     * downwards from the top, so removing a segment is seen by the one below it.
+     * Chunks outside the generating region are skipped. Trees larger than the
+     * swept area may leave vines behind.
+     *
+     * @param trunk The surface position the tree was placed at.
+     */
+    private static void removeOrphanedVines(WorldGenLevel level, BlockPos trunk) {
+        int minY = Math.max(level.getMinBuildHeight(), trunk.getY() - ORPHANED_VINE_DEPTH);
+        int maxY = Math.min(level.getMaxBuildHeight() - 1, trunk.getY() + ORPHANED_VINE_HEIGHT);
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+        for (int y = maxY; y >= minY; y--) {
+            for (int dx = -ORPHANED_VINE_RADIUS; dx <= ORPHANED_VINE_RADIUS; dx++) {
+                for (int dz = -ORPHANED_VINE_RADIUS; dz <= ORPHANED_VINE_RADIUS; dz++) {
+                    pos.set(trunk.getX() + dx, y, trunk.getZ() + dz);
+                    if (!level.hasChunk(SectionPos.blockToSectionCoord(pos.getX()),
+                            SectionPos.blockToSectionCoord(pos.getZ())))
+                        continue;
+
+                    BlockState state = level.getBlockState(pos);
+                    if (state.getBlock() instanceof VineBlock && !state.canSurvive(level, pos))
+                        level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+                }
+            }
+        }
     }
 
     /**
