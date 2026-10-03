@@ -82,24 +82,22 @@
 - [x] Prevent other spices from spawning when a spice grove borders two different buckets, so groves only yield a single spice plant.
 - [x] Rework seed loot, so there's only a chance to drop 1 seeds (or cutting for rhizomes) item when harvesting spices, decreases by tier. Excludes trees and vines.
 - [x] Elongate water-planted crops by around half a block in model and texture height, so their flowering parts poke out of the water.
-- [ ] Make mod blocks like the Thermal Expansion Phytogenic Insolator, Immersive Engineering Garden Cloche and Botany Pots respect spice regions and require water for planting water-based rhizomes.
-    - TODO: investigate whether it'd be worth intentionally not extending abstract classes and taglists to prevent cheating the region-locking system with mods.
 - [x] Adjust hitboxes:
     - [x] Change spice bushes to be taller at the start (age0=9px, age1=12px, age2=15px texture height).
     - [x] Change all splice crops to be 14x14 in horizontal footprint.
+- [x] Animate tooltip: increment rendered axis values by 0.1 per tick until reaching the final value, with an ease-out timeout function.
 - [ ] Investigate errors:
     - [ ] [Server thread/INFO] [SeedRenderer/]: Seed Renderer could not grow a spice_road:spice_plant in memory (java.lang.ClassCastException: Cannot cast java.lang.Integer to java.lang.Long at java.base/java.lang.Class.cast(Class.java:3492)); it is drawn from its definition instead
     - [ ] [main/WARN] [mixin/]: Reference map 'spice_road.refmap.json' for spice_road.mixins.json could not be read. If this is a development environment you can ignore this message
-- [ ] Animate tooltip: increment rendered axis values by 0.1 per tick until reaching the final value, with an ease-out timeout function.
+- [ ] Make mod blocks like the Thermal Expansion Phytogenic Insolator, Immersive Engineering Garden Cloche and Botany Pots respect spice regions and require water for planting water-based rhizomes.
+    - TODO: investigate whether it'd be worth intentionally not extending abstract classes and taglists to prevent cheating the region-locking system with mods.
 - [ ] Rework spice profile system for the seasoning minigame:
     - Only Spice Items keep a Spice Profile. Foods no longer carry a Profile Override; instead they carry Seasoning Effects and *counted* Flavor Contributors (item + amount).
     - Recipes (any mod) sum the counted contributors of all inputs (spice items and seasoned foods), drop the inputs' old effects and re-solve the output's effects with the automatic minigame. Spices are never voided or duplicated.
     - Rework everything reading food profiles: tooltips, Sufficiently Seasoned, cooking variance (replaced by the automatic minigame), advancement triggers.
     - "Everything Bagel" advancement becomes e.g. "eat a food with at least 10 flavor contributors".
     - Flavor contributor tooltip lists amounts (see the max-applications item above).
-- [ ] Max amount of spice applications for spices of the same type:
-    - Configurable value, default 3. When applying the same spice for the 4th time, no values are applied from it. The upcoming spice grinder should stop allowing to add players to add spices past this number.
-    - Update flavor_contributors tooltip to list spices with amounts (e.g. `3x Cinnamon, 2x Nutmeg, Cloves`), sorted by amount, then alphabetically (respecting translations). Use templates for the translations, e.g. `%sx %s`.
+    - Max amount of spice applications for spices of the same type. Configurable value, default 3. When applying the same spice for the 4th time, no values are applied from it. The upcoming spice grinder should stop allowing to add players to add spices past this number.
 - [ ] Spice Grinder minigame:
     - Implementation order:
         1. [ ] Counted flavor contributors, strip the flavor profile from food.

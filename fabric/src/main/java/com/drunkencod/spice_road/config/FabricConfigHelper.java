@@ -232,6 +232,16 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean isTooltipAnimated() {
+        return client().tooltip.animateAxes;
+    }
+
+    @Override
+    public int getTooltipAnimationDurationMs() {
+        return client().tooltip.animationDurationMs;
+    }
+
+    @Override
     public boolean isSneakRequiredToPlaceFlavoredFood() {
         return value(ConfigSchema.COMPAT_SNEAK_TO_PLACE_FLAVORED_FOOD, server().compat.sneakToPlaceFlavoredFood);
     }
@@ -473,6 +483,10 @@ public class FabricConfigHelper implements IConfigHelper {
             public boolean showAxisValues = ConfigSchema.TOOLTIP_SHOW_AXIS_VALUES.getDefault();
             @ConfigEntry.Gui.Tooltip
             public boolean alwaysShowShiftContent = ConfigSchema.TOOLTIP_ALWAYS_SHOW_SHIFT_CONTENT.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public boolean animateAxes = ConfigSchema.TOOLTIP_ANIMATE_AXES.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public int animationDurationMs = ConfigSchema.TOOLTIP_ANIMATION_DURATION_MS.getDefault();
         }
     }
 

@@ -199,6 +199,14 @@ public final class ConfigSchema {
     public static final ConfigOption<Boolean> TOOLTIP_ALWAYS_SHOW_SHIFT_CONTENT = add(
             ConfigOption.ofBoolean(TOOLTIP, "alwaysShowShiftContent", false));
 
+    /** Whether Flavor Axis tooltips count up to their values when shown. */
+    public static final ConfigOption<Boolean> TOOLTIP_ANIMATE_AXES = add(
+            ConfigOption.ofBoolean(TOOLTIP, "animateAxes", true));
+
+    /** Duration, in milliseconds, of the Flavor Axis tooltip count-up. */
+    public static final ConfigOption<Integer> TOOLTIP_ANIMATION_DURATION_MS = add(
+            ConfigOption.ofInt(TOOLTIP, "animationDurationMs", 600, 50, 5000));
+
     // #region Compat
 
     /**

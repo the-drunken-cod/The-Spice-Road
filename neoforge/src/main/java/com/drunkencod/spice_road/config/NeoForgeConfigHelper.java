@@ -275,6 +275,16 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean isTooltipAnimated() {
+        return value(ConfigSchema.TOOLTIP_ANIMATE_AXES);
+    }
+
+    @Override
+    public int getTooltipAnimationDurationMs() {
+        return value(ConfigSchema.TOOLTIP_ANIMATION_DURATION_MS);
+    }
+
+    @Override
     public boolean isSneakRequiredToPlaceFlavoredFood() {
         return value(ConfigSchema.COMPAT_SNEAK_TO_PLACE_FLAVORED_FOOD);
     }

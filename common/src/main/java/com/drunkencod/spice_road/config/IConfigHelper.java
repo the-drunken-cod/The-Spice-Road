@@ -307,6 +307,22 @@ public interface IConfigHelper {
     boolean isTooltipShiftBypassed();
 
     /**
+     * Client-side. Whether Flavor Axis tooltips count their values and bars up
+     * from zero whenever they appear, instead of showing them immediately.
+     *
+     * @return Whether Flavor Axis tooltips are animated.
+     */
+    boolean isTooltipAnimated();
+
+    /**
+     * Client-side.
+     *
+     * @return The duration, in milliseconds, of the Flavor Axis tooltip
+     *         count-up.
+     */
+    int getTooltipAnimationDurationMs();
+
+    /**
      * Whether placing an {@link net.minecraft.world.item.ItemStack} carrying a
      * {@code spice_road:spice_profile} override as a block that isn't a
      * {@code BlockEntity} requires sneaking, so the override isn't silently

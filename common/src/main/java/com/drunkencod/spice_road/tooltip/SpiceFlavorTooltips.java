@@ -30,6 +30,10 @@ import com.drunkencod.spice_road.spice.SpiceProfile;
  *
  * Padding is measured in pixels (see {@link #setTextWidthMeasurer}), so the
  * bars line up despite the proportional font and adapt to the current locale.
+ * <p>
+ * Scores count up from zero when the lines appear (see
+ * {@link FlavorTooltipAnimator}), while the layout stays sized for the final
+ * scores.
  */
 public class SpiceFlavorTooltips {
 
@@ -100,7 +104,7 @@ public class SpiceFlavorTooltips {
             // at least about a space wide
             List<Integer> rowWidths = new ArrayList<>();
             for (FlavorAxis axis : FlavorAxis.values())
-                rowWidths.add(valueRowWidth(axis, profile.get(axis), bothLabels));
+                rowWidths.add(valueRowWidth(axis, profile.get(axis) >= 0D, profile.get(axis), bothLabels));
             int minGap = Math.max(1, padder.space() - 1);
             labelWidth = padder.alignedWidth(rowWidths, px -> px >= minGap && padder.isPaddable(px));
         } else {
@@ -119,10 +123,18 @@ public class SpiceFlavorTooltips {
             barWidths.add(width(Component.literal(barText(halfSteps, false))));
         int barWidth = padder.alignedWidth(barWidths, padder::isPaddable);
 
+        // Layout above is sized for the final values, so it stays put while counting up
+        double progress = Services.CONFIG.isTooltipAnimated()
+                ? FlavorTooltipAnimator.progress(profile, barScale, Services.CONFIG.getTooltipAnimationDurationMs(),
+                        System.currentTimeMillis())
+                : 1D;
+
         List<Component> lines = new ArrayList<>(FlavorAxis.values().length);
-        for (FlavorAxis axis : FlavorAxis.values())
-            lines.add(formatLine(axis, profile.get(axis), barScale, bothLabels, showValues, padder, labelWidth,
-                    barWidth));
+        for (FlavorAxis axis : FlavorAxis.values()) {
+            double value = profile.get(axis);
+            lines.add(formatLine(axis, value >= 0D, FlavorTooltipAnimator.displayed(value, barScale, progress),
+                    barScale, bothLabels, showValues, padder, labelWidth, barWidth));
+        }
 
         return lines;
     }
@@ -131,7 +143,9 @@ public class SpiceFlavorTooltips {
      * Formats a single Flavor Axis score as a tooltip line.
      *
      * @param axis       The Flavor Axis
-     * @param value      Score
+     * @param positive   Which pole the line is on, which stays the same while
+     *                   {@code value} is animated
+     * @param value      Score to show, which may be partway to the final score
      * @param barScale   Score magnitude at which the bar is full
      * @param bothLabels Whether to show both pole labels
      * @param showValues Whether to show the scaled value after the label
@@ -140,11 +154,9 @@ public class SpiceFlavorTooltips {
      * @param barWidth   Common width of the space left of the opening bracket
      * @return The formatted tooltip line
      */
-    private static Component formatLine(FlavorAxis axis, double value, double barScale, boolean bothLabels,
-            boolean showValues, Padder padder, int labelWidth, int barWidth) {
-        // Exactly 0 is labeled as positive with an empty bar, any other score shows at
-        // least a half step
-        boolean positive = value >= 0D;
+    private static Component formatLine(FlavorAxis axis, boolean positive, double value, double barScale,
+            boolean bothLabels, boolean showValues, Padder padder, int labelWidth, int barWidth) {
+        // Exactly 0 shows an empty bar, any other score shows at least a half step
         int halfSteps = value == 0D ? 0
                 : Math.max(1, (int) Math.round(Math.min(Math.abs(value) / barScale, 1D) * BAR_LENGTH * 2));
         Component bar = Component.literal(barText(halfSteps, positive)).withColor(axis.getColor(positive));
@@ -158,8 +170,8 @@ public class SpiceFlavorTooltips {
         if (showValues) {
             line.append(label)
                     .append(valueSeparator())
-                    .append(padder.build(labelWidth - valueRowWidth(axis, value, bothLabels)))
-                    .append(valueNumber(axis, value));
+                    .append(padder.build(labelWidth - valueRowWidth(axis, positive, value, bothLabels)))
+                    .append(valueNumber(axis, positive, value));
         } else {
             int labelPadding = labelWidth - width(label);
             int labelPaddingLeft = padder.split(labelPadding);
@@ -175,14 +187,15 @@ public class SpiceFlavorTooltips {
 
     /**
      * @param axis       The Flavor Axis
+     * @param positive   Which pole the row is on
      * @param value      Score
      * @param bothLabels Whether to show both pole labels
      * @return Width of a value row's label, separator and number, without
      *         the padding between them
      */
-    private static int valueRowWidth(FlavorAxis axis, double value, boolean bothLabels) {
-        return width(axisLabel(axis, value >= 0D, bothLabels)) + width(valueSeparator())
-                + width(valueNumber(axis, value));
+    private static int valueRowWidth(FlavorAxis axis, boolean positive, double value, boolean bothLabels) {
+        return width(axisLabel(axis, positive, bothLabels)) + width(valueSeparator())
+                + width(valueNumber(axis, positive, value));
     }
 
     /** @return The separator between a label and its value, {@code ":"} */
@@ -191,16 +204,17 @@ public class SpiceFlavorTooltips {
     }
 
     /**
-     * @param axis  The Flavor Axis, whose pole color is used
-     * @param value Score
+     * @param axis     The Flavor Axis
+     * @param positive Which pole's color is used
+     * @param value    Score
      * @return The score multiplied by {@link #VALUE_SCALE}, e.g. {@code "0.5"}
      */
-    private static Component valueNumber(FlavorAxis axis, double value) {
+    private static Component valueNumber(FlavorAxis axis, boolean positive, double value) {
         double scale = Math.pow(10, 2);
         double roundedVal = Math.round(value * scale) / scale;
 
         return Component.literal(String.valueOf(roundedVal))
-                .withColor(axis.getColor(value >= 0D));
+                .withColor(axis.getColor(positive));
     }
 
     /**
