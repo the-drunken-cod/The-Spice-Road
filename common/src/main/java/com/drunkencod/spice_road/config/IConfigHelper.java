@@ -270,6 +270,57 @@ public interface IConfigHelper {
     double getSeasoningEffectDurationMultiplier();
 
     /**
+     * Salt mixed into the world seed when building Seasoning Boards, so
+     * different packs and servers can get different boards from the same seed.
+     *
+     * @return The configured board salt.
+     */
+    long getSeasoningBoardSalt();
+
+    /**
+     * @return The points one step on the Seasoning Board costs, paid from the
+     *         axis its direction is bound to.
+     */
+    double getSeasoningStepCost();
+
+    /**
+     * @param ring The ring of the effect cell, {@code 2} to {@code 4}.
+     * @return The points locking in an effect cell of that ring costs, paid
+     *         from the axis of its zone.
+     */
+    double getSeasoningLockInCost(int ring);
+
+    /**
+     * @return The most spices of all kinds that count towards one food's
+     *         points; a food keeps its true amounts, only the excess is
+     *         ignored.
+     */
+    int getSeasoningMaxSpices();
+
+    /**
+     * @return The most spices of one kind that count towards one food's points.
+     */
+    int getSeasoningMaxSpicesPerKind();
+
+    /**
+     * @return The least bonus saturation a seasoned food without effects gives
+     *         at a full dose of spice.
+     */
+    double getSeasoningParticipationMinSaturation();
+
+    /**
+     * @return The most bonus saturation a seasoned food without effects gives
+     *         at a full dose of spice.
+     */
+    double getSeasoningParticipationMaxSaturation();
+
+    /**
+     * @return How many spices per food earn the full participation bonus;
+     *         fewer earn a proportional share.
+     */
+    double getSeasoningParticipationFullDose();
+
+    /**
      * Client-side. Whether Flavor Axis tooltips show both pole labels of each
      * axis (e.g. {@code [Spicy / Cooling]}), emphasizing the one matching the
      * value's sign, instead of only the matching one.

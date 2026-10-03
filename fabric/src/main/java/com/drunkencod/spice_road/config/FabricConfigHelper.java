@@ -212,6 +212,53 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public long getSeasoningBoardSalt() {
+        return value(ConfigSchema.SEASONING_BOARD_SALT, server().seasoning.boardSalt);
+    }
+
+    @Override
+    public double getSeasoningStepCost() {
+        return value(ConfigSchema.SEASONING_STEP_COST, server().seasoning.stepCost);
+    }
+
+    @Override
+    public double getSeasoningLockInCost(int ring) {
+        ServerConfigData.Seasoning.LockInCost cost = server().seasoning.lockInCost;
+        return switch (ring) {
+            case 2 -> value(ConfigSchema.SEASONING_LOCK_IN_COST_RING_2, cost.ring2);
+            case 3 -> value(ConfigSchema.SEASONING_LOCK_IN_COST_RING_3, cost.ring3);
+            default -> value(ConfigSchema.SEASONING_LOCK_IN_COST_RING_4, cost.ring4);
+        };
+    }
+
+    @Override
+    public int getSeasoningMaxSpices() {
+        return value(ConfigSchema.SEASONING_MAX_SPICES, server().seasoning.maxSpices);
+    }
+
+    @Override
+    public int getSeasoningMaxSpicesPerKind() {
+        return value(ConfigSchema.SEASONING_MAX_SPICES_PER_KIND, server().seasoning.maxSpicesPerKind);
+    }
+
+    @Override
+    public double getSeasoningParticipationMinSaturation() {
+        return value(ConfigSchema.SEASONING_PARTICIPATION_MIN_SATURATION,
+                server().seasoning.participation.minSaturation);
+    }
+
+    @Override
+    public double getSeasoningParticipationMaxSaturation() {
+        return value(ConfigSchema.SEASONING_PARTICIPATION_MAX_SATURATION,
+                server().seasoning.participation.maxSaturation);
+    }
+
+    @Override
+    public double getSeasoningParticipationFullDose() {
+        return value(ConfigSchema.SEASONING_PARTICIPATION_FULL_DOSE, server().seasoning.participation.fullDose);
+    }
+
+    @Override
     public boolean isTooltipBothAxisLabelsShown() {
         return client().tooltip.showBothAxisLabels;
     }
@@ -447,6 +494,39 @@ public class FabricConfigHelper implements IConfigHelper {
             public int maxEffects = ConfigSchema.SEASONING_MAX_EFFECTS.getDefault();
             @ConfigEntry.Gui.Tooltip
             public double effectDurationMultiplier = ConfigSchema.SEASONING_EFFECT_DURATION_MULTIPLIER.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            @ConfigEntry.Gui.RequiresRestart
+            public long boardSalt = ConfigSchema.SEASONING_BOARD_SALT.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public double stepCost = ConfigSchema.SEASONING_STEP_COST.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public int maxSpices = ConfigSchema.SEASONING_MAX_SPICES.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public int maxSpicesPerKind = ConfigSchema.SEASONING_MAX_SPICES_PER_KIND.getDefault();
+            @ConfigEntry.Gui.CollapsibleObject
+            public LockInCost lockInCost = new LockInCost();
+            @ConfigEntry.Gui.CollapsibleObject
+            public Participation participation = new Participation();
+
+            /** Lock-in prices on the Seasoning Board, per ring. */
+            public static class LockInCost {
+                @ConfigEntry.Gui.Tooltip
+                public double ring2 = ConfigSchema.SEASONING_LOCK_IN_COST_RING_2.getDefault();
+                @ConfigEntry.Gui.Tooltip
+                public double ring3 = ConfigSchema.SEASONING_LOCK_IN_COST_RING_3.getDefault();
+                @ConfigEntry.Gui.Tooltip
+                public double ring4 = ConfigSchema.SEASONING_LOCK_IN_COST_RING_4.getDefault();
+            }
+
+            /** Bonus saturation for seasoned food that ended up without effects. */
+            public static class Participation {
+                @ConfigEntry.Gui.Tooltip
+                public double minSaturation = ConfigSchema.SEASONING_PARTICIPATION_MIN_SATURATION.getDefault();
+                @ConfigEntry.Gui.Tooltip
+                public double maxSaturation = ConfigSchema.SEASONING_PARTICIPATION_MAX_SATURATION.getDefault();
+                @ConfigEntry.Gui.Tooltip
+                public double fullDose = ConfigSchema.SEASONING_PARTICIPATION_FULL_DOSE.getDefault();
+            }
         }
 
         /** Behavior around other mods' placeable food items. */

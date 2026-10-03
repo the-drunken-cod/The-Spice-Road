@@ -55,6 +55,10 @@ public final class ConfigSchema {
     public static final ConfigSection FLAVOR = ConfigSection.root(ConfigFile.SERVER, "flavor");
     /** What eating seasoned food does. */
     public static final ConfigSection SEASONING = ConfigSection.root(ConfigFile.SERVER, "seasoning");
+    /** Lock-in prices on the Seasoning Board, per ring. */
+    public static final ConfigSection SEASONING_LOCK_IN_COST = SEASONING.child("lockInCost");
+    /** Bonus saturation for seasoned food that ended up without effects. */
+    public static final ConfigSection SEASONING_PARTICIPATION = SEASONING.child("participation");
     /** Client-side tooltip display. */
     public static final ConfigSection TOOLTIP = ConfigSection.root(ConfigFile.CLIENT, "tooltip");
     /** Behavior around other mods' placeable food items. */
@@ -180,6 +184,47 @@ public final class ConfigSchema {
     /** Multiplier on the duration of every Seasoning Effect. */
     public static final ConfigOption<Double> SEASONING_EFFECT_DURATION_MULTIPLIER = add(
             ConfigOption.ofDouble(SEASONING, "effectDurationMultiplier", 1.0, 0.0, 100.0));
+
+    /** Salt mixed into the world seed when building Seasoning Boards. */
+    public static final ConfigOption<Long> SEASONING_BOARD_SALT = add(
+            ConfigOption.ofLong(SEASONING, "boardSalt", () -> 0L, Long.MIN_VALUE, Long.MAX_VALUE)
+                    .restart(ConfigOption.Restart.WORLD));
+
+    /** Points a step on the Seasoning Board costs. */
+    public static final ConfigOption<Double> SEASONING_STEP_COST = add(
+            ConfigOption.ofDouble(SEASONING, "stepCost", 1.0, 0.01, 100.0));
+
+    /** Points locking in an effect cell of ring 2 costs. */
+    public static final ConfigOption<Double> SEASONING_LOCK_IN_COST_RING_2 = add(
+            ConfigOption.ofDouble(SEASONING_LOCK_IN_COST, "ring2", 1.5, 0.0, 100.0));
+
+    /** Points locking in an effect cell of ring 3 costs. */
+    public static final ConfigOption<Double> SEASONING_LOCK_IN_COST_RING_3 = add(
+            ConfigOption.ofDouble(SEASONING_LOCK_IN_COST, "ring3", 2.5, 0.0, 100.0));
+
+    /** Points locking in an effect cell of ring 4 costs. */
+    public static final ConfigOption<Double> SEASONING_LOCK_IN_COST_RING_4 = add(
+            ConfigOption.ofDouble(SEASONING_LOCK_IN_COST, "ring4", 3.5, 0.0, 100.0));
+
+    /** Most spices of all kinds that count towards one food's points. */
+    public static final ConfigOption<Integer> SEASONING_MAX_SPICES = add(
+            ConfigOption.ofInt(SEASONING, "maxSpices", 16, 1, 1000));
+
+    /** Most spices of one kind that count towards one food's points. */
+    public static final ConfigOption<Integer> SEASONING_MAX_SPICES_PER_KIND = add(
+            ConfigOption.ofInt(SEASONING, "maxSpicesPerKind", 3, 1, 64));
+
+    /** Least bonus saturation of a seasoned food without effects. */
+    public static final ConfigOption<Double> SEASONING_PARTICIPATION_MIN_SATURATION = add(
+            ConfigOption.ofDouble(SEASONING_PARTICIPATION, "minSaturation", 0.5, 0.0, 20.0));
+
+    /** Most bonus saturation of a seasoned food without effects. */
+    public static final ConfigOption<Double> SEASONING_PARTICIPATION_MAX_SATURATION = add(
+            ConfigOption.ofDouble(SEASONING_PARTICIPATION, "maxSaturation", 1.5, 0.0, 20.0));
+
+    /** Spices per food that earn the full bonus saturation. */
+    public static final ConfigOption<Double> SEASONING_PARTICIPATION_FULL_DOSE = add(
+            ConfigOption.ofDouble(SEASONING_PARTICIPATION, "fullDose", 4.0, 0.1, 1000.0));
 
     // #region Tooltip
 

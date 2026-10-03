@@ -9,6 +9,7 @@ import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.FabricCreativeTabHelper;
 import com.drunkencod.spice_road.spice.SpiceProfileRegistry;
 import com.drunkencod.spice_road.spice.SpiceProfileSync;
+import com.drunkencod.spice_road.spice.board.SeasoningWorld;
 import com.drunkencod.spice_road.spice.effect.SeasoningEffectSync;
 import com.drunkencod.spice_road.villager.SpiceMapTrade;
 
@@ -45,6 +46,7 @@ public class SpiceRoadMod implements ModInitializer {
                 SpiceRoad.commonSetup();
 
                 registerSpiceProfileSync();
+                registerSeasoningWorld();
                 registerConfigSync();
 
                 // NeoForge gets this mapping from the datagenned neoforge:strippables data map.
@@ -110,6 +112,16 @@ public class SpiceRoadMod implements ModInitializer {
                         ServerPlayNetworking.send(player, SpiceProfileSync.current());
                         ServerPlayNetworking.send(player, SeasoningEffectSync.current());
                 });
+        }
+
+        /**
+         * Remembers the world seed for Automatic Seasoning, which can't reach a
+         * level from a recipe. NeoForge does the same through its own events.
+         */
+        private static void registerSeasoningWorld() {
+                ServerLifecycleEvents.SERVER_STARTING.register(
+                                server -> SeasoningWorld.set(server.getWorldData().worldGenOptions().seed()));
+                ServerLifecycleEvents.SERVER_STOPPED.register(server -> SeasoningWorld.clear());
         }
 
         /**

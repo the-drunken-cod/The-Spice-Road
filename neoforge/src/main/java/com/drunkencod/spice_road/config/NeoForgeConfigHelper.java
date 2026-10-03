@@ -273,6 +273,50 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public long getSeasoningBoardSalt() {
+        return value(ConfigSchema.SEASONING_BOARD_SALT);
+    }
+
+    @Override
+    public double getSeasoningStepCost() {
+        return value(ConfigSchema.SEASONING_STEP_COST);
+    }
+
+    @Override
+    public double getSeasoningLockInCost(int ring) {
+        return switch (ring) {
+            case 2 -> value(ConfigSchema.SEASONING_LOCK_IN_COST_RING_2);
+            case 3 -> value(ConfigSchema.SEASONING_LOCK_IN_COST_RING_3);
+            default -> value(ConfigSchema.SEASONING_LOCK_IN_COST_RING_4);
+        };
+    }
+
+    @Override
+    public int getSeasoningMaxSpices() {
+        return value(ConfigSchema.SEASONING_MAX_SPICES);
+    }
+
+    @Override
+    public int getSeasoningMaxSpicesPerKind() {
+        return value(ConfigSchema.SEASONING_MAX_SPICES_PER_KIND);
+    }
+
+    @Override
+    public double getSeasoningParticipationMinSaturation() {
+        return value(ConfigSchema.SEASONING_PARTICIPATION_MIN_SATURATION);
+    }
+
+    @Override
+    public double getSeasoningParticipationMaxSaturation() {
+        return value(ConfigSchema.SEASONING_PARTICIPATION_MAX_SATURATION);
+    }
+
+    @Override
+    public double getSeasoningParticipationFullDose() {
+        return value(ConfigSchema.SEASONING_PARTICIPATION_FULL_DOSE);
+    }
+
+    @Override
     public boolean isTooltipBothAxisLabelsShown() {
         return value(ConfigSchema.TOOLTIP_SHOW_BOTH_AXIS_LABELS);
     }

@@ -2,10 +2,7 @@ package com.drunkencod.spice_road.spice.effect;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -27,8 +24,19 @@ public final class SeasoningEffects {
      * @return The duration in ticks, at least {@code 1}.
      */
     public static int durationTicks(SeasoningEffectDef def, int level, double multiplier) {
-        long levels = def.scaling() == LevelScaling.DURATION ? level : 1;
-        return (int) Math.max(1, Math.min(Integer.MAX_VALUE, Math.round(def.baseDuration() * levels * multiplier)));
+        return durationTicks(def.baseDuration(), def.scaling(), level, multiplier);
+    }
+
+    /**
+     * @param baseDuration The entry's duration in ticks at level 1.
+     * @param scaling      What a higher level does to the mob effect.
+     * @param level        The stacked level.
+     * @param multiplier   The configured duration multiplier.
+     * @return The duration in ticks, at least {@code 1}.
+     */
+    public static int durationTicks(int baseDuration, LevelScaling scaling, int level, double multiplier) {
+        long levels = scaling == LevelScaling.DURATION ? level : 1;
+        return (int) Math.max(1, Math.min(Integer.MAX_VALUE, Math.round(baseDuration * levels * multiplier)));
     }
 
     /**
@@ -37,7 +45,16 @@ public final class SeasoningEffects {
      * @return The mob effect amplifier.
      */
     public static int amplifier(SeasoningEffectDef def, int level) {
-        return def.scaling() == LevelScaling.AMPLIFIER ? level - 1 : 0;
+        return amplifier(def.scaling(), level);
+    }
+
+    /**
+     * @param scaling What a higher level does to the mob effect.
+     * @param level   The stacked level.
+     * @return The mob effect amplifier.
+     */
+    public static int amplifier(LevelScaling scaling, int level) {
+        return scaling == LevelScaling.AMPLIFIER ? level - 1 : 0;
     }
 
     /**
@@ -62,14 +79,14 @@ public final class SeasoningEffects {
      * @param gained     The effect gained.
      * @param forced     Whether the effect can't be refused.
      * @param maxEffects The maximum number of distinct effects on one food.
-     * @param catalog    Looks up catalog entries; effects without one count as
-     *                   unlimited in level and as boons.
+     * @param catalog    The catalog; effects without an entry count as unlimited
+     *                   in level and as boons.
      * @return The food's effects after gaining {@code gained}.
      */
     public static List<SeasoningEffect> gain(List<SeasoningEffect> current, SeasoningEffect gained, boolean forced,
-            int maxEffects, Function<ResourceLocation, Optional<SeasoningEffectDef>> catalog) {
+            int maxEffects, EffectCatalog catalog) {
         List<SeasoningEffect> result = new ArrayList<>(current);
-        int maxLevel = catalog.apply(gained.id()).map(SeasoningEffectDef::maxLevel).orElse(Integer.MAX_VALUE);
+        int maxLevel = catalog.maxLevel(gained.id()).orElse(Integer.MAX_VALUE);
         for (int i = 0; i < result.size(); i++) {
             if (result.get(i).id().equals(gained.id())) {
                 int level = (int) Math.min(maxLevel, (long) result.get(i).level() + gained.level());
@@ -113,11 +130,10 @@ public final class SeasoningEffects {
      *         counting only boons if {@code boonsOnly}; {@code -1} if none
      *         qualifies.
      */
-    private static int weakestIndex(List<SeasoningEffect> effects, boolean boonsOnly,
-            Function<ResourceLocation, Optional<SeasoningEffectDef>> catalog) {
+    private static int weakestIndex(List<SeasoningEffect> effects, boolean boonsOnly, EffectCatalog catalog) {
         int weakest = -1;
         for (int i = 0; i < effects.size(); i++) {
-            boolean isBoon = catalog.apply(effects.get(i).id()).map(def -> def.kind() == EffectKind.BOON).orElse(true);
+            boolean isBoon = catalog.kind(effects.get(i).id()).map(kind -> kind == EffectKind.BOON).orElse(true);
             if (boonsOnly && !isBoon)
                 continue;
             if (weakest < 0 || effects.get(i).level() <= effects.get(weakest).level())

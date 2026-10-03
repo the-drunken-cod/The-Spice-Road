@@ -11,6 +11,7 @@ import com.drunkencod.spice_road.datagen.NeoForgeBlockStateProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeItemModelProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeSpiceDataMapProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeSpiceLootProvider;
+import com.drunkencod.spice_road.datagen.BoardLayoutProvider;
 import com.drunkencod.spice_road.datagen.SeasoningEffectProvider;
 import com.drunkencod.spice_road.datagen.SpiceBlockTagProvider;
 import com.drunkencod.spice_road.datagen.SpiceItemTagProvider;
@@ -23,6 +24,7 @@ import com.drunkencod.spice_road.registry.NeoForgeCreativeTabHelper;
 import com.drunkencod.spice_road.registry.NeoForgeRegistryHelper;
 import com.drunkencod.spice_road.spice.SpiceProfileRegistry;
 import com.drunkencod.spice_road.spice.SpiceProfileSync;
+import com.drunkencod.spice_road.spice.board.SeasoningWorld;
 import com.drunkencod.spice_road.spice.effect.SeasoningEffectSync;
 import com.drunkencod.spice_road.villager.SpiceMapTrade;
 
@@ -39,6 +41,8 @@ import net.neoforged.neoforge.event.LootTableLoadEvent;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
+import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -74,6 +78,8 @@ public class SpiceRoadMod {
         eventBus.addListener(this::onClientSetup);
         eventBus.addListener(SpiceRoadMod::onRegisterPayloadHandlers);
         NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onTagsUpdated);
+        NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onServerAboutToStart);
+        NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onServerStopped);
         NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onDatapackSync);
         NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onRegisterCommands);
         NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onVillagerTrades);
@@ -117,6 +123,9 @@ public class SpiceRoadMod {
                 new SeasoningEffectProvider(event.getGenerator().getPackOutput()));
         event.getGenerator().addProvider(
                 event.includeServer(),
+                new BoardLayoutProvider(event.getGenerator().getPackOutput()));
+        event.getGenerator().addProvider(
+                event.includeServer(),
                 new AdvancementProvider(event.getGenerator().getPackOutput(), event.getLookupProvider(),
                         List.of(new SpiceRoadAdvancements())));
     }
@@ -136,6 +145,15 @@ public class SpiceRoadMod {
                         (payload, context) -> payload.handle())
                 .playToClient(SeasoningEffectSync.TYPE, SeasoningEffectSync.STREAM_CODEC,
                         (payload, context) -> payload.handle());
+    }
+
+    /** Remembers the world seed for Automatic Seasoning, which can't reach a level from a recipe. */
+    private static void onServerAboutToStart(ServerAboutToStartEvent event) {
+        SeasoningWorld.set(event.getServer().getWorldData().worldGenOptions().seed());
+    }
+
+    private static void onServerStopped(ServerStoppedEvent event) {
+        SeasoningWorld.clear();
     }
 
     /** Resolves Default Profiles once the server's item tags are bound. */

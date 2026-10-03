@@ -49,3 +49,15 @@ artifacts {
     commonResources sourceSets.main.resources.sourceDirectories.singleFile
 }
 
+
+dependencies {
+    // The pure logic under test only needs Minecraft's classes on the classpath, not a bootstrapped game.
+    testImplementation files(sourceSets.main.compileClasspath)
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

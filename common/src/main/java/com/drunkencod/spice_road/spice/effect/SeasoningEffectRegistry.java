@@ -15,6 +15,8 @@ public final class SeasoningEffectRegistry {
 
     private static volatile Map<ResourceLocation, SeasoningEffectDef> ENTRIES = Map.of();
 
+    private static volatile EffectCatalog CATALOG = EffectCatalog.EMPTY;
+
     private SeasoningEffectRegistry() {
     }
 
@@ -26,6 +28,7 @@ public final class SeasoningEffectRegistry {
      */
     public static void set(Map<ResourceLocation, SeasoningEffectDef> entries) {
         ENTRIES = Map.copyOf(entries);
+        CATALOG = EffectCatalog.of(ENTRIES);
     }
 
     /**
@@ -34,6 +37,11 @@ public final class SeasoningEffectRegistry {
      */
     public static Optional<SeasoningEffectDef> get(ResourceLocation id) {
         return Optional.ofNullable(ENTRIES.get(id));
+    }
+
+    /** @return A pre-indexed view of the current catalog. */
+    public static EffectCatalog catalog() {
+        return CATALOG;
     }
 
     /** @return Every catalog entry, keyed by entry ID. */

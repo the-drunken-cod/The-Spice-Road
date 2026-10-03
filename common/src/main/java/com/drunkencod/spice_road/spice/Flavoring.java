@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 
 import com.drunkencod.spice_road.item.SpiceItemTags;
 import com.drunkencod.spice_road.registry.ModDataComponents;
+import com.drunkencod.spice_road.spice.board.AutomaticSeasoning;
 
 /**
  * Carries the spices of a recipe's ingredients over to its outputs as counted
@@ -26,8 +27,8 @@ import com.drunkencod.spice_road.registry.ModDataComponents;
  * <li>Each share is truncated towards zero to {@value #DECIMAL_PLACES}
  * decimal places and added to the output's own {@link Seasoning}. A share that
  * truncates to nothing seasons nothing.</li>
- * <li>Inputs' old effects don't carry over: effects are re-solved from the new
- * total.</li>
+ * <li>Inputs' old effects don't carry over: the effects of the new total are
+ * solved by {@link AutomaticSeasoning}.</li>
  * </ul>
  */
 public final class Flavoring {
@@ -145,9 +146,13 @@ public final class Flavoring {
         return new Seasoning(sums);
     }
 
-    /** Adds a share of inherited spices to a stack's own {@link Seasoning}. */
+    /**
+     * Adds a share of inherited spices to a stack's own {@link Seasoning} and
+     * solves the effects of the total with Automatic Seasoning.
+     */
     private static void addSeasoning(ItemStack result, Seasoning share) {
         Seasoning existing = result.get(ModDataComponents.SEASONING.get());
-        result.set(ModDataComponents.SEASONING.get(), existing == null ? share : existing.plus(share));
+        Seasoning total = existing == null ? share : existing.plus(share);
+        result.set(ModDataComponents.SEASONING.get(), AutomaticSeasoning.solve(result.getItem(), total));
     }
 }

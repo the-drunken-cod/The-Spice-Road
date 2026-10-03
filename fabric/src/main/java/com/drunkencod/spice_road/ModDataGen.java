@@ -8,6 +8,7 @@ import com.drunkencod.spice_road.datagen.FabricSpiceVineModelProvider;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import com.drunkencod.spice_road.datagen.BoardLayoutProvider;
 import com.drunkencod.spice_road.datagen.SeasoningEffectProvider;
 import com.drunkencod.spice_road.datagen.SpiceBlockTagProvider;
 import com.drunkencod.spice_road.datagen.SpiceItemTagProvider;
@@ -39,6 +40,7 @@ public class ModDataGen implements DataGeneratorEntrypoint {
         pack.addProvider((FabricDataOutput output) -> new SpiceItemTagProvider(output));
         pack.addProvider((FabricDataOutput output) -> new SpiceBlockTagProvider(output));
         pack.addProvider((FabricDataOutput output) -> new SeasoningEffectProvider(output));
+        pack.addProvider((FabricDataOutput output) -> new BoardLayoutProvider(output));
         pack.addProvider((FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registries) -> new AdvancementProvider(
                 output, registries, List.of(new SpiceRoadAdvancements())));
     }
