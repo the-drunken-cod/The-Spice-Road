@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "#spice_road:oasis/desert",
+    "#spice_road:oasis/badlands",
+    "#spice_road:oasis/coast",
+    "minecraft:snowy_plains",
+    "minecraft:snowy_taiga",
+    {
+      "id": "#c:is_snowy",
+      "required": false
+    }
+  ]
+}

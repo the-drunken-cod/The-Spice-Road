@@ -65,6 +65,9 @@ public class SpiceRoadMod implements ModInitializer {
                 BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
                                 GenerationStep.Decoration.VEGETAL_DECORATION,
                                 placedFeature("spice_heart_satellite_hilly"));
+                BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
+                                GenerationStep.Decoration.VEGETAL_DECORATION,
+                                placedFeature("spice_heart_satellite_barren"));
 
                 registerSpiceMaps();
         }
