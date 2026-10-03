@@ -144,3 +144,11 @@
     - Automatic bot policy: straight-line walker. Strongest axis (ties: FlavorAxis order), walks straight in that direction while it can pay, locks in every affordable effect cell it lands on, stops at a wall, never detours or retreats, ignores mines and hidden info.
     - Participation award: a seasoned food with no effects at all gets bonus saturation from a configurable seeded range (default ~0.5-1.5), scaled by spice amount relative to a configurable full dose (default 4 spices per food, capped at 1x), seeded by food item + contributors so equal foods stack. "Seasoned" is its own marker, so such a food still can't be seasoned again.
     - Vanilla-random pool (datapack, weighted): default is a ~50/50 mix of vanilla boons and mild banes, excluding instant and lethal effects (instant damage, wither, poison, levitation).
+- [ ] Patchouli documentation:
+    - Spice types:
+        - [ ] Custom page type that lists all spice crop attributes and worldgen overview.
+        - [ ] Custom page type that renders a given spice profile, similar to the already existing tooltip.
+    - Mechanics:
+        - [ ] Spice Grinder:
+            - [ ] Nearby spice sourcing.
+            - [ ] Minigame.
