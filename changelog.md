@@ -1,5 +1,5 @@
-## 0.1.0
-### 0.1.0-alpha.2
+# `0.1.0`
+## `0.1.0-alpha.2`
 - Features:
     - Added mod icon for in-game mod list.
     - Added spiceless regions with a configurable chance percentage.
@@ -13,6 +13,7 @@
     - Adjusted a whole bunch of textures.
     - Adjusted many default config values, especially regarding worldgen.
     - Tweaked amounts and sizes of spice ponds and satellite ponds generating.
+    - Tweaked loot generation.
     - (Debug mode) improved F3 spice heart directions.
 - Fixes:
     - Bonemealing vines outside their "natural randomTick" coords is now possible.
@@ -22,7 +23,9 @@
     - Spice bush with out-of-range age property used to crash the game (like when cycling it with the debug stick).
     - Random errors; missing refmap and implicit config long->int cast.
 
-### 0.1.0-alpha.1
+<br>
+
+## `0.1.0-alpha.1`
 Features:
 - Items/Blocks:
 	- 36 spice plants of types tree, bush, vine, flower_patch, crop, rhizome.
