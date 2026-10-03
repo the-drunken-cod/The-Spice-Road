@@ -1,7 +1,12 @@
 package com.drunkencod.spice_road.datagen;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.predicates.AnyOfCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.MatchTool;
 
 import com.drunkencod.spice_road.loot.ConnectedPlayerCondition;
@@ -54,13 +59,53 @@ public final class SpiceBreakHarvest {
      * @return {@code productPool}, for chaining.
      */
     public static LootPool.Builder gate(Spice spice, LootPool.Builder productPool) {
+        gateConditions(spice).forEach(productPool::when);
+        return productPool;
+    }
+
+    /**
+     * @param spice The Spice being broken.
+     * @return Whether breaking {@code spice}'s source always yields it, with
+     *         no condition to fail.
+     */
+    public static boolean yieldsUnconditionally(Spice spice) {
+        return canYieldSpice(spice) && gateConditions(spice).isEmpty();
+    }
+
+    /**
+     * Adds a condition to {@code pool} that holds exactly when breaking
+     * {@code spice}'s source does <em>not</em> yield the Spice, i.e. when
+     * the break is the clumsy kind. Does nothing for a Spice that
+     * {@linkplain #yieldsUnconditionally always yields} (never holds, so the
+     * caller shouldn't add the pool at all) or one that
+     * {@linkplain #canYieldSpice never yields} (always holds).
+     *
+     * @param spice The Spice being broken.
+     * @param pool  The pool to restrict to a break that yields no Spice.
+     * @return {@code pool}, for chaining.
+     */
+    public static LootPool.Builder gateNot(Spice spice, LootPool.Builder pool) {
+        if (!canYieldSpice(spice))
+            return pool;
+
+        List<LootItemCondition.Builder> conditions = gateConditions(spice);
+        return pool.when(AnyOfCondition.anyOf(conditions.stream()
+                .map(LootItemCondition.Builder::invert)
+                .toArray(LootItemCondition.Builder[]::new)));
+    }
+
+    /**
+     * @return The conditions that must all hold for a break to yield
+     *         {@code spice}, empty if none are needed.
+     */
+    private static List<LootItemCondition.Builder> gateConditions(Spice spice) {
+        List<LootItemCondition.Builder> conditions = new ArrayList<>();
         if (spice.requiresHarvestTool())
-            productPool.when(MatchTool
-                    .toolMatches(ItemPredicate.Builder.item().of(spice.getHarvestToolTag())));
+            conditions.add(MatchTool.toolMatches(ItemPredicate.Builder.item().of(spice.getHarvestToolTag())));
 
         if (spice.requiresHandPick())
-            productPool.when(ConnectedPlayerCondition.connectedPlayer());
+            conditions.add(ConnectedPlayerCondition.connectedPlayer());
 
-        return productPool;
+        return conditions;
     }
 }
