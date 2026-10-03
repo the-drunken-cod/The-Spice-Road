@@ -11,15 +11,21 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.StringUtil;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.item.SpiceItemTags;
+import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.ModDataComponents;
 import com.drunkencod.spice_road.spice.Seasoning;
 import com.drunkencod.spice_road.spice.SpiceProfiles;
 import com.drunkencod.spice_road.spice.Tier;
+import com.drunkencod.spice_road.spice.effect.SeasoningEffect;
+import com.drunkencod.spice_road.spice.effect.SeasoningEffectRegistry;
+import com.drunkencod.spice_road.spice.effect.SeasoningEffects;
 
 /**
  * Registers the global {@link TooltipUtil} contributions that show a stack's
@@ -70,6 +76,12 @@ public final class SpiceProfileTooltips {
      */
     private static final String FLAVOR_CONTRIBUTORS_KEY = Constants.MOD_ID + ".tooltip.flavor_contributors";
 
+    /** Translation key of the header above a seasoned food's effects. */
+    private static final String SEASONING_EFFECTS_KEY = Constants.MOD_ID + ".tooltip.seasoning_effects";
+
+    /** Tick rate effect durations are shown against. */
+    private static final float TICKS_PER_SECOND = 20F;
+
     /** Pixel width a Flavor Contributors list wraps at. */
     private static final int CONTRIBUTORS_LINE_WIDTH = 200;
 
@@ -113,6 +125,8 @@ public final class SpiceProfileTooltips {
         Seasoning seasoning = stack.get(ModDataComponents.SEASONING.get());
         if (seasoning != null && !seasoning.contributors().isEmpty())
             lines.addAll(flavorContributorsLines(seasoning));
+        if (seasoning != null && !seasoning.effects().isEmpty())
+            lines.addAll(seasoningEffectLines(seasoning));
 
         return lines;
     }
@@ -161,6 +175,32 @@ public final class SpiceProfileTooltips {
         lines.add(Component.translatable(FLAVOR_CONTRIBUTORS_KEY, rawLines.get(0)).withStyle(ChatFormatting.GRAY));
         for (Component continuation : rawLines.subList(1, rawLines.size()))
             lines.add(continuation.copy().withStyle(ChatFormatting.GRAY));
+        return lines;
+    }
+
+    /**
+     * @param seasoning The stack's {@link ModDataComponents#SEASONING}.
+     * @return A header line followed by one line per effect that is still in
+     *         the catalog, like vanilla's potion tooltips: name, level and
+     *         duration, in the color of the mob effect's category.
+     */
+    private static List<Component> seasoningEffectLines(Seasoning seasoning) {
+        double multiplier = Services.CONFIG.getSeasoningEffectDurationMultiplier();
+        List<Component> lines = new ArrayList<>();
+        for (SeasoningEffect effect : seasoning.effects()) {
+            SeasoningEffectRegistry.get(effect.id()).ifPresent(def -> {
+                MobEffect mobEffect = def.effect().value();
+                MutableComponent line = mobEffect.getDisplayName().copy();
+                if (effect.level() > 1)
+                    line = Component.translatable("potion.withAmplifier", line,
+                            Component.translatable("potion.potency." + (effect.level() - 1)));
+                int duration = SeasoningEffects.durationTicks(def, effect.level(), multiplier);
+                line.append(" (" + StringUtil.formatTickDuration(duration, TICKS_PER_SECOND) + ")");
+                lines.add(line.withStyle(mobEffect.getCategory().getTooltipFormatting()));
+            });
+        }
+        if (!lines.isEmpty())
+            lines.add(0, Component.translatable(SEASONING_EFFECTS_KEY).withStyle(ChatFormatting.GRAY));
         return lines;
     }
 

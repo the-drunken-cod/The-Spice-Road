@@ -9,6 +9,7 @@ import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.FabricCreativeTabHelper;
 import com.drunkencod.spice_road.spice.SpiceProfileRegistry;
 import com.drunkencod.spice_road.spice.SpiceProfileSync;
+import com.drunkencod.spice_road.spice.effect.SeasoningEffectSync;
 import com.drunkencod.spice_road.villager.SpiceMapTrade;
 
 import net.fabricmc.api.ModInitializer;
@@ -95,18 +96,20 @@ public class SpiceRoadMod implements ModInitializer {
 
         /**
          * Resolves Default Profiles once the server's item tags are bound, and
-         * syncs them to each player on join and to everyone after
+         * syncs them and the Seasoning Effect catalog to each player on join and to everyone after
          * {@code /reload}. NeoForge does the same through its own events.
          */
         private static void registerSpiceProfileSync() {
                 PayloadTypeRegistry.playS2C().register(SpiceProfileSync.TYPE, SpiceProfileSync.STREAM_CODEC);
+                PayloadTypeRegistry.playS2C().register(SeasoningEffectSync.TYPE, SeasoningEffectSync.STREAM_CODEC);
                 CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
                         if (!client)
                                 SpiceProfileRegistry.resolve();
                 });
-                ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS
-                                .register((player, joined) -> ServerPlayNetworking.send(player,
-                                                SpiceProfileSync.current()));
+                ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> {
+                        ServerPlayNetworking.send(player, SpiceProfileSync.current());
+                        ServerPlayNetworking.send(player, SeasoningEffectSync.current());
+                });
         }
 
         /**

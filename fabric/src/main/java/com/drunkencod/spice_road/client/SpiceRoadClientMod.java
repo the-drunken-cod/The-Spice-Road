@@ -12,6 +12,7 @@ import com.drunkencod.spice_road.block.SpiceVines;
 import com.drunkencod.spice_road.config.ConfigSync;
 import com.drunkencod.spice_road.config.ConfigSyncOverride;
 import com.drunkencod.spice_road.spice.SpiceProfileSync;
+import com.drunkencod.spice_road.spice.effect.SeasoningEffectSync;
 
 /**
  * Fabric client-only entry point. Keep this limited to client-only setup that
@@ -27,6 +28,7 @@ public class SpiceRoadClientMod implements ClientModInitializer {
         FabricSpiceRegionDebugOverlay.registerIfDevelopment();
         FabricSpiceTooltipHandler.register();
         ClientPlayNetworking.registerGlobalReceiver(SpiceProfileSync.TYPE, (payload, context) -> payload.handle());
+        ClientPlayNetworking.registerGlobalReceiver(SeasoningEffectSync.TYPE, (payload, context) -> payload.handle());
         ClientPlayNetworking.registerGlobalReceiver(ConfigSync.TYPE, (payload, context) -> payload.handle());
         // The override must not outlive the connection that sent it - a later
         // singleplayer world or a different server needs its own values.

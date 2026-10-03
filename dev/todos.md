@@ -102,7 +102,7 @@
 - [ ] Spice Grinder minigame:
     - Implementation order:
         1. [x] Counted flavor contributors, strip the flavor profile from food.
-        2. [ ] Effect catalog, datagen and eat-time application.
+        2. [x] Effect catalog, datagen and eat-time application. Catalog is `data/<ns>/seasoning_effect/*.json` (reload listener + sync payload), generated from `DefaultSeasoningEffect`: 32 pole entries as vanilla stand-ins (custom: `spice_road:hot`, `spice_road:chilled`) + 12 random pool entries. Config: `seasoning.maxEffects`, `seasoning.effectDurationMultiplier`. Test in game with e.g. `/give @s bread[spice_road:seasoning={contributors:[{item:"spice_road:habanero",amount:2}],effects:[{id:"spice_road:heat_positive_boon",level:2}]}]`. Not wired up yet: the per-kind/total spice caps, participation award (step 3), `gain` is only called by the later minigame code.
         3. [ ] Board generation, the automatic bot as pure, testable logic.
         4. [ ] The session and GUI using script-generated placeholder assets.
         5. [ ] Discovery storage and sync.

@@ -6,6 +6,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -128,6 +129,17 @@ public interface IRegistryHelper {
      *         registration has run.
      */
     Holder<MapDecorationType> registerMapDecorationType(String id, Supplier<MapDecorationType> factory);
+
+    /**
+     * Register a {@link MobEffect} under the mod's namespace. Its icon is read
+     * from {@code assets/<namespace>/textures/mob_effect/<id>.png}.
+     *
+     * @param id      Registry path (e.g. {@code "my_effect"})
+     * @param factory Supplier that creates the effect instance
+     * @return A holder of the registered effect, only resolvable once
+     *         registration has run.
+     */
+    Holder<MobEffect> registerMobEffect(String id, Supplier<? extends MobEffect> factory);
 
     /**
      * Register a datapack JSON reload listener under the mod's namespace.

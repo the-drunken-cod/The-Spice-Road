@@ -53,6 +53,8 @@ public final class ConfigSchema {
     public static final ConfigSection VINE_RIPENING_SEGMENTS = VINE.child("ripeningSegments");
     /** How stored Spice Profiles turn into the flavor a player actually gets. */
     public static final ConfigSection FLAVOR = ConfigSection.root(ConfigFile.SERVER, "flavor");
+    /** What eating seasoned food does. */
+    public static final ConfigSection SEASONING = ConfigSection.root(ConfigFile.SERVER, "seasoning");
     /** Client-side tooltip display. */
     public static final ConfigSection TOOLTIP = ConfigSection.root(ConfigFile.CLIENT, "tooltip");
     /** Behavior around other mods' placeable food items. */
@@ -168,6 +170,16 @@ public final class ConfigSchema {
     /** Magnitude any non-zero flavor axis counts as at least. */
     public static final ConfigOption<Double> FLAVOR_MINIMUM_AXIS_VALUE = add(
             ConfigOption.ofDouble(FLAVOR, "minimumAxisValue", 0.05, 0.0, 1.0));
+
+    // #region Seasoning
+
+    /** Most distinct Seasoning Effects one food can hold. */
+    public static final ConfigOption<Integer> SEASONING_MAX_EFFECTS = add(
+            ConfigOption.ofInt(SEASONING, "maxEffects", 4, 1, 16));
+
+    /** Multiplier on the duration of every Seasoning Effect. */
+    public static final ConfigOption<Double> SEASONING_EFFECT_DURATION_MULTIPLIER = add(
+            ConfigOption.ofDouble(SEASONING, "effectDurationMultiplier", 1.0, 0.0, 100.0));
 
     // #region Tooltip
 

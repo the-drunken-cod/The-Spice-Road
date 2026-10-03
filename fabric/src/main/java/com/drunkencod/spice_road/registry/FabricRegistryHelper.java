@@ -18,6 +18,7 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -104,6 +105,13 @@ public class FabricRegistryHelper implements IRegistryHelper {
         return Registry.registerForHolder(BuiltInRegistries.MAP_DECORATION_TYPE,
                 ResourceKey.create(Registries.MAP_DECORATION_TYPE,
                         ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id)),
+                factory.get());
+    }
+
+    @Override
+    public Holder<MobEffect> registerMobEffect(String id, Supplier<? extends MobEffect> factory) {
+        return Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT,
+                ResourceKey.create(Registries.MOB_EFFECT, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id)),
                 factory.get());
     }
 

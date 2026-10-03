@@ -11,6 +11,7 @@ import com.drunkencod.spice_road.datagen.NeoForgeBlockStateProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeItemModelProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeSpiceDataMapProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeSpiceLootProvider;
+import com.drunkencod.spice_road.datagen.SeasoningEffectProvider;
 import com.drunkencod.spice_road.datagen.SpiceBlockTagProvider;
 import com.drunkencod.spice_road.datagen.SpiceItemTagProvider;
 import com.drunkencod.spice_road.datagen.SpiceRoadAdvancements;
@@ -22,6 +23,7 @@ import com.drunkencod.spice_road.registry.NeoForgeCreativeTabHelper;
 import com.drunkencod.spice_road.registry.NeoForgeRegistryHelper;
 import com.drunkencod.spice_road.spice.SpiceProfileRegistry;
 import com.drunkencod.spice_road.spice.SpiceProfileSync;
+import com.drunkencod.spice_road.spice.effect.SeasoningEffectSync;
 import com.drunkencod.spice_road.villager.SpiceMapTrade;
 
 import net.neoforged.bus.api.IEventBus;
@@ -84,6 +86,7 @@ public class SpiceRoadMod {
         event.enqueueWork(SpiceRoad::commonSetup);
     }
 
+    @SuppressWarnings("deprecation")
     private void onGatherData(GatherDataEvent event) {
         event.getGenerator().addProvider(
                 event.includeClient(),
@@ -111,6 +114,9 @@ public class SpiceRoadMod {
                 new SpiceBlockTagProvider(event.getGenerator().getPackOutput()));
         event.getGenerator().addProvider(
                 event.includeServer(),
+                new SeasoningEffectProvider(event.getGenerator().getPackOutput()));
+        event.getGenerator().addProvider(
+                event.includeServer(),
                 new AdvancementProvider(event.getGenerator().getPackOutput(), event.getLookupProvider(),
                         List.of(new SpiceRoadAdvancements())));
     }
@@ -125,8 +131,11 @@ public class SpiceRoadMod {
     }
 
     private static void onRegisterPayloadHandlers(RegisterPayloadHandlersEvent event) {
-        event.registrar("1").playToClient(SpiceProfileSync.TYPE, SpiceProfileSync.STREAM_CODEC,
-                (payload, context) -> payload.handle());
+        event.registrar("1")
+                .playToClient(SpiceProfileSync.TYPE, SpiceProfileSync.STREAM_CODEC,
+                        (payload, context) -> payload.handle())
+                .playToClient(SeasoningEffectSync.TYPE, SeasoningEffectSync.STREAM_CODEC,
+                        (payload, context) -> payload.handle());
     }
 
     /** Resolves Default Profiles once the server's item tags are bound. */
@@ -154,11 +163,16 @@ public class SpiceRoadMod {
     }
 
     /**
-     * Syncs Default Profiles to each player on join and to everyone after
+     * Syncs Default Profiles and the Seasoning Effect catalog to each player on
+     * join and to everyone after
      * {@code /reload}.
      */
     private static void onDatapackSync(OnDatapackSyncEvent event) {
-        SpiceProfileSync payload = SpiceProfileSync.current();
-        event.getRelevantPlayers().forEach(player -> PacketDistributor.sendToPlayer(player, payload));
+        SpiceProfileSync profiles = SpiceProfileSync.current();
+        SeasoningEffectSync effects = SeasoningEffectSync.current();
+        event.getRelevantPlayers().forEach(player -> {
+            PacketDistributor.sendToPlayer(player, profiles);
+            PacketDistributor.sendToPlayer(player, effects);
+        });
     }
 }

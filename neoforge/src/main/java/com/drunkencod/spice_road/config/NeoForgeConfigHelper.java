@@ -263,6 +263,16 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public int getSeasoningMaxEffects() {
+        return value(ConfigSchema.SEASONING_MAX_EFFECTS);
+    }
+
+    @Override
+    public double getSeasoningEffectDurationMultiplier() {
+        return value(ConfigSchema.SEASONING_EFFECT_DURATION_MULTIPLIER);
+    }
+
+    @Override
     public boolean isTooltipBothAxisLabelsShown() {
         return value(ConfigSchema.TOOLTIP_SHOW_BOTH_AXIS_LABELS);
     }

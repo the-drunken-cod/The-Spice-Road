@@ -11,7 +11,10 @@ import com.drunkencod.spice_road.registry.ModDataComponents;
 import com.drunkencod.spice_road.registry.ModLootConditions;
 import com.drunkencod.spice_road.registry.ModLootFunctions;
 import com.drunkencod.spice_road.registry.ModMapDecorations;
+import com.drunkencod.spice_road.registry.ModMobEffects;
 import com.drunkencod.spice_road.spice.SpiceProfileReloadListener;
+import com.drunkencod.spice_road.spice.effect.SeasoningEffectApplier;
+import com.drunkencod.spice_road.spice.effect.SeasoningEffectReloadListener;
 import com.drunkencod.spice_road.tooltip.SpiceProfileTooltips;
 import com.drunkencod.spice_road.worldgen.ModFeatures;
 import com.drunkencod.spice_road.worldgen.ModPlacementModifiers;
@@ -30,7 +33,10 @@ public class SpiceRoad {
      */
     public static void init() {
         ModDataComponents.register();
+        ModMobEffects.register();
         Services.REGISTRY.registerReloadListener(SpiceProfileReloadListener.ID, new SpiceProfileReloadListener());
+        Services.REGISTRY.registerReloadListener(SeasoningEffectReloadListener.ID,
+                new SeasoningEffectReloadListener());
         SpiceProfileTooltips.register();
         SpicePlants.bootstrap();
         SpiceTrees.bootstrap();
@@ -44,6 +50,7 @@ public class SpiceRoad {
         ModMapDecorations.register();
         ModCriteriaTriggers.register();
         FoodEatenAdvancements.register();
+        SeasoningEffectApplier.register();
     }
 
     /**

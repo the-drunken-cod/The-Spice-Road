@@ -202,6 +202,16 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public int getSeasoningMaxEffects() {
+        return value(ConfigSchema.SEASONING_MAX_EFFECTS, server().seasoning.maxEffects);
+    }
+
+    @Override
+    public double getSeasoningEffectDurationMultiplier() {
+        return value(ConfigSchema.SEASONING_EFFECT_DURATION_MULTIPLIER, server().seasoning.effectDurationMultiplier);
+    }
+
+    @Override
     public boolean isTooltipBothAxisLabelsShown() {
         return client().tooltip.showBothAxisLabels;
     }
@@ -341,6 +351,8 @@ public class FabricConfigHelper implements IConfigHelper {
         @ConfigEntry.Gui.CollapsibleObject
         public Flavor flavor = new Flavor();
         @ConfigEntry.Gui.CollapsibleObject
+        public Seasoning seasoning = new Seasoning();
+        @ConfigEntry.Gui.CollapsibleObject
         public Compat compat = new Compat();
 
         @Override
@@ -427,6 +439,14 @@ public class FabricConfigHelper implements IConfigHelper {
             public double softCap = ConfigSchema.FLAVOR_SOFT_CAP.getDefault();
             @ConfigEntry.Gui.Tooltip
             public double minimumAxisValue = ConfigSchema.FLAVOR_MINIMUM_AXIS_VALUE.getDefault();
+        }
+
+        /** What eating seasoned food does. */
+        public static class Seasoning {
+            @ConfigEntry.Gui.Tooltip
+            public int maxEffects = ConfigSchema.SEASONING_MAX_EFFECTS.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public double effectDurationMultiplier = ConfigSchema.SEASONING_EFFECT_DURATION_MULTIPLIER.getDefault();
         }
 
         /** Behavior around other mods' placeable food items. */

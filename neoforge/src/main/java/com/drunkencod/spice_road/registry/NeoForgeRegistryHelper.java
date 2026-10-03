@@ -11,6 +11,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -63,6 +64,9 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
 
     private final DeferredRegister<CriterionTrigger<?>> criterionTriggers = DeferredRegister
             .create(Registries.TRIGGER_TYPE, Constants.MOD_ID);
+
+    private final DeferredRegister<MobEffect> mobEffects = DeferredRegister.create(Registries.MOB_EFFECT,
+            Constants.MOD_ID);
 
     private final List<PreparableReloadListener> pendingReloadListeners = new ArrayList<>();
 
@@ -121,6 +125,11 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
     }
 
     @Override
+    public Holder<MobEffect> registerMobEffect(String id, Supplier<? extends MobEffect> factory) {
+        return mobEffects.register(id, factory);
+    }
+
+    @Override
     public void registerReloadListener(ResourceLocation id, PreparableReloadListener listener) {
         pendingReloadListeners.add(listener);
     }
@@ -152,6 +161,7 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
         placementModifierTypes.register(eventBus);
         treeDecoratorTypes.register(eventBus);
         criterionTriggers.register(eventBus);
+        mobEffects.register(eventBus);
         // AddReloadListenerEvent is a game event, not a mod-bus event.
         NeoForge.EVENT_BUS.addListener(this::onAddReloadListeners);
     }

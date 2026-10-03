@@ -254,6 +254,22 @@ public interface IConfigHelper {
     double getFlavorMinimumAxisValue();
 
     /**
+     * Most distinct Seasoning Effects a single food can hold; duplicates merge
+     * into one effect of a higher level instead.
+     *
+     * @return The configured maximum number of effects per food.
+     */
+    int getSeasoningMaxEffects();
+
+    /**
+     * Multiplier applied to the duration of every Seasoning Effect when its
+     * food is eaten, on top of each effect's own base duration.
+     *
+     * @return The configured Seasoning Effect duration multiplier.
+     */
+    double getSeasoningEffectDurationMultiplier();
+
+    /**
      * Client-side. Whether Flavor Axis tooltips show both pole labels of each
      * axis (e.g. {@code [Spicy / Cooling]}), emphasizing the one matching the
      * value's sign, instead of only the matching one.
