@@ -53,7 +53,7 @@ public class SpiceRoadAdvancements implements AdvancementSubProvider {
                 .addCriterion("everything_bagel", FoodEatenTrigger.TriggerInstance.foodEaten(
                         Optional.of(ItemPredicate.Builder.item().of(Items.BREAD)),
                         List.of(),
-                        Optional.of(10D)))
+                        Optional.of(16D)))
                 .build(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "everything_bagel"));
         saver.accept(everythingBagel);
 
@@ -70,6 +70,8 @@ public class SpiceRoadAdvancements implements AdvancementSubProvider {
                                 ItemPredicate.Builder.item()
                                         .of(Spice.getRawById(Spice.CINNAMON.getId())),
                                 ItemPredicate.Builder.item()
+                                        .of(Spice.getRawById(Spice.CLOVE.getId())),
+                                ItemPredicate.Builder.item()
                                         .of(Spice.getRawById(Spice.NUTMEG.getId()))
                         // ItemPredicate.Builder.item()
                         // .of(Spice.getRawById(Spice.CINNAMON.getId()),
@@ -80,9 +82,6 @@ public class SpiceRoadAdvancements implements AdvancementSubProvider {
                         // ItemPredicate.Builder.item()
                         // .of(Spice.getRawById(Spice.GINGER.getId()),
                         // ProcessedSpice.DRIED_GINGER.getItem()),
-                        // ItemPredicate.Builder.item()
-                        // .of(Spice.getRawById(Spice.CLOVES.getId()),
-                        // ProcessedSpice.DRIED_CLOVES.getItem())
                         ),
                         Optional.empty()))
                 .build(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "pumpkin_purist"));
