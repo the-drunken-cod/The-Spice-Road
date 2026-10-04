@@ -161,3 +161,4 @@
         - [ ] Spice Grinder:
             - [ ] Nearby spice sourcing.
             - [ ] Minigame.
+- [ ] Drop more spices and spice seeds when the effect Luck is active, worse drops if Bad Luck is active.
