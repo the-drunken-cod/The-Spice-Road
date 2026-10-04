@@ -61,6 +61,7 @@ Then simply place the downloaded JAR file into your Minecraft `mods` folder and 
   - Tag-level compatibility (knives as cutting tool, etc.).
 - [Cooking For Blockheads](https://modrinth.com/mod/cooking-for-blockheads)
   - Recipe compatibility for the toaster and oven (ingredient spice profiles get correctly combined for the output, even if the GUI doesn't show it).
+  - Spices on a nearby Spice Rack are included in the Spice Grinder.
 - [Serene Seasons](https://modrinth.com/mod/serene-seasons)
   - Spice crops have realistic season data attached to them, with different sets of plants growing throughout the whole year.
 - [AppleSkin](https://modrinth.com/mod/appleskin)
@@ -70,6 +71,10 @@ Then simply place the downloaded JAR file into your Minecraft `mods` folder and 
 - [Sable](https://modrinth.com/mod/sable) / [Create Aeronautics](https://modrinth.com/mod/create-aeronautics)
   - Sublevels sample the spice region from the correct overworld coordinates, meaning crops on mobile bases correctly react to the current spice region.
   - Accurately scaled block weights.
+- [Immersive Engineering](https://modrinth.com/mod/immersiveengineering)
+    - Garden Cloche can be used to grow hardy crops (common and uncommon).
+- [Botany Pots](https://modrinth.com/mod/botany-pots) & [Botany Trees](https://modrinth.com/mod/botany-trees)
+    - Botany Pots can be used to grow hardy crops (common and uncommon).
 
 <br>
 

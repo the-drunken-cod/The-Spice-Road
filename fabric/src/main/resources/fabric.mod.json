@@ -47,6 +47,7 @@
     "suggests": {
         "modmenu": ">=${modmenu_min_version}",
         "appleskin": ">=${appleskin_min_version}",
+        "botanypots": "*",
         "cookingforblockheads": ">=${cooking_for_blockheads_min_version}",
         "farmersdelight": ">=${farmers_delight_refabricated_min_version}"
     },

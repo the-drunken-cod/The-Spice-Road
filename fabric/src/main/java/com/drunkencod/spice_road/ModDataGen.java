@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import com.drunkencod.spice_road.datagen.BoardLayoutProvider;
+import com.drunkencod.spice_road.datagen.BotanyPotsRecipeProvider;
 import com.drunkencod.spice_road.datagen.SeasoningEffectProvider;
 import com.drunkencod.spice_road.datagen.SpiceBlockTagProvider;
 import com.drunkencod.spice_road.datagen.SpiceItemTagProvider;
@@ -36,6 +37,7 @@ public class ModDataGen implements DataGeneratorEntrypoint {
         pack.addProvider(FabricSpiceVineModelProvider::new);
         pack.addProvider(FabricSpiceLootProvider::new);
         pack.addProvider((FabricDataOutput output) -> new SpiceTreeCompatRecipeProvider(output));
+        pack.addProvider((FabricDataOutput output) -> new BotanyPotsRecipeProvider(output));
         pack.addProvider((FabricDataOutput output) -> new SpiceTreePlanksRecipeProvider(output));
         pack.addProvider((FabricDataOutput output) -> new SpiceItemTagProvider(output));
         pack.addProvider((FabricDataOutput output) -> new SpiceBlockTagProvider(output));

@@ -153,9 +153,9 @@
     - [x] The key tooltips (l-click, r-click, shift) should show up just after the spice profile tooltip lines. Currently they are at the very end of the tooltip.
 - [x] Cooking a seasoned item doesn't preserve effects.
 - [x] Make AppleSkin tooltips show the corrected saturation value.
-- [ ] Make mod blocks like the Immersive Engineering Garden Cloche and Botany Pots respect spice regions and require water for planting water-based rhizomes.
-    - [ ] Botany Pots: seeds don't grow out of the box. TODO: add support for all non-hand-picked crops (see https://github.com/Darkhax-Minecraft/BotanyPots/blob/1.21.1/common/src/main/resources/data/botanypots/recipe/minecraft/crop/torchflower.json and https://github.com/Darkhax-Minecraft/BotanyPots/blob/1.21.1/common/src/main/resources/data/botanypots/recipe/farmersdelight/crop/rice.json).
-    - [ ] Immersive Engineering: seeds don't grow out of the box. TODO: add support for all non-hand-picked crops (see https://github.com/vectorwing/FarmersDelight/blob/1.21/src/main/resources/data/farmersdelight/recipe/integration/immersiveengineering/cloche/cabbage.json and https://github.com/vectorwing/FarmersDelight/blob/1.21/src/main/resources/data/farmersdelight/recipe/integration/immersiveengineering/cloche/rice.json)
+- [x] Make mod blocks like the Immersive Engineering Garden Cloche and Botany Pots grow Spices. Only hardy, non-hand-pick Spices get recipes, so the Spice Region and water rules need no extra enforcement.
+    - [x] Botany Pots: datagenned crop recipes for plants and leaf-harvest trees; aquatic Spices use the water soils.
+    - [x] Immersive Engineering: datagenned cloche recipes for plants (NeoForge only). TODO: verify both in game.
 - [ ] Collect stats:
     - [ ] Different spice types found amount.
     - [ ] Hand-picked spice plants amount.

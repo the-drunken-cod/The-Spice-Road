@@ -77,29 +77,29 @@ public class SpiceTreeCompatRecipeProvider implements DataProvider {
 
     private static JsonObject createCuttingRecipe(ResourceLocation log, ResourceLocation strippedLog, Item product,
             int count) {
-        JsonObject recipe = withModLoadedConditions("create");
+        JsonObject recipe = CompatRecipeJson.withModLoadedConditions("create");
         recipe.addProperty("type", "create:cutting");
         recipe.add("ingredients", singleItemIngredient(log));
         recipe.addProperty("processing_time", 50);
 
         JsonArray results = new JsonArray();
-        results.add(itemStack(strippedLog, 1));
+        results.add(CompatRecipeJson.itemStack(strippedLog, 1));
         if (count > 0)
-            results.add(itemStack(BuiltInRegistries.ITEM.getKey(product), count));
+            results.add(CompatRecipeJson.itemStack(BuiltInRegistries.ITEM.getKey(product), count));
         recipe.add("results", results);
         return recipe;
     }
 
     private static JsonObject farmersDelightCuttingRecipe(ResourceLocation log, ResourceLocation strippedLog,
             Item product, int count) {
-        JsonObject recipe = withModLoadedConditions("farmersdelight");
+        JsonObject recipe = CompatRecipeJson.withModLoadedConditions("farmersdelight");
         recipe.addProperty("type", "farmersdelight:cutting");
         recipe.add("ingredients", singleItemIngredient(log));
 
         JsonArray results = new JsonArray();
-        results.add(wrapItem(itemStack(strippedLog, 1)));
+        results.add(wrapItem(CompatRecipeJson.itemStack(strippedLog, 1)));
         if (count > 0)
-            results.add(wrapItem(itemStack(BuiltInRegistries.ITEM.getKey(product), count)));
+            results.add(wrapItem(CompatRecipeJson.itemStack(BuiltInRegistries.ITEM.getKey(product), count)));
         recipe.add("result", results);
 
         JsonObject sound = new JsonObject();
@@ -118,45 +118,12 @@ public class SpiceTreeCompatRecipeProvider implements DataProvider {
         return recipe;
     }
 
-    /**
-     * @return A recipe root carrying both NeoForge's and Fabric's
-     *         "only load when {@code modId} is present" conditions.
-     */
-    private static JsonObject withModLoadedConditions(String modId) {
-        JsonObject recipe = new JsonObject();
-
-        JsonObject neoForgeCondition = new JsonObject();
-        neoForgeCondition.addProperty("type", "neoforge:mod_loaded");
-        neoForgeCondition.addProperty("modid", modId);
-        JsonArray neoForgeConditions = new JsonArray();
-        neoForgeConditions.add(neoForgeCondition);
-        recipe.add("neoforge:conditions", neoForgeConditions);
-
-        JsonObject fabricCondition = new JsonObject();
-        fabricCondition.addProperty("condition", "fabric:all_mods_loaded");
-        JsonArray modIds = new JsonArray();
-        modIds.add(modId);
-        fabricCondition.add("values", modIds);
-        JsonArray fabricConditions = new JsonArray();
-        fabricConditions.add(fabricCondition);
-        recipe.add("fabric:load_conditions", fabricConditions);
-
-        return recipe;
-    }
-
     private static JsonArray singleItemIngredient(ResourceLocation item) {
         JsonObject ingredient = new JsonObject();
         ingredient.addProperty("item", item.toString());
         JsonArray ingredients = new JsonArray();
         ingredients.add(ingredient);
         return ingredients;
-    }
-
-    private static JsonObject itemStack(ResourceLocation item, int count) {
-        JsonObject stack = new JsonObject();
-        stack.addProperty("id", item.toString());
-        stack.addProperty("count", count);
-        return stack;
     }
 
     private static JsonObject wrapItem(JsonObject stack) {

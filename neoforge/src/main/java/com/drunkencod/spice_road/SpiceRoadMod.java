@@ -8,6 +8,8 @@ import com.drunkencod.spice_road.command.SpiceLocateCommand;
 import com.drunkencod.spice_road.compat.appleskin.AppleSkinCompat;
 import com.drunkencod.spice_road.client.NeoForgeSpiceTooltipHandler;
 import com.drunkencod.spice_road.config.NeoForgeConfigHelper;
+import com.drunkencod.spice_road.datagen.BotanyPotsRecipeProvider;
+import com.drunkencod.spice_road.datagen.ImmersiveEngineeringClocheRecipeProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeBlockStateProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeItemModelProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeSpiceDataMapProvider;
@@ -115,6 +117,12 @@ public class SpiceRoadMod {
         event.getGenerator().addProvider(
                 event.includeServer(),
                 new SpiceTreeCompatRecipeProvider(event.getGenerator().getPackOutput()));
+        event.getGenerator().addProvider(
+                event.includeServer(),
+                new BotanyPotsRecipeProvider(event.getGenerator().getPackOutput()));
+        event.getGenerator().addProvider(
+                event.includeServer(),
+                new ImmersiveEngineeringClocheRecipeProvider(event.getGenerator().getPackOutput()));
         event.getGenerator().addProvider(
                 event.includeServer(),
                 new SpiceTreePlanksRecipeProvider(event.getGenerator().getPackOutput()));
