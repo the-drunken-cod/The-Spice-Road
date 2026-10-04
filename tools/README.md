@@ -1,0 +1,26 @@
+## The Spice Road - CLI Tools
+These tools are to be used in the command line and offer various shortcuts:
+
+<br>
+
+- **`pnpm create_placeholder_texture <args>`**: Creates a placeholder PNG texture, including custom text, colors and even a binary counter.
+    - Required:
+        - `-O` / `--output`: Path to the output file. Parent directories are created and existing files are overwritten. If no other args are specified, the texture is 16x16 and fully black.
+    - Optional:
+        - `-T` / `--text`: Text content rendered in the center in an aliased monospaced 3x5 pixel font.  
+          Supports `A-Z` (case-insensitive), `0-9` and ` .,:!?+-_=*\/()#`. The font is scaled up by whole numbers to fit the texture. Unsupported characters are rendered as a solid box. Defaults to undefined (off).
+        - `-W` / `--width`: Width of the texture, defaults to 16.
+        - `-H` / `--height`: Height of the texture, defaults to 16.
+        - `-C` / `--color`: Text and counter color as an rgb or rgba hex code, defaults to `#ffffffff`.
+        - `-B` / `--background`: Background color as an rgb or rgba hex code, defaults to `#000000ff`.
+        - `-N` / `--number`: Non-negative integer drawn on the top row as a binary counter (one pixel per bit, least significant bit on the right). Must fit into `width` bits. The text is centered below it. Defaults to undefined (off).
+        - `--help`: Prints the usage.
+- **`pnpm pad_csv ./in.csv ./out.csv`**: Makes a CSV look better by aligning its cells horizontally.
+
+<br>
+
+## License
+The files in this `tools/` folder are licensed under the MIT License.  
+Feel free to use these scripts for your own projects, as long as The Spice Road is credited.  
+  
+Refer to the [`LICENSE.txt` file](./LICENSE.txt) for more details.

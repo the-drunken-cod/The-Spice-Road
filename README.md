@@ -1,9 +1,9 @@
 <div align="center" style="text-align: center;">
 
 # The Spice Road
-Adds rare spices to Minecraft that can enhance existing foods with a new buff mechanic and encourages local production and trade.  
+Adds rare spices to Minecraft that enhance existing foods with a new buff mechanic, applied via a roguelite minigame. Encourages local production and specialized trade. Has lots of compat for other mods.  
   
-![Banner](./.github/assets/banner.png)
+![TODO: Banner](./.github/assets/banner.png)
 
 —  
 
@@ -31,6 +31,7 @@ Adds rare spices to Minecraft that can enhance existing foods with a new buff me
     - **Spice plants are worldgen-reliant and finite**, so monopolizing them is a real thing players can do. Extra spice sources can always be added my modpack creators and server admins, like loot tables, villager trades, kubejs scripts, currency shops, etc.
     - Maps can be **traded for or found as loot** to help find certain spices. Epic tier spices can only be found via maps found in treasure loot by default.
 - **New mechanic that allows spices to be mixed and matched and applied to existing foods** of any mod to **imbue them with beneficial custom effects.** Players can also create spice mixes and specialize in cultivating the rarest spice plants.
+    - **Roguelite minigame** inspired by real cooking and spice application processes. Spice works like a currency that can be spent to nudge food effects into one or multiple of 16 flavor directions.
 - **Incredibly modpack-, datapack- and server admin friendly.**
   - Allows for tons of configuration for any play style and player base.
   - Spice profiles and items can easily be added by datapack makers, and any mod's food item is supported out of the box. Note: some mods' crafting stations might erase spice profiles. In that case, please [open an issue](https://github.com/the-drunken-cod/The-Spice-Road/issues) so we can add compatibility.
@@ -82,12 +83,17 @@ Then simply place the downloaded JAR file into your Minecraft `mods` folder and 
 <br>
 
 ## License:
-This project is licensed under the LGPL-3.0-or-later license.  
-See the [`LICENSE.txt` file](https://github.com/the-drunken-cod/The-Spice-Road/blob/develop/LICENSE.txt) for details.
+- The majority of this project's code is licensed under the LGPL-3.0-or-later license.  
+  Refer to the [`LICENSE.txt` file](https://github.com/the-drunken-cod/The-Spice-Road/blob/1.21.1/LICENSE.txt) for details.  
+- The command-line tools in the [`tools/` folder](https://github.com/the-drunken-cod/The-Spice-Road/tree/1.21.1/tools) are licensed under the MIT license.  
+  Feel free to use these scripts for your own projects, as long as The Spice Road is credited.  
+  Refer to the [`tools/LICENSE.txt` file](https://github.com/the-drunken-cod/The-Spice-Road/blob/1.21.1/tools/LICENSE.txt) for details.
 
 <br>
 
 ## Disclaimers:
-- We use Generative AI when coding to make tedious work easier and bridge knowledge gaps for this hobby project. [You can read our full policy here.](https://github.com/the-drunken-cod#genai-usage) That being said, **every generated line is reviewed**, and **all assets remain fully human-made.**
+- **We use Generative AI** when coding to make tedious work easier and bridge knowledge gaps for this hobby project.  
+  That being said, **every generated line of code is reviewed**, and **all assets and detail work remain fully human-made.**  
+  [Our full GenAI usage policy can be read here.](https://github.com/the-drunken-cod#genai-usage)
 - NOT AN OFFICIAL MINECRAFT PRODUCT. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT.  
 - THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
