@@ -3,8 +3,8 @@
 Assets still to be made by hand. Placeholders exist where datagen or the game needs a file.
 
 ## Mob effect icons (18x18, `assets/spice_road/textures/mob_effect/`)
-- [ ] `hot.png` - icon of the Hot effect (fiery pole of the heat axis). Placeholder generated.
-- [ ] `chilled.png` - icon of the Chilled effect (cooling pole of the heat axis). Placeholder generated.
+- [x] `hot.png` - icon of the Hot effect (fiery pole of the heat axis). Placeholder generated.
+- [x] `chilled.png` - icon of the Chilled effect (cooling pole of the heat axis). Placeholder generated.
 
 ## Spice Grinder (item and GUI)
 - [x] `assets/spice_road/textures/item/spice_grinder.png` - 16x16 item icon of the Spice Grinder. Placeholder generated.
