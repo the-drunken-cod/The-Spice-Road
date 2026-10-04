@@ -1,6 +1,8 @@
 # `0.1.0`
 ## `0.1.0-alpha.2`
 - Features:
+    - Added Spice Grinder item to apply spices to items.
+        - GUI is rudimentary, but the mechanics are close to the planned end result.
     - Added mod icon for in-game mod list.
     - Added spiceless regions with a configurable chance percentage.
     - Added water surface decorations to spice ponds. Currently only includes lily pads.
