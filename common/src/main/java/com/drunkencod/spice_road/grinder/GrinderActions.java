@@ -23,6 +23,7 @@ import com.drunkencod.spice_road.spice.SpiceProfile;
 import com.drunkencod.spice_road.spice.SpiceProfileRegistry;
 import com.drunkencod.spice_road.spice.SpiceProfiles;
 import com.drunkencod.spice_road.spice.board.AutomaticSeasoning;
+import com.drunkencod.spice_road.spice.board.BoardGeometry;
 import com.drunkencod.spice_road.spice.board.BoardLayoutRegistry;
 import com.drunkencod.spice_road.spice.board.BoardSeed;
 import com.drunkencod.spice_road.spice.board.CellView;
@@ -61,7 +62,7 @@ public final class GrinderActions {
                     .orElse(Event.REFUSED);
             case SEASON -> season(menu, player);
             case MOVE -> move(menu, intent.data());
-            case LOCK_IN -> lockIn(menu);
+            case LOCK_IN -> lockIn(menu, player);
             case ADD_SPICE -> spiceItem(intent).map(item -> addToRun(menu, player, item)).orElse(Event.REFUSED);
             case ACCEPT -> accept(menu, player, false);
             case ACCEPT_CONFIRMED -> accept(menu, player, true);
@@ -167,14 +168,18 @@ public final class GrinderActions {
         return Event.NONE;
     }
 
-    private static Event lockIn(SpiceGrinderMenu menu) {
+    private static Event lockIn(SpiceGrinderMenu menu, ServerPlayer player) {
         SeasoningSession session = menu.session();
         if (session == null)
             return Event.REFUSED;
         Run run = Run.of(session);
+        int cell = BoardGeometry.index(run.run.x(), run.run.y());
         if (!run.run.lockIn())
             return Event.REFUSED;
         menu.grinder().set(ModDataComponents.GRINDER_SESSION.get(), session.withState(run.run.state()));
+        CellDiscoveries.of(player.server).record(player.getUUID(),
+                new DiscoveryLog.Entry(session.boardSeed(), session.layout().hashCode(), cell),
+                Services.CONFIG.getSeasoningDiscoveryLimit());
         return Event.LOCKED_IN;
     }
 
@@ -244,7 +249,11 @@ public final class GrinderActions {
                             Math.floor((run.run.points(direction.axis()) + STEP_EPSILON) / stepCost))
                     : 0);
         }
-        List<CellView> cells = CellViews.of(run.board, run.run, Set.of());
+        Set<Integer> revealed = menu.inventory().player instanceof ServerPlayer viewer
+                ? CellDiscoveries.of(viewer.server).revealed(viewer.getUUID(), session.boardSeed(),
+                        session.layout().hashCode())
+                : Set.of();
+        List<CellView> cells = CellViews.of(run.board, run.run, revealed);
         return new GrinderView(GrinderView.Phase.RUNNING, session.food(), session.spices(), points, poles,
                 run.run.x(), run.run.y(), cells, run.run.effects(), stepsLeft, run.run.canLockIn(), false, event,
                 config.getSeasoningMaxSpicesPerKind(), config.getSeasoningMaxSpices(), available);

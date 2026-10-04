@@ -237,6 +237,8 @@
     "spice_road.configuration.seasoning.boardSalt.tooltip": "Salt mixed into the world seed when building Seasoning Boards. Change this to any random value to shuffle every board.",
     "spice_road.configuration.seasoning.boardSalt.warning": "This affects existing worlds! Changing it reshuffles every Seasoning Board, so what players learned about them no longer applies.",
     "spice_road.configuration.seasoning.boardSalt": "Seasoning Board Salt",
+    "spice_road.configuration.seasoning.discoveryLimit": "Remembered Cells per Player",
+    "spice_road.configuration.seasoning.discoveryLimit.tooltip": "How many locked-in effect cells the server remembers for each player, so those cells show their content on later runs on the same food. The oldest are forgotten first. 0 remembers nothing.",
     "spice_road.configuration.seasoning.lockInCost.ring2.tooltip": "Points locking in an effect cell of the innermost effect ring costs.",
     "spice_road.configuration.seasoning.lockInCost.ring2": "Inner Ring",
     "spice_road.configuration.seasoning.lockInCost.ring3.tooltip": "Points locking in an effect cell of the middle effect ring costs.",

@@ -310,6 +310,13 @@ public interface IConfigHelper {
     int getSeasoningStorageRadius();
 
     /**
+     * @return The most effect cells the server remembers a player locked in,
+     *         so they show their content on later runs on the same board; the
+     *         oldest is forgotten first. {@code 0} remembers nothing.
+     */
+    int getSeasoningDiscoveryLimit();
+
+    /**
      * @return The least bonus saturation a seasoned food without effects gives
      *         at a full dose of spice.
      */

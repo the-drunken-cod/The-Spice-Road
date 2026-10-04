@@ -307,6 +307,11 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public int getSeasoningDiscoveryLimit() {
+        return value(ConfigSchema.SEASONING_DISCOVERY_LIMIT);
+    }
+
+    @Override
     public double getSeasoningParticipationMinSaturation() {
         return value(ConfigSchema.SEASONING_PARTICIPATION_MIN_SATURATION);
     }

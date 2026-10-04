@@ -247,6 +247,11 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public int getSeasoningDiscoveryLimit() {
+        return value(ConfigSchema.SEASONING_DISCOVERY_LIMIT, server().seasoning.discoveryLimit);
+    }
+
+    @Override
     public double getSeasoningParticipationMinSaturation() {
         return value(ConfigSchema.SEASONING_PARTICIPATION_MIN_SATURATION,
                 server().seasoning.participation.minSaturation);
@@ -515,6 +520,8 @@ public class FabricConfigHelper implements IConfigHelper {
             public int maxSpicesPerKind = ConfigSchema.SEASONING_MAX_SPICES_PER_KIND.getDefault();
             @ConfigEntry.Gui.Tooltip
             public int storageRadius = ConfigSchema.SEASONING_STORAGE_RADIUS.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public int discoveryLimit = ConfigSchema.SEASONING_DISCOVERY_LIMIT.getDefault();
             @ConfigEntry.Gui.CollapsibleObject
             public LockInCost lockInCost = new LockInCost();
             @ConfigEntry.Gui.CollapsibleObject

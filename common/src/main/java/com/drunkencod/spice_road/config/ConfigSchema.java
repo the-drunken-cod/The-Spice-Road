@@ -223,6 +223,10 @@ public final class ConfigSchema {
     public static final ConfigOption<Integer> SEASONING_STORAGE_RADIUS = add(
             ConfigOption.ofInt(SEASONING, "storageRadius", 8, 0, 32));
 
+    /** Most locked-in effect cells remembered per player. */
+    public static final ConfigOption<Integer> SEASONING_DISCOVERY_LIMIT = add(
+            ConfigOption.ofInt(SEASONING, "discoveryLimit", 512, 0, 100_000));
+
     /** Least bonus saturation of a seasoned food without effects. */
     public static final ConfigOption<Double> SEASONING_PARTICIPATION_MIN_SATURATION = add(
             ConfigOption.ofDouble(SEASONING_PARTICIPATION, "minSaturation", 0.5, 0.0, 20.0));
