@@ -35,6 +35,9 @@ import com.drunkencod.spice_road.spice.board.Direction;
 import com.drunkencod.spice_road.spice.board.PointsLedger;
 import com.drunkencod.spice_road.spice.board.SeasoningBoard;
 import com.drunkencod.spice_road.spice.board.SeasoningRun;
+import com.drunkencod.spice_road.spice.effect.SeasoningEffectRegistry;
+import com.drunkencod.spice_road.spice.effect.SeasoningEffects;
+import com.drunkencod.spice_road.stats.ModStats;
 
 /**
  * The server side of the Spice Grinder GUI: validates and commits every
@@ -68,7 +71,7 @@ public final class GrinderActions {
             case REMOVE_DRAFT_SPICE -> spiceItem(intent)
                     .map(item -> repeat(amount, () -> removeFromDraft(menu, item))).orElse(Event.REFUSED);
             case SEASON -> season(menu, player);
-            case MOVE -> move(menu, intent.data());
+            case MOVE -> move(menu, player, intent.data());
             case LOCK_IN -> lockIn(menu, player);
             case ADD_SPICE -> spiceItem(intent).map(item -> repeat(amount, () -> addToRun(menu, player, item)))
                     .orElse(Event.REFUSED);
@@ -182,7 +185,7 @@ public final class GrinderActions {
 
     // #region Run
 
-    private static Event move(SpiceGrinderMenu menu, int ordinal) {
+    private static Event move(SpiceGrinderMenu menu, ServerPlayer player, int ordinal) {
         SeasoningSession session = menu.session();
         if (session == null || ordinal < 0 || ordinal >= Direction.values().length)
             return Event.REFUSED;
@@ -191,6 +194,7 @@ public final class GrinderActions {
         if (!result.moved())
             return Event.REFUSED;
         menu.grinder().set(ModDataComponents.GRINDER_SESSION.get(), session.withState(run.run.state()));
+        ModStats.award(player, ModStats.GRINDER_MOVES);
         if (result.mineHit())
             return result.dud() ? Event.MINE_DUD : Event.MINE_HIT;
         return Event.NONE;
@@ -205,9 +209,10 @@ public final class GrinderActions {
         if (!run.run.lockIn())
             return Event.REFUSED;
         menu.grinder().set(ModDataComponents.GRINDER_SESSION.get(), session.withState(run.run.state()));
-        CellDiscoveries.of(player.server).record(player.getUUID(),
+        if (CellDiscoveries.of(player.server).record(player.getUUID(),
                 new DiscoveryLog.Entry(session.boardSeed(), session.layout().hashCode(), cell),
-                Services.CONFIG.getSeasoningDiscoveryLimit());
+                Services.CONFIG.getSeasoningDiscoveryLimit()))
+            ModStats.award(player, ModStats.CELLS_UNLOCKED);
         return Event.LOCKED_IN;
     }
 
@@ -241,6 +246,8 @@ public final class GrinderActions {
         ItemStack result = session.food().copy();
         result.set(ModDataComponents.SEASONING.get(), new Seasoning(contributors, run.run.effects()));
         menu.grinder().remove(ModDataComponents.GRINDER_SESSION.get());
+        if (SeasoningEffects.isFlawless(run.run.effects(), SeasoningEffectRegistry.catalog()))
+            ModStats.award(player, ModStats.FLAWLESS_RUNS);
         player.getInventory().placeItemBackInInventory(result);
         player.closeContainer();
         return null;

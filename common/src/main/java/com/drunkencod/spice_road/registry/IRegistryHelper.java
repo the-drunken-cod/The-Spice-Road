@@ -179,4 +179,16 @@ public interface IRegistryHelper {
      * @param factory Supplier that creates the trigger instance
      */
     <T extends CriterionTrigger<?>> Supplier<T> registerCriterionTrigger(String id, Supplier<T> factory);
+
+    /**
+     * Register a custom stat under the mod's namespace. Its name is read from
+     * the lang key {@code stat.<namespace>.<id>}. Frozen as early as
+     * {@link #registerFeature}, with the same consequences.
+     *
+     * @param id Registry path (e.g. {@code "my_stat"})
+     * @return The registered ID, which is the very instance the stats files
+     *         resolve back to: {@code Stats.CUSTOM} keys stats by identity, so
+     *         always use this one rather than building an equal one.
+     */
+    ResourceLocation registerCustomStat(String id);
 }

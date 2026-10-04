@@ -53,12 +53,14 @@ public final class DiscoveryLog {
      *
      * @param entry The cell.
      * @param limit The most entries to keep; {@code 0} or less keeps none.
+     * @return Whether the log didn't know the cell yet.
      */
-    public void record(Entry entry, int limit) {
-        entries.remove(entry);
+    public boolean record(Entry entry, int limit) {
+        boolean fresh = !entries.remove(entry);
         if (limit > 0)
             entries.add(entry);
         trim(limit);
+        return fresh;
     }
 
     /**

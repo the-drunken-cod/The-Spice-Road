@@ -92,9 +92,11 @@ public final class CellDiscoveries extends SavedData {
      * @param player A player's UUID.
      * @param entry  The cell.
      * @param limit  The most cells to remember for that player.
+     * @return Whether the player's log didn't know the cell yet.
      */
-    public void record(UUID player, Entry entry, int limit) {
-        logs.computeIfAbsent(player, id -> new DiscoveryLog()).record(entry, limit);
+    public boolean record(UUID player, Entry entry, int limit) {
+        boolean fresh = logs.computeIfAbsent(player, id -> new DiscoveryLog()).record(entry, limit);
         setDirty();
+        return fresh;
     }
 }

@@ -328,6 +328,11 @@ public class FabricConfigHelper implements IConfigHelper {
         return value(ConfigSchema.COMPAT_SNEAK_TO_PLACE_FLAVORED_FOOD, server().compat.sneakToPlaceFlavoredFood);
     }
 
+    @Override
+    public int getStatsFoundScanIntervalTicks() {
+        return value(ConfigSchema.STATS_FOUND_SCAN_INTERVAL_TICKS, server().stats.foundScanIntervalTicks);
+    }
+
     // #region Clamping
 
     /**
@@ -439,6 +444,8 @@ public class FabricConfigHelper implements IConfigHelper {
         public Flavor flavor = new Flavor();
         @ConfigEntry.Gui.CollapsibleObject
         public Seasoning seasoning = new Seasoning();
+        @ConfigEntry.Gui.CollapsibleObject
+        public Stats stats = new Stats();
         @ConfigEntry.Gui.CollapsibleObject
         public Compat compat = new Compat();
 
@@ -587,6 +594,12 @@ public class FabricConfigHelper implements IConfigHelper {
                 @ConfigEntry.Gui.Tooltip
                 public int fullDiversity = ConfigSchema.SEASONING_DIVERSITY_FULL_DIVERSITY.getDefault();
             }
+        }
+
+        /** Player statistics the mod tracks. */
+        public static class Stats {
+            @ConfigEntry.Gui.Tooltip
+            public int foundScanIntervalTicks = ConfigSchema.STATS_FOUND_SCAN_INTERVAL_TICKS.getDefault();
         }
 
         /** Behavior around other mods' placeable food items. */

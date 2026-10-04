@@ -44,6 +44,7 @@ import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.item.SpiceItemTags;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Spice;
+import com.drunkencod.spice_road.stats.ModStats;
 import com.drunkencod.spice_road.spice.Tier;
 
 /**
@@ -370,6 +371,7 @@ public abstract class SpicePlantBlock extends CropBlock {
         if (!(level instanceof ServerLevel serverLevel))
             return;
 
+        ModStats.award(player, ModStats.HAND_PICKED_HARVESTS);
         int yield = SpiceHarvesting.getPlantYield(spice);
         if (yield > 0 && spice.canBeCultivatedAt(serverLevel, pos))
             popResourceFromFace(level, pos, hitResult.getDirection(),

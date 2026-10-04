@@ -1,6 +1,8 @@
 package com.drunkencod.spice_road.spice.effect;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +28,19 @@ class SeasoningEffectsTest {
 
     private static SeasoningEffect level(SeasoningEffect effect, int level) {
         return new SeasoningEffect(effect.id(), level);
+    }
+
+    @Test
+    void aFoodIsFlawlessWithBoonsAndNoBanes() {
+        assertTrue(SeasoningEffects.isFlawless(List.of(HEAT_BOON, SWEET_BOON), CATALOG));
+        assertFalse(SeasoningEffects.isFlawless(List.of(HEAT_BOON, SOUR_BANE), CATALOG));
+        assertFalse(SeasoningEffects.isFlawless(List.of(), CATALOG), "no effects isn't flawless");
+    }
+
+    @Test
+    void anEntryMissingFromTheCatalogCountsAsABoon() {
+        SeasoningEffect unknown = new SeasoningEffect(ResourceLocation.parse("spice_road:gone"), 1);
+        assertTrue(SeasoningEffects.isFlawless(List.of(unknown), CATALOG));
     }
 
     @Test

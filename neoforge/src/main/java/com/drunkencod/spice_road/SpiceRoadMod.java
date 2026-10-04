@@ -32,6 +32,7 @@ import com.drunkencod.spice_road.client.grinder.SpiceGrinderScreen;
 import com.drunkencod.spice_road.spice.SpiceProfileSync;
 import com.drunkencod.spice_road.spice.board.SeasoningWorld;
 import com.drunkencod.spice_road.spice.effect.SeasoningEffectSync;
+import com.drunkencod.spice_road.stats.FoundSpiceTracker;
 import com.drunkencod.spice_road.villager.SpiceMapTrade;
 
 import net.neoforged.bus.api.IEventBus;
@@ -51,6 +52,7 @@ import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -92,8 +94,14 @@ public class SpiceRoadMod {
         NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onRegisterCommands);
         NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onVillagerTrades);
         NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onLootTableLoad);
+        NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onServerTick);
 
         SpiceRoad.init();
+    }
+
+    /** Fabric does the same through {@code ServerTickEvents.END_SERVER_TICK}. */
+    private static void onServerTick(ServerTickEvent.Post event) {
+        FoundSpiceTracker.onServerTick(event.getServer());
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event) {

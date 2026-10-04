@@ -36,6 +36,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Spice;
+import com.drunkencod.spice_road.stats.ModStats;
 import com.drunkencod.spice_road.spice.region.SeededHash;
 
 /**
@@ -229,6 +230,7 @@ public class SpiceVineBlock extends VineBlock implements BonemealableBlock {
         if (level.isClientSide())
             return;
 
+        ModStats.award(player, ModStats.HAND_PICKED_HARVESTS);
         int yield = SpiceHarvesting.getPlantYield(spice);
         if (yield > 0)
             popResourceFromFace(level, pos, hitResult.getDirection(), new ItemStack(productItem.get(), yield));

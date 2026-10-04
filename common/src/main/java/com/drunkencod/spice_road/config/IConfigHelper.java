@@ -424,4 +424,10 @@ public interface IConfigHelper {
      * @return Whether sneaking is required to place a flavored food stack.
      */
     boolean isSneakRequiredToPlaceFlavoredFood();
+
+    /**
+     * @return Ticks between checks of each player's inventory for newly found
+     *         Spices; {@code 0} turns tracking found Spices off.
+     */
+    int getStatsFoundScanIntervalTicks();
 }

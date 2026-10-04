@@ -126,6 +126,17 @@ public final class SeasoningEffects {
     }
 
     /**
+     * @param effects The effects a seasoned food ended up with.
+     * @param catalog The catalog that says which of them are banes.
+     * @return Whether there is at least one effect and none is a bane. An entry
+     *         missing from the catalog counts as a boon, like everywhere else.
+     */
+    public static boolean isFlawless(List<SeasoningEffect> effects, EffectCatalog catalog) {
+        return !effects.isEmpty() && effects.stream()
+                .noneMatch(effect -> catalog.kind(effect.id()).orElse(EffectKind.BOON) == EffectKind.BANE);
+    }
+
+    /**
      * @return The index of the lowest-level effect, the last one among equals,
      *         counting only boons if {@code boonsOnly}; {@code -1} if none
      *         qualifies.

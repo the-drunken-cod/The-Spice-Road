@@ -135,6 +135,12 @@ public class FabricRegistryHelper implements IRegistryHelper {
     }
 
     @Override
+    public ResourceLocation registerCustomStat(String id) {
+        ResourceLocation location = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id);
+        return Registry.register(BuiltInRegistries.CUSTOM_STAT, location, location);
+    }
+
+    @Override
     public void registerReloadListener(ResourceLocation id, PreparableReloadListener listener) {
         ResourceManagerHelper.get(PackType.SERVER_DATA)
                 .registerReloadListener(new IdentifiableResourceReloadListener() {

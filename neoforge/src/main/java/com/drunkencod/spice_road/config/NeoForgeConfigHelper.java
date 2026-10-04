@@ -385,4 +385,9 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     public boolean isSneakRequiredToPlaceFlavoredFood() {
         return value(ConfigSchema.COMPAT_SNEAK_TO_PLACE_FLAVORED_FOOD);
     }
+
+    @Override
+    public int getStatsFoundScanIntervalTicks() {
+        return value(ConfigSchema.STATS_FOUND_SCAN_INTERVAL_TICKS);
+    }
 }

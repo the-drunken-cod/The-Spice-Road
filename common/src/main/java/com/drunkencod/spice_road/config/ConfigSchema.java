@@ -65,6 +65,8 @@ public final class ConfigSchema {
     public static final ConfigSection TOOLTIP = ConfigSection.root(ConfigFile.CLIENT, "tooltip");
     /** Client-side Spice Grinder GUI behavior. */
     public static final ConfigSection GRINDER = ConfigSection.root(ConfigFile.CLIENT, "grinder");
+    /** Player statistics the mod tracks. */
+    public static final ConfigSection STATS = ConfigSection.root(ConfigFile.SERVER, "stats");
     /** Behavior around other mods' placeable food items. */
     public static final ConfigSection COMPAT = ConfigSection.root(ConfigFile.SERVER, "compat");
 
@@ -289,6 +291,12 @@ public final class ConfigSchema {
     /** Duration, in milliseconds, of the Flavor Axis tooltip count-up. */
     public static final ConfigOption<Integer> TOOLTIP_ANIMATION_DURATION_MS = add(
             ConfigOption.ofInt(TOOLTIP, "animationDurationMs", 600, 50, 5000));
+
+    // #region Stats
+
+    /** Ticks between checks of each player's inventory for newly found Spices. */
+    public static final ConfigOption<Integer> STATS_FOUND_SCAN_INTERVAL_TICKS = add(
+            ConfigOption.ofInt(STATS, "foundScanIntervalTicks", 200, 0, 1200));
 
     // #region Compat
 

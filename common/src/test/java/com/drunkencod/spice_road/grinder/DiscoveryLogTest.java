@@ -1,6 +1,7 @@
 package com.drunkencod.spice_road.grinder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -64,6 +65,18 @@ class DiscoveryLogTest {
             log.record(entry(1, cell), 10);
         log.trim(2);
         assertEquals(List.of(entry(1, 2), entry(1, 3)), log.entries());
+    }
+
+    @Test
+    void recordingReportsWhetherTheCellWasNew() {
+        DiscoveryLog log = new DiscoveryLog();
+        assertTrue(log.record(entry(1, 0), 3));
+        assertFalse(log.record(entry(1, 0), 3));
+        for (int cell = 1; cell <= 3; cell++)
+            log.record(entry(1, cell), 3);
+        assertTrue(log.record(entry(1, 0), 3), "a forgotten cell is new again");
+        assertTrue(log.record(entry(1, 9), 0));
+        assertTrue(log.record(entry(1, 9), 0), "with no memory every cell is new");
     }
 
     @Test

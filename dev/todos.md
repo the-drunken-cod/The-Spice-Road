@@ -155,13 +155,14 @@
 - [x] Make AppleSkin tooltips show the corrected saturation value.
 - [x] Make mod blocks like the Immersive Engineering Garden Cloche and Botany Pots grow Spices. Only hardy, non-hand-pick Spices get recipes, so the Spice Region and water rules need no extra enforcement.
     - [x] Botany Pots: datagenned crop recipes for plants and leaf-harvest trees; aquatic Spices use the water soils.
-    - [x] Immersive Engineering: datagenned cloche recipes for plants (NeoForge only). TODO: verify both in game.
-- [ ] Collect stats:
-    - [ ] Different spice types found amount.
-    - [ ] Hand-picked spice plants amount.
-    - [ ] Unlocked Spice Grinder Cells amount.
-    - [ ] Flawlessly seasoned foods amount.
-    - [ ] Seasoned foods amount.
+    - [x] Immersive Engineering: datagenned cloche recipes for plants (NeoForge only).
+- [x] Collect stats (vanilla custom stats `spice_road:spices_found`, `hand_picked_harvests`, `cells_unlocked`, `flawless_runs`, `seasoned_foods_eaten`, `grinder_moves`):
+    - [x] Different spice types found amount.
+    - [x] Hand-picked spice plants amount.
+    - [x] Unlocked Spice Grinder Cells amount.
+    - [x] Flawlessly seasoned foods amount (no negative effects).
+    - [x] Seasoned foods eaten amount.
+    - [x] Spice Grinder moves made.
 - [ ] Patchouli documentation:
     - Spice types:
         - [ ] Custom page type that lists all spice crop attributes and worldgen overview.

@@ -74,6 +74,9 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
     private final DeferredRegister<MenuType<?>> menuTypes = DeferredRegister.create(Registries.MENU,
             Constants.MOD_ID);
 
+    private final DeferredRegister<ResourceLocation> customStats = DeferredRegister
+            .create(Registries.CUSTOM_STAT, Constants.MOD_ID);
+
     private final List<PreparableReloadListener> pendingReloadListeners = new ArrayList<>();
 
     @Override
@@ -154,6 +157,13 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
         return (Supplier<T>) (Supplier<?>) criterionTriggers.register(id, factory::get);
     }
 
+    @Override
+    public ResourceLocation registerCustomStat(String id) {
+        ResourceLocation location = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id);
+        customStats.register(id, () -> location);
+        return location;
+    }
+
     private void onAddReloadListeners(AddReloadListenerEvent event) {
         for (PreparableReloadListener listener : pendingReloadListeners) {
             event.addListener(listener);
@@ -177,6 +187,7 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
         criterionTriggers.register(eventBus);
         mobEffects.register(eventBus);
         menuTypes.register(eventBus);
+        customStats.register(eventBus);
         // AddReloadListenerEvent is a game event, not a mod-bus event.
         NeoForge.EVENT_BUS.addListener(this::onAddReloadListeners);
     }

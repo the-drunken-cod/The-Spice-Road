@@ -18,6 +18,7 @@ import com.drunkencod.spice_road.spice.SpiceProfileReloadListener;
 import com.drunkencod.spice_road.spice.board.BoardLayoutReloadListener;
 import com.drunkencod.spice_road.spice.effect.SeasoningEffectApplier;
 import com.drunkencod.spice_road.spice.effect.SeasoningEffectReloadListener;
+import com.drunkencod.spice_road.stats.ModStats;
 import com.drunkencod.spice_road.tooltip.SpiceProfileTooltips;
 import com.drunkencod.spice_road.worldgen.ModFeatures;
 import com.drunkencod.spice_road.worldgen.ModPlacementModifiers;
@@ -57,6 +58,7 @@ public class SpiceRoad {
         ModCriteriaTriggers.register();
         FoodEatenAdvancements.register();
         SeasoningEffectApplier.register();
+        ModStats.register();
     }
 
     /**
@@ -67,5 +69,6 @@ public class SpiceRoad {
     public static void commonSetup() {
         SpiceTrees.registerFlammability();
         SpiceVines.registerFlammability();
+        ModStats.bootstrap();
     }
 }

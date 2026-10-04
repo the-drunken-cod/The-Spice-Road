@@ -30,6 +30,7 @@ import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.HarvestAction;
 import com.drunkencod.spice_road.spice.Spice;
+import com.drunkencod.spice_road.stats.ModStats;
 import com.drunkencod.spice_road.spice.region.SeededHash;
 
 /**
@@ -196,6 +197,7 @@ public class FruitingSpiceLeavesBlock extends LeavesBlock {
         if (level.isClientSide())
             return;
 
+        ModStats.award(player, ModStats.HAND_PICKED_HARVESTS);
         ItemStack harvest = tree.rollHarvest(level.getRandom());
         if (!harvest.isEmpty())
             popResourceFromFace(level, pos, face, harvest);

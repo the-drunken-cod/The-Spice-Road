@@ -13,6 +13,7 @@ import com.drunkencod.spice_road.spice.SpiceProfileRegistry;
 import com.drunkencod.spice_road.spice.SpiceProfileSync;
 import com.drunkencod.spice_road.spice.board.SeasoningWorld;
 import com.drunkencod.spice_road.spice.effect.SeasoningEffectSync;
+import com.drunkencod.spice_road.stats.FoundSpiceTracker;
 import com.drunkencod.spice_road.villager.SpiceMapTrade;
 
 import net.fabricmc.api.ModInitializer;
@@ -22,6 +23,7 @@ import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -51,6 +53,8 @@ public class SpiceRoadMod implements ModInitializer {
                 registerSeasoningWorld();
                 registerGrinderPayloads();
                 registerConfigSync();
+                // NeoForge does the same through ServerTickEvent.Post.
+                ServerTickEvents.END_SERVER_TICK.register(FoundSpiceTracker::onServerTick);
 
                 // NeoForge gets this mapping from the datagenned neoforge:strippables data map.
                 SpiceTrees.getRegistered().values().forEach(
