@@ -5,20 +5,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.DoubleUnaryOperator;
 
 import net.minecraft.resources.ResourceLocation;
 
 import com.drunkencod.spice_road.spice.FlavorAxis;
+import com.drunkencod.spice_road.spice.SpiceProfile;
 import com.drunkencod.spice_road.spice.board.EffectSlot.SlotKind;
 import com.drunkencod.spice_road.spice.effect.EffectKind;
 import com.drunkencod.spice_road.spice.effect.SeasoningEffect;
 import com.drunkencod.spice_road.spice.effect.SeasoningEffects;
 
 /**
- * One run on a {@link SeasoningBoard}: the pawn, the points left on every axis,
- * the cells locked in or blown up so far and the effects gathered. The same
- * rules drive a player's run in the Spice Grinder and the automatic bot, so a
- * route always gives the same effects. Mutable, validates every action.
+ * One run on a {@link SeasoningBoard}: the pawn, the {@link PointsLedger}, the
+ * cells locked in or blown up so far and the effects gathered. The same rules
+ * drive a player's run in the Spice Grinder and the automatic bot, so a route
+ * always gives the same effects. Mutable, validates every action.
  */
 public final class SeasoningRun {
 
@@ -26,8 +28,7 @@ public final class SeasoningRun {
 
     private final SeasoningBoard board;
     private final SeasoningRules rules;
-    private final SpiceBudget budget;
-    private final double[] points = new double[FlavorAxis.values().length];
+    private final PointsLedger ledger;
     private final Set<Integer> lockedIn = new HashSet<>();
     private final Set<Integer> detonated = new HashSet<>();
     private List<SeasoningEffect> effects = List.of();
@@ -39,8 +40,9 @@ public final class SeasoningRun {
      *
      * @param moved   Whether the pawn moved at all.
      * @param mineHit Whether it stepped on a mine that hadn't gone off yet.
+     * @param dud     Whether that mine was a dud, because the zone's axis has no pole.
      */
-    public record MoveResult(boolean moved, boolean mineHit) {
+    public record MoveResult(boolean moved, boolean mineHit, boolean dud) {
     }
 
     /**
@@ -48,14 +50,41 @@ public final class SeasoningRun {
      *
      * @param board  The board to play.
      * @param rules  The costs and catalog to play by.
-     * @param budget What the food has to spend.
+     * @param ledger What the food has to spend.
      */
-    public SeasoningRun(SeasoningBoard board, SeasoningRules rules, SpiceBudget budget) {
+    public SeasoningRun(SeasoningBoard board, SeasoningRules rules, PointsLedger ledger) {
         this.board = board;
         this.rules = rules;
-        this.budget = budget;
-        for (FlavorAxis axis : FlavorAxis.values())
-            points[axis.ordinal()] = budget.points(axis);
+        this.ledger = ledger;
+    }
+
+    /**
+     * Continues a saved run.
+     *
+     * @param board     The board the run is played on.
+     * @param rules     The costs and catalog to play by.
+     * @param raw       The raw sum of every spice added so far.
+     * @param effective Turns a raw, non-negative value along a pole into its effective value.
+     * @param state     The saved state.
+     * @return The run, as it was when {@code state} was taken.
+     */
+    public static SeasoningRun restore(SeasoningBoard board, SeasoningRules rules, SpiceProfile raw,
+            DoubleUnaryOperator effective, RunState state) {
+        int[] poles = state.poles().stream().mapToInt(Integer::intValue).toArray();
+        double[] spent = state.spent().stream().mapToDouble(Double::doubleValue).toArray();
+        SeasoningRun run = new SeasoningRun(board, rules, new PointsLedger(poles, raw, spent, effective));
+        run.x = state.x();
+        run.y = state.y();
+        run.lockedIn.addAll(state.lockedIn());
+        run.detonated.addAll(state.detonated());
+        run.effects = List.copyOf(state.effects());
+        return run;
+    }
+
+    /** @return The state to save, to {@link #restore} the run from. */
+    public RunState state() {
+        return new RunState(x, y, ledger.poles(), ledger.spentPoints(), lockedIn.stream().sorted().toList(),
+                detonated.stream().sorted().toList(), effects);
     }
 
     /** @return The pawn's column. */
@@ -68,15 +97,20 @@ public final class SeasoningRun {
         return y;
     }
 
+    /** @return The ledger of what can still be spent; spices added mid-run go in through it. */
+    public PointsLedger ledger() {
+        return ledger;
+    }
+
     /**
      * @param axis A Flavor Axis.
      * @return The points left on {@code axis}.
      */
     public double points(FlavorAxis axis) {
-        return points[axis.ordinal()];
+        return ledger.points(axis);
     }
 
-    /** @return The effects gathered so far, in canonical order. */
+    /** @return The effects gathered so far, in the order they were gained. */
     public List<SeasoningEffect> effects() {
         return effects;
     }
@@ -88,6 +122,15 @@ public final class SeasoningRun {
      */
     public boolean isLockedIn(int cellX, int cellY) {
         return lockedIn.contains(BoardGeometry.index(cellX, cellY));
+    }
+
+    /**
+     * @param cellX A column on the board.
+     * @param cellY A row on the board.
+     * @return Whether the mine at {@code (cellX, cellY)} already went off.
+     */
+    public boolean isDetonated(int cellX, int cellY) {
+        return detonated.contains(BoardGeometry.index(cellX, cellY));
     }
 
     /**
@@ -112,15 +155,17 @@ public final class SeasoningRun {
      */
     public MoveResult move(Direction direction) {
         if (!canMove(direction))
-            return new MoveResult(false, false);
-        points[direction.axis().ordinal()] -= rules.stepCost();
+            return new MoveResult(false, false, false);
+        ledger.spend(direction.axis(), rules.stepCost());
         x += direction.dx();
         y += direction.dy();
         Cell cell = board.cell(x, y);
         if (cell.kind() != CellKind.MINE || !detonated.add(BoardGeometry.index(x, y)))
-            return new MoveResult(true, false);
-        triggerMine(cell);
-        return new MoveResult(true, true);
+            return new MoveResult(true, false, false);
+        boolean dud = ledger.pole(cell.zone()) == 0;
+        if (!dud)
+            triggerMine(cell);
+        return new MoveResult(true, true, dud);
     }
 
     /**
@@ -132,7 +177,7 @@ public final class SeasoningRun {
         Cell cell = board.cell(x, y);
         if (cell.kind() != CellKind.EFFECT || lockedIn.contains(BoardGeometry.index(x, y)))
             return false;
-        int pole = budget.pole(cell.zone());
+        int pole = ledger.pole(cell.zone());
         if (pole == 0 || points(cell.zone()) + EPSILON < rules.lockInCost(cell.ring()))
             return false;
         List<SeasoningEffect> bundle = resolve(cell, pole > 0);
@@ -155,18 +200,29 @@ public final class SeasoningRun {
         if (!canLockIn())
             return false;
         Cell cell = board.cell(x, y);
-        points[cell.zone().ordinal()] -= rules.lockInCost(cell.ring());
+        ledger.spend(cell.zone(), rules.lockInCost(cell.ring()));
         lockedIn.add(BoardGeometry.index(x, y));
-        for (SeasoningEffect effect : resolve(cell, budget.pole(cell.zone()) > 0))
+        for (SeasoningEffect effect : resolve(cell, ledger.pole(cell.zone()) > 0))
             effects = SeasoningEffects.gain(effects, effect, false, rules.maxEffects(), rules.catalog());
         return true;
     }
 
+    /**
+     * @param cellX A column on the board.
+     * @param cellY A row on the board.
+     * @return What the cell at {@code (cellX, cellY)} holds for the pole its
+     *         zone's axis has in this run; empty for a cell without slots or
+     *         without a pole.
+     */
+    public List<SeasoningEffect> resolveCell(int cellX, int cellY) {
+        Cell cell = board.cell(cellX, cellY);
+        if (cell.zone() == null || ledger.pole(cell.zone()) == 0)
+            return List.of();
+        return resolve(cell, ledger.pole(cell.zone()) > 0);
+    }
+
     private void triggerMine(Cell cell) {
-        int pole = budget.pole(cell.zone());
-        if (pole == 0)
-            return;
-        for (SeasoningEffect effect : resolve(cell, pole > 0))
+        for (SeasoningEffect effect : resolve(cell, ledger.pole(cell.zone()) > 0))
             effects = SeasoningEffects.gain(effects, effect, true, rules.maxEffects(), rules.catalog());
     }
 

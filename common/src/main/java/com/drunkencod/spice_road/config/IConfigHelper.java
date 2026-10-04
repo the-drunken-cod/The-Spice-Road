@@ -321,6 +321,14 @@ public interface IConfigHelper {
     double getSeasoningParticipationFullDose();
 
     /**
+     * Client-side. How long the Spice Grinder GUI waits after a movement key
+     * for a second one, so two keys pressed almost together make a diagonal step.
+     *
+     * @return The configured input buffer in milliseconds.
+     */
+    int getGrinderInputBufferMs();
+
+    /**
      * Client-side. Whether Flavor Axis tooltips show both pole labels of each
      * axis (e.g. {@code [Spicy / Cooling]}), emphasizing the one matching the
      * value's sign, instead of only the matching one.

@@ -259,6 +259,11 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public int getGrinderInputBufferMs() {
+        return client().grinder.inputBufferMs;
+    }
+
+    @Override
     public boolean isTooltipBothAxisLabelsShown() {
         return client().tooltip.showBothAxisLabels;
     }
@@ -542,10 +547,18 @@ public class FabricConfigHelper implements IConfigHelper {
 
         @ConfigEntry.Gui.CollapsibleObject
         public TooltipDisplay tooltip = new TooltipDisplay();
+        @ConfigEntry.Gui.CollapsibleObject
+        public Grinder grinder = new Grinder();
 
         @Override
         public void validatePostLoad() {
             clampToSchema(this, ConfigFile.CLIENT);
+        }
+
+        /** Spice Grinder GUI behavior. */
+        public static class Grinder {
+            @ConfigEntry.Gui.Tooltip
+            public int inputBufferMs = ConfigSchema.GRINDER_INPUT_BUFFER_MS.getDefault();
         }
 
         /** What the mod shows on item tooltips. */

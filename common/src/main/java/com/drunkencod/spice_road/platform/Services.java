@@ -4,6 +4,7 @@ import java.util.ServiceLoader;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.config.IConfigHelper;
+import com.drunkencod.spice_road.platform.services.INetworkHelper;
 import com.drunkencod.spice_road.platform.services.IPlatformHelper;
 import com.drunkencod.spice_road.registry.ICreativeTabHelper;
 import com.drunkencod.spice_road.registry.IRegistryHelper;
@@ -22,6 +23,8 @@ public class Services {
     public static final IConfigHelper CONFIG = load(IConfigHelper.class);
     /** Creative tab registration. */
     public static final ICreativeTabHelper CREATIVE_TAB = load(ICreativeTabHelper.class);
+    /** Sending payloads. */
+    public static final INetworkHelper NETWORK = load(INetworkHelper.class);
 
     /**
      * Loads the first available implementation of a service interface via

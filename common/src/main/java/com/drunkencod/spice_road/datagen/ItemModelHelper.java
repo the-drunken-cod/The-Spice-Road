@@ -38,6 +38,17 @@ public class ItemModelHelper {
         FLAT_ITEMS.put(id, SpiceAssetPaths.item(spice, id));
     }
 
+    /**
+     * Register an item id for flat ({@code item/generated}) model generation
+     * with an explicit texture.
+     *
+     * @param id      Registry path of the item (e.g. {@code "spice_grinder"})
+     * @param texture The texture of {@code layer0}, e.g. {@code spice_road:item/spice_grinder}.
+     */
+    public static void addFlatItem(String id, ResourceLocation texture) {
+        FLAT_ITEMS.put(id, texture);
+    }
+
     /** @return Unmodifiable view of the flat item path IDs, mapped to their {@code layer0} texture. */
     public static Map<String, ResourceLocation> getFlatItems() {
         return Collections.unmodifiableMap(FLAT_ITEMS);

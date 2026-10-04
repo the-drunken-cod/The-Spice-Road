@@ -13,7 +13,8 @@
     "flavor.AbstractCookingRecipeMixin",
     "flavor.ShapedRecipeMixin",
     "flavor.ShapelessRecipeMixin",
-    "food.LivingEntityMixin"
+    "food.LivingEntityMixin",
+    "network.ServerGamePacketListenerImplMixin"
   ],
   "client": [],
   "server": [],

@@ -50,13 +50,21 @@ public final class SpiceProfiles {
      * @return The corresponding Effective Profile.
      */
     public static SpiceProfile effective(SpiceProfile profile) {
+        return profile.map(value -> Math.copySign(effectiveValue(Math.abs(value)), value));
+    }
+
+    /**
+     * The saturation of {@link #effective(SpiceProfile)} for one magnitude.
+     *
+     * @param magnitude A raw, non-negative value of one axis.
+     * @return Its effective value: {@code 0} for {@code 0}, otherwise
+     *         saturated towards the soft cap but at least the minimum.
+     */
+    public static double effectiveValue(double magnitude) {
+        if (magnitude <= 0D)
+            return 0D;
         double cap = Services.CONFIG.getFlavorSoftCap();
         double minimum = Services.CONFIG.getFlavorMinimumAxisValue();
-        return profile.map(value -> {
-            if (value == 0D)
-                return 0D;
-            double capped = cap * Math.tanh(value / cap);
-            return Math.copySign(Math.max(Math.abs(capped), minimum), value);
-        });
+        return Math.max(cap * Math.tanh(magnitude / cap), minimum);
     }
 }

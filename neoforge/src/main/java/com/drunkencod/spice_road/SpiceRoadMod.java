@@ -23,6 +23,9 @@ import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.NeoForgeCreativeTabHelper;
 import com.drunkencod.spice_road.registry.NeoForgeRegistryHelper;
 import com.drunkencod.spice_road.spice.SpiceProfileRegistry;
+import com.drunkencod.spice_road.grinder.GrinderIntentPayload;
+import com.drunkencod.spice_road.grinder.GrinderViewPayload;
+import com.drunkencod.spice_road.client.grinder.SpiceGrinderScreen;
 import com.drunkencod.spice_road.spice.SpiceProfileSync;
 import com.drunkencod.spice_road.spice.board.SeasoningWorld;
 import com.drunkencod.spice_road.spice.effect.SeasoningEffectSync;
@@ -41,6 +44,7 @@ import net.neoforged.neoforge.event.LootTableLoadEvent;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
+import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
@@ -136,6 +140,7 @@ public class SpiceRoadMod {
         // production.
         NeoForgeSpiceRegionDebugOverlay.registerIfDevelopment();
         NeoForgeSpiceTooltipHandler.register();
+        SpiceGrinderScreen.registerViewHandler();
         NeoForgeConfigScreenHandler.register(modContainer);
     }
 
@@ -144,7 +149,11 @@ public class SpiceRoadMod {
                 .playToClient(SpiceProfileSync.TYPE, SpiceProfileSync.STREAM_CODEC,
                         (payload, context) -> payload.handle())
                 .playToClient(SeasoningEffectSync.TYPE, SeasoningEffectSync.STREAM_CODEC,
-                        (payload, context) -> payload.handle());
+                        (payload, context) -> payload.handle())
+                .playToClient(GrinderViewPayload.TYPE, GrinderViewPayload.STREAM_CODEC,
+                        (payload, context) -> payload.handle())
+                .playToServer(GrinderIntentPayload.TYPE, GrinderIntentPayload.STREAM_CODEC,
+                        (payload, context) -> payload.handle((ServerPlayer) context.player()));
     }
 
     /** Remembers the world seed for Automatic Seasoning, which can't reach a level from a recipe. */

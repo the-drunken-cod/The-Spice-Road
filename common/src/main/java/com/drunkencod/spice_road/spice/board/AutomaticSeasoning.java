@@ -54,18 +54,27 @@ public final class AutomaticSeasoning {
             return seasoning;
         IConfigHelper config = Services.CONFIG;
 
-        SpiceBudget budget = budgetOf(seasoning, config);
+        PointsLedger ledger = ledgerOf(seasoning, config);
         long seed = BoardSeed.of(worldSeed.getAsLong(), config.getSeasoningBoardSalt(),
                 BuiltInRegistries.ITEM.getKey(output).toString());
         BoardLayout layout = BoardLayoutRegistry.get();
-        if (BOARDS.size() >= MAX_CACHED_BOARDS)
-            BOARDS.clear();
-        SeasoningBoard board = BOARDS.computeIfAbsent(new BoardKey(seed, layout),
-                key -> BoardGenerator.generate(key.seed(), key.layout()));
+        SeasoningBoard board = board(seed, layout);
 
-        SeasoningRun run = new SeasoningRun(board, rules(config), budget);
+        SeasoningRun run = new SeasoningRun(board, rules(config), ledger);
         SeasoningBot.play(run);
         return seasoning.withEffects(run.effects());
+    }
+
+    /**
+     * @param seed   A board seed, see {@link BoardSeed}.
+     * @param layout The layout to build to.
+     * @return The board, from a cache of recently built ones.
+     */
+    public static SeasoningBoard board(long seed, BoardLayout layout) {
+        if (BOARDS.size() >= MAX_CACHED_BOARDS)
+            BOARDS.clear();
+        return BOARDS.computeIfAbsent(new BoardKey(seed, layout),
+                key -> BoardGenerator.generate(key.seed(), key.layout()));
     }
 
     /**
@@ -74,17 +83,27 @@ public final class AutomaticSeasoning {
      * @return What the food has to spend on its board: the Effective Profile of
      *         its capped contributors' Default Profiles.
      */
-    public static SpiceBudget budgetOf(Seasoning seasoning, IConfigHelper config) {
+    public static PointsLedger ledgerOf(Seasoning seasoning, IConfigHelper config) {
+        return PointsLedger.start(rawProfileOf(seasoning.contributors(), config), SpiceProfiles::effectiveValue);
+    }
+
+    /**
+     * @param amounts The true amount of each spice item on a food.
+     * @param config  The config to read the spice caps from.
+     * @return The raw profile of the amounts that count under the spice caps:
+     *         the sum of the contributors' Default Profiles weighted by their
+     *         amount.
+     */
+    public static SpiceProfile rawProfileOf(Map<Item, Double> amounts, IConfigHelper config) {
         Comparator<Item> byId = Comparator.comparing(item -> BuiltInRegistries.ITEM.getKey(item));
-        Map<Item, Double> counted = SpiceBudget.capAmounts(seasoning.contributors(), byId,
-                config.getSeasoningMaxSpicesPerKind(), config.getSeasoningMaxSpices());
+        Map<Item, Double> counted = SpiceCaps.capAmounts(amounts, byId, config.getSeasoningMaxSpicesPerKind(),
+                config.getSeasoningMaxSpices());
         SpiceProfile raw = SpiceProfile.ZERO;
         for (Map.Entry<Item, Double> contributor : counted.entrySet()) {
             raw = raw.add(SpiceProfileRegistry.getDefault(contributor.getKey()).orElse(SpiceProfile.ZERO)
                     .scale(contributor.getValue()));
         }
-        return new SpiceBudget(raw.map(value -> Math.abs(value) < PROFILE_NOISE ? 0D : value),
-                SpiceProfiles::effective);
+        return raw.map(value -> Math.abs(value) < PROFILE_NOISE ? 0D : value);
     }
 
     /**

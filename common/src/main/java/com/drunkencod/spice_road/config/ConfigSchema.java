@@ -61,6 +61,8 @@ public final class ConfigSchema {
     public static final ConfigSection SEASONING_PARTICIPATION = SEASONING.child("participation");
     /** Client-side tooltip display. */
     public static final ConfigSection TOOLTIP = ConfigSection.root(ConfigFile.CLIENT, "tooltip");
+    /** Client-side Spice Grinder GUI behavior. */
+    public static final ConfigSection GRINDER = ConfigSection.root(ConfigFile.CLIENT, "grinder");
     /** Behavior around other mods' placeable food items. */
     public static final ConfigSection COMPAT = ConfigSection.root(ConfigFile.SERVER, "compat");
 
@@ -243,6 +245,10 @@ public final class ConfigSchema {
     /** Whether Flavor Axis tooltips count up to their values when shown. */
     public static final ConfigOption<Boolean> TOOLTIP_ANIMATE_AXES = add(
             ConfigOption.ofBoolean(TOOLTIP, "animateAxes", true));
+
+    /** Milliseconds the Spice Grinder GUI waits for a second movement key to make a diagonal step. */
+    public static final ConfigOption<Integer> GRINDER_INPUT_BUFFER_MS = add(
+            ConfigOption.ofInt(GRINDER, "inputBufferMs", 100, 0, 500));
 
     /** Duration, in milliseconds, of the Flavor Axis tooltip count-up. */
     public static final ConfigOption<Integer> TOOLTIP_ANIMATION_DURATION_MS = add(

@@ -19,6 +19,9 @@ import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -113,6 +116,15 @@ public class FabricRegistryHelper implements IRegistryHelper {
         return Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT,
                 ResourceKey.create(Registries.MOB_EFFECT, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id)),
                 factory.get());
+    }
+
+    @Override
+    public <T extends AbstractContainerMenu> Supplier<MenuType<T>> registerMenuType(String id,
+            MenuType.MenuSupplier<T> factory) {
+        MenuType<T> type = Registry.register(BuiltInRegistries.MENU,
+                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id),
+                new MenuType<>(factory, FeatureFlags.DEFAULT_FLAGS));
+        return () -> type;
     }
 
     @Override

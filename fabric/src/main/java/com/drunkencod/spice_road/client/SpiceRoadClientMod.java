@@ -4,6 +4,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.RenderType;
 
 import com.drunkencod.spice_road.block.SpicePlants;
@@ -11,6 +12,9 @@ import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.block.SpiceVines;
 import com.drunkencod.spice_road.config.ConfigSync;
 import com.drunkencod.spice_road.config.ConfigSyncOverride;
+import com.drunkencod.spice_road.client.grinder.SpiceGrinderScreen;
+import com.drunkencod.spice_road.grinder.GrinderViewPayload;
+import com.drunkencod.spice_road.registry.ModMenus;
 import com.drunkencod.spice_road.spice.SpiceProfileSync;
 import com.drunkencod.spice_road.spice.effect.SeasoningEffectSync;
 
@@ -29,6 +33,9 @@ public class SpiceRoadClientMod implements ClientModInitializer {
         FabricSpiceTooltipHandler.register();
         ClientPlayNetworking.registerGlobalReceiver(SpiceProfileSync.TYPE, (payload, context) -> payload.handle());
         ClientPlayNetworking.registerGlobalReceiver(SeasoningEffectSync.TYPE, (payload, context) -> payload.handle());
+        ClientPlayNetworking.registerGlobalReceiver(GrinderViewPayload.TYPE, (payload, context) -> payload.handle());
+        SpiceGrinderScreen.registerViewHandler();
+        MenuScreens.register(ModMenus.SPICE_GRINDER.get(), SpiceGrinderScreen::new);
         ClientPlayNetworking.registerGlobalReceiver(ConfigSync.TYPE, (payload, context) -> payload.handle());
         // The override must not outlive the connection that sent it - a later
         // singleplayer world or a different server needs its own values.

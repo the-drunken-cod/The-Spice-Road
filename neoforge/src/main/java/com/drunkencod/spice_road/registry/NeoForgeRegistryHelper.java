@@ -12,6 +12,9 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -66,6 +69,9 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
             .create(Registries.TRIGGER_TYPE, Constants.MOD_ID);
 
     private final DeferredRegister<MobEffect> mobEffects = DeferredRegister.create(Registries.MOB_EFFECT,
+            Constants.MOD_ID);
+
+    private final DeferredRegister<MenuType<?>> menuTypes = DeferredRegister.create(Registries.MENU,
             Constants.MOD_ID);
 
     private final List<PreparableReloadListener> pendingReloadListeners = new ArrayList<>();
@@ -130,6 +136,14 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public <T extends AbstractContainerMenu> Supplier<MenuType<T>> registerMenuType(String id,
+            MenuType.MenuSupplier<T> factory) {
+        return (Supplier<MenuType<T>>) (Supplier<?>) menuTypes.register(id,
+                () -> new MenuType<>(factory, FeatureFlags.DEFAULT_FLAGS));
+    }
+
+    @Override
     public void registerReloadListener(ResourceLocation id, PreparableReloadListener listener) {
         pendingReloadListeners.add(listener);
     }
@@ -162,6 +176,7 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
         treeDecoratorTypes.register(eventBus);
         criterionTriggers.register(eventBus);
         mobEffects.register(eventBus);
+        menuTypes.register(eventBus);
         // AddReloadListenerEvent is a game event, not a mod-bus event.
         NeoForge.EVENT_BUS.addListener(this::onAddReloadListeners);
     }

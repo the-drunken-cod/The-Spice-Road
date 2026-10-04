@@ -15,6 +15,9 @@ import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.SpiceTree;
 import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.block.SpiceVines;
+import com.drunkencod.spice_road.datagen.ItemModelHelper;
+import com.drunkencod.spice_road.grinder.SpiceGrinderItem;
+import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.ProcessedSpice;
 import com.drunkencod.spice_road.spice.Spice;
 
@@ -28,6 +31,19 @@ import com.drunkencod.spice_road.spice.Spice;
  */
 public class ModItems {
 
+    /** The Spice Grinder, which opens the seasoning GUI. */
+    public static Supplier<SpiceGrinderItem> SPICE_GRINDER;
+
+    /**
+     * Registers the Spice Grinder, with a flat item model. Must be called during
+     * mod initialization (see {@code SpiceRoad#init()}).
+     */
+    public static void registerGrinder() {
+        SPICE_GRINDER = Services.REGISTRY.registerItem("spice_grinder", SpiceGrinderItem::new);
+        ItemModelHelper.addFlatItem("spice_grinder", ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID,
+                "item/spice_grinder"));
+    }
+
     // #region creative tabs
 
     /**
@@ -37,6 +53,7 @@ public class ModItems {
      */
     public static void populateGenericTab(CreativeModeTab.Output output) {
         output.accept(Items.ROTTEN_FLESH.getDefaultInstance());
+        output.accept(SPICE_GRINDER.get().getDefaultInstance());
     }
 
     /**

@@ -4,3 +4,7 @@ accessWidener v2 named
 # for spice_road:attached_to_logs (see ModTreeDecorators), since vanilla keeps its constructor
 # private and offers no factory.
 accessible method net/minecraft/world/level/levelgen/feature/treedecorators/TreeDecoratorType <init> (Lcom/mojang/serialization/MapCodec;)V
+
+# Fabric counterpart of the MenuType entries in META-INF/accesstransformer.cfg (see ModMenus).
+accessible class net/minecraft/world/inventory/MenuType$MenuSupplier
+accessible method net/minecraft/world/inventory/MenuType <init> (Lnet/minecraft/world/inventory/MenuType$MenuSupplier;Lnet/minecraft/world/flag/FeatureFlagSet;)V

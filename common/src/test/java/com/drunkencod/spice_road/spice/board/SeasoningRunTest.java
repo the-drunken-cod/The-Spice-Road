@@ -9,7 +9,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.UnaryOperator;
 
 import org.junit.jupiter.api.Test;
 
@@ -41,10 +40,10 @@ class SeasoningRunTest {
         return new Cell(kind, BoardGeometry.ring(x, y), BoardGeometry.zoneAxis(x, y), List.of(slots));
     }
 
-    private static SpiceBudget budget(Map<FlavorAxis, Double> values) {
+    private static PointsLedger budget(Map<FlavorAxis, Double> values) {
         double[] raw = new double[FlavorAxis.values().length];
         values.forEach((axis, value) -> raw[axis.ordinal()] = value);
-        return new SpiceBudget(new SpiceProfile(raw), UnaryOperator.identity());
+        return PointsLedger.start(new SpiceProfile(raw), value -> value);
     }
 
     private static Map<FlavorAxis, Double> axes(Object... pairs) {

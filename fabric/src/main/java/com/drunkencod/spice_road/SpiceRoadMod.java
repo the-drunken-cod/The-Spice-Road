@@ -4,6 +4,8 @@ import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.command.SpiceLocateCommand;
 import com.drunkencod.spice_road.config.ConfigSync;
 import com.drunkencod.spice_road.config.FabricConfigHelper;
+import com.drunkencod.spice_road.grinder.GrinderIntentPayload;
+import com.drunkencod.spice_road.grinder.GrinderViewPayload;
 import com.drunkencod.spice_road.loot.LootInjections;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.FabricCreativeTabHelper;
@@ -47,6 +49,7 @@ public class SpiceRoadMod implements ModInitializer {
 
                 registerSpiceProfileSync();
                 registerSeasoningWorld();
+                registerGrinderPayloads();
                 registerConfigSync();
 
                 // NeoForge gets this mapping from the datagenned neoforge:strippables data map.
@@ -112,6 +115,17 @@ public class SpiceRoadMod implements ModInitializer {
                         ServerPlayNetworking.send(player, SpiceProfileSync.current());
                         ServerPlayNetworking.send(player, SeasoningEffectSync.current());
                 });
+        }
+
+        /**
+         * Registers the Spice Grinder's payloads and the receiver of what players
+         * do in its GUI. NeoForge does the same through its own event.
+         */
+        private static void registerGrinderPayloads() {
+                PayloadTypeRegistry.playC2S().register(GrinderIntentPayload.TYPE, GrinderIntentPayload.STREAM_CODEC);
+                PayloadTypeRegistry.playS2C().register(GrinderViewPayload.TYPE, GrinderViewPayload.STREAM_CODEC);
+                ServerPlayNetworking.registerGlobalReceiver(GrinderIntentPayload.TYPE,
+                                (payload, context) -> payload.handle(context.player()));
         }
 
         /**

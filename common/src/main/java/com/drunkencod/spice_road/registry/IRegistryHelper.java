@@ -7,6 +7,8 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -140,6 +142,17 @@ public interface IRegistryHelper {
      *         registration has run.
      */
     Holder<MobEffect> registerMobEffect(String id, Supplier<? extends MobEffect> factory);
+
+    /**
+     * Register a {@link MenuType} under the mod's namespace.
+     *
+     * @param id      Registry path (e.g. {@code "my_menu"})
+     * @param factory Creates the menu on the client, from the menu ID and the inventory
+     * @param <T>     The menu type
+     * @return A supplier of the registered type, only usable once registration has run.
+     */
+    <T extends AbstractContainerMenu> Supplier<MenuType<T>> registerMenuType(String id,
+            MenuType.MenuSupplier<T> factory);
 
     /**
      * Register a datapack JSON reload listener under the mod's namespace.

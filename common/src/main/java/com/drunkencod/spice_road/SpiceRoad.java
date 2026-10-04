@@ -11,6 +11,8 @@ import com.drunkencod.spice_road.registry.ModDataComponents;
 import com.drunkencod.spice_road.registry.ModLootConditions;
 import com.drunkencod.spice_road.registry.ModLootFunctions;
 import com.drunkencod.spice_road.registry.ModMapDecorations;
+import com.drunkencod.spice_road.registry.ModItems;
+import com.drunkencod.spice_road.registry.ModMenus;
 import com.drunkencod.spice_road.registry.ModMobEffects;
 import com.drunkencod.spice_road.spice.SpiceProfileReloadListener;
 import com.drunkencod.spice_road.spice.board.BoardLayoutReloadListener;
@@ -35,6 +37,8 @@ public class SpiceRoad {
     public static void init() {
         ModDataComponents.register();
         ModMobEffects.register();
+        ModMenus.register();
+        ModItems.registerGrinder();
         Services.REGISTRY.registerReloadListener(SpiceProfileReloadListener.ID, new SpiceProfileReloadListener());
         Services.REGISTRY.registerReloadListener(SeasoningEffectReloadListener.ID,
                 new SeasoningEffectReloadListener());

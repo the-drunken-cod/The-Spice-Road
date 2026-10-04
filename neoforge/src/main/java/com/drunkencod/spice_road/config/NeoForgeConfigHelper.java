@@ -317,6 +317,11 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public int getGrinderInputBufferMs() {
+        return value(ConfigSchema.GRINDER_INPUT_BUFFER_MS);
+    }
+
+    @Override
     public boolean isTooltipBothAxisLabelsShown() {
         return value(ConfigSchema.TOOLTIP_SHOW_BOTH_AXIS_LABELS);
     }

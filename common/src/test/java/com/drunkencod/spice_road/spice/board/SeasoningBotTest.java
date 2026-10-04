@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.UnaryOperator;
 
 import org.junit.jupiter.api.Test;
 
@@ -35,11 +34,11 @@ class SeasoningBotTest {
         return new Cell(kind, BoardGeometry.ring(x, y), BoardGeometry.zoneAxis(x, y), List.of(slots));
     }
 
-    private static SpiceBudget budget(Object... pairs) {
+    private static PointsLedger budget(Object... pairs) {
         double[] raw = new double[FlavorAxis.values().length];
         for (int i = 0; i < pairs.length; i += 2)
             raw[((FlavorAxis) pairs[i]).ordinal()] = ((Number) pairs[i + 1]).doubleValue();
-        return new SpiceBudget(new SpiceProfile(raw), UnaryOperator.identity());
+        return PointsLedger.start(new SpiceProfile(raw), value -> value);
     }
 
     @Test
