@@ -96,9 +96,6 @@
     - "Everything Bagel" advancement becomes e.g. "eat a food with at least 10 flavor contributors".
     - Flavor contributor tooltip lists amounts (see the max-applications item above).
     - Max amount of spice applications for spices of the same type. Configurable value, default 3. When applying the same spice for the 4th time, no values are applied from it. The upcoming spice grinder should stop allowing to add players to add spices past this number.
-- [ ] Make mod blocks like the Immersive Engineering Garden Cloche and Botany Pots respect spice regions and require water for planting water-based rhizomes.
-    - [ ] Botany Pots: seeds don't grow out of the box. TODO: add support for all non-hand-picked crops (see https://github.com/Darkhax-Minecraft/BotanyPots/blob/1.21.1/common/src/main/resources/data/botanypots/recipe/minecraft/crop/torchflower.json and https://github.com/Darkhax-Minecraft/BotanyPots/blob/1.21.1/common/src/main/resources/data/botanypots/recipe/farmersdelight/crop/rice.json).
-    - [ ] Immersive Engineering: seeds don't grow out of the box. TODO: add support for all non-hand-picked crops (see https://github.com/vectorwing/FarmersDelight/blob/1.21/src/main/resources/data/farmersdelight/recipe/integration/immersiveengineering/cloche/cabbage.json and https://github.com/vectorwing/FarmersDelight/blob/1.21/src/main/resources/data/farmersdelight/recipe/integration/immersiveengineering/cloche/rice.json)
 - [x] Spice Grinder takes spices from nearby storage: tag `spice_road:spice_storage` (trapped chests as a placeholder, `cookingforblockheads:spice_rack` optional), config `seasoning.storageRadius` (default 6, 0 = off). Reads block entity NBT generically and takes through `Container` or NBT write-back, all or nothing.
 - [x] Spice Grinder minigame:
     - Implementation order:
@@ -155,7 +152,10 @@
     - [x] The spice tooltip in the list on the left should be expanded by default and not require holding shift.
     - [x] The key tooltips (l-click, r-click, shift) should show up just after the spice profile tooltip lines. Currently they are at the very end of the tooltip.
 - [x] Cooking a seasoned item doesn't preserve effects.
-- [ ] Make AppleSkin tooltips show the corrected saturation value.
+- [x] Make AppleSkin tooltips show the corrected saturation value.
+- [ ] Make mod blocks like the Immersive Engineering Garden Cloche and Botany Pots respect spice regions and require water for planting water-based rhizomes.
+    - [ ] Botany Pots: seeds don't grow out of the box. TODO: add support for all non-hand-picked crops (see https://github.com/Darkhax-Minecraft/BotanyPots/blob/1.21.1/common/src/main/resources/data/botanypots/recipe/minecraft/crop/torchflower.json and https://github.com/Darkhax-Minecraft/BotanyPots/blob/1.21.1/common/src/main/resources/data/botanypots/recipe/farmersdelight/crop/rice.json).
+    - [ ] Immersive Engineering: seeds don't grow out of the box. TODO: add support for all non-hand-picked crops (see https://github.com/vectorwing/FarmersDelight/blob/1.21/src/main/resources/data/farmersdelight/recipe/integration/immersiveengineering/cloche/cabbage.json and https://github.com/vectorwing/FarmersDelight/blob/1.21/src/main/resources/data/farmersdelight/recipe/integration/immersiveengineering/cloche/rice.json)
 - [ ] Collect stats:
     - [ ] Different spice types found amount.
     - [ ] Hand-picked spice plants amount.

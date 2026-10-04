@@ -5,6 +5,7 @@ import java.util.List;
 import com.drunkencod.spice_road.client.NeoForgeConfigScreenHandler;
 import com.drunkencod.spice_road.client.NeoForgeSpiceRegionDebugOverlay;
 import com.drunkencod.spice_road.command.SpiceLocateCommand;
+import com.drunkencod.spice_road.compat.appleskin.AppleSkinCompat;
 import com.drunkencod.spice_road.client.NeoForgeSpiceTooltipHandler;
 import com.drunkencod.spice_road.config.NeoForgeConfigHelper;
 import com.drunkencod.spice_road.datagen.NeoForgeBlockStateProvider;
@@ -33,6 +34,7 @@ import com.drunkencod.spice_road.villager.SpiceMapTrade;
 
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -140,6 +142,8 @@ public class SpiceRoadMod {
         // production.
         NeoForgeSpiceRegionDebugOverlay.registerIfDevelopment();
         NeoForgeSpiceTooltipHandler.register();
+        if (ModList.get().isLoaded("appleskin"))
+            AppleSkinCompat.register();
         SpiceGrinderScreen.registerViewHandler();
         NeoForgeConfigScreenHandler.register(modContainer);
     }

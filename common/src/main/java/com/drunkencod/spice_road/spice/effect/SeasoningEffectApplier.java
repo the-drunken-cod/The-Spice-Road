@@ -1,25 +1,16 @@
 package com.drunkencod.spice_road.spice.effect;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
-import net.minecraft.world.item.Item;
 
 import com.drunkencod.spice_road.event.FoodEatenListeners;
-import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.ModDataComponents;
 import com.drunkencod.spice_road.spice.Seasoning;
-import com.drunkencod.spice_road.spice.board.DiversityAward;
-import com.drunkencod.spice_road.spice.board.ParticipationAward;
 
 /**
  * Applies a seasoned food's Seasoning Effects to whoever eats it, through
- * {@link FoodEatenListeners}. A player also gets bonus saturation: in relation
- * to the food's spice variety, see {@link DiversityAward}, and, if the food has
- * no effects at all, a participation award, see {@link ParticipationAward}.
+ * {@link FoodEatenListeners}. A player also gets the food's bonus saturation,
+ * see {@link SeasoningSaturation}.
  */
 public final class SeasoningEffectApplier {
 
@@ -36,31 +27,9 @@ public final class SeasoningEffectApplier {
                 return;
             if (!seasoning.effects().isEmpty())
                 SeasoningEffects.apply(event.entity(), seasoning);
-            if (event.entity() instanceof Player player) {
-                if (seasoning.effects().isEmpty())
-                    awardParticipation(player, event.stack().getItem(), seasoning);
-                awardDiversity(player, seasoning);
-            }
+            if (event.entity() instanceof Player player)
+                addSaturation(player, SeasoningSaturation.bonus(event.stack().getItem(), seasoning));
         });
-    }
-
-    private static void awardDiversity(Player player, Seasoning seasoning) {
-        addSaturation(player, DiversityAward.saturation(seasoning.contributors().size(),
-                Services.CONFIG.getSeasoningDiversityMinSaturation(),
-                Services.CONFIG.getSeasoningDiversityMaxSaturation(),
-                Services.CONFIG.getSeasoningDiversityFullDiversity()));
-    }
-
-    private static void awardParticipation(Player player, Item food, Seasoning seasoning) {
-        Map<String, Double> contributors = new HashMap<>();
-        seasoning.contributors().forEach(
-                (item, amount) -> contributors.put(BuiltInRegistries.ITEM.getKey(item).toString(), amount));
-        long seed = ParticipationAward.seedOf(BuiltInRegistries.ITEM.getKey(food).toString(), contributors);
-        double bonus = ParticipationAward.saturation(seed, seasoning.totalAmount(),
-                Services.CONFIG.getSeasoningParticipationMinSaturation(),
-                Services.CONFIG.getSeasoningParticipationMaxSaturation(),
-                Services.CONFIG.getSeasoningParticipationFullDose());
-        addSaturation(player, bonus);
     }
 
     private static void addSaturation(Player player, double bonus) {

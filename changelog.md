@@ -5,6 +5,7 @@
         - GUI is rudimentary, but the mechanics are close to the planned end result.
     - When seasoned foods are eaten, additionally to their Spice-Grinder-acquired effects, their saturation will receive a boost depending on how many different kinds of spices were used (configurable).
         - Added a config option to add an overcap to the player saturation, so that the saturation boosts aren't wasted. Since this is a mixin and may potentially cause issues with other mods, it can be turned off.
+        - If AppleSkin is installed, its tooltips include the saturation boost of seasoned foods.
     - Added mod icon for in-game mod list.
     - Added spiceless regions with a configurable chance percentage.
     - Added water surface decorations to spice ponds. Currently only includes lily pads.

@@ -19,6 +19,8 @@ dependencies {
     // Optional compat targets, only needed to compile the compat mixins
     modCompileOnly "maven.modrinth:farmers-delight-refabricated:${farmers_delight_fabric_version}"
     modCompileOnly "maven.modrinth:cooking-for-blockheads:${cooking_for_blockheads_fabric_version}"
+    // Optional compat target for the food tooltip, only needed to compile against its API
+    modCompileOnly "maven.modrinth:appleskin:${appleskin_fabric_version}"
 
     // Sable Companion.
     // include bundles the actual (remapped) shim jar into our own, so it

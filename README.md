@@ -63,6 +63,8 @@ Then simply place the downloaded JAR file into your Minecraft `mods` folder and 
   - Recipe compatibility for the toaster and oven (ingredient spice profiles get correctly combined for the output, even if the GUI doesn't show it).
 - [Serene Seasons](https://modrinth.com/mod/serene-seasons)
   - Spice crops have realistic season data attached to them, with different sets of plants growing throughout the whole year.
+- [AppleSkin](https://modrinth.com/mod/appleskin)
+    - Saturation boost correctly shows up in the tooltip (not in the hunger bar above the hotbar).
 - [Create](https://modrinth.com/mod/create)
   - Spices can be harvested via deployers, unless they require hand-picking (like Vanilla and Saffron).
 - [Sable](https://modrinth.com/mod/sable) / [Create Aeronautics](https://modrinth.com/mod/create-aeronautics)

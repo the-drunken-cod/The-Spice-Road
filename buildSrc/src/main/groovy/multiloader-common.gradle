@@ -124,6 +124,7 @@ processResources {
             'farmers_delight_min_version'  : farmers_delight_min_version,
             'farmers_delight_refabricated_min_version': farmers_delight_refabricated_min_version,
             'cooking_for_blockheads_min_version': cooking_for_blockheads_min_version,
+            'appleskin_min_version'        : appleskin_min_version,
             'modmenu_min_version'          : modmenu_min_version
     ]
 

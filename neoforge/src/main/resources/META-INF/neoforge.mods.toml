@@ -43,6 +43,13 @@ type = "optional"
 versionRange = "[${cooking_for_blockheads_min_version},)"
 ordering = "NONE"
 side = "BOTH"
+# Optional compat: shows a seasoned food's bonus saturation in its tooltip
+[[dependencies.${mod_id}]]
+modId = "appleskin"
+type = "optional"
+versionRange = "[${appleskin_min_version},)"
+ordering = "NONE"
+side = "CLIENT"
 
 # Features are specific properties of the game environment, that you may want to declare you require. This example declares
 # that your mod requires GL version 3.2 or higher. Other features will be added. They are side aware so declaring this won't

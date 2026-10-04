@@ -27,6 +27,9 @@
         ],
         "modmenu": [
             "com.drunkencod.spice_road.config.ModMenuIntegration"
+        ],
+        "appleskin": [
+            "com.drunkencod.spice_road.compat.appleskin.AppleSkinCompat"
         ]
     },
     "accessWidener": "${mod_id}.accesswidener",
@@ -43,6 +46,7 @@
     },
     "suggests": {
         "modmenu": ">=${modmenu_min_version}",
+        "appleskin": ">=${appleskin_min_version}",
         "cookingforblockheads": ">=${cooking_for_blockheads_min_version}",
         "farmersdelight": ">=${farmers_delight_refabricated_min_version}"
     },
