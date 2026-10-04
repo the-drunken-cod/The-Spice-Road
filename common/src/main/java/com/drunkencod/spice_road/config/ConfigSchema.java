@@ -194,19 +194,19 @@ public final class ConfigSchema {
 
     /** Points a step on the Seasoning Board costs. */
     public static final ConfigOption<Double> SEASONING_STEP_COST = add(
-            ConfigOption.ofDouble(SEASONING, "stepCost", 1.0, 0.01, 100.0));
+            ConfigOption.ofDouble(SEASONING, "stepCost", 0.5, 0.01, 100.0));
 
     /** Points locking in an effect cell of ring 2 costs. */
     public static final ConfigOption<Double> SEASONING_LOCK_IN_COST_RING_2 = add(
-            ConfigOption.ofDouble(SEASONING_LOCK_IN_COST, "ring2", 1.5, 0.0, 100.0));
+            ConfigOption.ofDouble(SEASONING_LOCK_IN_COST, "ring2", 1.0, 0.0, 100.0));
 
     /** Points locking in an effect cell of ring 3 costs. */
     public static final ConfigOption<Double> SEASONING_LOCK_IN_COST_RING_3 = add(
-            ConfigOption.ofDouble(SEASONING_LOCK_IN_COST, "ring3", 2.5, 0.0, 100.0));
+            ConfigOption.ofDouble(SEASONING_LOCK_IN_COST, "ring3", 2.0, 0.0, 100.0));
 
     /** Points locking in an effect cell of ring 4 costs. */
     public static final ConfigOption<Double> SEASONING_LOCK_IN_COST_RING_4 = add(
-            ConfigOption.ofDouble(SEASONING_LOCK_IN_COST, "ring4", 3.5, 0.0, 100.0));
+            ConfigOption.ofDouble(SEASONING_LOCK_IN_COST, "ring4", 3.0, 0.0, 100.0));
 
     /** Most spices of all kinds that count towards one food's points. */
     public static final ConfigOption<Integer> SEASONING_MAX_SPICES = add(
