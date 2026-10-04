@@ -317,6 +317,18 @@ public interface IConfigHelper {
     int getSeasoningDiscoveryLimit();
 
     /**
+     * @return Whether the bonus saturation of seasoned food may exceed the
+     *         food level, which vanilla caps saturation at.
+     */
+    boolean getSeasoningBypassSaturationCap();
+
+    /**
+     * @return How far above the food level saturation may go while the cap
+     *         bypass is enabled.
+     */
+    double getSeasoningSaturationOvercap();
+
+    /**
      * @return The least bonus saturation a seasoned food without effects gives
      *         at a full dose of spice.
      */
@@ -333,6 +345,24 @@ public interface IConfigHelper {
      *         fewer earn a proportional share.
      */
     double getSeasoningParticipationFullDose();
+
+    /**
+     * @return The bonus saturation a seasoned food made with a single kind of
+     *         spice gives.
+     */
+    double getSeasoningDiversityMinSaturation();
+
+    /**
+     * @return The bonus saturation a seasoned food gives at full spice
+     *         diversity.
+     */
+    double getSeasoningDiversityMaxSaturation();
+
+    /**
+     * @return How many different kinds of spice per food earn the full
+     *         diversity bonus; fewer earn a proportional share.
+     */
+    int getSeasoningDiversityFullDiversity();
 
     /**
      * Client-side. How long the Spice Grinder GUI waits after a movement key

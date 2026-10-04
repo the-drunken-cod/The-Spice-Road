@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
@@ -46,6 +47,9 @@ public final class GrinderActions {
     private static final double STEP_EPSILON = 1e-9;
     private static final int MAX_STEPS_SHOWN = 9;
 
+    /** Most spices a single shift-click adds or removes. */
+    public static final int BATCH_SIZE = 8;
+
     private GrinderActions() {
     }
 
@@ -57,20 +61,42 @@ public final class GrinderActions {
      * @param intent What they want to do.
      */
     public static void handle(SpiceGrinderMenu menu, ServerPlayer player, GrinderIntentPayload intent) {
+        int amount = Math.clamp(intent.data(), 1, BATCH_SIZE);
         Event event = switch (intent.kind()) {
-            case ADD_DRAFT_SPICE -> spiceItem(intent).map(item -> addToDraft(menu, player, item))
-                    .orElse(Event.REFUSED);
-            case REMOVE_DRAFT_SPICE -> spiceItem(intent).map(item -> removeFromDraft(menu, item))
-                    .orElse(Event.REFUSED);
+            case ADD_DRAFT_SPICE -> spiceItem(intent)
+                    .map(item -> repeat(amount, () -> addToDraft(menu, player, item))).orElse(Event.REFUSED);
+            case REMOVE_DRAFT_SPICE -> spiceItem(intent)
+                    .map(item -> repeat(amount, () -> removeFromDraft(menu, item))).orElse(Event.REFUSED);
             case SEASON -> season(menu, player);
             case MOVE -> move(menu, intent.data());
             case LOCK_IN -> lockIn(menu, player);
-            case ADD_SPICE -> spiceItem(intent).map(item -> addToRun(menu, player, item)).orElse(Event.REFUSED);
+            case ADD_SPICE -> spiceItem(intent).map(item -> repeat(amount, () -> addToRun(menu, player, item)))
+                    .orElse(Event.REFUSED);
             case ACCEPT -> accept(menu, player, false);
             case ACCEPT_CONFIRMED -> accept(menu, player, true);
         };
         if (event != null)
             menu.syncView(event);
+    }
+
+    /**
+     * Runs a single-spice action up to {@code times}, stopping at the first
+     * refusal.
+     *
+     * @param times  How many times to try.
+     * @param action Adds or removes one spice.
+     * @return {@link Event#REFUSED} if not even the first try worked, otherwise
+     *         the event of the last one that did.
+     */
+    private static Event repeat(int times, Supplier<Event> action) {
+        Event result = Event.REFUSED;
+        for (int i = 0; i < times; i++) {
+            Event event = action.get();
+            if (event == Event.REFUSED)
+                break;
+            result = event;
+        }
+        return result;
     }
 
     // #region Draft

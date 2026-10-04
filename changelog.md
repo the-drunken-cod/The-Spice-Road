@@ -1,13 +1,15 @@
 # `0.1.0`
 ## `0.1.0-alpha.2`
 - Features:
-    - Added Spice Grinder item to apply spices to items.
+    - Added Spice Grinder item to season any food items, up to 64 at a time.
         - GUI is rudimentary, but the mechanics are close to the planned end result.
+    - When seasoned foods are eaten, additionally to their Spice-Grinder-acquired effects, their saturation will receive a boost depending on how many different kinds of spices were used (configurable).
+        - Added a config option to add an overcap to the player saturation, so that the saturation boosts aren't wasted. Since this is a mixin and may potentially cause issues with other mods, it can be turned off.
     - Added mod icon for in-game mod list.
     - Added spiceless regions with a configurable chance percentage.
     - Added water surface decorations to spice ponds. Currently only includes lily pads.
     - Rare spice maps now also spawn in shipwreck map chests, desert pyramids, pillager outposts, and woodland mansions. They are slightly more common than epic tier maps.
-    - TODO: Added textures for the spice plants `Nigella`.
+    - Added textures for the spice plants `Nigella` and `Safflower`.
 - Changes:
     - ⚠️ **BREAKING:** renamed `curry_leaf` to just `curry`.
     - Aquatic rhizomes now have a 2-block tall model, so they poke outside their water block.

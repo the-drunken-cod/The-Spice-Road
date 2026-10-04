@@ -312,6 +312,16 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean getSeasoningBypassSaturationCap() {
+        return value(ConfigSchema.SEASONING_BYPASS_SATURATION_CAP);
+    }
+
+    @Override
+    public double getSeasoningSaturationOvercap() {
+        return value(ConfigSchema.SEASONING_SATURATION_OVERCAP);
+    }
+
+    @Override
     public double getSeasoningParticipationMinSaturation() {
         return value(ConfigSchema.SEASONING_PARTICIPATION_MIN_SATURATION);
     }
@@ -324,6 +334,21 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     @Override
     public double getSeasoningParticipationFullDose() {
         return value(ConfigSchema.SEASONING_PARTICIPATION_FULL_DOSE);
+    }
+
+    @Override
+    public double getSeasoningDiversityMinSaturation() {
+        return value(ConfigSchema.SEASONING_DIVERSITY_MIN_SATURATION);
+    }
+
+    @Override
+    public double getSeasoningDiversityMaxSaturation() {
+        return value(ConfigSchema.SEASONING_DIVERSITY_MAX_SATURATION);
+    }
+
+    @Override
+    public int getSeasoningDiversityFullDiversity() {
+        return value(ConfigSchema.SEASONING_DIVERSITY_FULL_DIVERSITY);
     }
 
     @Override

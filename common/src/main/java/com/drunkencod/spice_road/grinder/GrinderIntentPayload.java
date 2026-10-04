@@ -18,7 +18,9 @@ import com.drunkencod.spice_road.Constants;
  * @param containerId The ID of the open menu, so a stale packet from a closed
  *                    GUI is ignored.
  * @param kind        What the player wants.
- * @param data        The ordinal of the {@code Direction} for {@link Kind#MOVE}.
+ * @param data        The ordinal of the {@code Direction} for {@link Kind#MOVE},
+ *                    or how many spices to add or remove at most for the spice
+ *                    intents.
  * @param item        The spice item for the spice intents.
  */
 public record GrinderIntentPayload(int containerId, Kind kind, int data, Optional<ResourceLocation> item)

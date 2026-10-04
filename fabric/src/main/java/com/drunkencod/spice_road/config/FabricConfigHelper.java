@@ -252,6 +252,16 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean getSeasoningBypassSaturationCap() {
+        return value(ConfigSchema.SEASONING_BYPASS_SATURATION_CAP, server().seasoning.bypassSaturationCap);
+    }
+
+    @Override
+    public double getSeasoningSaturationOvercap() {
+        return value(ConfigSchema.SEASONING_SATURATION_OVERCAP, server().seasoning.saturationOvercap);
+    }
+
+    @Override
     public double getSeasoningParticipationMinSaturation() {
         return value(ConfigSchema.SEASONING_PARTICIPATION_MIN_SATURATION,
                 server().seasoning.participation.minSaturation);
@@ -266,6 +276,21 @@ public class FabricConfigHelper implements IConfigHelper {
     @Override
     public double getSeasoningParticipationFullDose() {
         return value(ConfigSchema.SEASONING_PARTICIPATION_FULL_DOSE, server().seasoning.participation.fullDose);
+    }
+
+    @Override
+    public double getSeasoningDiversityMinSaturation() {
+        return value(ConfigSchema.SEASONING_DIVERSITY_MIN_SATURATION, server().seasoning.diversity.minSaturation);
+    }
+
+    @Override
+    public double getSeasoningDiversityMaxSaturation() {
+        return value(ConfigSchema.SEASONING_DIVERSITY_MAX_SATURATION, server().seasoning.diversity.maxSaturation);
+    }
+
+    @Override
+    public int getSeasoningDiversityFullDiversity() {
+        return value(ConfigSchema.SEASONING_DIVERSITY_FULL_DIVERSITY, server().seasoning.diversity.fullDiversity);
     }
 
     @Override
@@ -522,10 +547,16 @@ public class FabricConfigHelper implements IConfigHelper {
             public int storageRadius = ConfigSchema.SEASONING_STORAGE_RADIUS.getDefault();
             @ConfigEntry.Gui.Tooltip
             public int discoveryLimit = ConfigSchema.SEASONING_DISCOVERY_LIMIT.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public boolean bypassSaturationCap = ConfigSchema.SEASONING_BYPASS_SATURATION_CAP.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public double saturationOvercap = ConfigSchema.SEASONING_SATURATION_OVERCAP.getDefault();
             @ConfigEntry.Gui.CollapsibleObject
             public LockInCost lockInCost = new LockInCost();
             @ConfigEntry.Gui.CollapsibleObject
             public Participation participation = new Participation();
+            @ConfigEntry.Gui.CollapsibleObject
+            public Diversity diversity = new Diversity();
 
             /** Lock-in prices on the Seasoning Board, per ring. */
             public static class LockInCost {
@@ -545,6 +576,16 @@ public class FabricConfigHelper implements IConfigHelper {
                 public double maxSaturation = ConfigSchema.SEASONING_PARTICIPATION_MAX_SATURATION.getDefault();
                 @ConfigEntry.Gui.Tooltip
                 public double fullDose = ConfigSchema.SEASONING_PARTICIPATION_FULL_DOSE.getDefault();
+            }
+
+            /** Bonus saturation for seasoned food in relation to its spice variety. */
+            public static class Diversity {
+                @ConfigEntry.Gui.Tooltip
+                public double minSaturation = ConfigSchema.SEASONING_DIVERSITY_MIN_SATURATION.getDefault();
+                @ConfigEntry.Gui.Tooltip
+                public double maxSaturation = ConfigSchema.SEASONING_DIVERSITY_MAX_SATURATION.getDefault();
+                @ConfigEntry.Gui.Tooltip
+                public int fullDiversity = ConfigSchema.SEASONING_DIVERSITY_FULL_DIVERSITY.getDefault();
             }
         }
 

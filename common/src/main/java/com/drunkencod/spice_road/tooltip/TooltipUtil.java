@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -58,7 +59,35 @@ public class TooltipUtil {
 
     private static final List<Entry> ENTRIES = new ArrayList<>();
 
+    private static boolean expanded;
+    private static List<Component> expandedExtraLines = List.of();
+
     private TooltipUtil() {
+    }
+
+    /**
+     * Runs {@code action} with every {@link #append} inside it showing the
+     * Shift-gated content as if Shift were held, and inserting
+     * {@code extraLines} right after the content it appends. For GUIs that
+     * show spice tooltips expanded by default. Render thread only.
+     *
+     * @param extraLines Lines to insert after the registered content
+     * @param action     Builds the tooltip, e.g. by calling
+     *                   {@code Screen#getTooltipFromItem}
+     * @param <T>        The type {@code action} returns
+     * @return What {@code action} returned
+     */
+    public static <T> T withExpanded(List<Component> extraLines, Supplier<T> action) {
+        boolean previous = expanded;
+        List<Component> previousExtra = expandedExtraLines;
+        expanded = true;
+        expandedExtraLines = extraLines;
+        try {
+            return action.get();
+        } finally {
+            expanded = previous;
+            expandedExtraLines = previousExtra;
+        }
     }
 
     /**
@@ -145,7 +174,7 @@ public class TooltipUtil {
      *                  utility must not depend on client-only classes
      */
     public static void append(ItemStack stack, List<Component> tooltip, boolean shiftDown) {
-        boolean showShiftContent = shiftDown || Services.CONFIG.isTooltipShiftBypassed();
+        boolean showShiftContent = shiftDown || expanded || Services.CONFIG.isTooltipShiftBypassed();
         List<Component> lines = new ArrayList<>();
         for (Entry entry : ENTRIES) {
             if (!entry.matcher().test(stack))
@@ -157,6 +186,8 @@ public class TooltipUtil {
             }
             lines.addAll(entry.content().apply(stack));
         }
+        if (expanded)
+            lines.addAll(expandedExtraLines);
         tooltip.addAll(Math.min(1, tooltip.size()), lines);
     }
 }

@@ -29,7 +29,7 @@ public final class GrinderLayout {
     /** Height of one row of the spice list. */
     public static final int LIST_ROW_HEIGHT = 14;
     /** Rows visible at once. */
-    public static final int LIST_ROWS = 8;
+    public static final int LIST_ROWS = 9;
 
     // #region Right panel
 

@@ -59,8 +59,10 @@ public final class ConfigSchema {
     public static final ConfigSection SEASONING_LOCK_IN_COST = SEASONING.child("lockInCost");
     /** Bonus saturation for seasoned food that ended up without effects. */
     public static final ConfigSection SEASONING_PARTICIPATION = SEASONING.child("participation");
+    /** Bonus saturation for seasoned food in relation to its spice variety. */
+    public static final ConfigSection SEASONING_DIVERSITY = SEASONING.child("diversity");
     /** Client-side tooltip display. */
-    public static final ConfigSection TOOLTIP = ConfigSection.root(ConfigFile.CLIENT, "tooltip");
+    public static final ConfigSection TOOLTIP =ConfigSection.root(ConfigFile.CLIENT, "tooltip");
     /** Client-side Spice Grinder GUI behavior. */
     public static final ConfigSection GRINDER = ConfigSection.root(ConfigFile.CLIENT, "grinder");
     /** Behavior around other mods' placeable food items. */
@@ -227,6 +229,14 @@ public final class ConfigSchema {
     public static final ConfigOption<Integer> SEASONING_DISCOVERY_LIMIT = add(
             ConfigOption.ofInt(SEASONING, "discoveryLimit", 512, 0, 100_000));
 
+    /** Whether bonus saturation of seasoned food may exceed the food level. */
+    public static final ConfigOption<Boolean> SEASONING_BYPASS_SATURATION_CAP = add(
+            ConfigOption.ofBoolean(SEASONING, "bypassSaturationCap", true));
+
+    /** How far bonus saturation may exceed the food level. */
+    public static final ConfigOption<Double> SEASONING_SATURATION_OVERCAP = add(
+            ConfigOption.ofDouble(SEASONING, "saturationOvercap", 10.0, 0.0, 100.0));
+
     /** Least bonus saturation of a seasoned food without effects. */
     public static final ConfigOption<Double> SEASONING_PARTICIPATION_MIN_SATURATION = add(
             ConfigOption.ofDouble(SEASONING_PARTICIPATION, "minSaturation", 0.5, 0.0, 20.0));
@@ -238,6 +248,18 @@ public final class ConfigSchema {
     /** Spices per food that earn the full bonus saturation. */
     public static final ConfigOption<Double> SEASONING_PARTICIPATION_FULL_DOSE = add(
             ConfigOption.ofDouble(SEASONING_PARTICIPATION, "fullDose", 4.0, 0.1, 1000.0));
+
+    /** Bonus saturation of a seasoned food made with a single kind of spice. */
+    public static final ConfigOption<Double> SEASONING_DIVERSITY_MIN_SATURATION = add(
+            ConfigOption.ofDouble(SEASONING_DIVERSITY, "minSaturation", 0.0, 0.0, 20.0));
+
+    /** Bonus saturation of a seasoned food at full spice diversity. */
+    public static final ConfigOption<Double> SEASONING_DIVERSITY_MAX_SATURATION = add(
+            ConfigOption.ofDouble(SEASONING_DIVERSITY, "maxSaturation", 2.0, 0.0, 20.0));
+
+    /** Kinds of spice per food that earn the full diversity bonus. */
+    public static final ConfigOption<Integer> SEASONING_DIVERSITY_FULL_DIVERSITY = add(
+            ConfigOption.ofInt(SEASONING_DIVERSITY, "fullDiversity", 5, 1, 100));
 
     // #region Tooltip
 

@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.ItemStack;
 
 import com.drunkencod.spice_road.grinder.SeasoningSession;
 import com.drunkencod.spice_road.platform.Services;
@@ -28,8 +29,8 @@ public final class ModDataComponents {
 
     /**
      * The run in progress on a Spice Grinder - see {@link SeasoningSession}.
-     * Persistent (saved to NBT). Synced to clients only as an empty
-     * placeholder (nothing is written, and the same placeholder is read), so they
+     * Persistent (saved to NBT). Synced to clients only as a placeholder that
+     * holds just the food (see {@link SeasoningSession#placeholder}), so they
      * can't rebuild the hidden board from it.
      */
     public static final Supplier<DataComponentType<SeasoningSession>> GRINDER_SESSION = Services.REGISTRY
@@ -37,8 +38,8 @@ public final class ModDataComponents {
                     () -> DataComponentType.<SeasoningSession>builder()
                             .persistent(SeasoningSession.CODEC)
                             .networkSynchronized(StreamCodec.of(
-                                    (buf, session) -> {
-                                    }, buf -> SeasoningSession.PLACEHOLDER))
+                                    (buf, session) -> ItemStack.STREAM_CODEC.encode(buf, session.food()),
+                                    buf -> SeasoningSession.placeholder(ItemStack.STREAM_CODEC.decode(buf))))
                             .build());
 
     private ModDataComponents() {

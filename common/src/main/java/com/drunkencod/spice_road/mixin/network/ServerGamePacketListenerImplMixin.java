@@ -17,8 +17,7 @@ import com.drunkencod.spice_road.registry.ModDataComponents;
 /**
  * Keeps a Spice Grinder's run from being overwritten by creative mode. A
  * creative client sends back the stacks it holds, and the Grinder it holds
- * only carries the empty placeholder session (clients never receive the real
- * one), so the server puts the real session of the stack that is in that slot
+ * only carries a placeholder session (clients never receive the real one), so the server puts the real session of the stack that is in that slot
  * back before the stack is stored.
  */
 @Mixin(ServerGamePacketListenerImpl.class)

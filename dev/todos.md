@@ -89,7 +89,7 @@
 - [x] Investigate errors:
     - [x] [Server thread/INFO] [SeedRenderer/]: Seed Renderer could not grow a spice_road:spice_plant in memory (java.lang.ClassCastException: Cannot cast java.lang.Integer to java.lang.Long at java.base/java.lang.Class.cast(Class.java:3492)); it is drawn from its definition instead
     - [x] [main/WARN] [mixin/]: Reference map 'spice_road.refmap.json' for spice_road.mixins.json could not be read. If this is a development environment you can ignore this message
-- [ ] Rework spice profile system for the seasoning minigame:
+- [x] Rework spice profile system for the seasoning minigame:
     - Only Spice Items keep a Spice Profile. Foods no longer carry a Profile Override; instead they carry Seasoning Effects and *counted* Flavor Contributors (item + amount).
     - Recipes (any mod) sum the counted contributors of all inputs (spice items and seasoned foods), drop the inputs' old effects and re-solve the output's effects with the automatic minigame. Spices are never voided or duplicated.
     - Rework everything reading food profiles: tooltips, Sufficiently Seasoned, cooking variance (replaced by the automatic minigame), advancement triggers.
@@ -100,7 +100,7 @@
     - [ ] Botany Pots: seeds don't grow out of the box. TODO: add support for all non-hand-picked crops (see https://github.com/Darkhax-Minecraft/BotanyPots/blob/1.21.1/common/src/main/resources/data/botanypots/recipe/minecraft/crop/torchflower.json and https://github.com/Darkhax-Minecraft/BotanyPots/blob/1.21.1/common/src/main/resources/data/botanypots/recipe/farmersdelight/crop/rice.json).
     - [ ] Immersive Engineering: seeds don't grow out of the box. TODO: add support for all non-hand-picked crops (see https://github.com/vectorwing/FarmersDelight/blob/1.21/src/main/resources/data/farmersdelight/recipe/integration/immersiveengineering/cloche/cabbage.json and https://github.com/vectorwing/FarmersDelight/blob/1.21/src/main/resources/data/farmersdelight/recipe/integration/immersiveengineering/cloche/rice.json)
 - [x] Spice Grinder takes spices from nearby storage: tag `spice_road:spice_storage` (trapped chests as a placeholder, `cookingforblockheads:spice_rack` optional), config `seasoning.storageRadius` (default 6, 0 = off). Reads block entity NBT generically and takes through `Container` or NBT write-back, all or nothing.
-- [ ] Spice Grinder minigame:
+- [x] Spice Grinder minigame:
     - Implementation order:
         1. [x] Counted flavor contributors, strip the flavor profile from food.
         2. [x] Effect catalog, datagen and eat-time application. Catalog is `data/<ns>/seasoning_effect/*.json` (reload listener + sync payload), generated from `DefaultSeasoningEffect`: 32 pole entries as vanilla stand-ins (custom: `spice_road:hot`, `spice_road:chilled`) + 12 random pool entries. Config: `seasoning.maxEffects`, `seasoning.effectDurationMultiplier`. Test in game with e.g. `/give @s bread[spice_road:seasoning={contributors:[{item:"spice_road:habanero",amount:2}],effects:[{id:"spice_road:heat_positive_boon",level:2}]}]`. Not wired up yet: the per-kind/total spice caps, participation award (step 3), `gain` is only called by the later minigame code.
@@ -146,7 +146,15 @@
     - Automatic bot policy: straight-line walker. Strongest axis (ties: FlavorAxis order), walks straight in that direction while it can pay, locks in every affordable effect cell it lands on, stops at a wall, never detours or retreats, ignores mines and hidden info.
     - Participation award: a seasoned food with no effects at all gets bonus saturation from a configurable seeded range (default ~0.5-1.5), scaled by spice amount relative to a configurable full dose (default 4 spices per food, capped at 1x), seeded by food item + contributors so equal foods stack. "Seasoned" is its own marker, so such a food still can't be seasoned again.
     - Vanilla-random pool (datapack, weighted): default is a ~50/50 mix of vanilla boons and mild banes, excluding instant and lethal effects (instant damage, wither, poison, levitation).
-- [ ] Grant bonus saturation in relation to how many different types spice contributors were used for a food. Min and max bounds configurable.
+- [x] Grant bonus saturation in relation to how many different types spice contributors were used for a food. Min and max bounds configurable.
+- [x] Spice Grinder fixes:
+    - [x] When no spices found, show a message in the list.
+    - [x] When session active, show it on the grinder's tooltip (like `Currently seasoning: 5x Bread`).
+    - [x] In first phase, make flavor axis and number value texts in the right panel colored.
+    - [x] When shift-clicking or shift-right-clicking spices, up to 8 are added or removed at once. Tooltip should show another line like `[Shift] to transfer 8 at a time.`
+    - [x] The spice tooltip in the list on the left should be expanded by default and not require holding shift.
+    - [x] The key tooltips (l-click, r-click, shift) should show up just after the spice profile tooltip lines. Currently they are at the very end of the tooltip.
+- [ ] Make AppleSkin tooltips show the corrected saturation value.
 - [ ] Collect stats:
     - [ ] Different spice types found amount.
     - [ ] Hand-picked spice plants amount.

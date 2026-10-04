@@ -59,12 +59,13 @@ public record SeasoningSession(ItemStack food, Map<Item, Integer> spices, long b
             .apply(instance, SeasoningSession::new));
 
     /**
-     * What clients are given in place of a session: it carries nothing, since
-     * the seed would let them rebuild the hidden board. Clients only learn that
-     * a run is in progress. It holds a dummy food stack because anything that
-     * validates a stack through its persistent codec (like the creative mode
-     * slot packet) rejects an empty one; use {@link #isPlaceholder} to tell it
-     * apart.
+     * What clients are given in place of a session: it carries nothing but the
+     * food, since the seed would let them rebuild the hidden board. Clients only
+     * learn that a run is in progress, and on what. This one holds a dummy food
+     * stack because anything that validates a stack through its persistent codec
+     * (like the creative mode slot packet) rejects an empty one; use
+     * {@link #isPlaceholder} to tell placeholders apart, and {@link #placeholder}
+     * to make one for a food.
      */
     public static final SeasoningSession PLACEHOLDER = new SeasoningSession(new ItemStack(Items.BARRIER), Map.of(), 0L,
             BoardLayout.DEFAULT,
@@ -85,12 +86,21 @@ public record SeasoningSession(ItemStack food, Map<Item, Integer> spices, long b
     }
 
     /**
+     * @param food The food being seasoned.
+     * @return What clients are given instead of the real session: the
+     *         {@code food} and nothing else.
+     */
+    public static SeasoningSession placeholder(ItemStack food) {
+        return new SeasoningSession(food, Map.of(), 0L, BoardLayout.DEFAULT, PLACEHOLDER.state);
+    }
+
+    /**
      * @param session A session read from an item stack, or {@code null}.
-     * @return Whether it is the {@link #PLACEHOLDER} clients are given instead
-     *         of the real session.
+     * @return Whether it is a {@link #placeholder} clients are given instead of
+     *         the real session.
      */
     public static boolean isPlaceholder(SeasoningSession session) {
-        return session == PLACEHOLDER;
+        return session != null && session.state == PLACEHOLDER.state;
     }
 
     /**

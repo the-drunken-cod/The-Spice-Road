@@ -39,6 +39,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 
 import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.grinder.GrinderActions;
 import com.drunkencod.spice_road.grinder.GrinderIntentPayload;
 import com.drunkencod.spice_road.grinder.GrinderLayout;
 import com.drunkencod.spice_road.grinder.GrinderView;
@@ -52,6 +53,7 @@ import com.drunkencod.spice_road.spice.board.CellView;
 import com.drunkencod.spice_road.spice.board.Direction;
 import com.drunkencod.spice_road.spice.effect.SeasoningEffect;
 import com.drunkencod.spice_road.spice.effect.SeasoningEffectRegistry;
+import com.drunkencod.spice_road.tooltip.TooltipUtil;
 
 /**
  * The Spice Grinder GUI. Everything it shows comes from the latest
@@ -336,18 +338,25 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         send(wouldWaste ? GrinderIntentPayload.Kind.ACCEPT_CONFIRMED : GrinderIntentPayload.Kind.ACCEPT, 0, null);
     }
 
-    private void clickSpice(Row row, boolean remove) {
+    /**
+     * @param row    The clicked spice.
+     * @param remove Whether to take it out instead of adding it.
+     * @param batch  Whether to transfer up to {@link GrinderActions#BATCH_SIZE}
+     *               at once instead of one.
+     */
+    private void clickSpice(Row row, boolean remove, boolean batch) {
+        int amount = batch ? GrinderActions.BATCH_SIZE : 1;
         if (running()) {
             if (!remove && canAddMore(row.item))
-                send(GrinderIntentPayload.Kind.ADD_SPICE, 0, row.item);
+                send(GrinderIntentPayload.Kind.ADD_SPICE, amount, row.item);
             else
                 Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1F));
             return;
         }
         if (remove && view().spices().getOrDefault(row.item, 0) > 0)
-            send(GrinderIntentPayload.Kind.REMOVE_DRAFT_SPICE, 0, row.item);
+            send(GrinderIntentPayload.Kind.REMOVE_DRAFT_SPICE, amount, row.item);
         else if (!remove && canAddMore(row.item))
-            send(GrinderIntentPayload.Kind.ADD_DRAFT_SPICE, 0, row.item);
+            send(GrinderIntentPayload.Kind.ADD_DRAFT_SPICE, amount, row.item);
         else
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1F));
     }
@@ -421,7 +430,7 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         Row row = rowAt(mouseX, mouseY);
         if (row != null && (button == 0 || button == 1)) {
-            clickSpice(row, button == 1);
+            clickSpice(row, button == 1, hasShiftDown());
             return true;
         }
         return super.mouseClicked(mouseX, mouseY, button);
@@ -575,6 +584,11 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         int baseX = leftPos + GrinderLayout.LIST_X + 2;
         int baseY = topPos + GrinderLayout.LIST_Y + 2;
         Row hovered = rowAt(mouseX, mouseY);
+        if (rows.isEmpty()) {
+            graphics.drawWordWrap(font, Component.translatable(KEY_PREFIX + "no_spices"), baseX + 2, baseY + 2,
+                    GrinderLayout.LIST_WIDTH - 12, COLOR_DIM);
+            return;
+        }
         for (int i = 0; i < GrinderLayout.LIST_ROWS && scroll + i < rows.size(); i++) {
             Row row = rows.get(scroll + i);
             int y = baseY + i * GrinderLayout.LIST_ROW_HEIGHT;
@@ -610,15 +624,15 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
             int y = topPos + GrinderLayout.DRAFT_ROWS_Y + axis.ordinal() * GrinderLayout.DRAFT_ROW_HEIGHT;
             int pole = view.poles().get(axis.ordinal());
             double points = view.points().get(axis.ordinal());
-            drawClipped(graphics, poleName(axis, pole), leftPos + GrinderLayout.DRAFT_ROWS_X, y + 1, 56,
-                    pole == 0 ? COLOR_DIM : 0xFF000000 | axis.getColor(pole > 0));
+            int axisColor = pole == 0 ? COLOR_DIM : 0xFF000000 | axis.getColor(pole > 0);
+            drawClipped(graphics, poleName(axis, pole), leftPos + GrinderLayout.DRAFT_ROWS_X, y + 1, 56, axisColor);
             int barX = leftPos + GrinderLayout.DRAFT_ROWS_X + 60;
             int barWidth = GrinderLayout.DRAFT_ROW_WIDTH - 60 - 24;
             graphics.fill(barX, y + 2, barX + barWidth, y + 8, 0xFF1A1A1A);
             if (points > 0D)
                 graphics.fill(barX, y + 2, barX + Math.max(1, (int) (barWidth * Math.min(1D, points / scale))), y + 8,
                         0xFF000000 | axis.getColor(pole > 0));
-            graphics.drawString(font, String.format("%.1f", points), barX + barWidth + 3, y + 1, COLOR_TEXT, false);
+            graphics.drawString(font, String.format("%.1f", points), barX + barWidth + 3, y + 1, axisColor, false);
         }
     }
 
@@ -708,10 +722,14 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         Row row = rowAt(mouseX, mouseY);
         if (row != null) {
             ItemStack stack = row.item.getDefaultInstance();
-            List<Component> lines = new ArrayList<>(getTooltipFromItem(Minecraft.getInstance(), stack));
-            lines.add(spiceHint("spice_hint.add", "click.left"));
+            List<Component> hints = new ArrayList<>();
+            hints.add(keyHint("spice_hint.add", Component.translatable(KEY_PREFIX + "click.left")));
             if (!running())
-                lines.add(spiceHint("spice_hint.remove", "click.right"));
+                hints.add(keyHint("spice_hint.remove", Component.translatable(KEY_PREFIX + "click.right")));
+            hints.add(keyHint("spice_hint.batch", Component.translatable(TooltipUtil.SHIFT_KEY_TRANSLATION_KEY),
+                    GrinderActions.BATCH_SIZE));
+            List<Component> lines = TooltipUtil.withExpanded(hints,
+                    () -> getTooltipFromItem(Minecraft.getInstance(), stack));
             graphics.renderTooltip(font, lines, stack.getTooltipImage(), mouseX, mouseY);
             return;
         }
@@ -799,15 +817,17 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
     }
 
     /**
-     * @param key   The key of the line below the spice's own tooltip, with one
-     *              argument.
-     * @param click The key of the name of the click to show in it.
-     * @return The line telling what a click on a spice does.
+     * @param key   The key of a line below the spice's own tooltip, whose first
+     *              argument is the name of the key or click.
+     * @param name  The name of the key or click to show in it.
+     * @param extra Further arguments of the line.
+     * @return The line telling what a key or click on a spice does.
      */
-    private static Component spiceHint(String key, String click) {
-        return Component.translatable(KEY_PREFIX + key,
-                Component.translatable(KEY_PREFIX + click).withStyle(Style.EMPTY.withColor(0xDDDDDD)))
-                .withStyle(ChatFormatting.GRAY);
+    private static Component keyHint(String key, Component name, Object... extra) {
+        Object[] args = new Object[extra.length + 1];
+        args[0] = name.copy().withStyle(Style.EMPTY.withColor(0xDDDDDD));
+        System.arraycopy(extra, 0, args, 1, extra.length);
+        return Component.translatable(KEY_PREFIX + key, args).withStyle(ChatFormatting.GRAY);
     }
 
     /**
