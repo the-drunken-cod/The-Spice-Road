@@ -80,6 +80,13 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
     private static final ResourceLocation CELL_MINE = sprite("cells/mine");
     private static final ResourceLocation CELL_BOON = sprite("cells/boon");
     private static final ResourceLocation CELL_BANE = sprite("cells/bane");
+    private static final ResourceLocation PAWN = sprite("cells/pawn");
+    private static final ResourceLocation BACKGROUND = sprite("background");
+    /** Size of the background texture; it is stretched to the GUI's size. */
+    private static final int BACKGROUND_TEXTURE_WIDTH = 9;
+    private static final int BACKGROUND_TEXTURE_HEIGHT = 9;
+    /** Width of the background texture's border, which is never stretched. */
+    private static final int BACKGROUND_BORDER = 4;
     private static final ResourceLocation BUTTON_LOCK_IN = sprite("buttons/lock_in");
 
     private final List<Row> rows = new ArrayList<>();
@@ -146,6 +153,29 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         RenderSystem.enableBlend();
         graphics.blit(texture, x, y, 0, 0, GrinderLayout.SPRITE_SIZE, GrinderLayout.SPRITE_SIZE,
                 GrinderLayout.SPRITE_SIZE, GrinderLayout.SPRITE_SIZE);
+    }
+
+    /**
+     * Draws a texture stretched to the given size, keeping its
+     * {@value #BACKGROUND_BORDER} px border unstretched: the corners as they are,
+     * the edges and the center stretched.
+     */
+    private static void blitNineSliced(GuiGraphics graphics, ResourceLocation texture, int x, int y, int width,
+            int height) {
+        int b = BACKGROUND_BORDER;
+        int[] destX = { x, x + b, x + width - b };
+        int[] destW = { b, width - 2 * b, b };
+        int[] srcX = { 0, b, BACKGROUND_TEXTURE_WIDTH - b };
+        int[] srcW = { b, BACKGROUND_TEXTURE_WIDTH - 2 * b, b };
+        int[] destY = { y, y + b, y + height - b };
+        int[] destH = { b, height - 2 * b, b };
+        int[] srcY = { 0, b, BACKGROUND_TEXTURE_HEIGHT - b };
+        int[] srcH = { b, BACKGROUND_TEXTURE_HEIGHT - 2 * b, b };
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++)
+                graphics.blit(texture, destX[col], destY[row], destW[col], destH[row], srcX[col], srcY[row],
+                        srcW[col], srcH[row], BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+        }
     }
 
     /**
@@ -478,7 +508,7 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
 
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
-        panel(graphics, leftPos, topPos, imageWidth, imageHeight, 0xFF3C3C3C);
+        blitNineSliced(graphics, BACKGROUND, leftPos, topPos, imageWidth, imageHeight);
         panel(graphics, leftPos + GrinderLayout.LIST_X, topPos + GrinderLayout.LIST_Y, GrinderLayout.LIST_WIDTH,
                 GrinderLayout.LIST_HEIGHT, COLOR_PANEL);
         panel(graphics, leftPos + GrinderLayout.PANEL_X, topPos + GrinderLayout.PANEL_Y, GrinderLayout.PANEL_WIDTH,
@@ -616,7 +646,7 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         }
         int pawnX = leftPos + GrinderLayout.BOARD_X + view.x() * GrinderLayout.CELL;
         int pawnY = topPos + GrinderLayout.BOARD_Y + view.y() * GrinderLayout.CELL;
-        graphics.fill(pawnX + 2, pawnY + 2, pawnX + GrinderLayout.CELL - 2, pawnY + GrinderLayout.CELL - 2, 0xFFFFFFFF);
+        blitSprite(graphics, PAWN, pawnX + GrinderLayout.CELL_SPRITE_OFFSET, pawnY + GrinderLayout.CELL_SPRITE_OFFSET);
         drawClipped(graphics, Component.translatable(KEY_PREFIX + "effects", view.effects().size()),
                 leftPos + GrinderLayout.EFFECTS_X, topPos + GrinderLayout.EFFECTS_Y,
                 GrinderLayout.PANEL_X + GrinderLayout.PANEL_WIDTH - 4 - GrinderLayout.EFFECTS_X, COLOR_TEXT);
