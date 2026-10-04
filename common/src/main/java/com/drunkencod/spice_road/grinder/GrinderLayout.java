@@ -29,7 +29,7 @@ public final class GrinderLayout {
     /** Height of one row of the spice list. */
     public static final int LIST_ROW_HEIGHT = 14;
     /** Rows visible at once. */
-    public static final int LIST_ROWS = 10;
+    public static final int LIST_ROWS = 8;
 
     // #region Right panel
 
@@ -117,9 +117,9 @@ public final class GrinderLayout {
     // #region Event message (both phases)
 
     /** Left edge of the event message ("Locked in!" and the like). */
-    public static final int MESSAGE_X = PANEL_X + 4;
+    public static final int MESSAGE_X = PANEL_X + 2;
     /** Top edge of the event message. */
-    public static final int MESSAGE_Y = PANEL_Y + PANEL_HEIGHT - 23;
+    public static final int MESSAGE_Y = PANEL_Y + PANEL_HEIGHT - 15;
     /** Widest the event message may be before it is cut short. */
     public static final int MESSAGE_WIDTH = PANEL_WIDTH - 8;
 
