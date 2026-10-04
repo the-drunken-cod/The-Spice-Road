@@ -8,19 +8,31 @@ import java.util.Optional;
 import java.util.TreeMap;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.entity.player.Inventory;
@@ -45,13 +57,14 @@ import com.drunkencod.spice_road.spice.effect.SeasoningEffectRegistry;
  * The Spice Grinder GUI. Everything it shows comes from the latest
  * {@link GrinderView} the server sent, and everything the player does is sent
  * back as a {@link GrinderIntentPayload}; the screen never decides anything.
- * It is drawn with plain fills and text for now (see {@link GrinderLayout} for
- * the pixel layout), and every control is a vanilla widget, so the whole
- * thing can be operated with Tab, Enter and the keyboard shortcuts below.
+ * It is drawn with plain fills, text and a few small sprites (see
+ * {@link GrinderLayout} for the pixel layout).
  * <p>
  * Keyboard: the player's own movement keys and the arrow keys step the pawn
  * (two pressed within the buffer window make a diagonal step, one step per
- * press); Jump or Enter locks in.
+ * press), Jump locks in, and Enter presses the focused primary button. While a
+ * run is going, the primary button (Accept) always keeps the focus; the pad
+ * buttons never take it, so clicking them doesn't change what Enter does.
  */
 public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu> {
 
@@ -62,9 +75,16 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
     private static final int COLOR_DIM = 0xFF808080;
     private static final int COLOR_WARNING = 0xFFFFD040;
     private static final int MESSAGE_TICKS = 60;
+    private static final ResourceLocation CELL_WALL = sprite("cells/wall");
+    private static final ResourceLocation CELL_UNKNOWN = sprite("cells/unknown");
+    private static final ResourceLocation CELL_MINE = sprite("cells/mine");
+    private static final ResourceLocation CELL_BOON = sprite("cells/boon");
+    private static final ResourceLocation CELL_BANE = sprite("cells/bane");
+    private static final ResourceLocation BUTTON_LOCK_IN = sprite("buttons/lock_in");
 
     private final List<Row> rows = new ArrayList<>();
     private final List<PadButton> padButtons = new ArrayList<>();
+    private final List<Clipped> clipped = new ArrayList<>();
     private Button primaryButton;
     private Button cancelButton;
     private PadButton lockInButton;
@@ -77,12 +97,20 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
     private int bufferedDx;
     private int bufferedDy;
     private boolean buffering;
+    private boolean primaryWasActive;
 
     /**
      * One line of the spice list: a group header, or a spice item with the amount
      * the player holds.
      */
     private record Row(Component header, Item item, int count) {
+    }
+
+    /**
+     * Text that was cut short with an ellipsis this frame, and where, so hovering
+     * it can show the full text.
+     */
+    private record Clipped(int x, int y, int width, Component full) {
     }
 
     /**
@@ -97,6 +125,27 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         titleLabelX = 8;
         titleLabelY = 5;
         inventoryLabelY = 10_000;
+    }
+
+    /**
+     * @param path The path below {@code textures/gui/spice_grinder/}, without
+     *             extension.
+     * @return The location of that
+     *         {@value GrinderLayout#SPRITE_SIZE}x{@value GrinderLayout#SPRITE_SIZE}
+     *         texture.
+     */
+    private static ResourceLocation sprite(String path) {
+        return ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/spice_grinder/" + path + ".png");
+    }
+
+    /**
+     * Draws a {@value GrinderLayout#SPRITE_SIZE}x{@value GrinderLayout#SPRITE_SIZE}
+     * sprite texture.
+     */
+    private static void blitSprite(GuiGraphics graphics, ResourceLocation texture, int x, int y) {
+        RenderSystem.enableBlend();
+        graphics.blit(texture, x, y, 0, 0, GrinderLayout.SPRITE_SIZE, GrinderLayout.SPRITE_SIZE,
+                GrinderLayout.SPRITE_SIZE, GrinderLayout.SPRITE_SIZE);
     }
 
     /**
@@ -127,14 +176,15 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
             padButtons.add(button);
             addRenderableWidget(button);
         }
-        lockInButton = new PadButton(null, leftPos + GrinderLayout.PAD_X + GrinderLayout.PAD_BUTTON,
-                topPos + GrinderLayout.PAD_Y + GrinderLayout.PAD_BUTTON,
+        lockInButton = new PadButton(null,
+                leftPos + GrinderLayout.PAD_X + GrinderLayout.PAD_BUTTON + GrinderLayout.PAD_GAP,
+                topPos + GrinderLayout.PAD_Y + GrinderLayout.PAD_BUTTON + GrinderLayout.PAD_GAP,
                 () -> send(GrinderIntentPayload.Kind.LOCK_IN, 0, null));
         addRenderableWidget(lockInButton);
 
         primaryButton = addRenderableWidget(Button.builder(CommonComponents.EMPTY, button -> onPrimary())
-                .bounds(leftPos + GrinderLayout.PRIMARY_X, topPos + GrinderLayout.PRIMARY_Y,
-                        GrinderLayout.PRIMARY_WIDTH, GrinderLayout.BUTTON_HEIGHT)
+                .bounds(leftPos + GrinderLayout.DRAFT_PRIMARY_X, topPos + GrinderLayout.DRAFT_PRIMARY_Y,
+                        GrinderLayout.DRAFT_PRIMARY_WIDTH, GrinderLayout.BUTTON_HEIGHT)
                 .build());
         cancelButton = addRenderableWidget(Button.builder(Component.translatable(KEY_PREFIX + "cancel"),
                 button -> onClose())
@@ -145,11 +195,11 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
     }
 
     private int padX(Direction direction) {
-        return leftPos + GrinderLayout.PAD_X + (direction.dx() + 1) * GrinderLayout.PAD_BUTTON;
+        return leftPos + GrinderLayout.PAD_X + (direction.dx() + 1) * (GrinderLayout.PAD_BUTTON + GrinderLayout.PAD_GAP);
     }
 
     private int padY(Direction direction) {
-        return topPos + GrinderLayout.PAD_Y + (direction.dy() + 1) * GrinderLayout.PAD_BUTTON;
+        return topPos + GrinderLayout.PAD_Y + (direction.dy() + 1) * (GrinderLayout.PAD_BUTTON + GrinderLayout.PAD_GAP);
     }
 
     /** Called when the server sent a new view for this screen. */
@@ -193,10 +243,15 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         boolean running = running();
         cancelButton.visible = !running;
         cancelButton.active = !running;
+        primaryButton.setX(leftPos + (running ? GrinderLayout.RUN_PRIMARY_X : GrinderLayout.DRAFT_PRIMARY_X));
+        primaryButton.setY(topPos + (running ? GrinderLayout.RUN_PRIMARY_Y : GrinderLayout.DRAFT_PRIMARY_Y));
+        primaryButton.setWidth(running ? GrinderLayout.RUN_PRIMARY_WIDTH : GrinderLayout.DRAFT_PRIMARY_WIDTH);
         primaryButton.active = running || view.canSeason();
         primaryButton.setMessage(running
                 ? Component.translatable(KEY_PREFIX + (confirmPending ? "accept_confirm" : "accept"))
                 : Component.translatable(KEY_PREFIX + "season"));
+        overflowTooltip(primaryButton);
+        overflowTooltip(cancelButton);
         for (PadButton button : padButtons) {
             int steps = running ? view.stepsLeft().get(button.direction.ordinal()) : 0;
             button.steps = steps;
@@ -205,6 +260,26 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         }
         lockInButton.visible = running;
         lockInButton.active = running && view.canLockIn();
+        if (primaryButton.active && (running || !primaryWasActive) && getFocused() != primaryButton)
+            setFocused(primaryButton);
+        primaryWasActive = primaryButton.active;
+    }
+
+    /**
+     * Gives a button a tooltip with its full label if the label doesn't fit into
+     * it.
+     */
+    private void overflowTooltip(Button button) {
+        button.setTooltip(font.width(button.getMessage()) > button.getWidth() - 4
+                ? Tooltip.create(button.getMessage())
+                : null);
+    }
+
+    /** Keeps the pad buttons from taking the focus away from the primary button. */
+    @Override
+    public void setFocused(GuiEventListener focused) {
+        if (!(focused instanceof PadButton))
+            super.setFocused(focused);
     }
 
     // #region Actions
@@ -335,7 +410,7 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (running() && getFocused() == null) {
+        if (running()) {
             int dx = 0;
             int dy = 0;
             var options = Minecraft.getInstance().options;
@@ -358,8 +433,7 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
                 bufferedDy = dy != 0 ? dy : bufferedDy;
                 return true;
             }
-            if (options.keyJump.matches(keyCode, scanCode) || keyCode == InputConstants.KEY_RETURN
-                    || keyCode == InputConstants.KEY_NUMPADENTER) {
+            if (options.keyJump.matches(keyCode, scanCode)) {
                 send(GrinderIntentPayload.Kind.LOCK_IN, 0, null);
                 return true;
             }
@@ -386,6 +460,7 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        clipped.clear();
         rebuildRows();
         renderBackground(graphics, mouseX, mouseY, partialTick);
         super.render(graphics, mouseX, mouseY, partialTick);
@@ -394,6 +469,9 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
                 graphics.fill(leftPos + slot.x, topPos + slot.y, leftPos + slot.x + 16, topPos + slot.y + 16,
                         0x99000000);
         }
+        if (showsLockedFood())
+            graphics.fill(leftPos + GrinderLayout.FOOD_SLOT_X, topPos + GrinderLayout.FOOD_SLOT_Y,
+                    leftPos + GrinderLayout.FOOD_SLOT_X + 16, topPos + GrinderLayout.FOOD_SLOT_Y + 16, 0x99000000);
         renderTooltips(graphics, mouseX, mouseY);
         renderTooltip(graphics, mouseX, mouseY);
     }
@@ -407,6 +485,12 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
                 GrinderLayout.PANEL_HEIGHT, COLOR_PANEL);
         graphics.fill(leftPos + GrinderLayout.FOOD_SLOT_X - 1, topPos + GrinderLayout.FOOD_SLOT_Y - 1,
                 leftPos + GrinderLayout.FOOD_SLOT_X + 17, topPos + GrinderLayout.FOOD_SLOT_Y + 17, 0xFF555555);
+        if (showsLockedFood()) {
+            ItemStack food = view().food();
+            graphics.renderItem(food, leftPos + GrinderLayout.FOOD_SLOT_X, topPos + GrinderLayout.FOOD_SLOT_Y);
+            graphics.renderItemDecorations(font, food, leftPos + GrinderLayout.FOOD_SLOT_X,
+                    topPos + GrinderLayout.FOOD_SLOT_Y);
+        }
         for (int i = 0; i < 9; i++) {
             for (int row = 0; row < 3; row++)
                 slotFrame(graphics, GrinderLayout.INVENTORY_X + i * 18, GrinderLayout.INVENTORY_Y + row * 18);
@@ -418,9 +502,33 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         else
             renderDraft(graphics);
         if (messageTicks > 0) {
-            graphics.drawString(font, message, leftPos + GrinderLayout.PANEL_X + 4,
-                    topPos + GrinderLayout.PANEL_Y + GrinderLayout.PANEL_HEIGHT - 2 - 9 - 12, COLOR_WARNING, false);
+            drawClipped(graphics, message, leftPos + GrinderLayout.MESSAGE_X, topPos + GrinderLayout.MESSAGE_Y,
+                    GrinderLayout.MESSAGE_WIDTH, COLOR_WARNING);
         }
+    }
+
+    /**
+     * Draws text without shadow, cut short with an ellipsis if wider than
+     * {@code maxWidth}; hovering the cut text then shows it in full.
+     */
+    private void drawClipped(GuiGraphics graphics, Component text, int x, int y, int maxWidth, int color) {
+        if (font.width(text) <= maxWidth) {
+            graphics.drawString(font, text, x, y, color, false);
+            return;
+        }
+        FormattedText cut = FormattedText.composite(
+                font.substrByWidth(text, Math.max(0, maxWidth - font.width(CommonComponents.ELLIPSIS))),
+                CommonComponents.ELLIPSIS);
+        graphics.drawString(font, Language.getInstance().getVisualOrder(cut), x, y, color, false);
+        clipped.add(new Clipped(x, y, maxWidth, text));
+    }
+
+    /**
+     * @return Whether the food slot shows the food being seasoned, locked: only
+     *         during a run, when the real slot is hidden.
+     */
+    private boolean showsLockedFood() {
+        return running() && !view().food().isEmpty();
     }
 
     private void slotFrame(GuiGraphics graphics, int x, int y) {
@@ -441,7 +549,7 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
             Row row = rows.get(scroll + i);
             int y = baseY + i * GrinderLayout.LIST_ROW_HEIGHT;
             if (row.item == null) {
-                graphics.drawString(font, row.header, baseX, y + 2, COLOR_DIM, false);
+                drawClipped(graphics, row.header, baseX, y + 2, GrinderLayout.LIST_WIDTH - 8, COLOR_DIM);
                 continue;
             }
             if (row == hovered)
@@ -449,30 +557,31 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
                         0xFF454545);
             int chosen = view().spices().getOrDefault(row.item, 0);
             graphics.renderItem(row.item.getDefaultInstance(), baseX - 1, y - 2 + 0);
-            String name = font.plainSubstrByWidth(row.item.getDescription().getString(), 56);
-            graphics.drawString(font, name, baseX + 8, y + 2, canAddMore(row.item) ? COLOR_TEXT : COLOR_DIM, false);
             String amount = (chosen > 0 ? chosen + "/" : "") + row.count;
-            graphics.drawString(font, amount, baseX + GrinderLayout.LIST_WIDTH - 12 - font.width(amount), y + 2,
-                    chosen > 0 ? COLOR_WARNING : COLOR_DIM, false);
+            int amountX = baseX + GrinderLayout.LIST_WIDTH - 12 - font.width(amount);
+            drawClipped(graphics, row.item.getDescription(), baseX + GrinderLayout.LIST_NAME_X, y + 2,
+                    amountX - 3 - (baseX + GrinderLayout.LIST_NAME_X), canAddMore(row.item) ? COLOR_TEXT : COLOR_DIM);
+            graphics.drawString(font, amount, amountX, y + 2, chosen > 0 ? COLOR_WARNING : COLOR_DIM, false);
         }
     }
 
     private void renderDraft(GuiGraphics graphics) {
         GrinderView view = view();
         int total = view.spices().values().stream().mapToInt(Integer::intValue).sum();
-        graphics.drawString(font, Component.translatable(KEY_PREFIX + "draft", total, view.maxTotal()),
-                leftPos + GrinderLayout.PANEL_X + 4, topPos + GrinderLayout.PANEL_Y + 5, COLOR_TEXT, false);
+        int labelWidth = GrinderLayout.FOOD_SLOT_X - GrinderLayout.PANEL_X - 8;
+        drawClipped(graphics, Component.translatable(KEY_PREFIX + "draft", total, view.maxTotal()),
+                leftPos + GrinderLayout.PANEL_X + 4, topPos + GrinderLayout.PANEL_Y + 5, labelWidth, COLOR_TEXT);
         if (view.food().isEmpty()) {
-            graphics.drawString(font, Component.translatable(KEY_PREFIX + "no_food"),
-                    leftPos + GrinderLayout.PANEL_X + 4, topPos + GrinderLayout.PANEL_Y + 16, COLOR_DIM, false);
+            drawClipped(graphics, Component.translatable(KEY_PREFIX + "no_food"),
+                    leftPos + GrinderLayout.PANEL_X + 4, topPos + GrinderLayout.PANEL_Y + 16, labelWidth, COLOR_DIM);
         }
         double scale = Math.max(1D, view.points().stream().mapToDouble(Double::doubleValue).max().orElse(1D));
         for (FlavorAxis axis : FlavorAxis.values()) {
             int y = topPos + GrinderLayout.DRAFT_ROWS_Y + axis.ordinal() * GrinderLayout.DRAFT_ROW_HEIGHT;
             int pole = view.poles().get(axis.ordinal());
             double points = view.points().get(axis.ordinal());
-            graphics.drawString(font, poleName(axis, pole), leftPos + GrinderLayout.DRAFT_ROWS_X, y + 1,
-                    pole == 0 ? COLOR_DIM : 0xFF000000 | axis.getColor(pole > 0), false);
+            drawClipped(graphics, poleName(axis, pole), leftPos + GrinderLayout.DRAFT_ROWS_X, y + 1, 56,
+                    pole == 0 ? COLOR_DIM : 0xFF000000 | axis.getColor(pole > 0));
             int barX = leftPos + GrinderLayout.DRAFT_ROWS_X + 60;
             int barWidth = GrinderLayout.DRAFT_ROW_WIDTH - 60 - 24;
             graphics.fill(barX, y + 2, barX + barWidth, y + 8, 0xFF1A1A1A);
@@ -508,8 +617,9 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         int pawnX = leftPos + GrinderLayout.BOARD_X + view.x() * GrinderLayout.CELL;
         int pawnY = topPos + GrinderLayout.BOARD_Y + view.y() * GrinderLayout.CELL;
         graphics.fill(pawnX + 2, pawnY + 2, pawnX + GrinderLayout.CELL - 2, pawnY + GrinderLayout.CELL - 2, 0xFFFFFFFF);
-        graphics.drawString(font, Component.translatable(KEY_PREFIX + "effects", view.effects().size()),
-                leftPos + GrinderLayout.EFFECTS_X, topPos + GrinderLayout.EFFECTS_Y, COLOR_TEXT, false);
+        drawClipped(graphics, Component.translatable(KEY_PREFIX + "effects", view.effects().size()),
+                leftPos + GrinderLayout.EFFECTS_X, topPos + GrinderLayout.EFFECTS_Y,
+                GrinderLayout.PANEL_X + GrinderLayout.PANEL_WIDTH - 4 - GrinderLayout.EFFECTS_X, COLOR_TEXT);
     }
 
     private void renderCell(GuiGraphics graphics, GrinderView view, int cx, int cy) {
@@ -528,10 +638,27 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         };
         graphics.fill(x, y, x + GrinderLayout.CELL, y + GrinderLayout.CELL, 0xFF1A1A1A);
         graphics.fill(x + 1, y + 1, x + GrinderLayout.CELL - 1, y + GrinderLayout.CELL - 1, fill);
-        if (cell.kind() == CellView.Kind.UNKNOWN)
-            graphics.drawString(font, "?", x + 3, y + 1, 0xFFFFFFFF, false);
-        else if (cell.kind() == CellView.Kind.SPENT_MINE)
-            graphics.drawString(font, "x", x + 3, y + 1, 0xFFFFFFFF, false);
+        ResourceLocation sprite = switch (cell.kind()) {
+            case WALL -> CELL_WALL;
+            case UNKNOWN -> CELL_UNKNOWN;
+            case SPENT_MINE -> CELL_MINE;
+            case REVEALED -> isBane(cell) ? CELL_BANE : CELL_BOON;
+            default -> null;
+        };
+        if (sprite != null)
+            blitSprite(graphics, sprite, x + GrinderLayout.CELL_SPRITE_OFFSET, y + GrinderLayout.CELL_SPRITE_OFFSET);
+    }
+
+    /**
+     * @return Whether any of the revealed cell's effects is harmful.
+     */
+    private static boolean isBane(CellView cell) {
+        for (SeasoningEffect effect : cell.effects()) {
+            var def = SeasoningEffectRegistry.get(effect.id());
+            if (def.isPresent() && def.get().effect().value().getCategory() == MobEffectCategory.HARMFUL)
+                return true;
+        }
+        return false;
     }
 
     private static int axisColor(FlavorAxis axis, GrinderView view) {
@@ -550,11 +677,43 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
     private void renderTooltips(GuiGraphics graphics, int mouseX, int mouseY) {
         Row row = rowAt(mouseX, mouseY);
         if (row != null) {
-            graphics.renderTooltip(font, row.item.getDefaultInstance(), mouseX, mouseY);
+            ItemStack stack = row.item.getDefaultInstance();
+            List<Component> lines = new ArrayList<>(getTooltipFromItem(Minecraft.getInstance(), stack));
+            lines.add(spiceHint("spice_hint.add", "click.left"));
+            if (!running())
+                lines.add(spiceHint("spice_hint.remove", "click.right"));
+            graphics.renderTooltip(font, lines, stack.getTooltipImage(), mouseX, mouseY);
             return;
+        }
+        for (Clipped text : clipped) {
+            if (mouseX >= text.x && mouseX < text.x + text.width && mouseY >= text.y && mouseY < text.y + 9) {
+                graphics.renderTooltip(font, text.full, mouseX, mouseY);
+                return;
+            }
         }
         if (!running())
             return;
+        if (showsLockedFood() && mouseX >= leftPos + GrinderLayout.FOOD_SLOT_X
+                && mouseX < leftPos + GrinderLayout.FOOD_SLOT_X + 16 && mouseY >= topPos + GrinderLayout.FOOD_SLOT_Y
+                && mouseY < topPos + GrinderLayout.FOOD_SLOT_Y + 16) {
+            graphics.renderTooltip(font, view().food(), mouseX, mouseY);
+            return;
+        }
+        for (PadButton button : padButtons) {
+            if (hoversPad(button, mouseX, mouseY)) {
+                graphics.renderTooltip(font, padTooltip(button), Optional.empty(), mouseX, mouseY);
+                return;
+            }
+        }
+        if (hoversPad(lockInButton, mouseX, mouseY)) {
+            graphics.renderTooltip(font, padTooltip(lockInButton), Optional.empty(), mouseX, mouseY);
+            return;
+        }
+        FlavorAxis bar = barAt(mouseX, mouseY);
+        if (bar != null) {
+            graphics.renderTooltip(font, barTooltip(bar), Optional.empty(), mouseX, mouseY);
+            return;
+        }
         int cellX = (mouseX - leftPos - GrinderLayout.BOARD_X);
         int cellY = (mouseY - topPos - GrinderLayout.BOARD_Y);
         if (cellX >= 0 && cellY >= 0 && cellX < GrinderLayout.CELL * BoardGeometry.SIZE
@@ -569,12 +728,110 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
             graphics.renderTooltip(font, effectLines(view().effects()), Optional.empty(), mouseX, mouseY);
     }
 
+    /**
+     * @return How many steps the points of the axis pay for, whatever stands in
+     *         the way.
+     */
+    private int stepsLeft(FlavorAxis axis) {
+        double stepCost = view().stepCost();
+        return stepCost > 0D ? (int) Math.floor(view().points().get(axis.ordinal()) / stepCost + 1e-9) : 0;
+    }
+
+    /**
+     * @return The axis whose points bar is at the mouse, or {@code null}.
+     */
+    private FlavorAxis barAt(int mouseX, int mouseY) {
+        int localX = mouseX - leftPos - GrinderLayout.POINTS_X;
+        int localY = mouseY - topPos - GrinderLayout.POINTS_Y;
+        if (localX < 0 || localY < 0)
+            return null;
+        int index = localY / GrinderLayout.POINTS_ROW_HEIGHT;
+        if (index >= FlavorAxis.values().length)
+            return null;
+        FlavorAxis axis = FlavorAxis.values()[index];
+        return localX < GrinderLayout.POINTS_WIDTH ? axis : null;
+    }
+
+    /**
+     * @return The tooltip of a points bar: the axis, its points and the steps
+     *         they pay for.
+     */
+    private List<Component> barTooltip(FlavorAxis axis) {
+        int pole = view().poles().get(axis.ordinal());
+        int color = pole == 0 ? 0xFFFFFF : axis.getColor(pole > 0);
+        List<Component> lines = new ArrayList<>();
+        lines.add(Component.translatable(KEY_PREFIX + "axis", Component.translatable(axis.positiveTranslationKey()),
+                Component.translatable(axis.negativeTranslationKey())).withStyle(Style.EMPTY.withColor(color & 0xFFFFFF)));
+        lines.add(Component.translatable(KEY_PREFIX + "bar.points", formatPoints(view().points().get(axis.ordinal())))
+                .withStyle(ChatFormatting.GRAY));
+        lines.add(Component.translatable(KEY_PREFIX + "bar.steps", stepsLeft(axis)).withStyle(ChatFormatting.GRAY));
+        return lines;
+    }
+
+    /**
+     * @param key   The key of the line below the spice's own tooltip, with one
+     *              argument.
+     * @param click The key of the name of the click to show in it.
+     * @return The line telling what a click on a spice does.
+     */
+    private static Component spiceHint(String key, String click) {
+        return Component.translatable(KEY_PREFIX + key,
+                Component.translatable(KEY_PREFIX + click).withStyle(Style.EMPTY.withColor(0xDDDDDD)))
+                .withStyle(ChatFormatting.GRAY);
+    }
+
+    /**
+     * Unlike a widget's own hover, this also counts while the button is inactive,
+     * so a button that can't be pressed still tells what it would cost.
+     */
+    private boolean hoversPad(PadButton button, int mouseX, int mouseY) {
+        return button.visible && mouseX >= button.getX() && mouseX < button.getX() + button.getWidth()
+                && mouseY >= button.getY() && mouseY < button.getY() + button.getHeight();
+    }
+
+    /**
+     * @return The tooltip of a pad button: its name, then which points it costs
+     *         from which axis, in that axis' color.
+     */
+    private List<Component> padTooltip(PadButton button) {
+        GrinderView view = view();
+        boolean lockIn = button.direction == null;
+        FlavorAxis axis = lockIn ? BoardGeometry.zoneAxis(view.x(), view.y()) : button.direction.axis();
+        double cost = lockIn ? view.lockInCost() : view.stepCost();
+        List<Component> lines = new ArrayList<>();
+        lines.add(button.getMessage());
+        Component description = Component.translatable(KEY_PREFIX + (lockIn ? "lock_in.desc" : "move.desc"));
+        if (axis != null && cost > 0D) {
+            int pole = view.poles().get(axis.ordinal());
+            int color = pole == 0 ? COLOR_DIM : axis.getColor(pole > 0);
+            Component axisName = Component.translatable(KEY_PREFIX + "axis",
+                    Component.translatable(axis.positiveTranslationKey()),
+                    Component.translatable(axis.negativeTranslationKey()));
+            lines.add(Component.empty()
+                    .append(Component.translatable(KEY_PREFIX + "cost", formatPoints(cost), axisName)
+                            .withStyle(Style.EMPTY.withColor(color & 0xFFFFFF)))
+                    .append(Component.literal(" ").append(description).withStyle(ChatFormatting.GRAY)));
+        } else {
+            lines.add(description.copy().withStyle(ChatFormatting.GRAY));
+        }
+        return lines;
+    }
+
+    /**
+     * @return The points with at least one and at most two decimals.
+     */
+    private static String formatPoints(double points) {
+        String text = String.format(java.util.Locale.ROOT, "%.2f", points);
+        return text.endsWith("0") ? text.substring(0, text.length() - 1) : text;
+    }
+
     private List<Component> cellTooltip(CellView cell) {
         List<Component> lines = new ArrayList<>();
         switch (cell.kind()) {
             case UNKNOWN -> {
                 lines.add(Component.translatable(KEY_PREFIX + "cell.unknown"));
-                lines.add(Component.translatable(KEY_PREFIX + "cell.effect_count", cell.effectCount())
+                lines.add(Component.translatable(KEY_PREFIX + (cell.effectCount() == 1 ? "cell.effect_count.one" : "cell.effect_count"),
+                        cell.effectCount())
                         .withStyle(net.minecraft.ChatFormatting.GRAY));
                 if (cell.boons() >= 0) {
                     int unknown = cell.randoms();
@@ -582,7 +839,20 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
                             .withStyle(net.minecraft.ChatFormatting.GRAY));
                 }
             }
-            case REVEALED -> lines.addAll(effectLines(cell.effects()));
+            case REVEALED -> {
+                boolean bane = isBane(cell);
+                lines.add(Component.translatable(KEY_PREFIX + (bane ? "cell.bane" : "cell.boon"))
+                        .withStyle(bane ? ChatFormatting.RED : ChatFormatting.GREEN));
+                lines.addAll(effectLines(cell.effects()));
+            }
+            case WALL -> {
+                lines.add(Component.translatable(KEY_PREFIX + "cell.wall"));
+                lines.add(Component.translatable(KEY_PREFIX + "cell.wall.desc").withStyle(ChatFormatting.GRAY));
+            }
+            case SPENT_MINE -> {
+                lines.add(Component.translatable(KEY_PREFIX + "cell.mine"));
+                lines.add(Component.translatable(KEY_PREFIX + "cell.mine.desc").withStyle(ChatFormatting.GRAY));
+            }
             default -> {
             }
         }
@@ -610,22 +880,24 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
     // #region Pad button
 
     /**
-     * A direction or lock-in button drawn as a flat square: yellow with one step
-     * left, gray without any.
+     * A direction or lock-in button drawn as a flat square with a sprite on top:
+     * yellow with one step left, gray without any. It is never focusable.
      */
     private static final class PadButton extends Button {
 
         private final Direction direction;
+        private final ResourceLocation icon;
         private int steps;
 
         private PadButton(Direction direction, int x, int y, Runnable action) {
             super(x, y, GrinderLayout.PAD_BUTTON, GrinderLayout.PAD_BUTTON, CommonComponents.EMPTY,
                     button -> action.run(), DEFAULT_NARRATION);
             this.direction = direction;
+            this.icon = direction == null ? BUTTON_LOCK_IN
+                    : sprite("buttons/" + direction.name().toLowerCase(java.util.Locale.ROOT));
             setMessage(direction == null ? Component.translatable(KEY_PREFIX + "lock_in")
                     : Component
                             .translatable(KEY_PREFIX + "move." + direction.name().toLowerCase(java.util.Locale.ROOT)));
-            setTooltip(net.minecraft.client.gui.components.Tooltip.create(getMessage()));
         }
 
         @Override
@@ -641,20 +913,15 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
                 color = isHoveredOrFocused() ? 0xFFB0B0B0 : 0xFF808080;
             graphics.fill(getX(), getY(), getX() + width, getY() + height, 0xFF111111);
             graphics.fill(getX() + 1, getY() + 1, getX() + width - 1, getY() + height - 1, color);
-            String glyph = direction == null ? "+" : arrow(direction);
-            graphics.drawCenteredString(Minecraft.getInstance().font, glyph, getX() + width / 2, getY() + 2,
-                    active ? 0xFF000000 : 0xFF666666);
+            int offset = (width - GrinderLayout.SPRITE_SIZE) / 2;
+            graphics.setColor(1F, 1F, 1F, active ? 1F : 0.4F);
+            blitSprite(graphics, icon, getX() + offset, getY() + offset);
+            graphics.setColor(1F, 1F, 1F, 1F);
         }
 
-        private static String arrow(Direction direction) {
-            return switch (direction) {
-                case UP_LEFT, DOWN_RIGHT -> "\\";
-                case UP_RIGHT, DOWN_LEFT -> "/";
-                case UP -> "^";
-                case LEFT -> "<";
-                case RIGHT -> ">";
-                case DOWN -> "v";
-            };
+        @Override
+        public ComponentPath nextFocusPath(FocusNavigationEvent event) {
+            return null;
         }
     }
 }

@@ -24,6 +24,8 @@ import com.drunkencod.spice_road.spice.SpiceProfileRegistry;
 import com.drunkencod.spice_road.spice.SpiceProfiles;
 import com.drunkencod.spice_road.spice.board.AutomaticSeasoning;
 import com.drunkencod.spice_road.spice.board.BoardGeometry;
+import com.drunkencod.spice_road.spice.board.Cell;
+import com.drunkencod.spice_road.spice.board.CellKind;
 import com.drunkencod.spice_road.spice.board.BoardLayoutRegistry;
 import com.drunkencod.spice_road.spice.board.BoardSeed;
 import com.drunkencod.spice_road.spice.board.CellView;
@@ -254,9 +256,12 @@ public final class GrinderActions {
                         session.layout().hashCode())
                 : Set.of();
         List<CellView> cells = CellViews.of(run.board, run.run, revealed);
+        Cell here = run.board.cell(run.run.x(), run.run.y());
+        double lockInCost = here.kind() == CellKind.EFFECT ? config.getSeasoningLockInCost(here.ring()) : 0D;
         return new GrinderView(GrinderView.Phase.RUNNING, session.food(), session.spices(), points, poles,
                 run.run.x(), run.run.y(), cells, run.run.effects(), stepsLeft, run.run.canLockIn(), false, event,
-                config.getSeasoningMaxSpicesPerKind(), config.getSeasoningMaxSpices(), available);
+                config.getSeasoningMaxSpicesPerKind(), config.getSeasoningMaxSpices(), available, stepCost,
+                lockInCost);
     }
 
     private static GrinderView draftView(SpiceGrinderMenu menu, Event event, IConfigHelper config,
@@ -271,7 +276,7 @@ public final class GrinderActions {
         return new GrinderView(GrinderView.Phase.DRAFT, menu.food().copy(), new LinkedHashMap<>(menu.draft()),
                 points, poles, 0, 0, List.of(), List.of(),
                 java.util.Collections.nCopies(Direction.values().length, 0), false, canSeason(menu, available), event,
-                config.getSeasoningMaxSpicesPerKind(), config.getSeasoningMaxSpices(), available);
+                config.getSeasoningMaxSpicesPerKind(), config.getSeasoningMaxSpices(), available, 0D, 0D);
     }
 
     // #region Helpers

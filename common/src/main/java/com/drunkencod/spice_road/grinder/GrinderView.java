@@ -45,17 +45,20 @@ import com.drunkencod.spice_road.spice.effect.SeasoningEffect;
  * @param maxTotal    The most spices of all kinds that count.
  * @param available   How many of each Spice Item the player's inventory and the
  *                    nearby spice storage hold together.
+ * @param stepCost    Points one step costs, during a run.
+ * @param lockInCost  Points locking in the cell the pawn stands on costs, or
+ *                    {@code 0} if it isn't an effect cell.
  */
 public record GrinderView(Phase phase, ItemStack food, Map<Item, Integer> spices, List<Double> points,
         List<Integer> poles, int x, int y, List<CellView> cells, List<SeasoningEffect> effects,
         List<Integer> stepsLeft, boolean canLockIn, boolean canSeason, Event event, int maxPerKind, int maxTotal,
-        Map<Item, Integer> available) {
+        Map<Item, Integer> available, double stepCost, double lockInCost) {
 
     /** The view of a Grinder that hasn't been told anything yet. */
     public static final GrinderView EMPTY = new GrinderView(Phase.DRAFT, ItemStack.EMPTY, Map.of(),
             java.util.Collections.nCopies(FlavorAxis.values().length, 0D),
             java.util.Collections.nCopies(FlavorAxis.values().length, 0), 0, 0, List.of(), List.of(),
-            java.util.Collections.nCopies(Direction.values().length, 0), false, false, Event.NONE, 3, 16, Map.of());
+            java.util.Collections.nCopies(Direction.values().length, 0), false, false, Event.NONE, 3, 16, Map.of(), 0D, 0D);
 
     private static final StreamCodec<RegistryFriendlyByteBuf, Item> ITEM_CODEC = ByteBufCodecs
             .registry(Registries.ITEM);
@@ -110,6 +113,8 @@ public record GrinderView(Phase phase, ItemStack food, Map<Item, Integer> spices
         buf.writeEnum(view.event);
         buf.writeVarInt(view.maxPerKind);
         buf.writeVarInt(view.maxTotal);
+        buf.writeDouble(view.stepCost);
+        buf.writeDouble(view.lockInCost);
         buf.writeVarInt(view.available.size());
         view.available.forEach((item, count) -> {
             ITEM_CODEC.encode(buf, item);
@@ -145,11 +150,13 @@ public record GrinderView(Phase phase, ItemStack food, Map<Item, Integer> spices
         Event event = buf.readEnum(Event.class);
         int maxPerKind = buf.readVarInt();
         int maxTotal = buf.readVarInt();
+        double stepCost = buf.readDouble();
+        double lockInCost = buf.readDouble();
         Map<Item, Integer> available = new LinkedHashMap<>();
         for (int i = buf.readVarInt(); i > 0; i--)
             available.put(ITEM_CODEC.decode(buf), buf.readVarInt());
         return new GrinderView(phase, food, spices, points, poles, x, y, cells, effects, stepsLeft, canLockIn,
-                canSeason, event, maxPerKind, maxTotal, available);
+                canSeason, event, maxPerKind, maxTotal, available, stepCost, lockInCost);
     }
 
     private static void writeCell(RegistryFriendlyByteBuf buf, CellView cell) {

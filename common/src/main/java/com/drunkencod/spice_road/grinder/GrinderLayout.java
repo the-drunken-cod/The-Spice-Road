@@ -2,13 +2,12 @@ package com.drunkencod.spice_road.grinder;
 
 /**
  * The pixel layout of the Spice Grinder GUI at GUI scale 1, shared by the menu
- * (slot positions) and the screen. {@code dev/grinder_gui_mockup.html} draws
- * the same numbers.
+ * (slot positions) and the screen.
  */
 public final class GrinderLayout {
 
     /** Width of the GUI. */
-    public static final int IMAGE_WIDTH = 280;
+    public static final int IMAGE_WIDTH = 360;
     /** Height of the GUI. */
     public static final int IMAGE_HEIGHT = 248;
 
@@ -19,51 +18,58 @@ public final class GrinderLayout {
     /** Top edge of the spice list panel. */
     public static final int LIST_Y = 16;
     /** Width of the spice list panel. */
-    public static final int LIST_WIDTH = 100;
+    public static final int LIST_WIDTH = 140;
     /** Height of the spice list panel. */
     public static final int LIST_HEIGHT = 136;
+    /**
+     * Left edge of a row's item name, relative to the row's start. Leaves room for
+     * the 16 px item icon.
+     */
+    public static final int LIST_NAME_X = 18;
     /** Height of one row of the spice list. */
-    public static final int LIST_ROW_HEIGHT = 12;
+    public static final int LIST_ROW_HEIGHT = 14;
     /** Rows visible at once. */
-    public static final int LIST_ROWS = 11;
+    public static final int LIST_ROWS = 10;
 
     // #region Right panel
 
     /** Left edge of the right panel. */
-    public static final int PANEL_X = 112;
+    public static final int PANEL_X = 152;
     /** Top edge of the right panel. */
     public static final int PANEL_Y = 16;
     /** Width of the right panel. */
-    public static final int PANEL_WIDTH = 160;
+    public static final int PANEL_WIDTH = 200;
     /** Height of the right panel. */
     public static final int PANEL_HEIGHT = 136;
 
     /** Left edge of the food slot's item, 1 px inside its frame. */
-    public static final int FOOD_SLOT_X = 251;
+    public static final int FOOD_SLOT_X = 332;
     /** Top edge of the food slot's item. */
-    public static final int FOOD_SLOT_Y = 19;
+    public static final int FOOD_SLOT_Y = 20;
 
     // #region Draft view
 
     /** Left edge of the draft's flavor rows. */
-    public static final int DRAFT_ROWS_X = 116;
+    public static final int DRAFT_ROWS_X = 156;
     /** Top edge of the first of the draft's flavor rows. */
     public static final int DRAFT_ROWS_Y = 40;
     /** Height of one flavor row. */
     public static final int DRAFT_ROW_HEIGHT = 11;
     /** Width of a flavor row. */
-    public static final int DRAFT_ROW_WIDTH = 150;
+    public static final int DRAFT_ROW_WIDTH = 190;
 
     // #region Run view
 
-    /** Left edge of the 3x3 direction pad. */
-    public static final int PAD_X = 116;
-    /** Top edge of the 3x3 direction pad. */
-    public static final int PAD_Y = 38;
+    /** Left edge of the 3x3 direction pad, 2 px inside the right panel's corner. */
+    public static final int PAD_X = PANEL_X + 3;
+    /** Top edge of the 3x3 direction pad, 2 px inside the right panel's corner. */
+    public static final int PAD_Y = PANEL_Y + 3;
     /** Edge length of a pad button. */
     public static final int PAD_BUTTON = 11;
+    /** Gap between two pad buttons. */
+    public static final int PAD_GAP = 1;
     /** Left edge of the points bars. */
-    public static final int POINTS_X = 116;
+    public static final int POINTS_X = 156;
     /** Top edge of the first points bar. */
     public static final int POINTS_Y = 76;
     /** Height of one points bar row. */
@@ -71,32 +77,51 @@ public final class GrinderLayout {
     /** Width of a points bar. */
     public static final int POINTS_WIDTH = 34;
     /** Left edge of the board. */
-    public static final int BOARD_X = 160;
+    public static final int BOARD_X = 211;
     /** Top edge of the board. */
-    public static final int BOARD_Y = 34;
+    public static final int BOARD_Y = 19;
     /** Edge length of one board cell. */
-    public static final int CELL = 10;
+    public static final int CELL = 11;
+    /** Edge length of the sprites on board cells and pad buttons. */
+    public static final int SPRITE_SIZE = 7;
+    /** Offset of a cell's sprite from the cell's top left corner. */
+    public static final int CELL_SPRITE_OFFSET = (CELL - SPRITE_SIZE) / 2;
     /** Left edge of the line summarizing the effects. */
-    public static final int EFFECTS_X = 160;
+    public static final int EFFECTS_X = 211;
     /** Top edge of the line summarizing the effects. */
-    public static final int EFFECTS_Y = 126;
+    public static final int EFFECTS_Y = 124;
 
     // #region Buttons (both phases)
 
-    /** Left edge of the primary button (Season, Accept). */
-    public static final int PRIMARY_X = 190;
-    /** Top edge of the primary button. */
-    public static final int PRIMARY_Y = 136;
-    /** Width of the primary button. */
-    public static final int PRIMARY_WIDTH = 78;
+    /** Left edge of the primary button while drafting (Season). */
+    public static final int DRAFT_PRIMARY_X = 230;
+    /** Top edge of the primary button while drafting. */
+    public static final int DRAFT_PRIMARY_Y = 136;
+    /** Width of the primary button while drafting. */
+    public static final int DRAFT_PRIMARY_WIDTH = 118;
+    /** Left edge of the primary button during a run (Accept). */
+    public static final int RUN_PRIMARY_X = 211;
+    /** Top edge of the primary button during a run. */
+    public static final int RUN_PRIMARY_Y = 136;
+    /** Width of the primary button during a run. */
+    public static final int RUN_PRIMARY_WIDTH = 100;
     /** Left edge of the Cancel button, drafting only. */
-    public static final int CANCEL_X = 116;
+    public static final int CANCEL_X = 156;
     /** Top edge of the Cancel button. */
     public static final int CANCEL_Y = 136;
     /** Width of the Cancel button. */
     public static final int CANCEL_WIDTH = 70;
     /** Height of a button. */
     public static final int BUTTON_HEIGHT = 12;
+
+    // #region Event message (both phases)
+
+    /** Left edge of the event message ("Locked in!" and the like). */
+    public static final int MESSAGE_X = PANEL_X + 4;
+    /** Top edge of the event message. */
+    public static final int MESSAGE_Y = PANEL_Y + PANEL_HEIGHT - 23;
+    /** Widest the event message may be before it is cut short. */
+    public static final int MESSAGE_WIDTH = PANEL_WIDTH - 8;
 
     // #region Player inventory
 
