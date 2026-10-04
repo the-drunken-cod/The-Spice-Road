@@ -9,8 +9,6 @@ import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.world.item.Items;
-
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.SpiceTree;
 import com.drunkencod.spice_road.block.SpiceTrees;
@@ -52,7 +50,6 @@ public class ModItems {
      * @param output The tab's item output.
      */
     public static void populateGenericTab(CreativeModeTab.Output output) {
-        output.accept(Items.ROTTEN_FLESH.getDefaultInstance());
         output.accept(SPICE_GRINDER.get().getDefaultInstance());
     }
 

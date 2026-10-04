@@ -9,7 +9,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 /**
  * Fabric implementation of {@link ICreativeTabHelper}, registering the tabs
@@ -24,7 +23,7 @@ public class FabricCreativeTabHelper implements ICreativeTabHelper {
                         ICreativeTabHelper.TAB_GENERIC_KEY),
                 FabricItemGroup.builder()
                         .title(Component.translatable(ICreativeTabHelper.TAB_GENERIC_TR_KEY))
-                        .icon(() -> Items.ROTTEN_FLESH.getDefaultInstance())
+                        .icon(() -> ModItems.SPICE_GRINDER.get().getDefaultInstance())
                         .displayItems((params, output) -> ModItems.populateGenericTab(output))
                         .build());
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB,

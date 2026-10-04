@@ -7,7 +7,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -24,7 +23,7 @@ public class NeoForgeCreativeTabHelper implements ICreativeTabHelper {
     public NeoForgeCreativeTabHelper() {
         creativeTabs.register(ICreativeTabHelper.TAB_GENERIC_KEY, () -> CreativeModeTab.builder()
                 .title(Component.translatable(ICreativeTabHelper.TAB_GENERIC_TR_KEY))
-                .icon(() -> Items.ROTTEN_FLESH.getDefaultInstance())
+                .icon(() -> ModItems.SPICE_GRINDER.get().getDefaultInstance())
                 .displayItems((params, output) -> ModItems.populateGenericTab(output))
                 .build());
         creativeTabs.register(ICreativeTabHelper.TAB_SPICES_KEY, () -> CreativeModeTab.builder()
