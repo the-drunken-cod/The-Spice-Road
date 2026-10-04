@@ -24,7 +24,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.grinder.GrinderIntentPayload;
@@ -35,7 +34,6 @@ import com.drunkencod.spice_road.grinder.SpiceGrinderMenu;
 import com.drunkencod.spice_road.item.SpiceItemTags;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.FlavorAxis;
-import com.drunkencod.spice_road.spice.SpiceProfileRegistry;
 import com.drunkencod.spice_road.spice.board.BoardGeometry;
 import com.drunkencod.spice_road.spice.board.CellView;
 import com.drunkencod.spice_road.spice.board.Direction;
@@ -254,13 +252,9 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         return chosen < view.maxPerKind() && total < view.maxTotal() && held(item) >= needed;
     }
 
+    /** How many the server says the player's inventory and the nearby spice storage hold together. */
     private int held(Item item) {
-        int count = 0;
-        for (ItemStack stack : menu.inventory().items)
-            count += stack.is(item) ? stack.getCount() : 0;
-        for (ItemStack stack : menu.inventory().offhand)
-            count += stack.is(item) ? stack.getCount() : 0;
-        return count;
+        return view().available().getOrDefault(item, 0);
     }
 
     // #region Spice list
@@ -268,10 +262,7 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
     private void rebuildRows() {
         Map<Item, Integer> held = new TreeMap<>(Comparator.comparing(
                 (Item item) -> BuiltInRegistries.ITEM.getKey(item).toString()));
-        for (ItemStack stack : menu.inventory().items)
-            countSpice(held, stack);
-        for (ItemStack stack : menu.inventory().offhand)
-            countSpice(held, stack);
+        held.putAll(view().available());
 
         rows.clear();
         addGroup("group.raw", held, item -> !item.getDefaultInstance().is(SpiceItemTags.PROCESSED_SPICES)
@@ -280,11 +271,6 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         addGroup("group.other", held, item -> !item.getDefaultInstance().is(SpiceItemTags.SPICES)
                 && !item.getDefaultInstance().is(SpiceItemTags.PROCESSED_SPICES));
         scroll = Mth.clamp(scroll, 0, Math.max(0, rows.size() - GrinderLayout.LIST_ROWS));
-    }
-
-    private static void countSpice(Map<Item, Integer> held, ItemStack stack) {
-        if (!stack.isEmpty() && SpiceProfileRegistry.getDefault(stack.getItem()).isPresent())
-            held.merge(stack.getItem(), stack.getCount(), Integer::sum);
     }
 
     private void addGroup(String key, Map<Item, Integer> held, java.util.function.Predicate<Item> filter) {

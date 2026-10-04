@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "spice_road:spice_rack",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:spice_rack",
+      "required": false
+    }
+  ]
+}

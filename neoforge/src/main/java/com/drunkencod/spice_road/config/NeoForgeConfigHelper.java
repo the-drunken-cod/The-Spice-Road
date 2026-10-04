@@ -302,6 +302,11 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public int getSeasoningStorageRadius() {
+        return value(ConfigSchema.SEASONING_STORAGE_RADIUS);
+    }
+
+    @Override
     public double getSeasoningParticipationMinSaturation() {
         return value(ConfigSchema.SEASONING_PARTICIPATION_MIN_SATURATION);
     }

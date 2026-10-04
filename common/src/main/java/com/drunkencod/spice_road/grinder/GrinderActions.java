@@ -9,9 +9,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -57,13 +55,14 @@ public final class GrinderActions {
      */
     public static void handle(SpiceGrinderMenu menu, ServerPlayer player, GrinderIntentPayload intent) {
         Event event = switch (intent.kind()) {
-            case ADD_DRAFT_SPICE -> spiceItem(intent).map(item -> addToDraft(menu, item)).orElse(Event.REFUSED);
+            case ADD_DRAFT_SPICE -> spiceItem(intent).map(item -> addToDraft(menu, player, item))
+                    .orElse(Event.REFUSED);
             case REMOVE_DRAFT_SPICE -> spiceItem(intent).map(item -> removeFromDraft(menu, item))
                     .orElse(Event.REFUSED);
             case SEASON -> season(menu, player);
             case MOVE -> move(menu, intent.data());
             case LOCK_IN -> lockIn(menu);
-            case ADD_SPICE -> spiceItem(intent).map(item -> addToRun(menu, item)).orElse(Event.REFUSED);
+            case ADD_SPICE -> spiceItem(intent).map(item -> addToRun(menu, player, item)).orElse(Event.REFUSED);
             case ACCEPT -> accept(menu, player, false);
             case ACCEPT_CONFIRMED -> accept(menu, player, true);
         };
@@ -73,7 +72,7 @@ public final class GrinderActions {
 
     // #region Draft
 
-    private static Event addToDraft(SpiceGrinderMenu menu, Item item) {
+    private static Event addToDraft(SpiceGrinderMenu menu, ServerPlayer player, Item item) {
         if (menu.session() != null)
             return Event.REFUSED;
         IConfigHelper config = Services.CONFIG;
@@ -83,7 +82,7 @@ public final class GrinderActions {
         if (food.isEmpty() || !SpiceGrinderMenu.isSeasonable(food))
             return Event.REFUSED;
         if (count >= config.getSeasoningMaxSpicesPerKind() || total >= config.getSeasoningMaxSpices()
-                || countIn(menu.inventory(), item) < food.getCount() * (count + 1))
+                || SpiceSources.of(player).count(item) < food.getCount() * (count + 1))
             return Event.REFUSED;
         menu.draft().put(item, count + 1);
         return Event.NONE;
@@ -101,12 +100,15 @@ public final class GrinderActions {
     }
 
     private static Event season(SpiceGrinderMenu menu, ServerPlayer player) {
-        if (!canSeason(menu))
+        SpiceSources sources = SpiceSources.of(player);
+        if (!canSeason(menu, sources.available()))
             return Event.REFUSED;
         ItemStack food = menu.food().copy();
         Map<Item, Integer> spices = new LinkedHashMap<>(menu.draft());
-        for (Map.Entry<Item, Integer> spice : spices.entrySet())
-            removeFrom(menu.inventory(), spice.getKey(), spice.getValue() * food.getCount());
+        Map<Item, Integer> needed = new LinkedHashMap<>();
+        spices.forEach((item, count) -> needed.put(item, count * food.getCount()));
+        if (!sources.consume(needed))
+            return Event.REFUSED;
 
         IConfigHelper config = Services.CONFIG;
         long worldSeed = player.serverLevel().getServer().getWorldData().worldGenOptions().seed();
@@ -125,17 +127,19 @@ public final class GrinderActions {
     }
 
     /**
-     * @param menu A menu in the draft phase.
+     * @param menu      A menu in the draft phase.
+     * @param available How many of each Spice Item the player's inventory and
+     *                  the nearby storage hold.
      * @return Whether the draft can be started: seasonable food, at least one
-     *         spice, enough of every spice in the inventory, and some points.
+     *         spice, enough of every spice, and some points.
      */
-    static boolean canSeason(SpiceGrinderMenu menu) {
+    static boolean canSeason(SpiceGrinderMenu menu, Map<Item, Integer> available) {
         ItemStack food = menu.food();
         if (menu.session() != null || food.isEmpty() || !SpiceGrinderMenu.isSeasonable(food)
                 || menu.draft().isEmpty())
             return false;
         for (Map.Entry<Item, Integer> spice : menu.draft().entrySet()) {
-            if (countIn(menu.inventory(), spice.getKey()) < spice.getValue() * food.getCount())
+            if (available.getOrDefault(spice.getKey(), 0) < spice.getValue() * food.getCount())
                 return false;
         }
         PointsLedger ledger = PointsLedger.start(rawProfile(menu.draft(), Services.CONFIG),
@@ -174,7 +178,7 @@ public final class GrinderActions {
         return Event.LOCKED_IN;
     }
 
-    private static Event addToRun(SpiceGrinderMenu menu, Item item) {
+    private static Event addToRun(SpiceGrinderMenu menu, ServerPlayer player, Item item) {
         SeasoningSession session = menu.session();
         if (session == null)
             return Event.REFUSED;
@@ -183,9 +187,8 @@ public final class GrinderActions {
         int total = session.spices().values().stream().mapToInt(Integer::intValue).sum();
         int foods = session.food().getCount();
         if (count >= config.getSeasoningMaxSpicesPerKind() || total >= config.getSeasoningMaxSpices()
-                || countIn(menu.inventory(), item) < foods)
+                || !SpiceSources.of(player).consume(Map.of(item, foods)))
             return Event.REFUSED;
-        removeFrom(menu.inventory(), item, foods);
         Map<Item, Integer> spices = new LinkedHashMap<>(session.spices());
         spices.put(item, count + 1);
         menu.grinder().set(ModDataComponents.GRINDER_SESSION.get(), session.withSpices(spices));
@@ -219,9 +222,12 @@ public final class GrinderActions {
      */
     public static GrinderView viewOf(SpiceGrinderMenu menu, Event event) {
         IConfigHelper config = Services.CONFIG;
+        Map<Item, Integer> available = menu.inventory().player instanceof ServerPlayer player
+                ? SpiceSources.of(player).available()
+                : Map.of();
         SeasoningSession session = menu.session();
         if (session == null)
-            return draftView(menu, event, config);
+            return draftView(menu, event, config, available);
 
         Run run = Run.of(session);
         List<Double> points = new ArrayList<>();
@@ -241,10 +247,11 @@ public final class GrinderActions {
         List<CellView> cells = CellViews.of(run.board, run.run, Set.of());
         return new GrinderView(GrinderView.Phase.RUNNING, session.food(), session.spices(), points, poles,
                 run.run.x(), run.run.y(), cells, run.run.effects(), stepsLeft, run.run.canLockIn(), false, event,
-                config.getSeasoningMaxSpicesPerKind(), config.getSeasoningMaxSpices());
+                config.getSeasoningMaxSpicesPerKind(), config.getSeasoningMaxSpices(), available);
     }
 
-    private static GrinderView draftView(SpiceGrinderMenu menu, Event event, IConfigHelper config) {
+    private static GrinderView draftView(SpiceGrinderMenu menu, Event event, IConfigHelper config,
+            Map<Item, Integer> available) {
         PointsLedger ledger = PointsLedger.start(rawProfile(menu.draft(), config), SpiceProfiles::effectiveValue);
         List<Double> points = new ArrayList<>();
         List<Integer> poles = new ArrayList<>();
@@ -254,8 +261,8 @@ public final class GrinderActions {
         }
         return new GrinderView(GrinderView.Phase.DRAFT, menu.food().copy(), new LinkedHashMap<>(menu.draft()),
                 points, poles, 0, 0, List.of(), List.of(),
-                java.util.Collections.nCopies(Direction.values().length, 0), false, canSeason(menu), event,
-                config.getSeasoningMaxSpicesPerKind(), config.getSeasoningMaxSpices());
+                java.util.Collections.nCopies(Direction.values().length, 0), false, canSeason(menu, available), event,
+                config.getSeasoningMaxSpicesPerKind(), config.getSeasoningMaxSpices(), available);
     }
 
     // #region Helpers
@@ -281,42 +288,5 @@ public final class GrinderActions {
     private static Optional<Item> spiceItem(GrinderIntentPayload intent) {
         return intent.item().flatMap(BuiltInRegistries.ITEM::getOptional)
                 .filter(item -> SpiceProfileRegistry.getDefault(item).isPresent());
-    }
-
-    /** @return How many of {@code item} the player's inventory holds, hotbar and off hand included. */
-    static int countIn(Inventory inventory, Item item) {
-        int count = 0;
-        for (ItemStack stack : inventory.items) {
-            if (stack.is(item))
-                count += stack.getCount();
-        }
-        for (ItemStack stack : inventory.offhand) {
-            if (stack.is(item))
-                count += stack.getCount();
-        }
-        return count;
-    }
-
-    private static void removeFrom(Inventory inventory, Item item, int amount) {
-        int left = amount;
-        List<ItemStack> stacks = new ArrayList<>(inventory.items);
-        stacks.addAll(inventory.offhand);
-        for (ItemStack stack : stacks) {
-            if (left <= 0)
-                break;
-            if (stack.is(item)) {
-                int taken = Math.min(left, stack.getCount());
-                stack.shrink(taken);
-                left -= taken;
-            }
-        }
-    }
-
-    /**
-     * @param id An item ID.
-     * @return The item, if it exists.
-     */
-    static Optional<Item> itemById(ResourceLocation id) {
-        return BuiltInRegistries.ITEM.getOptional(id);
     }
 }

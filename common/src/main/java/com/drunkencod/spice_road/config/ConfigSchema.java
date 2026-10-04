@@ -216,6 +216,13 @@ public final class ConfigSchema {
     public static final ConfigOption<Integer> SEASONING_MAX_SPICES_PER_KIND = add(
             ConfigOption.ofInt(SEASONING, "maxSpicesPerKind", 3, 1, 64));
 
+    /**
+     * Radius, in blocks, around the player within which the Spice Grinder takes
+     * spices from spice storage.
+     */
+    public static final ConfigOption<Integer> SEASONING_STORAGE_RADIUS = add(
+            ConfigOption.ofInt(SEASONING, "storageRadius", 8, 0, 32));
+
     /** Least bonus saturation of a seasoned food without effects. */
     public static final ConfigOption<Double> SEASONING_PARTICIPATION_MIN_SATURATION = add(
             ConfigOption.ofDouble(SEASONING_PARTICIPATION, "minSaturation", 0.5, 0.0, 20.0));
@@ -246,7 +253,10 @@ public final class ConfigSchema {
     public static final ConfigOption<Boolean> TOOLTIP_ANIMATE_AXES = add(
             ConfigOption.ofBoolean(TOOLTIP, "animateAxes", true));
 
-    /** Milliseconds the Spice Grinder GUI waits for a second movement key to make a diagonal step. */
+    /**
+     * Milliseconds the Spice Grinder GUI waits for a second movement key to make a
+     * diagonal step.
+     */
     public static final ConfigOption<Integer> GRINDER_INPUT_BUFFER_MS = add(
             ConfigOption.ofInt(GRINDER, "inputBufferMs", 100, 0, 500));
 

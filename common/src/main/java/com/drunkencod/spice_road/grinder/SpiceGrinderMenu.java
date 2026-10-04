@@ -33,11 +33,15 @@ public class SpiceGrinderMenu extends AbstractContainerMenu {
     /** Index of the food slot among the menu's slots. */
     public static final int FOOD_SLOT = 0;
 
+    /** Ticks between looks at what spices the inventory and nearby storage hold, to tell the client when it changed. */
+    private static final int AVAILABLE_CHECK_TICKS = 10;
+
     private final Inventory inventory;
     private final int grinderSlot;
     private final SimpleContainer foodContainer = new SimpleContainer(1);
     private final Map<Item, Integer> draft = new LinkedHashMap<>();
     private GrinderView view = GrinderView.EMPTY;
+    private Map<Item, Integer> lastAvailable = Map.of();
 
     /**
      * Client-side constructor, as created from the menu type.
@@ -127,6 +131,18 @@ public class SpiceGrinderMenu extends AbstractContainerMenu {
     public void syncView(GrinderView.Event event) {
         if (inventory.player instanceof ServerPlayer player)
             Services.NETWORK.sendToPlayer(player, new GrinderViewPayload(containerId, GrinderActions.viewOf(this, event)));
+    }
+
+    @Override
+    public void broadcastChanges() {
+        super.broadcastChanges();
+        if (inventory.player instanceof ServerPlayer player && player.tickCount % AVAILABLE_CHECK_TICKS == 0) {
+            Map<Item, Integer> now = SpiceSources.of(player).available();
+            if (!now.equals(lastAvailable)) {
+                lastAvailable = now;
+                syncView(GrinderView.Event.NONE);
+            }
+        }
     }
 
     @Override

@@ -303,6 +303,13 @@ public interface IConfigHelper {
     int getSeasoningMaxSpicesPerKind();
 
     /**
+     * @return The radius in blocks around the player within which the Spice
+     *         Grinder also takes spices from blocks in the spice storage tag;
+     *         {@code 0} turns it off and uses only the player's inventory.
+     */
+    int getSeasoningStorageRadius();
+
+    /**
      * @return The least bonus saturation a seasoned food without effects gives
      *         at a full dose of spice.
      */
