@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import com.drunkencod.spice_road.item.SpiceItemTags;
 import com.drunkencod.spice_road.registry.ModDataComponents;
 import com.drunkencod.spice_road.spice.board.AutomaticSeasoning;
+import com.drunkencod.spice_road.spice.effect.SeasoningEffect;
 
 /**
  * Carries the spices of a recipe's ingredients over to its outputs as counted
@@ -27,8 +28,12 @@ import com.drunkencod.spice_road.spice.board.AutomaticSeasoning;
  * <li>Each share is truncated towards zero to {@value #DECIMAL_PLACES}
  * decimal places and added to the output's own {@link Seasoning}. A share that
  * truncates to nothing seasons nothing.</li>
- * <li>Inputs' old effects don't carry over: the effects of the new total are
- * solved by {@link AutomaticSeasoning}.</li>
+ * <li>A 1:1 conversion (one consumed seasoned item becoming one Flavor Carrier
+ * item, like cooking) keeps the input's effects exactly as they were, however
+ * they were earned. Anything else (merging several inputs, or splitting into
+ * several outputs) drops the inputs' old effects, and the effects of the new
+ * total are solved by {@link AutomaticSeasoning}. Effects are not a conserved
+ * quantity, so they are never merged or duplicated.</li>
  * </ul>
  */
 public final class Flavoring {
@@ -86,9 +91,10 @@ public final class Flavoring {
         Seasoning shareSeasoning = new Seasoning(share);
         if (shareSeasoning.contributors().isEmpty())
             return;
+        List<SeasoningEffect> carried = carriedEffects(inputs, carrierCount);
         for (ItemStack result : results) {
             if (isFlavorCarrier(result))
-                addSeasoning(result, shareSeasoning);
+                addSeasoning(result, shareSeasoning, carried);
         }
     }
 
@@ -147,11 +153,37 @@ public final class Flavoring {
     }
 
     /**
-     * Adds a share of inherited spices to a stack's own {@link Seasoning} and
-     * solves the effects of the total with Automatic Seasoning.
+     * @param inputs       Every consumed ingredient stack.
+     * @param carrierCount How many Flavor Carrier items the recipe yields.
+     * @return The effects of the only consumed item if it is seasoned food and
+     *         the recipe yields exactly one Flavor Carrier item (a 1:1
+     *         conversion), possibly none, otherwise {@code null}.
      */
-    private static void addSeasoning(ItemStack result, Seasoning share) {
+    private static List<SeasoningEffect> carriedEffects(Iterable<ItemStack> inputs, int carrierCount) {
+        if (carrierCount != 1)
+            return null;
+        Seasoning only = null;
+        int consumed = 0;
+        for (ItemStack input : inputs) {
+            if (input.isEmpty())
+                continue;
+            consumed++;
+            only = input.get(ModDataComponents.SEASONING.get());
+        }
+        return consumed == 1 && only != null ? only.effects() : null;
+    }
+
+    /**
+     * Adds a share of inherited spices to a stack's own {@link Seasoning}, with
+     * the {@code carried} effects if there are any and the stack had none of its
+     * own, otherwise solving the effects of the total with Automatic Seasoning.
+     */
+    private static void addSeasoning(ItemStack result, Seasoning share, List<SeasoningEffect> carried) {
         Seasoning existing = result.get(ModDataComponents.SEASONING.get());
+        if (existing == null && carried != null) {
+            result.set(ModDataComponents.SEASONING.get(), share.withEffects(carried));
+            return;
+        }
         Seasoning total = existing == null ? share : existing.plus(share);
         result.set(ModDataComponents.SEASONING.get(), AutomaticSeasoning.solve(result.getItem(), total));
     }

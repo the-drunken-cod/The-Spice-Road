@@ -91,7 +91,7 @@
     - [x] [main/WARN] [mixin/]: Reference map 'spice_road.refmap.json' for spice_road.mixins.json could not be read. If this is a development environment you can ignore this message
 - [x] Rework spice profile system for the seasoning minigame:
     - Only Spice Items keep a Spice Profile. Foods no longer carry a Profile Override; instead they carry Seasoning Effects and *counted* Flavor Contributors (item + amount).
-    - Recipes (any mod) sum the counted contributors of all inputs (spice items and seasoned foods), drop the inputs' old effects and re-solve the output's effects with the automatic minigame. Spices are never voided or duplicated.
+    - Recipes (any mod) sum the counted contributors of all inputs (spice items and seasoned foods), drop the inputs' old effects and re-solve the output's effects with the automatic minigame, except 1:1 conversions (like cooking), which keep the effects. Spices are never voided or duplicated.
     - Rework everything reading food profiles: tooltips, Sufficiently Seasoned, cooking variance (replaced by the automatic minigame), advancement triggers.
     - "Everything Bagel" advancement becomes e.g. "eat a food with at least 10 flavor contributors".
     - Flavor contributor tooltip lists amounts (see the max-applications item above).
@@ -154,6 +154,7 @@
     - [x] When shift-clicking or shift-right-clicking spices, up to 8 are added or removed at once. Tooltip should show another line like `[Shift] to transfer 8 at a time.`
     - [x] The spice tooltip in the list on the left should be expanded by default and not require holding shift.
     - [x] The key tooltips (l-click, r-click, shift) should show up just after the spice profile tooltip lines. Currently they are at the very end of the tooltip.
+- [x] Cooking a seasoned item doesn't preserve effects.
 - [ ] Make AppleSkin tooltips show the corrected saturation value.
 - [ ] Collect stats:
     - [ ] Different spice types found amount.
