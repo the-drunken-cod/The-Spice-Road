@@ -9,6 +9,8 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +23,8 @@ import com.drunkencod.spice_road.spice.Flavoring;
 /**
  * The menu of the Spice Grinder GUI: one food slot and the player's inventory.
  * The spice list, the board and the buttons are not slots; they are drawn by
- * the screen and act through {@link GrinderIntentPayload}s. The menu is bound to
+ * the screen and act through {@link GrinderIntentPayload}s. The menu is bound
+ * to
  * the inventory slot the Grinder is in and closes itself when that slot stops
  * holding one.
  * <p>
@@ -33,12 +36,20 @@ public class SpiceGrinderMenu extends AbstractContainerMenu {
     /** Index of the food slot among the menu's slots. */
     public static final int FOOD_SLOT = 0;
 
-    /** Ticks between looks at what spices the inventory and nearby storage hold, to tell the client when it changed. */
+    /**
+     * Ticks between looks at what spices the inventory and nearby storage hold, to
+     * tell the client when it changed.
+     */
     private static final int AVAILABLE_CHECK_TICKS = 10;
 
     private final Inventory inventory;
     private final int grinderSlot;
     private final SimpleContainer foodContainer = new SimpleContainer(1);
+    /**
+     * The inventory slot holding the Grinder, kept in sync with the client so both
+     * lock it.
+     */
+    private final DataSlot lockedSlot = DataSlot.standalone();
     private final Map<Item, Integer> draft = new LinkedHashMap<>();
     private GrinderView view = GrinderView.EMPTY;
     private Map<Item, Integer> lastAvailable = Map.of();
@@ -56,21 +67,24 @@ public class SpiceGrinderMenu extends AbstractContainerMenu {
     /**
      * @param containerId The menu ID.
      * @param inventory   The player's inventory.
-     * @param grinderSlot The inventory slot holding the Grinder, {@code -1} on the client.
+     * @param grinderSlot The inventory slot holding the Grinder, {@code -1} on the
+     *                    client.
      */
     public SpiceGrinderMenu(int containerId, Inventory inventory, int grinderSlot) {
         super(ModMenus.SPICE_GRINDER.get(), containerId);
         this.inventory = inventory;
         this.grinderSlot = grinderSlot;
+        lockedSlot.set(grinderSlot);
+        addDataSlot(lockedSlot);
 
         addSlot(new FoodSlot(foodContainer, 0, GrinderLayout.FOOD_SLOT_X, GrinderLayout.FOOD_SLOT_Y));
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++)
-                addSlot(new Slot(inventory, col + row * 9 + 9, GrinderLayout.INVENTORY_X + col * 18,
+                addSlot(new InventorySlot(inventory, col + row * 9 + 9, GrinderLayout.INVENTORY_X + col * 18,
                         GrinderLayout.INVENTORY_Y + row * 18));
         }
         for (int col = 0; col < 9; col++)
-            addSlot(new Slot(inventory, col, GrinderLayout.INVENTORY_X + col * 18, GrinderLayout.HOTBAR_Y));
+            addSlot(new InventorySlot(inventory, col, GrinderLayout.INVENTORY_X + col * 18, GrinderLayout.HOTBAR_Y));
         foodContainer.addListener(container -> slotsChanged(container));
     }
 
@@ -104,7 +118,10 @@ public class SpiceGrinderMenu extends AbstractContainerMenu {
         foodContainer.setItem(0, ItemStack.EMPTY);
     }
 
-    /** @return The draft: how many of each spice item per food were chosen. Server-side only. */
+    /**
+     * @return The draft: how many of each spice item per food were chosen.
+     *         Server-side only.
+     */
     Map<Item, Integer> draft() {
         return draft;
     }
@@ -130,7 +147,8 @@ public class SpiceGrinderMenu extends AbstractContainerMenu {
      */
     public void syncView(GrinderView.Event event) {
         if (inventory.player instanceof ServerPlayer player)
-            Services.NETWORK.sendToPlayer(player, new GrinderViewPayload(containerId, GrinderActions.viewOf(this, event)));
+            Services.NETWORK.sendToPlayer(player,
+                    new GrinderViewPayload(containerId, GrinderActions.viewOf(this, event)));
     }
 
     @Override
@@ -150,6 +168,28 @@ public class SpiceGrinderMenu extends AbstractContainerMenu {
         super.slotsChanged(container);
         if (container == foodContainer && !inventory.player.level().isClientSide())
             syncView(GrinderView.Event.NONE);
+    }
+
+    /**
+     * @param slot One of the menu's slots.
+     * @return Whether it is the inventory slot the Grinder is in, which can't
+     *         be touched while the GUI is open so the Grinder can't be moved,
+     *         dropped or swapped away from under its own run.
+     */
+    public boolean isLocked(Slot slot) {
+        return slot.container == inventory && slot.getContainerSlot() == lockedSlot.get();
+    }
+
+    /**
+     * Besides the locked slot itself, a hotbar or off hand key press would swap
+     * the Grinder out of a slot without ever touching that slot, so those are
+     * refused too.
+     */
+    @Override
+    public void clicked(int slotId, int button, ClickType clickType, Player player) {
+        if (clickType == ClickType.SWAP && lockedSlot.get() >= 0 && button == lockedSlot.get())
+            return;
+        super.clicked(slotId, button, clickType, player);
     }
 
     @Override
@@ -192,6 +232,27 @@ public class SpiceGrinderMenu extends AbstractContainerMenu {
      */
     public static boolean isSeasonable(ItemStack stack) {
         return Flavoring.isFlavorCarrier(stack) && !stack.has(ModDataComponents.SEASONING.get());
+    }
+
+    /**
+     * A slot of the player's inventory, locked while it is the one holding the
+     * Grinder.
+     */
+    private final class InventorySlot extends Slot {
+
+        private InventorySlot(Container container, int index, int x, int y) {
+            super(container, index, x, y);
+        }
+
+        @Override
+        public boolean mayPickup(Player player) {
+            return !isLocked(this);
+        }
+
+        @Override
+        public boolean mayPlace(ItemStack stack) {
+            return !isLocked(this);
+        }
     }
 
     /** The slot the food goes in; only usable while drafting. */

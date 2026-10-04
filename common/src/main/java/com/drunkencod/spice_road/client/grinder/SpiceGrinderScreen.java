@@ -22,6 +22,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 
@@ -77,7 +78,10 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
     private int bufferedDy;
     private boolean buffering;
 
-    /** One line of the spice list: a group header, or a spice item with the amount the player holds. */
+    /**
+     * One line of the spice list: a group header, or a spice item with the amount
+     * the player holds.
+     */
     private record Row(Component header, Item item, int count) {
     }
 
@@ -95,7 +99,10 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         inventoryLabelY = 10_000;
     }
 
-    /** Makes the client apply every view the server sends to the open screen. Call once from client init. */
+    /**
+     * Makes the client apply every view the server sends to the open screen. Call
+     * once from client init.
+     */
     public static void registerViewHandler() {
         GrinderViewPayload.setClientHandler(payload -> {
             Minecraft minecraft = Minecraft.getInstance();
@@ -240,7 +247,10 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1F));
     }
 
-    /** What the client can tell without asking: the caps and the amount it holds. The server decides. */
+    /**
+     * What the client can tell without asking: the caps and the amount it holds.
+     * The server decides.
+     */
     private boolean canAddMore(Item item) {
         GrinderView view = view();
         int chosen = view.spices().getOrDefault(item, 0);
@@ -252,7 +262,10 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         return chosen < view.maxPerKind() && total < view.maxTotal() && held(item) >= needed;
     }
 
-    /** How many the server says the player's inventory and the nearby spice storage hold together. */
+    /**
+     * How many the server says the player's inventory and the nearby spice storage
+     * hold together.
+     */
     private int held(Item item) {
         return view().available().getOrDefault(item, 0);
     }
@@ -311,8 +324,10 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        if (mouseX >= leftPos + GrinderLayout.LIST_X && mouseX < leftPos + GrinderLayout.LIST_X + GrinderLayout.LIST_WIDTH) {
-            scroll = Mth.clamp(scroll - (int) Math.signum(scrollY), 0, Math.max(0, rows.size() - GrinderLayout.LIST_ROWS));
+        if (mouseX >= leftPos + GrinderLayout.LIST_X
+                && mouseX < leftPos + GrinderLayout.LIST_X + GrinderLayout.LIST_WIDTH) {
+            scroll = Mth.clamp(scroll - (int) Math.signum(scrollY), 0,
+                    Math.max(0, rows.size() - GrinderLayout.LIST_ROWS));
             return true;
         }
         return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
@@ -374,6 +389,11 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         rebuildRows();
         renderBackground(graphics, mouseX, mouseY, partialTick);
         super.render(graphics, mouseX, mouseY, partialTick);
+        for (Slot slot : menu.slots) {
+            if (menu.isLocked(slot))
+                graphics.fill(leftPos + slot.x, topPos + slot.y, leftPos + slot.x + 16, topPos + slot.y + 16,
+                        0x99000000);
+        }
         renderTooltips(graphics, mouseX, mouseY);
         renderTooltip(graphics, mouseX, mouseY);
     }
@@ -477,7 +497,8 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
             graphics.fill(x, y + 1, x + GrinderLayout.POINTS_WIDTH, y + 6, 0xFF1A1A1A);
             double scale = Math.max(1D, Services.CONFIG.getFlavorSoftCap());
             if (points > 0D)
-                graphics.fill(x, y + 1, x + Math.max(1, (int) (GrinderLayout.POINTS_WIDTH * Math.min(1D, points / scale))),
+                graphics.fill(x, y + 1,
+                        x + Math.max(1, (int) (GrinderLayout.POINTS_WIDTH * Math.min(1D, points / scale))),
                         y + 6, 0xFF000000 | axis.getColor(pole > 0));
         }
         for (int cy = 0; cy < BoardGeometry.SIZE; cy++) {
@@ -588,7 +609,10 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
 
     // #region Pad button
 
-    /** A direction or lock-in button drawn as a flat square: yellow with one step left, gray without any. */
+    /**
+     * A direction or lock-in button drawn as a flat square: yellow with one step
+     * left, gray without any.
+     */
     private static final class PadButton extends Button {
 
         private final Direction direction;
@@ -599,7 +623,8 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
                     button -> action.run(), DEFAULT_NARRATION);
             this.direction = direction;
             setMessage(direction == null ? Component.translatable(KEY_PREFIX + "lock_in")
-                    : Component.translatable(KEY_PREFIX + "move." + direction.name().toLowerCase(java.util.Locale.ROOT)));
+                    : Component
+                            .translatable(KEY_PREFIX + "move." + direction.name().toLowerCase(java.util.Locale.ROOT)));
             setTooltip(net.minecraft.client.gui.components.Tooltip.create(getMessage()));
         }
 
