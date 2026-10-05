@@ -7,7 +7,7 @@ import { createTable, defaultTableLineCharset, type TableColumnAlign } from "@sv
  * Numeric columns are right-aligned, all other columns are left-aligned.
  * @example
  * ```
- * pnpm run pad_csv -- ./in.csv ./out.csv
+ * pnpm pad_csv ./in.csv ./out.csv
  * ```
  */
 

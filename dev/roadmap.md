@@ -8,7 +8,6 @@ Warning: may contain outdated information, and is only to be used as a guideline
     - [x] Tiers: common, uncommon, rare, epic.
     - [x] Spice Profiles contain an assortment of double values of certain "flavor components" (like spicy, sweet, umami, but also fresh, strong, persistent, etc.).  
     The range of the values is -1 to +1, which allows spices to negatively stack. In order to do this in an intuitive way, spice profiles need to correspond to how the spices would interact in real life.
-        - [ ] TODO: find an easy way of creating this system, i.e. a geometrical diagram or tree that will be traversed by the mechanic's algorithm.
     - [x] Make certain spices non-automatable.
         - Vanilla and Saffron need to be hand-picked by an actual living player (no Create deployers).
 2. [ ] **Drying Rack**
@@ -24,7 +23,7 @@ Warning: may contain outdated information, and is only to be used as a guideline
     - Way to store and display spices.
     - Inventory is exposed to the mod loader so automation is supported.
     - Similar in shape to vanilla shelves in 1.21.whatever.
-4. [ ] **Spice Grinder**
+4. [x] **Spice Grinder**
     - Note: texture and sounds already implemented in Mycomancy, need to be ported.
     - Used to apply spices to food items using a custom roguelite minigame.
         - Spice profile is stored via a data component. Items with the component render a custom tooltip when holding shift, displaying the final spice profile, effect buffs and spice contributors.
@@ -35,12 +34,16 @@ Warning: may contain outdated information, and is only to be used as a guideline
         - Clicking a spice adds it to the food item stack's spice profile. When more food items are in the food slot than there are of the selected spice, nothing happens and a different click sound plays that indicates the action failed.
         - Applying more and more spices gives higher value profiles whose points can be spent in the minigame.
         - Pressing an "Apply" button below the info panel modifies the GUI to show the minigame screen, which can then be played to turn the spice profile values into actual effects. See [todos.md](./todos.md) for more info.
-5. [ ] **Spice Buffs**
+5. [x] **Spice Buffs**
     - Each spice gets a spice profile for its raw item and each of its processed items.
     - There is a mechanic that makes different kinds of spices interact differently and yield different buffs of different levels.
         - The mechanic yields diminishing returns, a good amount of spices for max benefits should be around 8-10 (configurable).
     - Buffs have 3 levels of potency (with configurable multipliers).
-6. [ ] **Villagers**
+6. [ ] **Spice Effects / Boons & Banes**
+    - [ ] Add 16 boons (mostly custom, maybe some vanilla).
+    - [ ] Add 16 banes (mostly custom, maybe some vanilla).
+    - [ ] Add optional extra boons and banes from common mods like Farmer's Delight.
+7. [ ] **Villagers**
     - Note: trades were also already a part of Mycomancy, so they can be used as a baseline (no datagenning tho).
     - [ ] Add Spice Trader villager type.
         - Sells common spices and some less common ones, few rare ones and none of the epic ones.
@@ -52,22 +55,21 @@ Warning: may contain outdated information, and is only to be used as a guideline
     - Allows recipes to be reproduced easier, and trade to include preset and custom spice mixes.
     - [ ] Combine up to 10 spices into condensed flavor_carrier items that impart more spice values at once.
     - [ ] Predefined list of ~8 spice mixes with custom textures and a custom name ("Mediterranean Seasoning", etc.).
-10. [ ] **Documentation**
+9. [ ] **Documentation**
     - [ ] Create user wiki.
     - [ ] Create developer documentation.
     - [ ] Implement Patchouli as an in-game guide.
-11. **Stats**
+10. [x] **Stats**
     - Record how many seasoned food items were eaten.
     - Record how many items were eaten of any of the 16 axes (8 x 2, separated by pos. and neg.).
     - Record how many unique spice types were discovered for 100% purposes.
-12. **Advancements**
+11. **Advancements**
     - Set of advancements to help teach game mechanics and for some 100% goals.
-13. **Effects**
+12. [ ] **Effects pt. 2**
     - Hot (eating something spicy):
         - Adds an FOV vignette overlay (like when freezing is applied via powder snow).
         - (maybe?) Impair vision past n blocks by adding a haze effect similar to a tiny render distance.
         - (maybe?) Potion for pvp?
-    - 
 
 
 <br>

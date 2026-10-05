@@ -173,3 +173,9 @@
             - [ ] Minigame.
 - [x] Drop more spices and spice seeds when the effect Luck is active, worse drops if Bad Luck is active.
 - [x] Convert all baked datagen config values into live config values, else (if not possible or not worth it) add a note to the affected config values stating that changing it will require datagen to be re-run / the mod to be recompiled.
+- [ ] Spice Grinder GUI improvements:
+    - [ ] Add notches to progress bars at distances equivalent to 1 step's spice value.
+    - [ ] Make 2nd phase progress bars 2px taller each.
+    - [ ] Add scroll bar to the right edge of the spice ingredient list.
+    - [ ] Make GUI taller to fit more rows of spices and to fit the message line better.
+    - [ ] Merge "insert item" and message lines into one line, visually separated.
