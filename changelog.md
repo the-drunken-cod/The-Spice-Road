@@ -11,7 +11,10 @@
     - Added water surface decorations to spice ponds. Currently only includes lily pads.
     - Rare spice maps now also spawn in shipwreck map chests, desert pyramids, pillager outposts, and woodland mansions. They are slightly more common than epic tier maps.
     - Added textures for the spice plants `Nigella` and `Safflower`.
+    - Luck and Bad Luck now change spice drops: each level (capped at 3, configurable) scales the spice yield and the seed drop chance of every player harvest by 25% (configurable). Guaranteed seed drops are unaffected.
 - Changes:
+    - ⚠️ **BREAKING:** the spice plant and spice tree harvest yield multipliers now also apply to broken plants, vines and leaves, instead of only to right-click harvests. Existing loot tables of other packs that overwrite spice break drops need to use the new `spice_road:harvest_yield` loot function.
+    - Fractional harvest yields of spice plants and vines are now rounded up or down at random, like on spice trees.
     - ⚠️ **BREAKING:** renamed `curry_leaf` to just `curry`.
     - Aquatic rhizomes now have a 2-block tall model, so they poke outside their water block.
     - Spice crops and rhizomes now drop seeds based on the tier and a configurable chance.

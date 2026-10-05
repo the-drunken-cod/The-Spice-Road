@@ -7,11 +7,11 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
-import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
+import com.drunkencod.spice_road.loot.HarvestSeedChanceCondition;
+import com.drunkencod.spice_road.loot.HarvestYieldFunction;
 import com.drunkencod.spice_road.loot.SpiceRegionSupportedCondition;
 import com.drunkencod.spice_road.spice.Spice;
 import com.drunkencod.spice_road.spice.Tier;
@@ -47,11 +47,9 @@ public final class SpicePlantLootTables {
          *                     and at it, by chance only if the break also
          *                     yields the Spice.
          * @param productItem  Raw Spice item, dropped only at {@code maxAge}.
-         * @param harvestYield Flat count of {@code productItem} dropped at
-         *                     {@code maxAge} (Phase 1: no tier-based scaling
-         *                     yet).
          * @param spice        The Spice this plant grows, which decides how a
-         *                     break harvest is gated and its seed drop chance.
+         *                     break harvest is gated, its yield and its seed
+         *                     drop chance.
          * @return The assembled loot table, ready to pass to a
          *         {@code BlockLootSubProvider}'s {@code add(Block, LootTable.Builder)}.
          */
@@ -61,7 +59,6 @@ public final class SpicePlantLootTables {
                         int maxAge,
                         ItemLike seedItem,
                         ItemLike productItem,
-                        int harvestYield,
                         Spice spice) {
                 LootItemBlockStatePropertyCondition.Builder isMature = LootItemBlockStatePropertyCondition
                                 .hasBlockStateProperties(block)
@@ -76,8 +73,8 @@ public final class SpicePlantLootTables {
                         table.withPool(SpiceBreakHarvest.gate(spice, LootPool.lootPool()
                                         .setRolls(ConstantValue.exactly(1.0F))
                                         .when(isMature)
-                                        .when(LootItemRandomChanceCondition
-                                                        .randomChance(spice.getTier().getSeedDropChance()))
+                                        .when(HarvestSeedChanceCondition
+                                                        .harvestSeedChance(spice.getTier().getSeedDropChance()))
                                         .add(LootItem.lootTableItem(seedItem))));
 
                 if (!SpiceBreakHarvest.yieldsUnconditionally(spice))
@@ -90,15 +87,17 @@ public final class SpicePlantLootTables {
                         return table;
 
                 return table.withPool(SpiceBreakHarvest.gate(spice,
-                                matureHarvestPool(block, ageProperty, maxAge, productItem, harvestYield)));
+                                matureHarvestPool(block, ageProperty, maxAge, productItem, spice.getDropAmount())));
         }
 
         /**
-         * @return A pool dropping {@code count} of {@code item} from a
-         *         {@code maxAge} plant where the Spice Region supports it.
+         * @return A pool dropping {@code item} from a {@code maxAge} plant where
+         *         the Spice Region supports it, in a count scaled live from
+         *         {@code baseAmount} by the harvest yield multiplier and Harvest
+         *         Luck.
          */
         private static LootPool.Builder matureHarvestPool(Block block, IntegerProperty ageProperty, int maxAge,
-                        ItemLike item, int count) {
+                        ItemLike item, int baseAmount) {
                 return LootPool.lootPool()
                                 .setRolls(ConstantValue.exactly(1.0F))
                                 .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
@@ -106,7 +105,7 @@ public final class SpicePlantLootTables {
                                                                 .hasProperty(ageProperty, maxAge)))
                                 .when(SpiceRegionSupportedCondition.spiceRegionSupported())
                                 .add(LootItem.lootTableItem(item)
-                                                .apply(SetItemCountFunction
-                                                                .setCount(ConstantValue.exactly(count))));
+                                                .apply(HarvestYieldFunction.harvestYield(baseAmount,
+                                                                HarvestYieldFunction.Source.PLANT)));
         }
 }

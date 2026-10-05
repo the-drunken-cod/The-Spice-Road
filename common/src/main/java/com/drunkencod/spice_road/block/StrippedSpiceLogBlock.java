@@ -70,7 +70,7 @@ public class StrippedSpiceLogBlock extends RotatedPillarBlock {
         if (user != null && user.isCreative())
             return;
 
-        ItemStack bark = tree.rollHarvest(level.getRandom());
+        ItemStack bark = tree.rollHarvest(level.getRandom(), user);
         if (bark.isEmpty())
             return;
 

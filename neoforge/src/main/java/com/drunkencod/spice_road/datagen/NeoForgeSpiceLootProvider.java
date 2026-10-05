@@ -30,12 +30,6 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
  * fruiting leaves (see {@link SpiceTreeLootTables}). Spice Vine blocks (see
  * {@link SpiceVines}) drop themselves with shears, plus their Spice when ripe
  * (see {@link SpiceVineLootTables}).
- * <p>
- * The harvest yield bakes in
- * {@link Constants#DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER} rather than
- * the live config value, since a pure {@code runData} pass may run before the
- * config file is loaded. Re-run datagen after changing that default to
- * regenerate the loot tables.
  */
 public class NeoForgeSpiceLootProvider extends LootTableProvider {
 
@@ -86,7 +80,6 @@ public class NeoForgeSpiceLootProvider extends LootTableProvider {
                     Constants.SPICE_PLANT_GROWTH_STAGES,
                     plant.seedItem().get(),
                     plant.productItem().get(),
-                    (int) Math.floor(spice.getDropAmount() * Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER),
                     spice));
         }
 

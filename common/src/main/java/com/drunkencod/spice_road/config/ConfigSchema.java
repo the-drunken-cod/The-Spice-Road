@@ -51,6 +51,8 @@ public final class ConfigSchema {
     public static final ConfigSection VINE = ConfigSection.root(ConfigFile.SERVER, "vine");
     /** Per-tier ripening of Spice Vine segments. */
     public static final ConfigSection VINE_RIPENING_SEGMENTS = VINE.child("ripeningSegments");
+    /** How the Luck and Bad Luck of a harvesting player scale Spice drops. */
+    public static final ConfigSection HARVEST_LUCK = ConfigSection.root(ConfigFile.SERVER, "harvestLuck");
     /** How stored Spice Profiles turn into the flavor a player actually gets. */
     public static final ConfigSection FLAVOR = ConfigSection.root(ConfigFile.SERVER, "flavor");
     /** What eating seasoned food does. */
@@ -170,6 +172,20 @@ public final class ConfigSchema {
     /** Fraction of a Spice Vine's segments that can ripen, per {@link Tier}. */
     public static final Map<Tier, ConfigOption<Double>> VINE_RIPENING_SEGMENTS_CHANCE = perTier(
             VINE_RIPENING_SEGMENTS, 0.3, 0.2, 0.15, 0.1, 0.0, 1.0);
+
+    // #region Harvest Luck
+
+    /** Luck level beyond which more (or less) Luck stops changing Spice drops. */
+    public static final ConfigOption<Integer> HARVEST_LUCK_MAX_LEVEL = add(
+            ConfigOption.ofInt(HARVEST_LUCK, "maxLevel", 3, 0, 10));
+
+    /** Change in Spice yield per level of Luck. */
+    public static final ConfigOption<Double> HARVEST_LUCK_YIELD_BONUS = add(
+            ConfigOption.ofDouble(HARVEST_LUCK, "yieldBonus", 0.25, 0.0, 1.0));
+
+    /** Change in seed drop chance per level of Luck. */
+    public static final ConfigOption<Double> HARVEST_LUCK_SEED_CHANCE_BONUS = add(
+            ConfigOption.ofDouble(HARVEST_LUCK, "seedChanceBonus", 0.25, 0.0, 1.0));
 
     // #region Flavor
 

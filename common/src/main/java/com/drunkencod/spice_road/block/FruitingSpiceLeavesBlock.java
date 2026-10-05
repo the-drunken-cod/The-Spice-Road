@@ -198,7 +198,7 @@ public class FruitingSpiceLeavesBlock extends LeavesBlock {
             return;
 
         ModStats.award(player, ModStats.HAND_PICKED_HARVESTS);
-        ItemStack harvest = tree.rollHarvest(level.getRandom());
+        ItemStack harvest = tree.rollHarvest(level.getRandom(), player);
         if (!harvest.isEmpty())
             popResourceFromFace(level, pos, face, harvest);
 

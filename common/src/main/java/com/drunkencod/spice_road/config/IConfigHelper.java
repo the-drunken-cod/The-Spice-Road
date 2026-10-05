@@ -179,15 +179,12 @@ public interface IConfigHelper {
     boolean isUnripeSpicePollinationAllowed();
 
     /**
-     * Configured harvest yield multiplier for
-     * {@code FLOWER_PATCH}/{@code CROP} Spice Plants. Note: loot table datagen does
-     * not call this method directly (a pure {@code runData} pass may run before
-     * config is loaded) - it bakes in
-     * {@link com.drunkencod.spice_road.Constants#DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER}
-     * instead, which is this value's default. Re-run datagen after changing that
-     * default to keep the two in sync.
+     * Harvest yield multiplier for Spice Plants and Spice Vines, applied to
+     * {@code Spice#getDropAmount()} on every harvest, whether picked or broken.
+     * Read live at harvest time. A fractional result is rounded up or down at
+     * random, weighted by its fractional part.
      *
-     * @return The configured flat harvest yield.
+     * @return The configured Spice Plant harvest yield multiplier.
      */
     double getSpicePlantHarvestYieldMultiplier();
 
@@ -235,6 +232,32 @@ public interface IConfigHelper {
      * @return The configured ripening segments fraction for that tier.
      */
     double getSpiceVineRipeningSegmentsChance(Tier tier);
+
+    /**
+     * Highest Luck level (in either direction) that still changes Spice drops;
+     * a harvesting player's Luck is clamped to it. Read live at harvest time.
+     *
+     * @return The configured Harvest Luck cap, in levels.
+     */
+    int getHarvestLuckMaxLevel();
+
+    /**
+     * How much each level of Harvest Luck changes the Spice yield of a
+     * harvest: the yield is multiplied by {@code 1 + bonus * luck}. {@code 0.0}
+     * turns the effect off.
+     *
+     * @return The configured yield bonus per Luck level.
+     */
+    double getHarvestLuckYieldBonus();
+
+    /**
+     * How much each level of Harvest Luck changes the chance of a mature
+     * plant also dropping its seed: the chance is multiplied by
+     * {@code 1 + bonus * luck}. {@code 0.0} turns the effect off.
+     *
+     * @return The configured seed drop chance bonus per Luck level.
+     */
+    double getHarvestLuckSeedChanceBonus();
 
     /**
      * Magnitude each axis of an Effective Profile saturates towards, giving

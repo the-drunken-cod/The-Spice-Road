@@ -3,6 +3,7 @@ package com.drunkencod.spice_road.block;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -94,13 +95,18 @@ public final class SpiceHarvesting {
     }
 
     /**
-     * @param spice The harvested Spice.
-     * @return The number of {@code spice} items a single Spice Plant or Spice
-     *         Vine harvest yields: its {@link Spice#getDropAmount()} scaled by
-     *         {@code IConfigHelper#getSpicePlantHarvestYieldMultiplier()},
-     *         rounded down like the datagenned loot tables.
+     * Rolls the number of {@code spice} items a single Spice Plant or Spice
+     * Vine harvest yields: its {@link Spice#getDropAmount()} scaled by
+     * {@code IConfigHelper#getSpicePlantHarvestYieldMultiplier()} and the
+     * harvester's {@link HarvestLuck}, like the break loot tables.
+     *
+     * @param spice     The harvested Spice.
+     * @param random    The random source to roll with.
+     * @param harvester The player who harvested.
+     * @return The number of items to drop, possibly {@code 0}.
      */
-    public static int getPlantYield(Spice spice) {
-        return (int) Math.floor(spice.getDropAmount() * Services.CONFIG.getSpicePlantHarvestYieldMultiplier());
+    public static int rollPlantYield(Spice spice, RandomSource random, Player harvester) {
+        return HarvestLuck.rollYield(random, spice.getDropAmount(),
+                Services.CONFIG.getSpicePlantHarvestYieldMultiplier(), harvester);
     }
 }

@@ -253,6 +253,21 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public int getHarvestLuckMaxLevel() {
+        return value(ConfigSchema.HARVEST_LUCK_MAX_LEVEL);
+    }
+
+    @Override
+    public double getHarvestLuckYieldBonus() {
+        return value(ConfigSchema.HARVEST_LUCK_YIELD_BONUS);
+    }
+
+    @Override
+    public double getHarvestLuckSeedChanceBonus() {
+        return value(ConfigSchema.HARVEST_LUCK_SEED_CHANCE_BONUS);
+    }
+
+    @Override
     public double getFlavorSoftCap() {
         return value(ConfigSchema.FLAVOR_SOFT_CAP);
     }

@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 
 import com.drunkencod.spice_road.loot.ConnectedPlayerCondition;
+import com.drunkencod.spice_road.loot.HarvestSeedChanceCondition;
 import com.drunkencod.spice_road.loot.SpiceMapLootEnabledCondition;
 import com.drunkencod.spice_road.loot.SpiceRegionSupportedCondition;
 import com.drunkencod.spice_road.platform.Services;
@@ -28,6 +29,11 @@ public final class ModLootConditions {
     public static final Supplier<LootItemConditionType> SPICE_MAP_LOOT_ENABLED = Services.REGISTRY
             .registerLootConditionType("spice_map_loot_enabled",
                     () -> new LootItemConditionType(SpiceMapLootEnabledCondition.CODEC));
+
+    /** {@code spice_road:harvest_seed_chance} - see {@link HarvestSeedChanceCondition}. */
+    public static final Supplier<LootItemConditionType> HARVEST_SEED_CHANCE = Services.REGISTRY
+            .registerLootConditionType("harvest_seed_chance",
+                    () -> new LootItemConditionType(HarvestSeedChanceCondition.CODEC));
 
     private ModLootConditions() {
     }

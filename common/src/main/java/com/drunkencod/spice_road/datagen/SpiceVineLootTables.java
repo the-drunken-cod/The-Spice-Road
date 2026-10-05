@@ -4,13 +4,13 @@ import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.SpiceVineBlock;
 import com.drunkencod.spice_road.block.SpiceVines;
+import com.drunkencod.spice_road.loot.HarvestYieldFunction;
 import com.drunkencod.spice_road.spice.Spice;
 
 /**
@@ -30,8 +30,8 @@ public final class SpiceVineLootTables {
      * breaking a ripe segment with a harvest tool that isn't shears yields the
      * Spice but no replantable vine.
      * <p>
-     * Bakes in {@link Constants#DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER},
-     * since config isn't loaded during {@code runData}.
+     * The count is scaled live by the plant harvest yield multiplier and
+     * Harvest Luck, see {@link HarvestYieldFunction}.
      *
      * @param vine        The registered Spice Vine.
      * @param shearsDrops The vine's base loot table, e.g. vanilla's
@@ -45,16 +45,14 @@ public final class SpiceVineLootTables {
         if (!SpiceBreakHarvest.canYieldSpice(spice))
             return shearsDrops;
 
-        int harvestYield = (int) Math.floor(
-                spice.getDropAmount() * Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER);
-
         LootPool.Builder productPool = LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1.0F))
                 .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(vine.block().get())
                         .setProperties(StatePropertiesPredicate.Builder.properties()
                                 .hasProperty(SpiceVineBlock.AGE, Constants.SPICE_VINE_GROWTH_STAGES)))
                 .add(LootItem.lootTableItem(vine.productItem().get())
-                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(harvestYield))));
+                        .apply(HarvestYieldFunction.harvestYield(spice.getDropAmount(),
+                                HarvestYieldFunction.Source.PLANT)));
 
         return shearsDrops.withPool(SpiceBreakHarvest.gate(spice, productPool));
     }

@@ -192,6 +192,21 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public int getHarvestLuckMaxLevel() {
+        return value(ConfigSchema.HARVEST_LUCK_MAX_LEVEL, server().harvestLuck.maxLevel);
+    }
+
+    @Override
+    public double getHarvestLuckYieldBonus() {
+        return value(ConfigSchema.HARVEST_LUCK_YIELD_BONUS, server().harvestLuck.yieldBonus);
+    }
+
+    @Override
+    public double getHarvestLuckSeedChanceBonus() {
+        return value(ConfigSchema.HARVEST_LUCK_SEED_CHANCE_BONUS, server().harvestLuck.seedChanceBonus);
+    }
+
+    @Override
     public double getFlavorSoftCap() {
         return value(ConfigSchema.FLAVOR_SOFT_CAP, server().flavor.softCap);
     }
@@ -441,6 +456,8 @@ public class FabricConfigHelper implements IConfigHelper {
         @ConfigEntry.Gui.CollapsibleObject
         public Vine vine = new Vine();
         @ConfigEntry.Gui.CollapsibleObject
+        public HarvestLuck harvestLuck = new HarvestLuck();
+        @ConfigEntry.Gui.CollapsibleObject
         public Flavor flavor = new Flavor();
         @ConfigEntry.Gui.CollapsibleObject
         public Seasoning seasoning = new Seasoning();
@@ -525,6 +542,16 @@ public class FabricConfigHelper implements IConfigHelper {
         public static class Vine {
             @ConfigEntry.Gui.CollapsibleObject
             public PerTier ripeningSegments = PerTier.of(ConfigSchema.VINE_RIPENING_SEGMENTS_CHANCE);
+        }
+
+        /** How the Luck of a harvesting player scales Spice drops. */
+        public static class HarvestLuck {
+            @ConfigEntry.Gui.Tooltip
+            public int maxLevel = ConfigSchema.HARVEST_LUCK_MAX_LEVEL.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public double yieldBonus = ConfigSchema.HARVEST_LUCK_YIELD_BONUS.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public double seedChanceBonus = ConfigSchema.HARVEST_LUCK_SEED_CHANCE_BONUS.getDefault();
         }
 
         /** How stored Spice Profiles turn into the flavor a player gets. */
