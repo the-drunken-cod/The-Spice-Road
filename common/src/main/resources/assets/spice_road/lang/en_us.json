@@ -210,7 +210,7 @@
     "spice_road.configuration.harvestLuck.maxLevel": "Luck Cap",
     "spice_road.configuration.harvestLuck.seedChanceBonus.tooltip": "How much each level of Luck raises a mature plant's chance of dropping its seed, and each level of Bad Luck lowers it. 0.25 means 25% of the usual chance per level. 0 turns it off.",
     "spice_road.configuration.harvestLuck.seedChanceBonus": "Seed Chance per Luck Level",
-    "spice_road.configuration.harvestLuck.tooltip": "How a harvesting player's Luck and Bad Luck change Spice and seed drops.",
+    "spice_road.configuration.harvestLuck.tooltip": "How a harvesting player's Luck and Bad Luck potion effects change Spice and seed drops.",
     "spice_road.configuration.harvestLuck.yieldBonus.tooltip": "How much each level of Luck raises the amount of Spice a harvest yields, and each level of Bad Luck lowers it. 0.25 means 25% of the usual amount per level. 0 turns it off.",
     "spice_road.configuration.harvestLuck.yieldBonus": "Spice Yield per Luck Level",
     "spice_road.configuration.harvestLuck": "Harvest Luck",

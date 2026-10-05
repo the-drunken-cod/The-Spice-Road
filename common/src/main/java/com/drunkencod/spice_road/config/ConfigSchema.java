@@ -181,11 +181,11 @@ public final class ConfigSchema {
 
     /** Change in Spice yield per level of Luck. */
     public static final ConfigOption<Double> HARVEST_LUCK_YIELD_BONUS = add(
-            ConfigOption.ofDouble(HARVEST_LUCK, "yieldBonus", 0.25, 0.0, 1.0));
+            ConfigOption.ofDouble(HARVEST_LUCK, "yieldBonus", 0.15, 0.0, 1.0));
 
     /** Change in seed drop chance per level of Luck. */
     public static final ConfigOption<Double> HARVEST_LUCK_SEED_CHANCE_BONUS = add(
-            ConfigOption.ofDouble(HARVEST_LUCK, "seedChanceBonus", 0.25, 0.0, 1.0));
+            ConfigOption.ofDouble(HARVEST_LUCK, "seedChanceBonus", 0.15, 0.0, 1.0));
 
     // #region Flavor
 
