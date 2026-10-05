@@ -1,19 +1,23 @@
 # `0.1.0`
 ## `0.1.0-alpha.2`
-- Features:
+⚠️ **Contains breaking changes.** Existing worlds will be affected!  
+- **Features:**
     - Added Spice Grinder item to season any food items, up to 64 at a time.
-        - GUI is rudimentary, but the mechanics are close to the planned end result.
+        - Roguelite Mechanic involving a 9x9 board of cells that can apply positive effects (boons) or negative effects (banes). Cell positions are pseudo-random, seeded by the input food item, meaning every food has its own board.
+        - Movement on the board costs spice profile points, depending on the movement direction.
+        - Cells in the outer rings have better effects but cost more to unlock.
+        - Unlocked cells are stored on the server, giving a nice sense of progression and repeatability.
     - When seasoned foods are eaten, additionally to their Spice-Grinder-acquired effects, their saturation will receive a boost depending on how many different kinds of spices were used (configurable).
         - Added a config option to add an overcap to the player saturation, so that the saturation boosts aren't wasted. Since this is a mixin and may potentially cause issues with other mods, it can be turned off.
-        - If AppleSkin is installed, its tooltips include the saturation boost of seasoned foods.
+        - If [AppleSkin](https://modrinth.com/mod/appleskin) is installed, its tooltips include the saturation boost of seasoned foods. The hunger bar above the toolbar unfortunately still shows the base value, as adding compatibility for that isn't as straightforward.
     - Added mod icon for in-game mod list.
-    - Added spiceless regions with a configurable chance percentage.
-    - Added water surface decorations to spice ponds. Currently only includes lily pads.
+    - Added spiceless regions with a configurable chance percentage (15% by default).
+    - Added water surface decorations to spice ponds. Currently only includes lily pads. May be extended by datapacks to add other lily-pad-like blocks.
     - Rare spice maps now also spawn in shipwreck map chests, desert pyramids, pillager outposts, and woodland mansions. They are slightly more common than epic tier maps.
     - Added textures for the spice plants `Nigella` and `Safflower`.
-    - Luck and Bad Luck now change spice drops: each level (capped at 3, configurable) scales the spice yield and the seed drop chance of every player harvest by 25% (configurable). Guaranteed seed drops are unaffected.
-    - The recipes for Botany Pots and the Immersive Engineering Garden Cloche can each be turned off in the new common config file. Applies on `/reload` or restart.
-- Changes:
+    - The potion effects Luck and Bad Luck now affect spice drops: each level (capped at 3, configurable) scales the spice yield and the seed drop chance of every player harvest by 15% (also configurable). Guaranteed seed drops are unaffected.
+    - Added recipes for the pots from [Botany Pots](https://modrinth.com/mod/botany-pots) and [Botany Trees](https://modrinth.com/mod/botany-trees) as well as the Garden Cloche from [Immersive Engineering](https://modrinth.com/mod/immersiveengineering), so they can be used to grow hardy spices (common and uncommon tiers). They can each be turned off in the new common config file. Applies on `/reload` or restart.
+- **Changes:**
     - ⚠️ **BREAKING:** the spice plant and spice tree harvest yield multipliers now also apply to broken plants, vines and leaves, instead of only to right-click harvests. Existing loot tables of other packs that overwrite spice break drops need to use the new `spice_road:harvest_yield` loot function.
     - Fractional harvest yields of spice plants and vines are now rounded up or down at random, like on spice trees.
     - ⚠️ **BREAKING:** renamed `curry_leaf` to just `curry`.
@@ -22,16 +26,16 @@
     - Reordered creative mode tab items.
     - Adjusted a whole bunch of textures.
     - Adjusted many default config values, especially regarding worldgen.
-    - Tweaked amounts and sizes of spice ponds and satellite ponds generating.
-    - Tweaked loot generation.
+    - Tweaked amounts and sizes of spice ponds and satellite ponds generating, especially in arid biomes.
+    - Rebalanced loot generation.
     - (Debug mode) improved F3 spice heart directions.
-- Fixes:
+- **Fixes:**
     - Bonemealing vines outside their "natural randomTick" coords is now possible.
     - Vine-type spice trees growing on the same spot as other trees no longer generate floating vines.
     - Spice crop hitboxes now have a 14x14 footprint.
     - Spice bush hitboxes now start higher.
-    - Spice bush with out-of-range age property used to crash the game (like when cycling it with the debug stick).
-    - Random errors; missing refmap and implicit config long->int cast.
+    - Spice bush with out-of-range age property (like when cycling it with the debug stick) no longer crashes the game.
+    - Random errors & warnings: missing refmap, implicit config long->int cast, duplicate `spice_road.png` file.
 
 <br>
 
