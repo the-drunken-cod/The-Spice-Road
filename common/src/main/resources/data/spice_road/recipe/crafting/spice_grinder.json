@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "building",
+    "pattern": [
+        " P ",
+        "B B",
+        "BBB"
+    ],
+    "key": {
+        "P": {
+            "item": "minecraft:polished_basalt"
+        },
+        "B": {
+            "item": "minecraft:basalt"
+        }
+    },
+    "result": {
+        "id": "spice_road:spice_grinder",
+        "count": 1
+    }
+}
