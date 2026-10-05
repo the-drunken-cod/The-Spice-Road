@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.compat.CompatRecipeMod;
 import com.drunkencod.spice_road.spice.Tier;
 
 import me.shedaniel.autoconfig.AutoConfig;
@@ -48,7 +49,10 @@ public class FabricConfigHelper implements IConfigHelper {
      * @return The schema file whose options back it.
      */
     private static ConfigFile fileOf(Class<?> configClass) {
-        return configClass == ClientConfigData.class ? ConfigFile.CLIENT : ConfigFile.SERVER;
+        if (configClass == ClientConfigData.class) {
+            return ConfigFile.CLIENT;
+        }
+        return configClass == CommonConfigData.class ? ConfigFile.COMMON : ConfigFile.SERVER;
     }
 
     /**
@@ -64,6 +68,10 @@ public class FabricConfigHelper implements IConfigHelper {
 
     private static ClientConfigData client() {
         return AutoConfig.getConfigHolder(SpiceRoadConfigData.class).getConfig().client;
+    }
+
+    private static CommonConfigData common() {
+        return AutoConfig.getConfigHolder(SpiceRoadConfigData.class).getConfig().common;
     }
 
     /**
@@ -344,6 +352,15 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean isCompatRecipeEnabled(CompatRecipeMod mod) {
+        CommonConfigData.CompatRecipes recipes = common().compatRecipes;
+        return switch (mod) {
+            case BOTANY_POTS -> recipes.botanypots;
+            case IMMERSIVE_ENGINEERING -> recipes.immersiveengineering;
+        };
+    }
+
+    @Override
     public int getStatsFoundScanIntervalTicks() {
         return value(ConfigSchema.STATS_FOUND_SCAN_INTERVAL_TICKS, server().stats.foundScanIntervalTicks);
     }
@@ -434,6 +451,9 @@ public class FabricConfigHelper implements IConfigHelper {
         @ConfigEntry.Category("server")
         @ConfigEntry.Gui.TransitiveObject
         public ServerConfigData server = new ServerConfigData();
+        @ConfigEntry.Category("common")
+        @ConfigEntry.Gui.TransitiveObject
+        public CommonConfigData common = new CommonConfigData();
         @ConfigEntry.Category("client")
         @ConfigEntry.Gui.TransitiveObject
         public ClientConfigData client = new ClientConfigData();
@@ -633,6 +653,29 @@ public class FabricConfigHelper implements IConfigHelper {
         public static class Compat {
             @ConfigEntry.Gui.Tooltip
             public boolean sneakToPlaceFlavoredFood = ConfigSchema.COMPAT_SNEAK_TO_PLACE_FLAVORED_FOOD.getDefault();
+        }
+    }
+
+    /** Values read when datapacks load, mirroring {@code spice_road-common.toml}. */
+    @Config(name = "common")
+    public static class CommonConfigData implements ConfigData {
+
+        @ConfigEntry.Gui.CollapsibleObject
+        public CompatRecipes compatRecipes = new CompatRecipes();
+
+        @Override
+        public void validatePostLoad() {
+            clampToSchema(this, ConfigFile.COMMON);
+        }
+
+        /** Which optional mods get recipes loaded, one field per mod ID. */
+        public static class CompatRecipes {
+            @ConfigEntry.Gui.Tooltip
+            public boolean botanypots = ConfigSchema.COMPAT_RECIPES_ENABLED.get(CompatRecipeMod.BOTANY_POTS)
+                    .getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public boolean immersiveengineering = ConfigSchema.COMPAT_RECIPES_ENABLED
+                    .get(CompatRecipeMod.IMMERSIVE_ENGINEERING).getDefault();
         }
     }
 

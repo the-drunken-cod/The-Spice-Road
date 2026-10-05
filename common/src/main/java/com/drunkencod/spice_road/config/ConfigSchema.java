@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.compat.CompatRecipeMod;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Tier;
 
@@ -71,6 +72,8 @@ public final class ConfigSchema {
     public static final ConfigSection STATS = ConfigSection.root(ConfigFile.SERVER, "stats");
     /** Behavior around other mods' placeable food items. */
     public static final ConfigSection COMPAT = ConfigSection.root(ConfigFile.SERVER, "compat");
+    /** Which optional mods get recipes loaded. */
+    public static final ConfigSection COMPAT_RECIPES = ConfigSection.root(ConfigFile.COMMON, "compatRecipes");
 
     // #region Region
 
@@ -323,6 +326,14 @@ public final class ConfigSchema {
     public static final ConfigOption<Boolean> COMPAT_SNEAK_TO_PLACE_FLAVORED_FOOD = add(
             ConfigOption.ofBoolean(COMPAT, "sneakToPlaceFlavoredFood", true));
 
+    // #region Compat Recipes
+
+    /**
+     * Whether the recipes datagenned for each {@link CompatRecipeMod} are loaded,
+     * keyed by its mod ID. Read whenever datapacks load.
+     */
+    public static final Map<CompatRecipeMod, ConfigOption<Boolean>> COMPAT_RECIPES_ENABLED = compatRecipeToggles();
+
     private ConfigSchema() {
     }
 
@@ -388,6 +399,20 @@ public final class ConfigSchema {
     private static <T extends Comparable<T>> ConfigOption<T> add(ConfigOption<T> option) {
         OPTIONS.add(option);
         return option;
+    }
+
+    /**
+     * Declares one enabled-by-default toggle per {@link CompatRecipeMod}, keyed by
+     * its mod ID.
+     *
+     * @return The declared options, by mod.
+     */
+    private static Map<CompatRecipeMod, ConfigOption<Boolean>> compatRecipeToggles() {
+        Map<CompatRecipeMod, ConfigOption<Boolean>> byMod = new EnumMap<>(CompatRecipeMod.class);
+        for (CompatRecipeMod mod : CompatRecipeMod.values()) {
+            byMod.put(mod, add(ConfigOption.ofBoolean(COMPAT_RECIPES, mod.getModId(), true)));
+        }
+        return Collections.unmodifiableMap(byMod);
     }
 
     /**

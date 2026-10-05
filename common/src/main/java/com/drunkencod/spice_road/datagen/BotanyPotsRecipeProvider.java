@@ -20,6 +20,7 @@ import com.drunkencod.spice_road.block.SpicePlants;
 import com.drunkencod.spice_road.block.SpiceTree;
 import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.block.FruitingSpiceLeavesBlock;
+import com.drunkencod.spice_road.compat.CompatRecipeMod;
 import com.drunkencod.spice_road.spice.Spice;
 
 /**
@@ -34,15 +35,14 @@ import com.drunkencod.spice_road.spice.Spice;
  * sapling.</li>
  * </ul>
  * Each recipe carries both NeoForge and Fabric load conditions, so it's only
- * loaded when Botany Pots is present. Implemented as a plain
+ * loaded when Botany Pots is present and its
+ * {@link CompatRecipeMod#BOTANY_POTS} toggle is on. Implemented as a plain
  * {@link DataProvider} writing raw JSON, since Botany Pots is not a
  * compile-time dependency. Drops are written out explicitly instead of
  * deriving them from the blocks' loot tables, since those are gated on a
  * connected player and the Spice Region.
  */
 public class BotanyPotsRecipeProvider implements DataProvider {
-
-    private static final String MOD_ID = "botanypots";
 
     /** Botany Pots' item tag of soils that count as water. */
     private static final String WATER_SOIL_TAG = "botanypots:soil/water";
@@ -85,7 +85,7 @@ public class BotanyPotsRecipeProvider implements DataProvider {
     // #region recipes
 
     private static JsonObject plantRecipe(Spice spice, Block block, Item seed, Item product) {
-        JsonObject recipe = CompatRecipeJson.withModLoadedConditions(MOD_ID);
+        JsonObject recipe = CompatRecipeJson.withToggleConditions(CompatRecipeMod.BOTANY_POTS);
         recipe.addProperty("type", "botanypots:block_derived_crop");
         recipe.addProperty("block", BuiltInRegistries.BLOCK.getKey(block).toString());
         recipe.add("input", CompatRecipeJson.itemIngredient(BuiltInRegistries.ITEM.getKey(seed)));
@@ -102,7 +102,7 @@ public class BotanyPotsRecipeProvider implements DataProvider {
 
     private static JsonObject treeRecipe(SpiceTree tree) {
         Spice spice = tree.getSpice();
-        JsonObject recipe = CompatRecipeJson.withModLoadedConditions(MOD_ID);
+        JsonObject recipe = CompatRecipeJson.withToggleConditions(CompatRecipeMod.BOTANY_POTS);
         recipe.addProperty("type", "botanypots:crop");
         ResourceLocation sapling = BuiltInRegistries.ITEM.getKey(tree.getSaplingItem().get());
         recipe.add("input", CompatRecipeJson.itemIngredient(sapling));

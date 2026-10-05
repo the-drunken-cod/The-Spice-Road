@@ -2,6 +2,7 @@ package com.drunkencod.spice_road;
 
 import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.command.SpiceLocateCommand;
+import com.drunkencod.spice_road.compat.FabricCompatRecipesCondition;
 import com.drunkencod.spice_road.config.ConfigSync;
 import com.drunkencod.spice_road.config.FabricConfigHelper;
 import com.drunkencod.spice_road.grinder.GrinderIntentPayload;
@@ -28,6 +29,7 @@ import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -45,6 +47,8 @@ public class SpiceRoadMod implements ModInitializer {
                 // Register Cloth Config configs
                 ((FabricConfigHelper) Services.CONFIG).register();
                 ((FabricCreativeTabHelper) Services.CREATIVE_TAB).register();
+                // NeoForge registers its own condition through NeoForgeConditions.
+                ResourceConditions.register(FabricCompatRecipesCondition.TYPE);
 
                 SpiceRoad.init();
                 SpiceRoad.commonSetup();

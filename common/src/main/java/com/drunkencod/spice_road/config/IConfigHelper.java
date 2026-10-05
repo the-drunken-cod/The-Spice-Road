@@ -1,5 +1,6 @@
 package com.drunkencod.spice_road.config;
 
+import com.drunkencod.spice_road.compat.CompatRecipeMod;
 import com.drunkencod.spice_road.spice.Tier;
 
 /**
@@ -447,6 +448,16 @@ public interface IConfigHelper {
      * @return Whether sneaking is required to place a flavored food stack.
      */
     boolean isSneakRequiredToPlaceFlavoredFood();
+
+    /**
+     * Whether the datagenned recipes for an optional mod are loaded. Part of
+     * the common config, so it's readable before any world exists, but only
+     * consulted when datapacks load: toggling it needs a {@code /reload}.
+     *
+     * @param mod The mod the recipes are for.
+     * @return Whether its recipes are enabled.
+     */
+    boolean isCompatRecipeEnabled(CompatRecipeMod mod);
 
     /**
      * @return Ticks between checks of each player's inventory for newly found

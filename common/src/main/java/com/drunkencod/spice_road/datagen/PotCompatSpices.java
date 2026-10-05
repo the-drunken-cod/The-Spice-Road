@@ -23,7 +23,7 @@ final class PotCompatSpices {
      * Growth time in ticks of a {@link SourceType#CROP}-like recipe whose
      * tier has a growth speed multiplier of {@code 1.0}.
      */
-    private static final double BASE_GROW_TICKS = 2400.0;
+    private static final double BASE_GROW_TICKS = 4800.0;
 
     /** Spice Trees take this many times longer to mature than other Spices. */
     private static final double TREE_GROW_TIME_FACTOR = 2.0;

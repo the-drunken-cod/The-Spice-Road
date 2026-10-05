@@ -9,6 +9,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
+import com.drunkencod.spice_road.compat.CompatRecipeMod;
 import com.drunkencod.spice_road.spice.Tier;
 
 /**
@@ -41,6 +42,7 @@ public class NeoForgeConfigHelper implements IConfigHelper {
      */
     public void register(ModContainer modContainer) {
         modContainer.registerConfig(ModConfig.Type.SERVER, SPECS.get(ConfigFile.SERVER));
+        modContainer.registerConfig(ModConfig.Type.COMMON, SPECS.get(ConfigFile.COMMON));
         modContainer.registerConfig(ModConfig.Type.CLIENT, SPECS.get(ConfigFile.CLIENT));
     }
 
@@ -399,6 +401,11 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     @Override
     public boolean isSneakRequiredToPlaceFlavoredFood() {
         return value(ConfigSchema.COMPAT_SNEAK_TO_PLACE_FLAVORED_FOOD);
+    }
+
+    @Override
+    public boolean isCompatRecipeEnabled(CompatRecipeMod mod) {
+        return value(ConfigSchema.COMPAT_RECIPES_ENABLED.get(mod));
     }
 
     @Override

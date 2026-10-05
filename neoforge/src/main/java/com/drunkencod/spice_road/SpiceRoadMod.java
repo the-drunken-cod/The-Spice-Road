@@ -23,6 +23,7 @@ import com.drunkencod.spice_road.datagen.SpiceTreeCompatRecipeProvider;
 import com.drunkencod.spice_road.datagen.SpiceTreePlanksRecipeProvider;
 import com.drunkencod.spice_road.loot.LootInjections;
 import com.drunkencod.spice_road.platform.Services;
+import com.drunkencod.spice_road.registry.NeoForgeConditions;
 import com.drunkencod.spice_road.registry.NeoForgeCreativeTabHelper;
 import com.drunkencod.spice_road.registry.NeoForgeRegistryHelper;
 import com.drunkencod.spice_road.spice.SpiceProfileRegistry;
@@ -79,6 +80,7 @@ public class SpiceRoadMod {
         // Wire DeferredRegisters
         ((NeoForgeRegistryHelper) Services.REGISTRY).initialize(eventBus);
         ((NeoForgeCreativeTabHelper) Services.CREATIVE_TAB).initialize(eventBus);
+        NeoForgeConditions.register(eventBus);
 
         // Register configs
         ((NeoForgeConfigHelper) Services.CONFIG).register(modContainer);

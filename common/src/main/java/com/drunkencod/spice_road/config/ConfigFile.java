@@ -11,6 +11,11 @@ public enum ConfigFile {
 
     /** Gameplay values. Synced from the logical server on NeoForge. */
     SERVER("server"),
+    /**
+     * Values read when the game or a datapack loads, such as which recipes
+     * exist. Never synced, and available before any world is.
+     */
+    COMMON("common"),
     /** Client-only display values, never synced. */
     CLIENT("client");
 

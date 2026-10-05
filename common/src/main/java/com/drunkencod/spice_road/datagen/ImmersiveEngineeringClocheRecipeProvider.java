@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.Block;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.SpicePlants;
+import com.drunkencod.spice_road.compat.CompatRecipeMod;
 import com.drunkencod.spice_road.spice.Spice;
 
 /**
@@ -26,14 +27,13 @@ import com.drunkencod.spice_road.spice.Spice;
  * <p>
  * Every cloche recipe needs water by default, which also covers the Aquatic
  * Spices. The recipe carries load conditions for both loaders so it's only
- * loaded when Immersive Engineering is present, though the mod is NeoForge
- * only. Implemented as a plain {@link DataProvider} writing raw JSON, since
+ * loaded when Immersive Engineering is present and its
+ * {@link CompatRecipeMod#IMMERSIVE_ENGINEERING} toggle is on, though the mod is
+ * NeoForge only. Implemented as a plain {@link DataProvider} writing raw JSON, since
  * Immersive Engineering is not a compile-time dependency. The cloche consumes
  * the planting item, so it's returned at the tier's seed drop chance.
  */
 public class ImmersiveEngineeringClocheRecipeProvider implements DataProvider {
-
-    private static final String MOD_ID = "immersiveengineering";
 
     /** Item every cloche recipe of this provider uses as soil. */
     private static final ResourceLocation SOIL = ResourceLocation.withDefaultNamespace("dirt");
@@ -65,7 +65,7 @@ public class ImmersiveEngineeringClocheRecipeProvider implements DataProvider {
     private static JsonObject clocheRecipe(Spice spice, Block block, Item seed, Item product) {
         ResourceLocation seedId = BuiltInRegistries.ITEM.getKey(seed);
 
-        JsonObject recipe = CompatRecipeJson.withModLoadedConditions(MOD_ID);
+        JsonObject recipe = CompatRecipeJson.withToggleConditions(CompatRecipeMod.IMMERSIVE_ENGINEERING);
         recipe.addProperty("type", "immersiveengineering:cloche");
         recipe.add("input", CompatRecipeJson.itemIngredient(seedId));
         recipe.add("soil", CompatRecipeJson.itemIngredient(SOIL));

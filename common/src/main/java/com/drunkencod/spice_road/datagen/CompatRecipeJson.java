@@ -5,6 +5,9 @@ import com.google.gson.JsonObject;
 
 import net.minecraft.resources.ResourceLocation;
 
+import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.compat.CompatRecipeMod;
+
 /**
  * Raw-JSON building blocks shared by the datagen providers that write recipes
  * for optional mods, none of which are compile-time dependencies.
@@ -38,6 +41,29 @@ final class CompatRecipeJson {
         JsonArray fabricConditions = new JsonArray();
         fabricConditions.add(fabricCondition);
         recipe.add("fabric:load_conditions", fabricConditions);
+
+        return recipe;
+    }
+
+    /**
+     * @param mod The optional mod the recipe is for.
+     * @return A recipe root like {@link #withModLoadedConditions(String)}, that
+     *         additionally only loads while the mod's compat recipe toggle is on
+     *         in the common config.
+     */
+    static JsonObject withToggleConditions(CompatRecipeMod mod) {
+        JsonObject recipe = withModLoadedConditions(mod.getModId());
+        String type = Constants.MOD_ID + ":" + CompatRecipeMod.CONDITION_ID;
+
+        JsonObject neoForgeCondition = new JsonObject();
+        neoForgeCondition.addProperty("type", type);
+        neoForgeCondition.addProperty("mod", mod.getSerializedName());
+        recipe.getAsJsonArray("neoforge:conditions").add(neoForgeCondition);
+
+        JsonObject fabricCondition = new JsonObject();
+        fabricCondition.addProperty("condition", type);
+        fabricCondition.addProperty("mod", mod.getSerializedName());
+        recipe.getAsJsonArray("fabric:load_conditions").add(fabricCondition);
 
         return recipe;
     }

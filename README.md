@@ -72,7 +72,7 @@ Then simply place the downloaded JAR file into your Minecraft `mods` folder and 
   - Sublevels sample the spice region from the correct overworld coordinates, meaning crops on mobile bases correctly react to the current spice region.
   - Accurately scaled block weights.
 - [Botany Pots](https://modrinth.com/mod/botany-pots) & [Botany Trees](https://modrinth.com/mod/botany-trees), [Immersive Engineering](https://modrinth.com/mod/immersiveengineering)
-    - Botany Pots and Garden Cloches can be used to grow hardy crops (common and uncommon tier). Note: unfortunately these blockentities will not respond to cultivation and harvest config changes until the mod datagen is run again or the mod is recompiled.
+    - Botany Pots and Garden Cloches can be used to grow hardy crops (common and uncommon tier). Note: unfortunately these blockentities will not respond to cultivation and harvest config changes until the mod datagen is run again or the mod is recompiled. The recipes for each of these mods can be turned off in the common config (applies after `/reload`).
 
 <br>
 
