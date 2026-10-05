@@ -172,4 +172,4 @@
             - [ ] Nearby spice sourcing.
             - [ ] Minigame.
 - [x] Drop more spices and spice seeds when the effect Luck is active, worse drops if Bad Luck is active.
-- [ ] Convert all baked datagen config values into live config values, else (if not possible or not worth it) add a note to the affected config values stating that changing it will require datagen to be re-run / the mod to be recompiled.
+- [x] Convert all baked datagen config values into live config values, else (if not possible or not worth it) add a note to the affected config values stating that changing it will require datagen to be re-run / the mod to be recompiled.
