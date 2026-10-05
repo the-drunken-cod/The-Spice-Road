@@ -16,8 +16,10 @@ public final class BoardSeed {
 
     /**
      * @param worldSeed The world seed.
-     * @param salt      The configured board salt; {@code 0} leaves the unsalted boards.
-     * @param itemId    The registry ID of the food item, e.g. {@code "minecraft:bread"}.
+     * @param salt      The configured board salt; {@code 0} leaves the unsalted
+     *                  boards.
+     * @param itemId    The registry ID of the food item, e.g.
+     *                  {@code "minecraft:bread"}.
      * @return The board seed.
      */
     public static long of(long worldSeed, long salt, String itemId) {

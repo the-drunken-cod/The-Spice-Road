@@ -1,4 +1,11 @@
 # `0.1.0`
+## `0.1.0-alpha.3`
+- **Features:**
+- **Changes:**
+- **Fixes:**
+
+<br>
+
 ## `0.1.0-alpha.2`
 ⚠️ **Contains breaking changes.** Existing worlds will be affected!  
 - **Features:**
