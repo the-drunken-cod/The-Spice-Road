@@ -16,7 +16,7 @@ public enum DefaultMixPreset {
     BENGALI("bengali", 1,
             Map.of(Spice.FENUGREEK, 1, Spice.NIGELLA, 1, Spice.CUMIN, 1, Spice.MUSTARD, 1, Spice.FENNEL, 1)),
     BIRYANI("biryani", 2,
-            Map.of(Spice.CORIANDER, 1, Spice.CARDAMOM, 1, Spice.FENNEL, 1, Spice.CORIANDER, 1, Spice.CARAWAY, 1,
+            Map.of(Spice.CORIANDER, 2, Spice.CARDAMOM, 1, Spice.FENNEL, 1, Spice.CARAWAY, 1,
                     Spice.CLOVE, 1)),
     CAJUN("cajun", 3, Map.of(Spice.HABANERO, 1, Spice.GARLIC, 1, Spice.LONG_PEPPER, 1, Spice.THYME, 1)),
     CURRY("curry", 4,
