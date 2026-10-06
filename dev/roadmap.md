@@ -12,7 +12,7 @@ Warning: may contain outdated information, and is only to be used as a guideline
         - Vanilla and Saffron need to be hand-picked by an actual living player (no Create deployers).
 2. [ ] **Spice Mixes**
     - Allows recipes to be reproduced easier, and trade to include preset and custom spice mixes.
-    - Use recipe type similar to firework stars. Use new spice jar item as base, allow adding 8 of any spice.
+    - Use recipe type similar to firework stars. Use new jar item as base, allow adding 8 of any spice.
     - [ ] Combine up to 10 spices into condensed flavor_carrier items that impart more spice values at once.
     - [ ] Predefined list of ~8 spice mixes with custom models (custom textures) and a custom name ("Mediterranean Seasoning", etc.). Listed separately in the creative tab, and recipe takes precedence over the firework-star-like recipe.
 3. [ ] **Spice Rack**
