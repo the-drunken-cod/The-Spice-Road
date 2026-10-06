@@ -156,7 +156,7 @@ public final class ConfigSchema {
 
     /** Growth-speed multiplier of planted Spices per {@link Tier}. */
     public static final Map<Tier, ConfigOption<Double>> CULTIVATION_GROWTH_SPEED_MULTIPLIER = perTier(
-            CULTIVATION_GROWTH_SPEED, 3.0, 2.5, 1.75, 1.25, 0.01, 100.0);
+            CULTIVATION_GROWTH_SPEED, 2.5, 2.0, 1.75, 1.25, 0.01, 100.0);
 
     // #region Harvesting
 
@@ -196,7 +196,7 @@ public final class ConfigSchema {
 
     /** Magnitude each flavor axis saturates towards when read. */
     public static final ConfigOption<Double> FLAVOR_SOFT_CAP = add(
-            ConfigOption.ofDouble(FLAVOR, "softCap", 10.0, 0.1, 1000.0));
+            ConfigOption.ofDouble(FLAVOR, "softCap", 15.0, 0.1, 1000.0));
 
     /** Magnitude any non-zero flavor axis counts as at least. */
     public static final ConfigOption<Double> FLAVOR_MINIMUM_AXIS_VALUE = add(
@@ -206,7 +206,7 @@ public final class ConfigSchema {
 
     /** Most distinct Seasoning Effects one food can hold. */
     public static final ConfigOption<Integer> SEASONING_MAX_EFFECTS = add(
-            ConfigOption.ofInt(SEASONING, "maxEffects", 4, 1, 16));
+            ConfigOption.ofInt(SEASONING, "maxEffects", 6, 1, 16));
 
     /** Multiplier on the duration of every Seasoning Effect. */
     public static final ConfigOption<Double> SEASONING_EFFECT_DURATION_MULTIPLIER = add(
@@ -235,7 +235,7 @@ public final class ConfigSchema {
 
     /** Most spices of all kinds that count towards one food's points. */
     public static final ConfigOption<Integer> SEASONING_MAX_SPICES = add(
-            ConfigOption.ofInt(SEASONING, "maxSpices", 20, 1, 1000));
+            ConfigOption.ofInt(SEASONING, "maxSpices", 24, 1, 1000));
 
     /** Most spices of one kind that count towards one food's points. */
     public static final ConfigOption<Integer> SEASONING_MAX_SPICES_PER_KIND = add(

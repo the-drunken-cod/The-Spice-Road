@@ -13,7 +13,30 @@ import com.drunkencod.spice_road.spice.Spice;
  * defaults.
  */
 public enum DefaultMixPreset {
-    PUMPKIN_SPICE("pumpkin_spice", 1, Map.of(Spice.CINNAMON, 1, Spice.NUTMEG, 1, Spice.CLOVE, 1, Spice.ALLSPICE, 1));
+    BENGALI("bengali", 1,
+            Map.of(Spice.FENUGREEK, 1, Spice.NIGELLA, 1, Spice.CUMIN, 1, Spice.MUSTARD, 1, Spice.FENNEL, 1)),
+    BIRYANI("biryani", 2,
+            Map.of(Spice.CORIANDER, 1, Spice.CARDAMOM, 1, Spice.FENNEL, 1, Spice.CORIANDER, 1, Spice.CARAWAY, 1,
+                    Spice.CLOVE, 1)),
+    CAJUN("cajun", 3, Map.of(Spice.HABANERO, 1, Spice.GARLIC, 1, Spice.LONG_PEPPER, 1, Spice.THYME, 1)),
+    CURRY("curry", 4,
+            Map.of(Spice.CURRY, 1, Spice.CUMIN, 1, Spice.CORIANDER, 1, Spice.TURMERIC, 1, Spice.FENNEL, 1,
+                    Spice.FENUGREEK, 1)),
+    HOLIDAY("holiday", 5,
+            Map.of(Spice.TONKA, 1, Spice.STAR_ANISE, 1, Spice.VANILLA, 1, Spice.LICORICE, 1, Spice.CINNAMON, 1)),
+    MEDITERRANEAN("mediterranean", 6,
+            Map.of(Spice.THYME, 1, Spice.OREGANO, 1, Spice.ROSEMARY, 1, Spice.PARSLEY, 1, Spice.BASIL, 1)),
+    MEXICAN("mexican", 7,
+            Map.of(Spice.OREGANO, 1, Spice.HABANERO, 1, Spice.CUMIN, 1, Spice.CORIANDER, 1)),
+    PERSIAN("persian", 8, Map.of(
+            Spice.SAFFRON, 1, Spice.TURMERIC, 1, Spice.CINNAMON, 1, Spice.LONG_PEPPER, 1, Spice.CARDAMOM, 1)),
+    PUMPKIN_SPICE("pumpkin_spice", 9,
+            Map.of(Spice.CINNAMON, 1, Spice.NUTMEG, 1, Spice.CLOVE, 1, Spice.ALLSPICE, 1, Spice.GINGER, 1)),
+    RAS_EL_HANOUT("ras_el_hanout", 10, Map.of(
+            Spice.CARDAMOM, 1, Spice.CUMIN, 1, Spice.CLOVE, 1, Spice.CINNAMON, 1, Spice.NUTMEG, 1, Spice.ALLSPICE, 1,
+            Spice.LONG_PEPPER, 1, Spice.MASTIC, 1)),
+    SALAD("salad", 11, Map.of(Spice.TURMERIC, 1, Spice.PARSLEY, 1, Spice.DILL, 1, Spice.GARLIC, 1)),
+    ZAATAR("zaatar", 12, Map.of(Spice.THYME, 1, Spice.SUMAC, 1, Spice.OREGANO, 1, Spice.SESAME, 1, Spice.CLOVE, 1));
 
     private final String id;
     private final int customModelData;

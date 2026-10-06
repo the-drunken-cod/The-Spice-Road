@@ -3,7 +3,11 @@
 - **Features:**
     - Added Spice Mix, which combines a jar (new item) with up to 8 spices in any configuration.
         - Added datapack-provided spice mix presets with a custom name and texture and JEI/EMI recipe.
-        - Added TODO: 8 default spice mix presets.
+        - Added 12 default spice mix presets (look up ingredients with JEI/EMI): bengali, biryani, cajun, curry, holiday, mediterranean, mexican, persian, pumpkin_spice, ras_el_hanout, salad, zaatar.
+    - Added 6 new spices:
+        - Bushes: TODO: Basil (temperate), Oregano (arid), Parsley (temperate).
+        - Crops: TODO: Garlic (temperate), Sesame (tropical).
+        - Trees: TODO: Tonka (tropical).
 - **Changes:**
     - Reworked some more textures.
 - **Fixes:**
