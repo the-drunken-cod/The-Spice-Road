@@ -73,7 +73,8 @@ public class ModItems {
     public static void populateGenericTab(CreativeModeTab.Output output) {
         output.accept(SPICE_GRINDER.get().getDefaultInstance());
         output.accept(JAR.get().getDefaultInstance());
-        MixPresetRegistry.getAll().forEach((id, preset) -> output.accept(SpiceMixes.ofPreset(id, preset)));
+        MixPresetRegistry.getAll().forEach((id, preset) -> SpiceMixes.ofPreset(id, preset)
+                .ifPresent(stack -> output.accept(stack)));
     }
 
     /**

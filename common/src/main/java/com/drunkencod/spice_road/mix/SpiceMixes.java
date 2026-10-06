@@ -34,10 +34,11 @@ public final class SpiceMixes {
     /**
      * @param id     A Mix Preset's ID.
      * @param preset The preset.
-     * @return A Spice Mix of one batch of the preset's proportions.
+     * @return A Spice Mix of one batch of the preset's proportions, with the
+     *         first member of each tag; empty if a tag has no members.
      */
-    public static ItemStack ofPreset(ResourceLocation id, MixPreset preset) {
-        return stackOf(new SpiceMix(Optional.of(id), preset.spices()));
+    public static Optional<ItemStack> ofPreset(ResourceLocation id, MixPreset preset) {
+        return preset.representativeSpices().map(spices -> stackOf(new SpiceMix(Optional.of(id), spices)));
     }
 
     /**

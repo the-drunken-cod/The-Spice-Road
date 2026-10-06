@@ -182,7 +182,7 @@
 - [ ] Add simple usage tooltips to items:
     - [ ] Seeds, cuttings and saplings with harvestDifficulty 4-5: `Only grows where it was found.`
     - [ ] Spice Grinder: `Combine spices and apply seasoning.`
-- [ ] Allow tags in spice mixes, e.g. `#spice_road:spice/pepper`.
+- [x] Allow tags in spice mixes, e.g. `#spice_road:spice/peppercorn` and `#spice_road:spice/cinnamon`
 - [ ] Create spice balancing tool.
     - Website that loads a set of spice profile JSONs and allows easy comparing and adjusting and exporting.
     - [ ] List all spices and their profiles using color-coded and prefixed slider inputs.

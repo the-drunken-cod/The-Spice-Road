@@ -3,6 +3,7 @@
 - **Features:**
     - Added Spice Mix, which combines a jar (new item) with up to 8 spices in any configuration.
         - Added datapack-provided spice mix presets with a custom name and texture and JEI/EMI recipe.
+            - Preset ingredients may be item tags (e.g. `spice_road:spice/cinnamon`), of which any combination of members counts.
         - Added 12 default spice mix presets (look up ingredients with JEI/EMI): bengali, biryani, cajun, curry, holiday, mediterranean, mexican, persian, pumpkin_spice, ras_el_hanout, salad, zaatar.
     - Added 6 new spices:
         - Bushes: TODO: Basil (temperate), Oregano (arid), Parsley (temperate).
