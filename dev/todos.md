@@ -179,3 +179,6 @@
     - [ ] Add scroll bar to the right edge of the spice ingredient list.
     - [ ] Make GUI taller to fit more rows of spices and to fit the message line better.
     - [ ] Merge "insert item" and message lines into one line, visually separated.
+- [ ] Add simple usage tooltips to items:
+    - [ ] Seeds, cuttings and saplings with harvestDifficulty 4-5: `Only grows where it was found.`
+    - [ ] Spice Grinder: `Combine spices and apply seasoning.`

@@ -10,15 +10,11 @@ Warning: may contain outdated information, and is only to be used as a guideline
     The range of the values is -1 to +1, which allows spices to negatively stack. In order to do this in an intuitive way, spice profiles need to correspond to how the spices would interact in real life.
     - [x] Make certain spices non-automatable.
         - Vanilla and Saffron need to be hand-picked by an actual living player (no Create deployers).
-2. [ ] **Drying Rack**
-    - Note: mostly already implemented in Mycomancy, needs to be ported, except for the model, since it's limited to 2 inputs and outputs, and since Mycomancy only runs on NeoForge.
-    - Dries up to 2 items at the same time, hard limited by the model and renderer.
-    - Custom recipe serializer (see Mycomancy).
-        - 1 input slot, 1 output slot, 1 extra slot per side, so 6 slots in total. This is an intentional deviation from Mycomancy's 4 slots.
-    - Add Processed Spice items made by drying (e.g. dried nutmeg), each its own item with its own spice profile values.
-        - Some spices will have more beneficial values when dried, others will have less.
-        - Not all spices can be dried. Other processing methods (soaking, smoking, cutting, etc.) may follow in the future .
-    - Drying Rack will be faster when placed next to a hot block (identified by a tag, again, refer to Mycomancy).
+2. [ ] **Spice Mixes**
+    - Allows recipes to be reproduced easier, and trade to include preset and custom spice mixes.
+    - Use recipe type similar to firework stars. Use new spice jar item as base, allow adding 8 of any spice.
+    - [ ] Combine up to 10 spices into condensed flavor_carrier items that impart more spice values at once.
+    - [ ] Predefined list of ~8 spice mixes with custom models (custom textures) and a custom name ("Mediterranean Seasoning", etc.). Listed separately in the creative tab, and recipe takes precedence over the firework-star-like recipe.
 3. [ ] **Spice Rack**
     - Way to store and display spices.
     - Inventory is exposed to the mod loader so automation is supported.
@@ -39,11 +35,20 @@ Warning: may contain outdated information, and is only to be used as a guideline
     - There is a mechanic that makes different kinds of spices interact differently and yield different buffs of different levels.
         - The mechanic yields diminishing returns, a good amount of spices for max benefits should be around 8-10 (configurable).
     - Buffs have 3 levels of potency (with configurable multipliers).
-6. [ ] **Spice Effects / Boons & Banes**
+6. [ ] **Drying Rack**
+    - Note: mostly already implemented in Mycomancy, needs to be ported, except for the model, since it's limited to 2 inputs and outputs, and since Mycomancy only runs on NeoForge.
+    - Dries up to 2 items at the same time, hard limited by the model and renderer.
+    - Custom recipe serializer (see Mycomancy).
+        - 1 input slot, 1 output slot, 1 extra slot per side, so 6 slots in total. This is an intentional deviation from Mycomancy's 4 slots.
+    - Add Processed Spice items made by drying (e.g. dried nutmeg), each its own item with its own spice profile values.
+        - Some spices will have more beneficial values when dried, others will have less.
+        - Not all spices can be dried. Other processing methods (soaking, smoking, cutting, etc.) may follow in the future .
+    - Drying Rack will be faster when placed next to a hot block (identified by a tag, again, refer to Mycomancy).
+7. [ ] **Spice Effects / Boons & Banes**
     - [ ] Add 16 boons (mostly custom, maybe some vanilla).
     - [ ] Add 16 banes (mostly custom, maybe some vanilla).
     - [ ] Add optional extra boons and banes from common mods like Farmer's Delight.
-7. [ ] **Villagers**
+8. [ ] **Villagers**
     - Note: trades were also already a part of Mycomancy, so they can be used as a baseline (no datagenning tho).
     - [ ] Add Spice Trader villager type.
         - Sells common spices and some less common ones, few rare ones and none of the epic ones.
@@ -51,10 +56,6 @@ Warning: may contain outdated information, and is only to be used as a guideline
         - Datagen the trades from the enums.
         - Custom house .nbt structures that jigsaw onto multiple of the vanilla village road segments.
     - [x] Make cartographer sell Spice Maps (Journeyman common, Expert uncommon, Master rare); epic Spice Maps are chest loot only (see `dev/todos.md`).
-8. [ ] **Spice Mixes**
-    - Allows recipes to be reproduced easier, and trade to include preset and custom spice mixes.
-    - [ ] Combine up to 10 spices into condensed flavor_carrier items that impart more spice values at once.
-    - [ ] Predefined list of ~8 spice mixes with custom textures and a custom name ("Mediterranean Seasoning", etc.).
 9. [ ] **Documentation**
     - [ ] Create user wiki.
     - [ ] Create developer documentation.
