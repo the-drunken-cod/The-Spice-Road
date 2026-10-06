@@ -1,13 +1,14 @@
 <div align="center" style="text-align: center;">
 
 # The Spice Road
-Adds rare spices to Minecraft that enhance existing foods with a new buff mechanic, applied via a roguelite minigame. Encourages local production and specialized trade. Has lots of compat for other mods.  
+Adds spices to Minecraft that enhance existing foods with a new buff mechanic and all-new effects, applied via a roguelite minigame.  
+Encourages local production and specialized trade and has lots of compat for other mods.  
   
 ![TODO: Banner](./.github/assets/banner.png)
 
 —  
 
-<sup>Available on <a href="https://github.com/the-drunken-cod/The-Spice-Road/releases">GitHub</a>, <a href="https://modrinth.com/mod/the-spice-road">Modrinth</a> & <a href="https://www.curseforge.com/minecraft/mc-mods/the-spice-road">CurseForge</a></sup>
+<sup>Available via <a href="https://github.com/the-drunken-cod/The-Spice-Road/releases">GitHub</a>, <a href="https://modrinth.com/mod/the-spice-road">TODO: Modrinth</a> & <a href="https://www.curseforge.com/minecraft/mc-mods/the-spice-road">TODO: CurseForge</a></sup>
 
 ---
 
@@ -24,19 +25,21 @@ Adds rare spices to Minecraft that enhance existing foods with a new buff mechan
 <br>
 
 ## Features:
-- **36 new spice plants now generate in dedicated regions throughout the overworld.** They are dependent on climate, but not bound to biomes and the region size is configurable.
+- **42 new spice plants now generate in dedicated regions throughout the overworld.** They are dependent on climate, but not bound to biomes and the region size is configurable.
     - Spices can be harvested from trees (bark or fruiting leaves), crops, bushes and rhizomes (some of which need to grow submerged in shallow water).
+    - Mix up to 8 spices together in any configuration into the new Spice Mix item.
+    - Comes with 12 default Spice Mix presets with a custom name and texture.
 - **Common spices may be taken back home and grown**, but a good portion of them will **only mature if produced locally.**  
   This incentivizes exploration, as well as establishing trade routes and associations on servers. From Hanseatic League to East India Company, there's something for everyone.
-    - **Spice plants are worldgen-reliant and finite**, so monopolizing them is a real thing players can do. Extra spice sources can always be added my modpack creators and server admins, like loot tables, villager trades, kubejs scripts, currency shops, etc.
+    - **Spice Plants are worldgen-reliant and finite**, so monopolizing them is a real thing players can do. Extra spice sources can always be added my modpack creators and server admins, like loot tables, villager trades, kubejs scripts, currency shops, etc.
     - Maps can be **traded for or found as loot** to help find certain spices. Epic tier spices can only be found via maps found in treasure loot by default.
-- **New mechanic that allows spices to be mixed and matched and applied to existing foods** of any mod to **imbue them with beneficial custom effects.** Players can also create spice mixes and specialize in cultivating the rarest spice plants.
-    - **Roguelite minigame** inspired by real cooking and spice application processes. Spice works like a currency that can be spent to nudge food effects into one or multiple of 16 flavor directions.
+- **New mechanic that allows spices to be mixed and matched and applied to existing foods** of any mod to **imbue them with beneficial custom effects.** Players can also create their own Spice Mixes and specialize in cultivating the rarest spice plants.
+    - **Roguelite minigame** inspired by real cooking and spice application processes. Here spice works like a currency that can be spent to nudge food effects into one or multiple of 16 effect directions. Effects are largely reproducible and knowledge to plan better routes is unlocked over time, but every run is still unique.
 - **Incredibly modpack-, datapack- and server admin friendly.**
   - Allows for tons of configuration for any play style and player base.
-  - Spice profiles and items can easily be added by datapack makers, and any mod's food item is supported out of the box. Note: some mods' crafting stations might erase spice profiles. In that case, please [open an issue](https://github.com/the-drunken-cod/The-Spice-Road/issues) so we can add compatibility.
-  - Compatibility datapacks can easily add spice profiles to any other mods' items. Refer to the [spice profile documentation](./docs/data/spice_profile.md) for more info.
-  - Commands for finding (`/locate spice`) and utilities for shuffling spice regions for balancing or setting up scenarios.
+  - Spice Profiles can easily be added to items by datapack makers, Spice Mixes with a custom name and texture may also be added, and any mod's food item is supported out of the box. [Refer to the documentation](./docs/README.md) for more info.  
+  Note: some mods' crafting stations might erase Spice Profiles. In that case, please [open an issue](https://github.com/the-drunken-cod/The-Spice-Road/issues) so we can add compatibility.
+  - Commands for finding (`/locate spice`) and utilities for shuffling Spice Regions and Spice Grinder boards, for reasons of rebalancing or setting up specific scenarios.
 
 <br>
 
