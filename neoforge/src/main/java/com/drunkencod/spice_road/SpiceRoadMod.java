@@ -10,6 +10,8 @@ import com.drunkencod.spice_road.client.NeoForgeSpiceTooltipHandler;
 import com.drunkencod.spice_road.config.NeoForgeConfigHelper;
 import com.drunkencod.spice_road.datagen.BotanyPotsRecipeProvider;
 import com.drunkencod.spice_road.datagen.ImmersiveEngineeringClocheRecipeProvider;
+import com.drunkencod.spice_road.datagen.MixPresetProvider;
+import com.drunkencod.spice_road.datagen.SpiceMixModelProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeBlockStateProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeItemModelProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeSpiceDataMapProvider;
@@ -22,6 +24,7 @@ import com.drunkencod.spice_road.datagen.SpiceRoadAdvancements;
 import com.drunkencod.spice_road.datagen.SpiceTreeCompatRecipeProvider;
 import com.drunkencod.spice_road.datagen.SpiceTreePlanksRecipeProvider;
 import com.drunkencod.spice_road.loot.LootInjections;
+import com.drunkencod.spice_road.mix.MixPresetSync;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.NeoForgeConditions;
 import com.drunkencod.spice_road.registry.NeoForgeCreativeTabHelper;
@@ -150,6 +153,12 @@ public class SpiceRoadMod {
                 new BoardLayoutProvider(event.getGenerator().getPackOutput()));
         event.getGenerator().addProvider(
                 event.includeServer(),
+                new MixPresetProvider(event.getGenerator().getPackOutput()));
+        event.getGenerator().addProvider(
+                event.includeClient(),
+                new SpiceMixModelProvider(event.getGenerator().getPackOutput()));
+        event.getGenerator().addProvider(
+                event.includeServer(),
                 new AdvancementProvider(event.getGenerator().getPackOutput(), event.getLookupProvider(),
                         List.of(new SpiceRoadAdvancements())));
     }
@@ -171,6 +180,8 @@ public class SpiceRoadMod {
                 .playToClient(SpiceProfileSync.TYPE, SpiceProfileSync.STREAM_CODEC,
                         (payload, context) -> payload.handle())
                 .playToClient(SeasoningEffectSync.TYPE, SeasoningEffectSync.STREAM_CODEC,
+                        (payload, context) -> payload.handle())
+                .playToClient(MixPresetSync.TYPE, MixPresetSync.STREAM_CODEC,
                         (payload, context) -> payload.handle())
                 .playToClient(GrinderViewPayload.TYPE, GrinderViewPayload.STREAM_CODEC,
                         (payload, context) -> payload.handle())
@@ -212,16 +223,17 @@ public class SpiceRoadMod {
     }
 
     /**
-     * Syncs Default Profiles and the Seasoning Effect catalog to each player on
-     * join and to everyone after
-     * {@code /reload}.
+     * Syncs Default Profiles, the Seasoning Effect catalog and the Mix Presets
+     * to each player on join and to everyone after {@code /reload}.
      */
     private static void onDatapackSync(OnDatapackSyncEvent event) {
         SpiceProfileSync profiles = SpiceProfileSync.current();
         SeasoningEffectSync effects = SeasoningEffectSync.current();
+        MixPresetSync presets = MixPresetSync.current();
         event.getRelevantPlayers().forEach(player -> {
             PacketDistributor.sendToPlayer(player, profiles);
             PacketDistributor.sendToPlayer(player, effects);
+            PacketDistributor.sendToPlayer(player, presets);
         });
     }
 }

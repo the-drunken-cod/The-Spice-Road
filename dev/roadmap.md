@@ -10,11 +10,12 @@ Warning: may contain outdated information, and is only to be used as a guideline
     The range of the values is -1 to +1, which allows spices to negatively stack. In order to do this in an intuitive way, spice profiles need to correspond to how the spices would interact in real life.
     - [x] Make certain spices non-automatable.
         - Vanilla and Saffron need to be hand-picked by an actual living player (no Create deployers).
-2. [ ] **Spice Mixes**
+2. [x] **Spice Mixes**
     - Allows recipes to be reproduced easier, and trade to include preset and custom spice mixes.
-    - Use recipe type similar to firework stars. Use new jar item as base, allow adding 8 of any spice.
-    - [ ] Combine up to 10 spices into condensed flavor_carrier items that impart more spice values at once.
-    - [ ] Predefined list of ~8 spice mixes with custom models (custom textures) and a custom name ("Mediterranean Seasoning", etc.). Listed separately in the creative tab, and recipe takes precedence over the firework-star-like recipe.
+    - [x] Shapeless recipe similar to firework stars: one empty jar plus up to 8 (configurable) loose spices, repeats allowed, yields a Spice Mix. Mixes stack to 64.
+    - [x] A mix used as a recipe ingredient brings all its spices into the output (conserved like loose spices), and the empty jar is returned as the crafting remainder. Mixes can't be merged, topped up or unmixed.
+    - [x] The Spice Grinder accepts mixes (from the inventory and spice storage), expanding them into their spices under the usual caps, returning the jars.
+    - [x] Datapack-defined Mix Presets (~8 eventually, starting with Pumpkin Spice: cinnamon, nutmeg, clove at 1:1:1) with their own name and model (`custom_model_data`). A grid matching a preset's ratio at any multiple that fits yields the preset instead of a custom mix. Presets are listed in the creative tab.
 3. [ ] **Spice Rack**
     - Way to store and display spices.
     - Inventory is exposed to the mod loader so automation is supported.
@@ -51,10 +52,11 @@ Warning: may contain outdated information, and is only to be used as a guideline
 8. [ ] **Villagers**
     - Note: trades were also already a part of Mycomancy, so they can be used as a baseline (no datagenning tho).
     - [ ] Add Spice Trader villager type.
-        - Sells common spices and some less common ones, few rare ones and none of the epic ones.
-        - Buys all tiers of spices.
         - Datagen the trades from the enums.
-        - Custom house .nbt structures that jigsaw onto multiple of the vanilla village road segments.
+        - [ ] Sells common spices and some uncommon ones. Sells 1-2 of the cheapest spice mixes.
+        - [ ] Buys all tiers of spices and some spice mixes.
+        - [ ] Custom house .nbt structures that jigsaw onto the vanilla village road segments.
+            - [ ] Multiple variants for different biome types (plains, taiga, desert, snow).
     - [x] Make cartographer sell Spice Maps (Journeyman common, Expert uncommon, Master rare); epic Spice Maps are chest loot only (see `dev/todos.md`).
 9. [ ] **Documentation**
     - [ ] Create user wiki.

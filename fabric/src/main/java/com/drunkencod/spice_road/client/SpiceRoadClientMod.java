@@ -14,6 +14,7 @@ import com.drunkencod.spice_road.config.ConfigSync;
 import com.drunkencod.spice_road.config.ConfigSyncOverride;
 import com.drunkencod.spice_road.client.grinder.SpiceGrinderScreen;
 import com.drunkencod.spice_road.grinder.GrinderViewPayload;
+import com.drunkencod.spice_road.mix.MixPresetSync;
 import com.drunkencod.spice_road.registry.ModMenus;
 import com.drunkencod.spice_road.spice.SpiceProfileSync;
 import com.drunkencod.spice_road.spice.effect.SeasoningEffectSync;
@@ -33,6 +34,7 @@ public class SpiceRoadClientMod implements ClientModInitializer {
         FabricSpiceTooltipHandler.register();
         ClientPlayNetworking.registerGlobalReceiver(SpiceProfileSync.TYPE, (payload, context) -> payload.handle());
         ClientPlayNetworking.registerGlobalReceiver(SeasoningEffectSync.TYPE, (payload, context) -> payload.handle());
+        ClientPlayNetworking.registerGlobalReceiver(MixPresetSync.TYPE, (payload, context) -> payload.handle());
         ClientPlayNetworking.registerGlobalReceiver(GrinderViewPayload.TYPE, (payload, context) -> payload.handle());
         SpiceGrinderScreen.registerViewHandler();
         MenuScreens.register(ModMenus.SPICE_GRINDER.get(), SpiceGrinderScreen::new);

@@ -109,4 +109,25 @@ class ItemListNbtTest {
         assertEquals(9, tag.getCompound("ItemHandler").getInt("Size"));
         assertEquals(Map.of("minecraft:sugar", 7), ItemListNbt.count(tag));
     }
+
+    @Test
+    void listsEveryEntryWithItsComponents() {
+        CompoundTag mix = stack("spice_road:spice_mix", 2, 1);
+        mix.put("components", new CompoundTag());
+        CompoundTag tag = new CompoundTag();
+        tag.put("Items", list(stack("minecraft:sugar", 1, 0), mix));
+        assertEquals(2, ItemListNbt.entries(tag).size());
+        assertTrue(ItemListNbt.entries(tag).stream().anyMatch(entry -> entry.contains("components")));
+    }
+
+    @Test
+    void removingByPredicateOnlyTakesFromMatchingEntries() {
+        CompoundTag marked = stack("minecraft:sugar", 4, 1);
+        marked.putBoolean("marked", true);
+        CompoundTag tag = new CompoundTag();
+        tag.put("Items", list(stack("minecraft:sugar", 4, 0), marked));
+        assertEquals(4, ItemListNbt.remove(tag, entry -> entry.getBoolean("marked"), 6));
+        assertEquals(Map.of("minecraft:sugar", 4), ItemListNbt.count(tag));
+        assertFalse(ItemListNbt.entries(tag).stream().anyMatch(entry -> entry.getBoolean("marked")));
+    }
 }

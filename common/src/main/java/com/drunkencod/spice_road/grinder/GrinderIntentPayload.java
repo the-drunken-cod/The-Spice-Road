@@ -21,9 +21,9 @@ import com.drunkencod.spice_road.Constants;
  * @param data        The ordinal of the {@code Direction} for {@link Kind#MOVE},
  *                    or how many spices to add or remove at most for the spice
  *                    intents.
- * @param item        The spice item for the spice intents.
+ * @param spice       The loose spice or kind of Spice Mix for the spice intents.
  */
-public record GrinderIntentPayload(int containerId, Kind kind, int data, Optional<ResourceLocation> item)
+public record GrinderIntentPayload(int containerId, Kind kind, int data, Optional<GrinderSpice> spice)
         implements CustomPacketPayload {
 
     /** Payload type ID. */
@@ -36,14 +36,14 @@ public record GrinderIntentPayload(int containerId, Kind kind, int data, Optiona
                     ByteBufCodecs.VAR_INT, GrinderIntentPayload::containerId,
                     ByteBufCodecs.idMapper(i -> Kind.values()[i], Kind::ordinal), GrinderIntentPayload::kind,
                     ByteBufCodecs.VAR_INT, GrinderIntentPayload::data,
-                    ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC), GrinderIntentPayload::item,
+                    ByteBufCodecs.optional(GrinderSpice.STREAM_CODEC), GrinderIntentPayload::spice,
                     GrinderIntentPayload::new);
 
     /** What the player wants to do. */
     public enum Kind {
-        /** Add one of {@code item} to the draft. */
+        /** Add one of {@code spice} to the draft. */
         ADD_DRAFT_SPICE,
-        /** Take one of {@code item} out of the draft. */
+        /** Take one of {@code spice} out of the draft. */
         REMOVE_DRAFT_SPICE,
         /** Start the run from the draft. */
         SEASON,
@@ -51,7 +51,7 @@ public record GrinderIntentPayload(int containerId, Kind kind, int data, Optiona
         MOVE,
         /** Lock in the cell the pawn stands on. */
         LOCK_IN,
-        /** Add one of {@code item} to the run in progress. */
+        /** Add one of {@code spice} to the run in progress. */
         ADD_SPICE,
         /** Finish the run. */
         ACCEPT,

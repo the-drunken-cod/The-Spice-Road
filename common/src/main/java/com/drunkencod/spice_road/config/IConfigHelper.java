@@ -464,4 +464,9 @@ public interface IConfigHelper {
      *         Spices; {@code 0} turns tracking found Spices off.
      */
     int getStatsFoundScanIntervalTicks();
+
+    /**
+     * @return The most spices of all kinds one Spice Mix holds.
+     */
+    int getSpiceMixCapacity();
 }

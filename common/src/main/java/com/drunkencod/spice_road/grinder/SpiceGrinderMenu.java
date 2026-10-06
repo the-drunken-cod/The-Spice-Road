@@ -12,7 +12,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import com.drunkencod.spice_road.platform.Services;
@@ -50,9 +49,9 @@ public class SpiceGrinderMenu extends AbstractContainerMenu {
      * lock it.
      */
     private final DataSlot lockedSlot = DataSlot.standalone();
-    private final Map<Item, Integer> draft = new LinkedHashMap<>();
+    private final Map<GrinderSpice, Integer> draft = new LinkedHashMap<>();
     private GrinderView view = GrinderView.EMPTY;
-    private Map<Item, Integer> lastAvailable = Map.of();
+    private Map<GrinderSpice, Integer> lastAvailable = Map.of();
 
     /**
      * Client-side constructor, as created from the menu type.
@@ -119,10 +118,10 @@ public class SpiceGrinderMenu extends AbstractContainerMenu {
     }
 
     /**
-     * @return The draft: how many of each spice item per food were chosen.
-     *         Server-side only.
+     * @return The draft: how many of each loose spice and kind of Spice Mix per
+     *         food were chosen. Server-side only.
      */
-    Map<Item, Integer> draft() {
+    Map<GrinderSpice, Integer> draft() {
         return draft;
     }
 
@@ -155,7 +154,7 @@ public class SpiceGrinderMenu extends AbstractContainerMenu {
     public void broadcastChanges() {
         super.broadcastChanges();
         if (inventory.player instanceof ServerPlayer player && player.tickCount % AVAILABLE_CHECK_TICKS == 0) {
-            Map<Item, Integer> now = SpiceSources.of(player).available();
+            Map<GrinderSpice, Integer> now = SpiceSources.of(player).available();
             if (!now.equals(lastAvailable)) {
                 lastAvailable = now;
                 syncView(GrinderView.Event.NONE);

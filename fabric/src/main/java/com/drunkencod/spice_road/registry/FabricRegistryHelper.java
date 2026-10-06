@@ -23,6 +23,8 @@ import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator;
@@ -125,6 +127,14 @@ public class FabricRegistryHelper implements IRegistryHelper {
                 ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id),
                 new MenuType<>(factory, FeatureFlags.DEFAULT_FLAGS));
         return () -> type;
+    }
+
+    @Override
+    public <T extends Recipe<?>> Supplier<RecipeSerializer<T>> registerRecipeSerializer(String id,
+            Supplier<RecipeSerializer<T>> factory) {
+        RecipeSerializer<T> serializer = Registry.register(BuiltInRegistries.RECIPE_SERIALIZER,
+                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id), factory.get());
+        return () -> serializer;
     }
 
     @Override

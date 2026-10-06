@@ -64,6 +64,8 @@ public final class ConfigSchema {
     public static final ConfigSection SEASONING_PARTICIPATION = SEASONING.child("participation");
     /** Bonus saturation for seasoned food in relation to its spice variety. */
     public static final ConfigSection SEASONING_DIVERSITY = SEASONING.child("diversity");
+    /** Spice Mixes and their crafting. */
+    public static final ConfigSection SPICE_MIX = ConfigSection.root(ConfigFile.SERVER, "spiceMix");
     /** Client-side tooltip display. */
     public static final ConfigSection TOOLTIP = ConfigSection.root(ConfigFile.CLIENT, "tooltip");
     /** Client-side Spice Grinder GUI behavior. */
@@ -281,6 +283,12 @@ public final class ConfigSchema {
     /** Kinds of spice per food that earn the full diversity bonus. */
     public static final ConfigOption<Integer> SEASONING_DIVERSITY_FULL_DIVERSITY = add(
             ConfigOption.ofInt(SEASONING_DIVERSITY, "fullDiversity", 12, 1, 100));
+
+    // #region Spice Mix
+
+    /** Most spices of all kinds one Spice Mix holds. */
+    public static final ConfigOption<Integer> SPICE_MIX_CAPACITY = add(
+            ConfigOption.ofInt(SPICE_MIX, "capacity", 8, 1, 64));
 
     // #region Tooltip
 

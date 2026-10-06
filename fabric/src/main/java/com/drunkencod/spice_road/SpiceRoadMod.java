@@ -8,6 +8,7 @@ import com.drunkencod.spice_road.config.FabricConfigHelper;
 import com.drunkencod.spice_road.grinder.GrinderIntentPayload;
 import com.drunkencod.spice_road.grinder.GrinderViewPayload;
 import com.drunkencod.spice_road.loot.LootInjections;
+import com.drunkencod.spice_road.mix.MixPresetSync;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.FabricCreativeTabHelper;
 import com.drunkencod.spice_road.spice.SpiceProfileRegistry;
@@ -109,12 +110,13 @@ public class SpiceRoadMod implements ModInitializer {
 
         /**
          * Resolves Default Profiles once the server's item tags are bound, and
-         * syncs them and the Seasoning Effect catalog to each player on join and to everyone after
+         * syncs them, the Seasoning Effect catalog and the Mix Presets to each player on join and to everyone after
          * {@code /reload}. NeoForge does the same through its own events.
          */
         private static void registerSpiceProfileSync() {
                 PayloadTypeRegistry.playS2C().register(SpiceProfileSync.TYPE, SpiceProfileSync.STREAM_CODEC);
                 PayloadTypeRegistry.playS2C().register(SeasoningEffectSync.TYPE, SeasoningEffectSync.STREAM_CODEC);
+                PayloadTypeRegistry.playS2C().register(MixPresetSync.TYPE, MixPresetSync.STREAM_CODEC);
                 CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
                         if (!client)
                                 SpiceProfileRegistry.resolve();
@@ -122,6 +124,7 @@ public class SpiceRoadMod implements ModInitializer {
                 ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> {
                         ServerPlayNetworking.send(player, SpiceProfileSync.current());
                         ServerPlayNetworking.send(player, SeasoningEffectSync.current());
+                        ServerPlayNetworking.send(player, MixPresetSync.current());
                 });
         }
 

@@ -7,6 +7,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 
 import com.drunkencod.spice_road.grinder.SeasoningSession;
+import com.drunkencod.spice_road.mix.SpiceMix;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Seasoning;
 
@@ -40,6 +41,17 @@ public final class ModDataComponents {
                             .networkSynchronized(StreamCodec.of(
                                     (buf, session) -> ItemStack.STREAM_CODEC.encode(buf, session.food()),
                                     buf -> SeasoningSession.placeholder(ItemStack.STREAM_CODEC.decode(buf))))
+                            .build());
+
+    /**
+     * What a Spice Mix holds - see {@link SpiceMix}. Persistent (saved to NBT)
+     * and network synchronized.
+     */
+    public static final Supplier<DataComponentType<SpiceMix>> SPICE_MIX = Services.REGISTRY
+            .registerDataComponentType("spice_mix",
+                    () -> DataComponentType.<SpiceMix>builder()
+                            .persistent(SpiceMix.CODEC)
+                            .networkSynchronized(SpiceMix.STREAM_CODEC)
                             .build());
 
     private ModDataComponents() {

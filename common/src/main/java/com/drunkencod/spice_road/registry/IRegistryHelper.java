@@ -10,6 +10,8 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator;
@@ -153,6 +155,19 @@ public interface IRegistryHelper {
      */
     <T extends AbstractContainerMenu> Supplier<MenuType<T>> registerMenuType(String id,
             MenuType.MenuSupplier<T> factory);
+
+    /**
+     * Register a {@link RecipeSerializer} under the mod's namespace. Frozen as
+     * early as {@link #registerFeature}, with the same consequences.
+     *
+     * @param id      Registry path (e.g. {@code "my_recipe"})
+     * @param factory Supplier that creates the serializer instance
+     * @param <T>     The recipe type the serializer reads and writes
+     * @return A supplier of the registered serializer, only usable once
+     *         registration has run.
+     */
+    <T extends Recipe<?>> Supplier<RecipeSerializer<T>> registerRecipeSerializer(String id,
+            Supplier<RecipeSerializer<T>> factory);
 
     /**
      * Register a datapack JSON reload listener under the mod's namespace.

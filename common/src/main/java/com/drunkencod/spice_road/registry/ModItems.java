@@ -15,6 +15,9 @@ import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.block.SpiceVines;
 import com.drunkencod.spice_road.datagen.ItemModelHelper;
 import com.drunkencod.spice_road.grinder.SpiceGrinderItem;
+import com.drunkencod.spice_road.mix.MixPresetRegistry;
+import com.drunkencod.spice_road.mix.SpiceMixItem;
+import com.drunkencod.spice_road.mix.SpiceMixes;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.ProcessedSpice;
 import com.drunkencod.spice_road.spice.Spice;
@@ -32,6 +35,12 @@ public class ModItems {
     /** The Spice Grinder, which opens the seasoning GUI. */
     public static Supplier<SpiceGrinderItem> SPICE_GRINDER;
 
+    /** The empty jar, the base of every Spice Mix. */
+    public static Supplier<Item> JAR;
+
+    /** A jar filled with spices. */
+    public static Supplier<SpiceMixItem> SPICE_MIX;
+
     /**
      * Registers the Spice Grinder, with a flat item model. Must be called during
      * mod initialization (see {@code SpiceRoad#init()}).
@@ -40,6 +49,18 @@ public class ModItems {
         SPICE_GRINDER = Services.REGISTRY.registerItem("spice_grinder", SpiceGrinderItem::new);
         ItemModelHelper.addFlatItem("spice_grinder", ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID,
                 "item/spice_grinder"));
+    }
+
+    /**
+     * Registers the empty jar, with a flat item model, and the Spice Mix, whose
+     * model (with one override per Mix Preset) is datagenned separately. Must be
+     * called during mod initialization (see {@code SpiceRoad#init()}).
+     */
+    public static void registerSpiceMixes() {
+        JAR = Services.REGISTRY.registerItem("jar", () -> new Item(new Item.Properties()));
+        ItemModelHelper.addFlatItem("jar", ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "item/jar"));
+        SPICE_MIX = Services.REGISTRY.registerItem("spice_mix",
+                () -> new SpiceMixItem(new Item.Properties().craftRemainder(JAR.get())));
     }
 
     // #region creative tabs
@@ -51,6 +72,8 @@ public class ModItems {
      */
     public static void populateGenericTab(CreativeModeTab.Output output) {
         output.accept(SPICE_GRINDER.get().getDefaultInstance());
+        output.accept(JAR.get().getDefaultInstance());
+        MixPresetRegistry.getAll().forEach((id, preset) -> output.accept(SpiceMixes.ofPreset(id, preset)));
     }
 
     /**

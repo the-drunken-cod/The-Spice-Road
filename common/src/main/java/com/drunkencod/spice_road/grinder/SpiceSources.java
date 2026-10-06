@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -23,10 +24,12 @@ import net.minecraft.world.level.chunk.LevelChunk;
 
 import com.drunkencod.spice_road.block.SpiceBlockTags;
 import com.drunkencod.spice_road.platform.Services;
+import com.drunkencod.spice_road.registry.ModItems;
 import com.drunkencod.spice_road.spice.SpiceProfileRegistry;
 
 /**
- * Where a player's spices come from while using the Spice Grinder: their own
+ * Where a player's spices (loose, or in Spice Mixes) come from while using the
+ * Spice Grinder: their own
  * inventory first, then the block entities of blocks in
  * {@link SpiceBlockTags#SPICE_STORAGE} within the configured radius, nearest
  * first. Storage is read from the block entity's saved NBT (see
@@ -84,59 +87,56 @@ public final class SpiceSources {
         return found.size() > MAX_STORAGES ? found.subList(0, MAX_STORAGES) : found;
     }
 
-    /** @return How many of each Spice Item the player's inventory and the nearby storage hold together. */
-    public Map<Item, Integer> available() {
-        Map<Item, Integer> total = new LinkedHashMap<>();
+    /**
+     * @return How many of each loose Spice Item and each kind of Spice Mix the
+     *         player's inventory and the nearby storage hold together.
+     */
+    public Map<GrinderSpice, Integer> available() {
+        Map<GrinderSpice, Integer> total = new LinkedHashMap<>();
         Inventory inventory = player.getInventory();
-        for (ItemStack stack : inventoryStacks(inventory)) {
-            if (!stack.isEmpty() && SpiceProfileRegistry.getDefault(stack.getItem()).isPresent())
-                total.merge(stack.getItem(), stack.getCount(), Integer::sum);
-        }
+        for (ItemStack stack : inventoryStacks(inventory))
+            GrinderSpice.of(stack).ifPresent(spice -> total.merge(spice, stack.getCount(), Integer::sum));
         for (BlockEntity storage : storages) {
-            storedCounts(storage).forEach((id, count) -> {
-                Item item = BuiltInRegistries.ITEM.getOptional(ResourceLocation.tryParse(id))
-                        .orElse(null);
-                if (item != null && SpiceProfileRegistry.getDefault(item).isPresent())
-                    total.merge(item, count, Integer::sum);
-            });
+            for (CompoundTag entry : ItemListNbt.entries(storage.saveWithoutMetadata(registries)))
+                spiceOf(entry).ifPresent(spice -> total.merge(spice, ItemListNbt.countOf(entry), Integer::sum));
         }
         return total;
     }
 
     /**
-     * @param item A Spice Item.
+     * @param spice A loose spice or a kind of mix.
      * @return How many of it the player's inventory and the nearby storage hold together.
      */
-    public int count(Item item) {
-        return available().getOrDefault(item, 0);
+    public int count(GrinderSpice spice) {
+        return available().getOrDefault(spice, 0);
     }
 
     /**
-     * Takes spices, from the inventory first and then from the nearest
-     * storage. All or nothing: if anything can't be taken, everything that was
-     * already taken from storage is put back and nothing is taken.
+     * Takes spices and mixes, from the inventory first and then from the
+     * nearest storage. All or nothing: if anything can't be taken, everything
+     * that was already taken from storage is put back and nothing is taken.
      *
-     * @param amounts How many of each Spice Item to take.
+     * @param amounts How many of each loose spice and kind of mix to take.
      * @return Whether it was all taken.
      */
-    public boolean consume(Map<Item, Integer> amounts) {
-        Map<Item, Integer> available = available();
-        for (Map.Entry<Item, Integer> amount : amounts.entrySet()) {
+    public boolean consume(Map<GrinderSpice, Integer> amounts) {
+        Map<GrinderSpice, Integer> available = available();
+        for (Map.Entry<GrinderSpice, Integer> amount : amounts.entrySet()) {
             if (available.getOrDefault(amount.getKey(), 0) < amount.getValue())
                 return false;
         }
 
         Map<BlockEntity, CompoundTag> originals = new LinkedHashMap<>();
-        Map<Item, Integer> fromInventory = new HashMap<>();
-        for (Map.Entry<Item, Integer> amount : amounts.entrySet()) {
-            Item item = amount.getKey();
-            int fromHere = Math.min(amount.getValue(), inventoryCount(item));
-            fromInventory.put(item, fromHere);
+        Map<GrinderSpice, Integer> fromInventory = new HashMap<>();
+        for (Map.Entry<GrinderSpice, Integer> amount : amounts.entrySet()) {
+            GrinderSpice spice = amount.getKey();
+            int fromHere = Math.min(amount.getValue(), inventoryCount(spice));
+            fromInventory.put(spice, fromHere);
             int missing = amount.getValue() - fromHere;
             for (BlockEntity storage : storages) {
                 if (missing <= 0)
                     break;
-                int taken = takeFromStorage(storage, item, missing, originals);
+                int taken = takeFromStorage(storage, spice, missing, originals);
                 if (taken < 0) {
                     revert(originals);
                     return false;
@@ -154,29 +154,49 @@ public final class SpiceSources {
 
     // #region Storage
 
-    private Map<String, Integer> storedCounts(BlockEntity storage) {
-        return ItemListNbt.count(storage.saveWithoutMetadata(registries));
+    /**
+     * Reads what a saved item entry would be to the Grinder. Only Spice Mix
+     * entries are parsed as whole stacks, since only they need their
+     * components; anything else is judged by its ID.
+     */
+    private Optional<GrinderSpice> spiceOf(CompoundTag entry) {
+        Item item = BuiltInRegistries.ITEM.getOptional(ResourceLocation.tryParse(entry.getString("id"))).orElse(null);
+        if (item == null)
+            return Optional.empty();
+        if (item == ModItems.SPICE_MIX.get())
+            return ItemStack.parse(registries, entry).flatMap(GrinderSpice::of);
+        return SpiceProfileRegistry.getDefault(item).isPresent() ? Optional.of(GrinderSpice.loose(item))
+                : Optional.empty();
+    }
+
+    private int storedCount(CompoundTag saved, GrinderSpice spice) {
+        int count = 0;
+        for (CompoundTag entry : ItemListNbt.entries(saved)) {
+            if (spiceOf(entry).filter(spice::equals).isPresent())
+                count += ItemListNbt.countOf(entry);
+        }
+        return count;
     }
 
     /** @return How many were taken, or {@code -1} if the storage didn't take them and was left as it was. */
-    private int takeFromStorage(BlockEntity storage, Item item, int wanted, Map<BlockEntity, CompoundTag> originals) {
-        String id = BuiltInRegistries.ITEM.getKey(item).toString();
+    private int takeFromStorage(BlockEntity storage, GrinderSpice spice, int wanted,
+            Map<BlockEntity, CompoundTag> originals) {
         CompoundTag before = storage.saveWithoutMetadata(registries);
-        int stored = ItemListNbt.count(before).getOrDefault(id, 0);
+        int stored = storedCount(before, spice);
         int take = Math.min(stored, wanted);
         if (take <= 0)
             return 0;
         originals.putIfAbsent(storage, before.copy());
 
         if (storage instanceof Container container) {
-            takeFromContainer(container, item, take);
+            takeFromContainer(container, spice, take);
         } else {
             CompoundTag edited = before.copy();
-            ItemListNbt.remove(edited, id, take);
+            ItemListNbt.remove(edited, entry -> spiceOf(entry).filter(spice::equals).isPresent(), take);
             storage.loadWithComponents(edited, registries);
         }
         storage.setChanged();
-        int after = storedCounts(storage).getOrDefault(id, 0);
+        int after = storedCount(storage.saveWithoutMetadata(registries), spice);
         if (after != stored - take) {
             revert(originals);
             return -1;
@@ -187,11 +207,11 @@ public final class SpiceSources {
         return take;
     }
 
-    private static void takeFromContainer(Container container, Item item, int amount) {
+    private static void takeFromContainer(Container container, GrinderSpice spice, int amount) {
         int left = amount;
         for (int slot = 0; slot < container.getContainerSize() && left > 0; slot++) {
             ItemStack stack = container.getItem(slot);
-            if (stack.is(item))
+            if (spice.matches(stack))
                 left -= container.removeItem(slot, Math.min(left, stack.getCount())).getCount();
         }
     }
@@ -214,19 +234,19 @@ public final class SpiceSources {
         return stacks;
     }
 
-    private int inventoryCount(Item item) {
+    private int inventoryCount(GrinderSpice spice) {
         int count = 0;
         for (ItemStack stack : inventoryStacks(player.getInventory()))
-            count += stack.is(item) ? stack.getCount() : 0;
+            count += spice.matches(stack) ? stack.getCount() : 0;
         return count;
     }
 
-    private void removeFromInventory(Item item, int amount) {
+    private void removeFromInventory(GrinderSpice spice, int amount) {
         int left = amount;
         for (ItemStack stack : inventoryStacks(player.getInventory())) {
             if (left <= 0)
                 break;
-            if (stack.is(item)) {
+            if (spice.matches(stack)) {
                 int taken = Math.min(left, stack.getCount());
                 stack.shrink(taken);
                 left -= taken;

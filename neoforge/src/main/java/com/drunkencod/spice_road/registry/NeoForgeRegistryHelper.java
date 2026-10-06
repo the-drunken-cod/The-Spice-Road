@@ -16,6 +16,8 @@ import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator;
@@ -76,6 +78,9 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
 
     private final DeferredRegister<ResourceLocation> customStats = DeferredRegister
             .create(Registries.CUSTOM_STAT, Constants.MOD_ID);
+
+    private final DeferredRegister<RecipeSerializer<?>> recipeSerializers = DeferredRegister
+            .create(Registries.RECIPE_SERIALIZER, Constants.MOD_ID);
 
     private final List<PreparableReloadListener> pendingReloadListeners = new ArrayList<>();
 
@@ -147,6 +152,13 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public <T extends Recipe<?>> Supplier<RecipeSerializer<T>> registerRecipeSerializer(String id,
+            Supplier<RecipeSerializer<T>> factory) {
+        return (Supplier<RecipeSerializer<T>>) (Supplier<?>) recipeSerializers.register(id, factory::get);
+    }
+
+    @Override
     public void registerReloadListener(ResourceLocation id, PreparableReloadListener listener) {
         pendingReloadListeners.add(listener);
     }
@@ -188,6 +200,7 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
         mobEffects.register(eventBus);
         menuTypes.register(eventBus);
         customStats.register(eventBus);
+        recipeSerializers.register(eventBus);
         // AddReloadListenerEvent is a game event, not a mod-bus event.
         NeoForge.EVENT_BUS.addListener(this::onAddReloadListeners);
     }

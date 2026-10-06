@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "building",
+    "pattern": [
+        " S ",
+        "P P",
+        "PPP"
+    ],
+    "key": {
+        "S": {
+            "tag": "minecraft:wooden_slabs"
+        },
+        "P": {
+            "tag": "c:glass_panes"
+        }
+    },
+    "result": {
+        "id": "spice_road:jar",
+        "count": 4
+    }
+}

@@ -365,6 +365,11 @@ public class FabricConfigHelper implements IConfigHelper {
         return value(ConfigSchema.STATS_FOUND_SCAN_INTERVAL_TICKS, server().stats.foundScanIntervalTicks);
     }
 
+    @Override
+    public int getSpiceMixCapacity() {
+        return value(ConfigSchema.SPICE_MIX_CAPACITY, server().spiceMix.capacity);
+    }
+
     // #region Clamping
 
     /**
@@ -481,6 +486,8 @@ public class FabricConfigHelper implements IConfigHelper {
         public Flavor flavor = new Flavor();
         @ConfigEntry.Gui.CollapsibleObject
         public Seasoning seasoning = new Seasoning();
+        @ConfigEntry.Gui.CollapsibleObject
+        public SpiceMix spiceMix = new SpiceMix();
         @ConfigEntry.Gui.CollapsibleObject
         public Stats stats = new Stats();
         @ConfigEntry.Gui.CollapsibleObject
@@ -641,6 +648,12 @@ public class FabricConfigHelper implements IConfigHelper {
                 @ConfigEntry.Gui.Tooltip
                 public int fullDiversity = ConfigSchema.SEASONING_DIVERSITY_FULL_DIVERSITY.getDefault();
             }
+        }
+
+        /** Spice Mixes and their crafting. */
+        public static class SpiceMix {
+            @ConfigEntry.Gui.Tooltip
+            public int capacity = ConfigSchema.SPICE_MIX_CAPACITY.getDefault();
         }
 
         /** Player statistics the mod tracks. */

@@ -5,11 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import com.drunkencod.spice_road.spice.FlavorAxis;
@@ -26,8 +23,8 @@ import com.drunkencod.spice_road.spice.effect.SeasoningEffect;
  * @param phase       Whether a draft or a run is shown.
  * @param food        The food stack: the one in the food slot while drafting,
  *                    the one being seasoned during a run.
- * @param spices      The spices per food: the draft's while drafting, the
- *                    consumed ones during a run.
+ * @param spices      The spices and Spice Mixes per food: the draft's while
+ *                    drafting, the consumed ones (as loose spices) during a run.
  * @param points      The points per axis in {@link FlavorAxis} order: the
  *                    preview of the draft, or what is left in a run.
  * @param poles       The pole per axis in {@link FlavorAxis} order.
@@ -43,25 +40,23 @@ import com.drunkencod.spice_road.spice.effect.SeasoningEffect;
  * @param event       What the last action did, for a sound and a message.
  * @param maxPerKind  The most spices of one kind that count.
  * @param maxTotal    The most spices of all kinds that count.
- * @param available   How many of each Spice Item the player's inventory and the
- *                    nearby spice storage hold together.
+ * @param available   How many of each loose spice and kind of Spice Mix the
+ *                    player's inventory and the nearby spice storage hold
+ *                    together.
  * @param stepCost    Points one step costs, during a run.
  * @param lockInCost  Points locking in the cell the pawn stands on costs, or
  *                    {@code 0} if it isn't an effect cell.
  */
-public record GrinderView(Phase phase, ItemStack food, Map<Item, Integer> spices, List<Double> points,
+public record GrinderView(Phase phase, ItemStack food, Map<GrinderSpice, Integer> spices, List<Double> points,
         List<Integer> poles, int x, int y, List<CellView> cells, List<SeasoningEffect> effects,
         List<Integer> stepsLeft, boolean canLockIn, boolean canSeason, Event event, int maxPerKind, int maxTotal,
-        Map<Item, Integer> available, double stepCost, double lockInCost) {
+        Map<GrinderSpice, Integer> available, double stepCost, double lockInCost) {
 
     /** The view of a Grinder that hasn't been told anything yet. */
     public static final GrinderView EMPTY = new GrinderView(Phase.DRAFT, ItemStack.EMPTY, Map.of(),
             java.util.Collections.nCopies(FlavorAxis.values().length, 0D),
             java.util.Collections.nCopies(FlavorAxis.values().length, 0), 0, 0, List.of(), List.of(),
             java.util.Collections.nCopies(Direction.values().length, 0), false, false, Event.NONE, 3, 16, Map.of(), 0D, 0D);
-
-    private static final StreamCodec<RegistryFriendlyByteBuf, Item> ITEM_CODEC = ByteBufCodecs
-            .registry(Registries.ITEM);
 
     /** Network codec. */
     public static final StreamCodec<RegistryFriendlyByteBuf, GrinderView> STREAM_CODEC = StreamCodec.of(
@@ -95,8 +90,8 @@ public record GrinderView(Phase phase, ItemStack food, Map<Item, Integer> spices
         buf.writeEnum(view.phase);
         ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, view.food);
         buf.writeVarInt(view.spices.size());
-        view.spices.forEach((item, count) -> {
-            ITEM_CODEC.encode(buf, item);
+        view.spices.forEach((spice, count) -> {
+            GrinderSpice.STREAM_CODEC.encode(buf, spice);
             buf.writeVarInt(count);
         });
         view.points.forEach(buf::writeDouble);
@@ -116,8 +111,8 @@ public record GrinderView(Phase phase, ItemStack food, Map<Item, Integer> spices
         buf.writeDouble(view.stepCost);
         buf.writeDouble(view.lockInCost);
         buf.writeVarInt(view.available.size());
-        view.available.forEach((item, count) -> {
-            ITEM_CODEC.encode(buf, item);
+        view.available.forEach((spice, count) -> {
+            GrinderSpice.STREAM_CODEC.encode(buf, spice);
             buf.writeVarInt(count);
         });
     }
@@ -125,9 +120,9 @@ public record GrinderView(Phase phase, ItemStack food, Map<Item, Integer> spices
     private static GrinderView read(RegistryFriendlyByteBuf buf) {
         Phase phase = buf.readEnum(Phase.class);
         ItemStack food = ItemStack.OPTIONAL_STREAM_CODEC.decode(buf);
-        Map<Item, Integer> spices = new LinkedHashMap<>();
+        Map<GrinderSpice, Integer> spices = new LinkedHashMap<>();
         for (int i = buf.readVarInt(); i > 0; i--)
-            spices.put(ITEM_CODEC.decode(buf), buf.readVarInt());
+            spices.put(GrinderSpice.STREAM_CODEC.decode(buf), buf.readVarInt());
         List<Double> points = new ArrayList<>();
         for (int i = 0; i < FlavorAxis.values().length; i++)
             points.add(buf.readDouble());
@@ -152,9 +147,9 @@ public record GrinderView(Phase phase, ItemStack food, Map<Item, Integer> spices
         int maxTotal = buf.readVarInt();
         double stepCost = buf.readDouble();
         double lockInCost = buf.readDouble();
-        Map<Item, Integer> available = new LinkedHashMap<>();
+        Map<GrinderSpice, Integer> available = new LinkedHashMap<>();
         for (int i = buf.readVarInt(); i > 0; i--)
-            available.put(ITEM_CODEC.decode(buf), buf.readVarInt());
+            available.put(GrinderSpice.STREAM_CODEC.decode(buf), buf.readVarInt());
         return new GrinderView(phase, food, spices, points, poles, x, y, cells, effects, stepsLeft, canLockIn,
                 canSeason, event, maxPerKind, maxTotal, available, stepCost, lockInCost);
     }

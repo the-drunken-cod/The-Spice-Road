@@ -2,10 +2,10 @@ package com.drunkencod.spice_road.client.grinder;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.TreeMap;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -42,6 +42,7 @@ import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.grinder.GrinderActions;
 import com.drunkencod.spice_road.grinder.GrinderIntentPayload;
 import com.drunkencod.spice_road.grinder.GrinderLayout;
+import com.drunkencod.spice_road.grinder.GrinderSpice;
 import com.drunkencod.spice_road.grinder.GrinderView;
 import com.drunkencod.spice_road.grinder.GrinderViewPayload;
 import com.drunkencod.spice_road.grinder.SpiceGrinderMenu;
@@ -109,10 +110,10 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
     private boolean primaryWasActive;
 
     /**
-     * One line of the spice list: a group header, or a spice item with the amount
-     * the player holds.
+     * One line of the spice list: a group header, or a loose spice or kind of
+     * Spice Mix with the amount the player holds.
      */
-    private record Row(Component header, Item item, int count) {
+    private record Row(Component header, GrinderSpice spice, int count) {
     }
 
     /**
@@ -316,10 +317,9 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
 
     // #region Actions
 
-    private void send(GrinderIntentPayload.Kind kind, int data, Item item) {
-        Optional<net.minecraft.resources.ResourceLocation> id = item == null ? Optional.empty()
-                : Optional.of(BuiltInRegistries.ITEM.getKey(item));
-        Services.NETWORK.sendToServer(new GrinderIntentPayload(menu.containerId, kind, data, id));
+    private void send(GrinderIntentPayload.Kind kind, int data, GrinderSpice spice) {
+        Services.NETWORK.sendToServer(
+                new GrinderIntentPayload(menu.containerId, kind, data, Optional.ofNullable(spice)));
     }
 
     private void onPrimary() {
@@ -347,16 +347,16 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
     private void clickSpice(Row row, boolean remove, boolean batch) {
         int amount = batch ? GrinderActions.BATCH_SIZE : 1;
         if (running()) {
-            if (!remove && canAddMore(row.item))
-                send(GrinderIntentPayload.Kind.ADD_SPICE, amount, row.item);
+            if (!remove && canAddMore(row.spice))
+                send(GrinderIntentPayload.Kind.ADD_SPICE, amount, row.spice);
             else
                 Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1F));
             return;
         }
-        if (remove && view().spices().getOrDefault(row.item, 0) > 0)
-            send(GrinderIntentPayload.Kind.REMOVE_DRAFT_SPICE, amount, row.item);
-        else if (!remove && canAddMore(row.item))
-            send(GrinderIntentPayload.Kind.ADD_DRAFT_SPICE, amount, row.item);
+        if (remove && view().spices().getOrDefault(row.spice, 0) > 0)
+            send(GrinderIntentPayload.Kind.REMOVE_DRAFT_SPICE, amount, row.spice);
+        else if (!remove && canAddMore(row.spice))
+            send(GrinderIntentPayload.Kind.ADD_DRAFT_SPICE, amount, row.spice);
         else
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1F));
     }
@@ -365,46 +365,75 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
      * What the client can tell without asking: the caps and the amount it holds.
      * The server decides.
      */
-    private boolean canAddMore(Item item) {
+    private boolean canAddMore(GrinderSpice spice) {
         GrinderView view = view();
-        int chosen = view.spices().getOrDefault(item, 0);
-        int total = view.spices().values().stream().mapToInt(Integer::intValue).sum();
         if (view.food().isEmpty())
             return false;
+        int chosen = view.spices().getOrDefault(spice, 0);
+        Map<GrinderSpice, Integer> next = new LinkedHashMap<>(view.spices());
+        next.merge(spice, 1, Integer::sum);
         int foods = view.food().getCount();
         int needed = running() ? foods : foods * (chosen + 1);
-        return chosen < view.maxPerKind() && total < view.maxTotal() && held(item) >= needed;
+        return withinCaps(GrinderSpice.expand(next)) && held(spice) >= needed;
+    }
+
+    /**
+     * @param spices How many of each Spice Item per food.
+     * @return Whether that fits under the caps the server sent.
+     */
+    private boolean withinCaps(Map<Item, Integer> spices) {
+        int total = 0;
+        for (int count : spices.values()) {
+            if (count > view().maxPerKind())
+                return false;
+            total += count;
+        }
+        return total <= view().maxTotal();
     }
 
     /**
      * How many the server says the player's inventory and the nearby spice storage
      * hold together.
      */
-    private int held(Item item) {
-        return view().available().getOrDefault(item, 0);
+    private int held(GrinderSpice spice) {
+        return view().available().getOrDefault(spice, 0);
     }
 
     // #region Spice list
 
     private void rebuildRows() {
-        Map<Item, Integer> held = new TreeMap<>(Comparator.comparing(
-                (Item item) -> BuiltInRegistries.ITEM.getKey(item).toString()));
-        held.putAll(view().available());
+        List<Map.Entry<GrinderSpice, Integer>> held = new ArrayList<>(view().available().entrySet());
+        held.sort(Comparator.comparing((Map.Entry<GrinderSpice, Integer> entry) -> sortKey(entry.getKey())));
 
         rows.clear();
-        addGroup("group.raw", held, item -> !item.getDefaultInstance().is(SpiceItemTags.PROCESSED_SPICES)
-                && item.getDefaultInstance().is(SpiceItemTags.SPICES));
-        addGroup("group.processed", held, item -> item.getDefaultInstance().is(SpiceItemTags.PROCESSED_SPICES));
-        addGroup("group.other", held, item -> !item.getDefaultInstance().is(SpiceItemTags.SPICES)
-                && !item.getDefaultInstance().is(SpiceItemTags.PROCESSED_SPICES));
+        addGroup("group.raw", held, spice -> spice.mix().isEmpty()
+                && !spice.item().getDefaultInstance().is(SpiceItemTags.PROCESSED_SPICES)
+                && spice.item().getDefaultInstance().is(SpiceItemTags.SPICES));
+        addGroup("group.processed", held, spice -> spice.mix().isEmpty()
+                && spice.item().getDefaultInstance().is(SpiceItemTags.PROCESSED_SPICES));
+        addGroup("group.mixes", held, spice -> spice.mix().isPresent());
+        addGroup("group.other", held, spice -> spice.mix().isEmpty()
+                && !spice.item().getDefaultInstance().is(SpiceItemTags.SPICES)
+                && !spice.item().getDefaultInstance().is(SpiceItemTags.PROCESSED_SPICES));
         scroll = Mth.clamp(scroll, 0, Math.max(0, rows.size() - GrinderLayout.LIST_ROWS));
     }
 
-    private void addGroup(String key, Map<Item, Integer> held, java.util.function.Predicate<Item> filter) {
+    /** Loose spices sort by item ID; mixes by name, then by what they hold. */
+    private static String sortKey(GrinderSpice spice) {
+        String id = BuiltInRegistries.ITEM.getKey(spice.item()).toString();
+        return spice.mix().map(mix -> id + "|" + spice.displayStack().getHoverName().getString() + "|"
+                + mix.spices().entrySet().stream()
+                        .map(entry -> BuiltInRegistries.ITEM.getKey(entry.getKey()) + "*" + entry.getValue())
+                        .toList())
+                .orElse(id);
+    }
+
+    private void addGroup(String key, List<Map.Entry<GrinderSpice, Integer>> held,
+            java.util.function.Predicate<GrinderSpice> filter) {
         List<Row> group = new ArrayList<>();
-        held.forEach((item, count) -> {
-            if (filter.test(item))
-                group.add(new Row(null, item, count));
+        held.forEach(entry -> {
+            if (filter.test(entry.getKey()))
+                group.add(new Row(null, entry.getKey(), entry.getValue()));
         });
         if (group.isEmpty())
             return;
@@ -421,7 +450,7 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         if (localY / GrinderLayout.LIST_ROW_HEIGHT >= GrinderLayout.LIST_ROWS || index >= rows.size())
             return null;
         Row row = rows.get(index);
-        return row.item == null ? null : row;
+        return row.spice == null ? null : row;
     }
 
     // #region Input
@@ -592,26 +621,27 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         for (int i = 0; i < GrinderLayout.LIST_ROWS && scroll + i < rows.size(); i++) {
             Row row = rows.get(scroll + i);
             int y = baseY + i * GrinderLayout.LIST_ROW_HEIGHT;
-            if (row.item == null) {
+            if (row.spice == null) {
                 drawClipped(graphics, row.header, baseX, y + 2, GrinderLayout.LIST_WIDTH - 8, COLOR_DIM);
                 continue;
             }
             if (row == hovered)
                 graphics.fill(baseX - 1, y, baseX + GrinderLayout.LIST_WIDTH - 9, y + GrinderLayout.LIST_ROW_HEIGHT,
                         0xFF454545);
-            int chosen = view().spices().getOrDefault(row.item, 0);
-            graphics.renderItem(row.item.getDefaultInstance(), baseX - 1, y - 2 + 0);
+            int chosen = view().spices().getOrDefault(row.spice, 0);
+            ItemStack stack = row.spice.displayStack();
+            graphics.renderItem(stack, baseX - 1, y - 2 + 0);
             String amount = (chosen > 0 ? chosen + "/" : "") + row.count;
             int amountX = baseX + GrinderLayout.LIST_WIDTH - 12 - font.width(amount);
-            drawClipped(graphics, row.item.getDescription(), baseX + GrinderLayout.LIST_NAME_X, y + 2,
-                    amountX - 3 - (baseX + GrinderLayout.LIST_NAME_X), canAddMore(row.item) ? COLOR_TEXT : COLOR_DIM);
+            drawClipped(graphics, stack.getHoverName(), baseX + GrinderLayout.LIST_NAME_X, y + 2,
+                    amountX - 3 - (baseX + GrinderLayout.LIST_NAME_X), canAddMore(row.spice) ? COLOR_TEXT : COLOR_DIM);
             graphics.drawString(font, amount, amountX, y + 2, chosen > 0 ? COLOR_WARNING : COLOR_DIM, false);
         }
     }
 
     private void renderDraft(GuiGraphics graphics) {
         GrinderView view = view();
-        int total = view.spices().values().stream().mapToInt(Integer::intValue).sum();
+        int total = GrinderSpice.expand(view.spices()).values().stream().mapToInt(Integer::intValue).sum();
         int labelWidth = GrinderLayout.FOOD_SLOT_X - GrinderLayout.PANEL_X - 8;
         drawClipped(graphics, Component.translatable(KEY_PREFIX + "draft", total, view.maxTotal()),
                 leftPos + GrinderLayout.PANEL_X + 4, topPos + GrinderLayout.PANEL_Y + 5, labelWidth, COLOR_TEXT);
@@ -721,8 +751,10 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
     private void renderTooltips(GuiGraphics graphics, int mouseX, int mouseY) {
         Row row = rowAt(mouseX, mouseY);
         if (row != null) {
-            ItemStack stack = row.item.getDefaultInstance();
+            ItemStack stack = row.spice.displayStack();
             List<Component> hints = new ArrayList<>();
+            if (row.spice.mix().isPresent() && !withinCaps(row.spice.perUnit()))
+                hints.add(Component.translatable(KEY_PREFIX + "mix_over_caps").withStyle(ChatFormatting.RED));
             hints.add(keyHint("spice_hint.add", Component.translatable(KEY_PREFIX + "click.left")));
             if (!running())
                 hints.add(keyHint("spice_hint.remove", Component.translatable(KEY_PREFIX + "click.right")));

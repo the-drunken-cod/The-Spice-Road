@@ -14,4 +14,5 @@
         - [Item Tags](./data/tags.md#item-tags)
         - [Block Tags](./data/tags.md#block-tags)
         - [Biome Tags](./data/tags.md#biome-tags)
-    - [Spice Profile](./data/spice_profile.md)
+    - [Spice Profiles](./data/spice_profile.md)
+    - [Spice Mix Presets](./data/mix_preset.md)

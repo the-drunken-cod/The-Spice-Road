@@ -1,4 +1,4 @@
-# The Spice Road - Spice Profile
+# The Spice Road - Spice Profiles
 ## Table of Contents
 - [Introduction](#introduction)
 - [Creating a Spice Profile](#creating-a-spice-profile)
@@ -47,6 +47,6 @@ TODO:
 
 ---
 
-[⬅️ Back: Tags](./tags.md) &bull; [🏠 Docs - Home](../README.md) &bull; [➡️ Next: TODO]()
+[⬅️ Back: Tags](./tags.md) &bull; [🏠 Docs - Home](../README.md) &bull; [➡️ Next: Mix Presets](./mix_preset.md)
 
 </div>

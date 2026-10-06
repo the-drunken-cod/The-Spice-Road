@@ -412,4 +412,9 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     public int getStatsFoundScanIntervalTicks() {
         return value(ConfigSchema.STATS_FOUND_SCAN_INTERVAL_TICKS);
     }
+
+    @Override
+    public int getSpiceMixCapacity() {
+        return value(ConfigSchema.SPICE_MIX_CAPACITY);
+    }
 }

@@ -6,6 +6,7 @@ import com.drunkencod.spice_road.block.SpicePlants;
 import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.block.SpiceVines;
 import com.drunkencod.spice_road.item.ProcessedSpiceItems;
+import com.drunkencod.spice_road.mix.MixPresetReloadListener;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.ModDataComponents;
 import com.drunkencod.spice_road.registry.ModLootConditions;
@@ -14,6 +15,7 @@ import com.drunkencod.spice_road.registry.ModMapDecorations;
 import com.drunkencod.spice_road.registry.ModItems;
 import com.drunkencod.spice_road.registry.ModMenus;
 import com.drunkencod.spice_road.registry.ModMobEffects;
+import com.drunkencod.spice_road.registry.ModRecipeSerializers;
 import com.drunkencod.spice_road.spice.SpiceProfileReloadListener;
 import com.drunkencod.spice_road.spice.board.BoardLayoutReloadListener;
 import com.drunkencod.spice_road.spice.effect.SeasoningEffectApplier;
@@ -40,7 +42,10 @@ public class SpiceRoad {
         ModMobEffects.register();
         ModMenus.register();
         ModItems.registerGrinder();
+        ModItems.registerSpiceMixes();
+        ModRecipeSerializers.register();
         Services.REGISTRY.registerReloadListener(SpiceProfileReloadListener.ID, new SpiceProfileReloadListener());
+        Services.REGISTRY.registerReloadListener(MixPresetReloadListener.ID, new MixPresetReloadListener());
         Services.REGISTRY.registerReloadListener(SeasoningEffectReloadListener.ID,
                 new SeasoningEffectReloadListener());
         Services.REGISTRY.registerReloadListener(BoardLayoutReloadListener.ID, new BoardLayoutReloadListener());

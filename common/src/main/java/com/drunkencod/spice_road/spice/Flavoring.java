@@ -9,6 +9,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import com.drunkencod.spice_road.item.SpiceItemTags;
+import com.drunkencod.spice_road.mix.SpiceMix;
 import com.drunkencod.spice_road.registry.ModDataComponents;
 import com.drunkencod.spice_road.spice.board.AutomaticSeasoning;
 import com.drunkencod.spice_road.spice.effect.SeasoningEffect;
@@ -19,8 +20,9 @@ import com.drunkencod.spice_road.spice.effect.SeasoningEffect;
  * mod compat) goes through here, so the rules are the same everywhere:
  * <ul>
  * <li>Each consumed ingredient (one item per slot) contributes one of itself if
- * it is a Spice Item, or its own {@link Seasoning} if it is seasoned food.
- * Anything else contributes nothing.</li>
+ * it is a Spice Item, its own {@link Seasoning} if it is seasoned food, or
+ * every spice it holds if it is a {@link SpiceMix}, exactly as if those spices
+ * were loose. Anything else contributes nothing.</li>
  * <li>The summed amounts are split evenly across every Flavor Carrier output
  * item, so spices are conserved (crafting 9 into 1 and back yields the
  * original amounts) and never duplicated. Non-carrier outputs simply lose
@@ -135,8 +137,8 @@ public final class Flavoring {
 
     /**
      * Sums what every input brings along: a seasoned food's own
-     * {@link Seasoning}, or one of the item itself if it is a Spice Item with a
-     * non-zero Default Profile.
+     * {@link Seasoning}, every spice a Spice Mix holds, or one of the item
+     * itself if it is a Spice Item with a non-zero Default Profile.
      */
     private static Seasoning inheritedSeasoning(Iterable<ItemStack> inputs) {
         Map<Item, Double> sums = new LinkedHashMap<>();
@@ -144,12 +146,23 @@ public final class Flavoring {
             if (input.isEmpty())
                 continue;
             Seasoning existing = input.get(ModDataComponents.SEASONING.get());
+            SpiceMix mix = input.get(ModDataComponents.SPICE_MIX.get());
             if (existing != null)
                 existing.contributors().forEach((item, amount) -> sums.merge(item, amount, Double::sum));
-            else if (SpiceProfileRegistry.getDefault(input.getItem()).map(profile -> !profile.isZero()).orElse(false))
+            else if (mix != null)
+                mix.spices().forEach((item, count) -> {
+                    if (contributes(item))
+                        sums.merge(item, count.doubleValue(), Double::sum);
+                });
+            else if (contributes(input.getItem()))
                 sums.merge(input.getItem(), 1D, Double::sum);
         }
         return new Seasoning(sums);
+    }
+
+    /** @return Whether a loose {@code item} contributes itself: a Spice Item with a non-zero Default Profile. */
+    private static boolean contributes(Item item) {
+        return SpiceProfileRegistry.getDefault(item).map(profile -> !profile.isZero()).orElse(false);
     }
 
     /**
