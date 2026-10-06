@@ -2,12 +2,12 @@
   "items": "spice_road:turmeric",
   "profile": {
     "heat_cooling": 0.1,
-    "sweet_bitter": -0.5,
+    "sweet_bitter": -0.6,
     "sour_mellow": -0.2,
     "earthy_floral": 0.9,
     "woody_green": 0,
     "pungent_soft": 0.1,
     "resinous_clean": 0,
-    "savory_delicate": 0.3
+    "savory_delicate": 0.4
   }
 }
