@@ -1,7 +1,11 @@
 # `0.1.0`
 ## `0.1.0-alpha.3`
 - **Features:**
+    - Added Spice Mix, which combines a jar (new item) with up to 8 spices in any configuration.
+        - Added datapack-provided spice mix presets with a custom name and texture and JEI/EMI recipe.
+        - Added TODO: 8 default spice mix presets.
 - **Changes:**
+    - Reworked some more textures.
 - **Fixes:**
 
 <br>
