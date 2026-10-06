@@ -14,3 +14,4 @@ jobs:
         uses: ./.github/workflows/build.yml
         with:
             upload_artifact: true
+            retention_days: 7
