@@ -1,0 +1,20 @@
+{
+  "name": "pad_csv",
+  "version": "1.0.0",
+  "description": "",
+  "main": "pad_csv.ts",
+  "type": "module",
+  "scripts": {
+    "start": "node pad_csv.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "packageManager": "pnpm@11.4.0",
+  "dependencies": {
+    "@sv443-network/coreutils": "3.8.0"
+  },
+  "devDependencies": {
+    "@types/node": "25.8.0"
+  }
+}

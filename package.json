@@ -1,0 +1,8 @@
+{
+    "name": "spice_road",
+    "scripts": {
+        "create_placeholder_textures": "pnpm --filter create_placeholder_textures start",
+        "extract-prop": "pnpm --filter extract_prop start",
+        "pad_csv": "pnpm --filter pad_csv start"
+    }
+}

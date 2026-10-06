@@ -1,0 +1,21 @@
+{
+  "name": "create_placeholder_texture",
+  "version": "1.0.0",
+  "description": "",
+  "main": "create_placeholder_texture.ts",
+  "type": "module",
+  "scripts": {
+    "start": "node create_placeholder_texture.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "packageManager": "pnpm@11.4.0",
+  "dependencies": {
+    "pngjs": "7.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "25.8.0",
+    "@types/pngjs": "6.0.5"
+  }
+}

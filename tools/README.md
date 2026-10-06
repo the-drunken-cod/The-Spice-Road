@@ -3,6 +3,7 @@ These tools are to be used in the command line and offer various shortcuts:
 
 <br>
 
+- **`pnpm extract_prop <fileIdentifier> <propName>`**: Echoes the value of the given property from the `gradle.properties` or the version-dependent properties files like `1.21.1`.
 - **`pnpm create_placeholder_texture <args>`**: Creates a placeholder PNG texture, including custom text, colors and even a binary counter.
     - Required:
         - `-O` / `--output`: Path to the output file. Parent directories are created and existing files are overwritten. If no other args are specified, the texture is 16x16 and fully black.
