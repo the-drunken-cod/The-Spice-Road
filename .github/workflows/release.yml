@@ -13,5 +13,7 @@ jobs:
         name: Build and upload release artifacts
         uses: ./.github/workflows/build.yml
         with:
+            build_neoforge: true
+            build_fabric: true
             upload_artifact: true
             retention_days: 7

@@ -2,29 +2,50 @@ name: Build
 
 on:
     # push:
-    #   branches: ["**"]
+    # branches: [ "**" ]
     pull_request:
         branches: ["**"]
-    workflow_dispatch:
+    # Called by other workflows (e.g. release.yml) with an optional artifact upload flag
+    workflow_call:
         inputs:
+            build_neoforge:
+                description: "Build JAR for NeoForge"
+                type: boolean
+                required: true
+                default: true
+            build_fabric:
+                description: "Build JAR for Fabric"
+                type: boolean
+                required: true
+                default: true
             upload_artifact:
                 description: "Upload build artifacts"
                 type: boolean
-                required: false
+                required: true
                 default: true
             retention_days:
                 description: "Artifact retention days"
                 type: number
                 required: false
                 default: 2
-    # Called by other workflows (e.g. release.yml) with an optional artifact upload flag
-    workflow_call:
+    # Called manually from the UI
+    workflow_dispatch:
         inputs:
+            build_neoforge:
+                description: "Build JAR for NeoForge"
+                type: boolean
+                required: true
+                default: true
+            build_fabric:
+                description: "Build JAR for Fabric"
+                type: boolean
+                required: true
+                default: true
             upload_artifact:
                 description: "Upload build artifacts"
                 type: boolean
-                required: false
-                default: false
+                required: true
+                default: true
             retention_days:
                 description: "Artifact retention days"
                 type: number
@@ -36,32 +57,98 @@ jobs:
         name: Build mod jars
         runs-on: ubuntu-latest
 
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
+        env:
+            CI: "true"
+            STORE_PATH: ""
+            PNPM_VERSION: 11
 
-            - name: Set up Java 21
+        strategy:
+            matrix:
+                node-version: [24.x]
+
+        steps:
+            - name: "[Git] Checkout repository"
+              uses: actions/checkout@v7
+
+            - name: "[Java] Setup Java 21"
               uses: actions/setup-java@v6
               with:
                   distribution: temurin
                   java-version: "21"
                   cache: gradle
 
-            - name: Setup Gradle
+            - name: "[Java] Setup Gradle"
               uses: gradle/actions/setup-gradle@v6
 
-            - name: Build with Gradle
-              run: |
-                  ./gradlew runData
-                  ./gradlew build
+            - name: "[Node] Setup Node.js ${{ matrix.node-version }}"
+              uses: actions/setup-node@v7
+              with:
+                  node-version: ${{ matrix.node-version }}
 
-            - name: Upload build artifacts
+            - name: "[Node] Setup pnpm"
+              uses: pnpm/action-setup@v6
+              with:
+                  version: ${{ env.PNPM_VERSION }}
+                  run_install: false
+
+            - name: "[Node] Get pnpm store path"
+              shell: bash
+              run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+            - name: "[Node] Setup pnpm cache"
+              uses: actions/cache@v5
+              with:
+                  path: ${{ env.STORE_PATH }}
+                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: ${{ runner.os }}-pnpm-store-
+
+            - name: "[Node] Install Node.js dependencies"
+              run: pnpm --filter extract_prop install
+
+            - name: "[Node] Get Version Info"
+              if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+              id: get_info
+              run: |
+                  MOD_ID=$(pnpm --silent extract-prop gradle.properties mod_id)
+                  echo "MOD_ID=$MOD_ID" >> $GITHUB_OUTPUT
+                  MOD_VERSION=$(pnpm --silent extract-prop gradle.properties version)
+                  echo "MOD_VERSION=$MOD_VERSION" >> $GITHUB_OUTPUT
+                  MC_VERSION=$(pnpm --silent extract-prop gradle.properties mc_version)
+                  echo "MC_VERSION=$MC_VERSION" >> $GITHUB_OUTPUT
+
+            - name: "[NeoForge] Run DataGen"
+              if: ${{ inputs.build_neoforge == true }}
+              run: ./gradlew :neoforge:runData
+
+            - name: "[NeoForge] Build JAR"
+              if: ${{ inputs.build_neoforge == true }}
+              run: ./gradlew :neoforge:build
+
+            - name: "[Fabric] Run DataGen"
+              if: ${{ inputs.build_fabric == true }}
+              run: ./gradlew :fabric:runData
+
+            - name: "[Fabric] Build JAR"
+              if: ${{ inputs.build_fabric == true }}
+              run: ./gradlew :fabric:build
+
+            - name: "[Artifacts] Move and Remove Files"
+              run: |
+                  if [ -d fabric/build/libs/ ] ; then
+                    rm fabric/build/libs/*-sources.jar
+                    mv fabric/build/libs/*.jar .
+                  fi
+                  if [ -d neoforge/build/libs/ ] ; then
+                    rm neoforge/build/libs/*-sources.jar
+                    mv neoforge/build/libs/*.jar .
+                  fi
+
+            - name: "[Artifacts] Upload Build Artifacts"
               if: ${{ inputs.upload_artifact == true }}
               uses: actions/upload-artifact@v7
               with:
-                  name: mod-jars
+                  name: ${{ steps.get_info.outputs.MOD_ID }}-${{ steps.get_info.outputs.MC_VERSION }}-${{ steps.get_info.outputs.MOD_VERSION }}-${{ github.sha }}
                   path: |
-                      fabric/build/libs/*.jar
-                      neoforge/build/libs/*.jar
+                      *.jar
                   if-no-files-found: error
                   retention-days: ${{ inputs.retention_days }}
