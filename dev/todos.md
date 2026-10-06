@@ -183,3 +183,11 @@
     - [ ] Seeds, cuttings and saplings with harvestDifficulty 4-5: `Only grows where it was found.`
     - [ ] Spice Grinder: `Combine spices and apply seasoning.`
 - [ ] Allow tags in spice mixes, e.g. `#spice_road:spice/pepper`.
+- [ ] Create spice balancing tool.
+    - Website that loads a set of spice profile JSONs and allows easy comparing and adjusting and exporting.
+    - [ ] List all spices and their profiles using color-coded and prefixed slider inputs.
+    - [ ] Show harvest difficulty, color code (border color) and group list items together by rarity.
+    - [ ] Show climate and growing seasons (SP,SU,AU,WI).
+    - [ ] Feature to select spice profiles (checkbox on list item) to juxtapose up to 4 spices.
+    - [ ] Feature to export all changed JSONs as a ZIP.
+    - [ ] Feature to reset an adjusted profile to the default value.

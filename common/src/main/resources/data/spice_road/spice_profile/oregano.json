@@ -1,0 +1,13 @@
+{
+  "items": "spice_road:oregano",
+  "profile": {
+    "heat_cooling": 0.2,
+    "sweet_bitter": -0.4,
+    "sour_mellow": 0,
+    "earthy_floral": 0.4,
+    "woody_green": -0.4,
+    "pungent_soft": 0.4,
+    "resinous_clean": 0.4,
+    "savory_delicate": 0.5
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "items": "spice_road:basil",
+  "profile": {
+    "heat_cooling": 0,
+    "sweet_bitter": -0.2,
+    "sour_mellow": 0.1,
+    "earthy_floral": -0.3,
+    "woody_green": -0.6,
+    "pungent_soft": 0.1,
+    "resinous_clean": -0.2,
+    "savory_delicate": -0.1
+  }
+}

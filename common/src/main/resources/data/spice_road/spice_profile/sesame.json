@@ -1,0 +1,13 @@
+{
+  "items": "spice_road:sesame",
+  "profile": {
+    "heat_cooling": 0,
+    "sweet_bitter": 0.2,
+    "sour_mellow": -0.4,
+    "earthy_floral": 0.5,
+    "woody_green": 0.4,
+    "pungent_soft": -0.3,
+    "resinous_clean": 0.1,
+    "savory_delicate": 0.6
+  }
+}
