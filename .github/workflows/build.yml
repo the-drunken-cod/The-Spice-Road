@@ -60,7 +60,7 @@ jobs:
         env:
             CI: "true"
             STORE_PATH: ""
-            PNPM_VERSION: 11
+            PNPM_VERSION: 12
 
         strategy:
             matrix:
@@ -147,7 +147,7 @@ jobs:
               if: ${{ inputs.upload_artifact == true }}
               uses: actions/upload-artifact@v7
               with:
-                  name: ${{ steps.get_info.outputs.MOD_ID }}-${{ steps.get_info.outputs.MC_VERSION }}-${{ steps.get_info.outputs.MOD_VERSION }}-${{ github.sha }}
+                  name: ${{ steps.get_info.outputs.MOD_ID }}-${{ steps.get_info.outputs.MOD_VERSION }}+${{ steps.get_info.outputs.MC_VERSION }}
                   path: |
                       *.jar
                   if-no-files-found: error
