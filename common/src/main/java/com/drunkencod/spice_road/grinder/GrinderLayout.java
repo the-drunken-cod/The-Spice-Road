@@ -9,7 +9,7 @@ public final class GrinderLayout {
     /** Width of the GUI. */
     public static final int IMAGE_WIDTH = 360;
     /** Height of the GUI. */
-    public static final int IMAGE_HEIGHT = 248;
+    public static final int IMAGE_HEIGHT = 270;
 
     // #region Left panel (spice list)
 
@@ -20,7 +20,7 @@ public final class GrinderLayout {
     /** Width of the spice list panel. */
     public static final int LIST_WIDTH = 140;
     /** Height of the spice list panel. */
-    public static final int LIST_HEIGHT = 136;
+    public static final int LIST_HEIGHT = 164;
     /**
      * Left edge of a row's item name, relative to the row's start. Leaves room for
      * the 16 px item icon.
@@ -29,7 +29,11 @@ public final class GrinderLayout {
     /** Height of one row of the spice list. */
     public static final int LIST_ROW_HEIGHT = 14;
     /** Rows visible at once. */
-    public static final int LIST_ROWS = 9;
+    public static final int LIST_ROWS = 11;
+    /** Width of the list's scroll bar, at the right edge of the list panel. */
+    public static final int LIST_SCROLLBAR_WIDTH = 4;
+    /** Shortest the scroll bar's handle gets, however long the list is. */
+    public static final int LIST_SCROLLBAR_MIN_HANDLE = 8;
 
     // #region Right panel
 
@@ -40,7 +44,7 @@ public final class GrinderLayout {
     /** Width of the right panel. */
     public static final int PANEL_WIDTH = 200;
     /** Height of the right panel. */
-    public static final int PANEL_HEIGHT = 136;
+    public static final int PANEL_HEIGHT = 164;
 
     /** Left edge of the food slot's item, 1 px inside its frame. */
     public static final int FOOD_SLOT_X = 332;
@@ -73,7 +77,11 @@ public final class GrinderLayout {
     /** Top edge of the first points bar. */
     public static final int POINTS_Y = 76;
     /** Height of one points bar row. */
-    public static final int POINTS_ROW_HEIGHT = 7;
+    public static final int POINTS_ROW_HEIGHT = 9;
+    /** Height of a points bar, drawn 1 px below the top of its row. */
+    public static final int POINTS_BAR_HEIGHT = 7;
+    /** Fewest pixels between two notches of a points bar before they are left out. */
+    public static final int POINTS_NOTCH_MIN_SPACING = 2;
     /** Width of a points bar. */
     public static final int POINTS_WIDTH = 34;
     /** Left edge of the board. */
@@ -91,46 +99,52 @@ public final class GrinderLayout {
     /** Top edge of the line summarizing the effects. */
     public static final int EFFECTS_Y = 124;
 
+    // #region Status line (both phases)
+
+    /** Left edge of the status line's divider, which spans the right panel. */
+    public static final int STATUS_DIVIDER_X = PANEL_X + 1;
+    /** Top edge of the divider between the panel's content and the status line. */
+    public static final int STATUS_DIVIDER_Y = PANEL_Y + PANEL_HEIGHT - 17;
+    /** Left edge of the status line (event messages and hints). */
+    public static final int STATUS_X = PANEL_X + 4;
+    /** Top edge of the status line's text. */
+    public static final int STATUS_Y = PANEL_Y + PANEL_HEIGHT - 13;
+    /** Widest the status line may be before it is cut short. */
+    public static final int STATUS_WIDTH = PANEL_WIDTH - 8;
+
     // #region Buttons (both phases)
 
+    /** Height of a button. */
+    public static final int BUTTON_HEIGHT = 12;
+    /** Top edge of the buttons, just above the status line's divider. */
+    public static final int BUTTONS_Y = STATUS_DIVIDER_Y - 3 - BUTTON_HEIGHT;
     /** Left edge of the primary button while drafting (Season). */
     public static final int DRAFT_PRIMARY_X = 230;
     /** Top edge of the primary button while drafting. */
-    public static final int DRAFT_PRIMARY_Y = 136;
+    public static final int DRAFT_PRIMARY_Y = BUTTONS_Y;
     /** Width of the primary button while drafting. */
     public static final int DRAFT_PRIMARY_WIDTH = 118;
     /** Left edge of the primary button during a run (Accept). */
     public static final int RUN_PRIMARY_X = 211;
     /** Top edge of the primary button during a run. */
-    public static final int RUN_PRIMARY_Y = 136;
+    public static final int RUN_PRIMARY_Y = BUTTONS_Y;
     /** Width of the primary button during a run. */
     public static final int RUN_PRIMARY_WIDTH = 100;
     /** Left edge of the Cancel button, drafting only. */
     public static final int CANCEL_X = 156;
     /** Top edge of the Cancel button. */
-    public static final int CANCEL_Y = 136;
+    public static final int CANCEL_Y = BUTTONS_Y;
     /** Width of the Cancel button. */
     public static final int CANCEL_WIDTH = 70;
-    /** Height of a button. */
-    public static final int BUTTON_HEIGHT = 12;
-
-    // #region Event message (both phases)
-
-    /** Left edge of the event message ("Locked in!" and the like). */
-    public static final int MESSAGE_X = PANEL_X + 2;
-    /** Top edge of the event message. */
-    public static final int MESSAGE_Y = PANEL_Y + PANEL_HEIGHT - 15;
-    /** Widest the event message may be before it is cut short. */
-    public static final int MESSAGE_WIDTH = PANEL_WIDTH - 8;
 
     // #region Player inventory
 
     /** Left edge of the player inventory. */
     public static final int INVENTORY_X = (IMAGE_WIDTH - 176) / 2;
     /** Top edge of the main inventory rows. */
-    public static final int INVENTORY_Y = 166;
+    public static final int INVENTORY_Y = 188;
     /** Top edge of the hotbar. */
-    public static final int HOTBAR_Y = 224;
+    public static final int HOTBAR_Y = 246;
 
     private GrinderLayout() {
     }

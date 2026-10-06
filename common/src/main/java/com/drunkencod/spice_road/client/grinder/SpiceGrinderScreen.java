@@ -99,6 +99,8 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
     private Button cancelButton;
     private PadButton lockInButton;
     private int scroll;
+    private boolean draggingScrollbar;
+    private double scrollbarGrab;
     private boolean confirmPending;
     private int effectCountSeen;
     private Component message = CommonComponents.EMPTY;
@@ -415,7 +417,67 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         addGroup("group.other", held, spice -> spice.mix().isEmpty()
                 && !spice.item().getDefaultInstance().is(SpiceItemTags.SPICES)
                 && !spice.item().getDefaultInstance().is(SpiceItemTags.PROCESSED_SPICES));
-        scroll = Mth.clamp(scroll, 0, Math.max(0, rows.size() - GrinderLayout.LIST_ROWS));
+        scroll = Mth.clamp(scroll, 0, maxScroll());
+    }
+
+    /**
+     * @return The furthest the spice list can scroll, in rows.
+     */
+    private int maxScroll() {
+        return Math.max(0, rows.size() - GrinderLayout.LIST_ROWS);
+    }
+
+    /**
+     * @return Whether the spice list has more rows than fit, so it shows a scroll
+     *         bar.
+     */
+    private boolean scrollable() {
+        return maxScroll() > 0;
+    }
+
+    private int scrollbarX() {
+        return leftPos + GrinderLayout.LIST_X + GrinderLayout.LIST_WIDTH - 2 - GrinderLayout.LIST_SCROLLBAR_WIDTH;
+    }
+
+    private int scrollbarY() {
+        return topPos + GrinderLayout.LIST_Y + 2;
+    }
+
+    private int scrollbarHeight() {
+        return GrinderLayout.LIST_HEIGHT - 4;
+    }
+
+    private int handleHeight() {
+        return Math.min(scrollbarHeight(), Math.max(GrinderLayout.LIST_SCROLLBAR_MIN_HANDLE,
+                scrollbarHeight() * GrinderLayout.LIST_ROWS / Math.max(1, rows.size())));
+    }
+
+    /**
+     * @return The top edge of the scroll bar's handle on screen.
+     */
+    private int handleY() {
+        int travel = scrollbarHeight() - handleHeight();
+        return scrollbarY() + (scrollable() ? travel * scroll / maxScroll() : 0);
+    }
+
+    /**
+     * @return Whether the mouse is over the scroll bar's track, which only exists
+     *         while the list is scrollable.
+     */
+    private boolean overScrollbar(double mouseX, double mouseY) {
+        return scrollable() && mouseX >= scrollbarX() && mouseX < scrollbarX() + GrinderLayout.LIST_SCROLLBAR_WIDTH
+                && mouseY >= scrollbarY() && mouseY < scrollbarY() + scrollbarHeight();
+    }
+
+    /**
+     * Scrolls the list so the scroll bar's handle sits where the mouse drags it.
+     */
+    private void dragScrollbarTo(double mouseY) {
+        int travel = scrollbarHeight() - handleHeight();
+        if (travel <= 0)
+            return;
+        double fraction = (mouseY - scrollbarY() - scrollbarGrab) / travel;
+        scroll = Mth.clamp((int) Math.round(fraction * maxScroll()), 0, maxScroll());
     }
 
     /** Loose spices sort by item ID; mixes by name, then by what they hold. */
@@ -457,6 +519,14 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0 && overScrollbar(mouseX, mouseY)) {
+            int handleY = handleY();
+            boolean onHandle = mouseY >= handleY && mouseY < handleY + handleHeight();
+            scrollbarGrab = onHandle ? mouseY - handleY : handleHeight() / 2D;
+            draggingScrollbar = true;
+            dragScrollbarTo(mouseY);
+            return true;
+        }
         Row row = rowAt(mouseX, mouseY);
         if (row != null && (button == 0 || button == 1)) {
             clickSpice(row, button == 1, hasShiftDown());
@@ -466,11 +536,28 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
     }
 
     @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (draggingScrollbar && button == 0) {
+            dragScrollbarTo(mouseY);
+            return true;
+        }
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (draggingScrollbar && button == 0) {
+            draggingScrollbar = false;
+            return true;
+        }
+        return super.mouseReleased(mouseX, mouseY, button);
+    }
+
+    @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (mouseX >= leftPos + GrinderLayout.LIST_X
                 && mouseX < leftPos + GrinderLayout.LIST_X + GrinderLayout.LIST_WIDTH) {
-            scroll = Mth.clamp(scroll - (int) Math.signum(scrollY), 0,
-                    Math.max(0, rows.size() - GrinderLayout.LIST_ROWS));
+            scroll = Mth.clamp(scroll - (int) Math.signum(scrollY), 0, maxScroll());
             return true;
         }
         return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
@@ -569,10 +656,30 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
             renderRun(graphics);
         else
             renderDraft(graphics);
+        renderStatus(graphics);
+    }
+
+    /**
+     * Draws the status line below a divider: the latest event message while it is
+     * fresh, else the hint to put food in the slot while there is none.
+     */
+    private void renderStatus(GuiGraphics graphics) {
+        graphics.fill(leftPos + GrinderLayout.STATUS_DIVIDER_X, topPos + GrinderLayout.STATUS_DIVIDER_Y,
+                leftPos + GrinderLayout.PANEL_X + GrinderLayout.PANEL_WIDTH - 1,
+                topPos + GrinderLayout.STATUS_DIVIDER_Y + 1, COLOR_PANEL_BORDER);
+        Component text;
+        int color;
         if (messageTicks > 0) {
-            drawClipped(graphics, message, leftPos + GrinderLayout.MESSAGE_X, topPos + GrinderLayout.MESSAGE_Y,
-                    GrinderLayout.MESSAGE_WIDTH, COLOR_WARNING);
+            text = message;
+            color = COLOR_WARNING;
+        } else if (!running() && view().food().isEmpty()) {
+            text = Component.translatable(KEY_PREFIX + "no_food");
+            color = COLOR_DIM;
+        } else {
+            return;
         }
+        drawClipped(graphics, text, leftPos + GrinderLayout.STATUS_X, topPos + GrinderLayout.STATUS_Y,
+                GrinderLayout.STATUS_WIDTH, color);
     }
 
     /**
@@ -637,6 +744,18 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
                     amountX - 3 - (baseX + GrinderLayout.LIST_NAME_X), canAddMore(row.spice) ? COLOR_TEXT : COLOR_DIM);
             graphics.drawString(font, amount, amountX, y + 2, chosen > 0 ? COLOR_WARNING : COLOR_DIM, false);
         }
+        if (scrollable())
+            renderScrollbar(graphics, mouseX, mouseY);
+    }
+
+    private void renderScrollbar(GuiGraphics graphics, int mouseX, int mouseY) {
+        int x = scrollbarX();
+        graphics.fill(x, scrollbarY(), x + GrinderLayout.LIST_SCROLLBAR_WIDTH, scrollbarY() + scrollbarHeight(),
+                0xFF1A1A1A);
+        int handleY = handleY();
+        boolean lit = draggingScrollbar || overScrollbar(mouseX, mouseY);
+        graphics.fill(x, handleY, x + GrinderLayout.LIST_SCROLLBAR_WIDTH, handleY + handleHeight(),
+                lit ? 0xFFB0B0B0 : 0xFF808080);
     }
 
     private void renderDraft(GuiGraphics graphics) {
@@ -645,10 +764,6 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         int labelWidth = GrinderLayout.FOOD_SLOT_X - GrinderLayout.PANEL_X - 8;
         drawClipped(graphics, Component.translatable(KEY_PREFIX + "draft", total, view.maxTotal()),
                 leftPos + GrinderLayout.PANEL_X + 4, topPos + GrinderLayout.PANEL_Y + 5, labelWidth, COLOR_TEXT);
-        if (view.food().isEmpty()) {
-            drawClipped(graphics, Component.translatable(KEY_PREFIX + "no_food"),
-                    leftPos + GrinderLayout.PANEL_X + 4, topPos + GrinderLayout.PANEL_Y + 16, labelWidth, COLOR_DIM);
-        }
         double scale = Math.max(1D, view.points().stream().mapToDouble(Double::doubleValue).max().orElse(1D));
         for (FlavorAxis axis : FlavorAxis.values()) {
             int y = topPos + GrinderLayout.DRAFT_ROWS_Y + axis.ordinal() * GrinderLayout.DRAFT_ROW_HEIGHT;
@@ -677,12 +792,16 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
             int x = leftPos + GrinderLayout.POINTS_X;
             int pole = view.poles().get(axis.ordinal());
             double points = view.points().get(axis.ordinal());
-            graphics.fill(x, y + 1, x + GrinderLayout.POINTS_WIDTH, y + 6, 0xFF1A1A1A);
+            int barTop = y + 1;
+            int barBottom = barTop + GrinderLayout.POINTS_BAR_HEIGHT;
+            graphics.fill(x, barTop, x + GrinderLayout.POINTS_WIDTH, barBottom, 0xFF1A1A1A);
             double scale = Math.max(1D, Services.CONFIG.getFlavorSoftCap());
-            if (points > 0D)
-                graphics.fill(x, y + 1,
-                        x + Math.max(1, (int) (GrinderLayout.POINTS_WIDTH * Math.min(1D, points / scale))),
-                        y + 6, 0xFF000000 | axis.getColor(pole > 0));
+            int filled = points > 0D
+                    ? Math.max(1, (int) (GrinderLayout.POINTS_WIDTH * Math.min(1D, points / scale)))
+                    : 0;
+            if (filled > 0)
+                graphics.fill(x, barTop, x + filled, barBottom, 0xFF000000 | axis.getColor(pole > 0));
+            renderNotches(graphics, x, barTop, barBottom, filled, scale, view.stepCost());
         }
         for (int cy = 0; cy < BoardGeometry.SIZE; cy++) {
             for (int cx = 0; cx < BoardGeometry.SIZE; cx++)
@@ -694,6 +813,27 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         drawClipped(graphics, Component.translatable(KEY_PREFIX + "effects", view.effects().size()),
                 leftPos + GrinderLayout.EFFECTS_X, topPos + GrinderLayout.EFFECTS_Y,
                 GrinderLayout.PANEL_X + GrinderLayout.PANEL_WIDTH - 4 - GrinderLayout.EFFECTS_X, COLOR_TEXT);
+    }
+
+    /**
+     * Draws a notch across a points bar at the end of every step the bar's points
+     * could pay for. Left out if they would sit closer than
+     * {@value GrinderLayout#POINTS_NOTCH_MIN_SPACING} px.
+     *
+     * @param filled   Width of the filled part of the bar, in px.
+     * @param scale    Points a full bar stands for.
+     * @param stepCost Points one step costs.
+     */
+    private static void renderNotches(GuiGraphics graphics, int x, int top, int bottom, int filled, double scale,
+            double stepCost) {
+        double spacing = GrinderLayout.POINTS_WIDTH * stepCost / scale;
+        if (stepCost <= 0D || spacing < GrinderLayout.POINTS_NOTCH_MIN_SPACING)
+            return;
+        for (int step = 1; step * spacing < GrinderLayout.POINTS_WIDTH; step++) {
+            int end = (int) (step * spacing);
+            int notchX = x + end - 1;
+            graphics.fill(notchX, top, notchX + 1, bottom, end <= filled ? 0x80000000 : 0xFF4A4A4A);
+        }
     }
 
     private void renderCell(GuiGraphics graphics, GrinderView view, int cx, int cy) {
