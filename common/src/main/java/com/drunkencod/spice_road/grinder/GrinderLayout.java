@@ -80,7 +80,9 @@ public final class GrinderLayout {
     public static final int POINTS_ROW_HEIGHT = 9;
     /** Height of a points bar, drawn 1 px below the top of its row. */
     public static final int POINTS_BAR_HEIGHT = 7;
-    /** Fewest pixels between two notches of a points bar before they are left out. */
+    /**
+     * Fewest pixels between two notches of a points bar before they are left out.
+     */
     public static final int POINTS_NOTCH_MIN_SPACING = 2;
     /** Width of a points bar. */
     public static final int POINTS_WIDTH = 34;
@@ -106,9 +108,9 @@ public final class GrinderLayout {
     /** Top edge of the divider between the panel's content and the status line. */
     public static final int STATUS_DIVIDER_Y = PANEL_Y + PANEL_HEIGHT - 17;
     /** Left edge of the status line (event messages and hints). */
-    public static final int STATUS_X = PANEL_X + 4;
+    public static final int STATUS_X = PANEL_X + 5;
     /** Top edge of the status line's text. */
-    public static final int STATUS_Y = PANEL_Y + PANEL_HEIGHT - 13;
+    public static final int STATUS_Y = PANEL_Y + PANEL_HEIGHT - 12;
     /** Widest the status line may be before it is cut short. */
     public static final int STATUS_WIDTH = PANEL_WIDTH - 8;
 
