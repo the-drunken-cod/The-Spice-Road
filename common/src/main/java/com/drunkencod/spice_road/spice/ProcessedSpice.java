@@ -20,7 +20,10 @@ import com.drunkencod.spice_road.registry.ModItems;
  * comes from a {@code spice_profile} JSON like any other Spice Item's.
  */
 public enum ProcessedSpice {
-    ;
+    DRIED_CLOVE("dried_clove", Spice.CLOVE, ProcessingMethod.DRYING),
+    DRIED_LONG_PEPPER("dried_long_pepper", Spice.LONG_PEPPER, ProcessingMethod.DRYING),
+    DRIED_MUSTARD("dried_mustard", Spice.MUSTARD, ProcessingMethod.DRYING),
+    DRIED_NUTMEG("dried_nutmeg", Spice.NUTMEG, ProcessingMethod.DRYING);
 
     private final String id;
     private final Spice source;
@@ -32,7 +35,10 @@ public enum ProcessedSpice {
         this.method = method;
     }
 
-    /** @return The registry path of this Processed Spice's item, e.g. {@code "dried_nutmeg"}. */
+    /**
+     * @return The registry path of this Processed Spice's item, e.g.
+     *         {@code "dried_nutmeg"}.
+     */
     public String getId() {
         return id;
     }
@@ -52,7 +58,10 @@ public enum ProcessedSpice {
         return source.getTier();
     }
 
-    /** @return This Processed Spice's registered item, or {@code null} before registration. */
+    /**
+     * @return This Processed Spice's registered item, or {@code null} before
+     *         registration.
+     */
     public @Nullable Item getItem() {
         return ModItems.byPath(id);
     }
