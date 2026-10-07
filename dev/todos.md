@@ -173,17 +173,19 @@
             - [ ] Minigame.
 - [x] Drop more spices and spice seeds when the effect Luck is active, worse drops if Bad Luck is active.
 - [x] Convert all baked datagen config values into live config values, else (if not possible or not worth it) add a note to the affected config values stating that changing it will require datagen to be re-run / the mod to be recompiled.
-- [x] Spice Grinder GUI improvements:
-    - [x] Add notches to progress bars at distances equivalent to 1 step's spice value.
+- [ ] Spice Grinder GUI improvements:
+    - [ ] Add notches to progress bars at distances equivalent to 1 step's spice value.
     - [x] Make 2nd phase progress bars 2px taller each.
     - [x] Add scroll bar to the right edge of the spice ingredient list.
     - [x] Make GUI taller to fit more rows of spices and to fit the message line better.
     - [x] Merge "insert item" and message lines into one line, visually separated.
-- [ ] Add simple usage tooltips to items:
-    - [ ] Seeds, cuttings and saplings with harvestDifficulty 4-5: `Only grows where it was found.`
-    - [ ] Spice Grinder: `Combine spices and apply seasoning.`
-- [ ] Move spice mix tooltip to be above the input hints when in the spice grinder GUI.
-- [ ] Display spice profile tooltip for spice mixes too.
+    - [ ] Change group sorting: 1) Spice Mixes, 2) Processed Spices, 3) Raw Spices
+- [x] Add simple usage tooltips to items:
+    - [x] Seeds, cuttings and saplings with harvestDifficulty 4-5: `Only grows where it was found.`
+    - [x] Spice Grinder: `Combine spices and apply seasoning.`
+- [x] Move spice mix tooltip to be above the input hints when in the spice grinder GUI.
+- [x] Display spice profile tooltip for spice mixes too.
+- [x] Make `<tier> spice ingredient` tooltip show up for raw and processed spices without a spice profile (without the `[Shift] for info` part).
 - [x] Allow tags in spice mixes, e.g. `#spice_road:spice/peppercorn` and `#spice_road:spice/cinnamon`
 - [ ] Create spice balancing tool.
     - Website that loads a set of spice profile JSONs and allows easy comparing and adjusting and exporting.

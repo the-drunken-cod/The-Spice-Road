@@ -18,9 +18,11 @@ import net.minecraft.world.item.ItemStack;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.item.SpiceItemTags;
+import com.drunkencod.spice_road.mix.SpiceMixes;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.ModDataComponents;
 import com.drunkencod.spice_road.spice.Seasoning;
+import com.drunkencod.spice_road.spice.SpiceProfile;
 import com.drunkencod.spice_road.spice.SpiceProfiles;
 import com.drunkencod.spice_road.spice.Tier;
 import com.drunkencod.spice_road.spice.effect.SeasoningEffect;
@@ -76,6 +78,15 @@ public final class SpiceProfileTooltips {
      */
     private static final String FLAVOR_CONTRIBUTORS_KEY = Constants.MOD_ID + ".tooltip.flavor_contributors";
 
+    /**
+     * Translation key of the usage line of planting items bound to their Spice
+     * Region.
+     */
+    private static final String REGION_BOUND_KEY = Constants.MOD_ID + ".tooltip.region_bound";
+
+    /** Translation key of the header above the spices a Spice Mix holds. */
+    private static final String MIX_CONTENTS_KEY = Constants.MOD_ID + ".tooltip.spice_mix.contents";
+
     /** Translation key of the header above a seasoned food's effects. */
     private static final String SEASONING_EFFECTS_KEY = Constants.MOD_ID + ".tooltip.seasoning_effects";
 
@@ -97,28 +108,88 @@ public final class SpiceProfileTooltips {
      * itself is client-agnostic, only ever consulted from client-only code).
      */
     public static void register() {
-        TooltipUtil.register(stack -> tierOf(stack).isPresent() && !stack.is(SpiceItemTags.SPICES),
+        // Spice Items with a profile get their tier line merged into the Shift hint
+        // instead
+        TooltipUtil.register(
+                stack -> tierOf(stack).isPresent()
+                        && (!stack.is(SpiceItemTags.SPICES) || SpiceProfiles.get(stack).isEmpty()),
                 TooltipUtil.Visibility.ALWAYS,
                 stack -> tierOf(stack)
-                        .map(tier -> List.of(tierLine(tier, lineKeyOf(stack))))
+                        .map(tier -> List.of(tierLineWithUsage(stack, tier)))
                         .orElse(List.of()));
-        TooltipUtil.register(stack -> SpiceProfiles.get(stack).isPresent() || stack.has(ModDataComponents.SEASONING.get()),
+        TooltipUtil.register(stack -> stack.has(ModDataComponents.SPICE_MIX.get()), TooltipUtil.Visibility.ALWAYS,
+                SpiceProfileTooltips::mixContentsLines);
+        TooltipUtil.register(stack -> displayProfile(stack).isPresent() || stack.has(ModDataComponents.SEASONING.get()),
                 TooltipUtil.Visibility.SHIFT_ONLY,
                 SpiceProfileTooltips::shiftLines, SpiceProfileTooltips::shiftHintLine);
     }
 
     /**
      * @param stack The stack being hovered.
+     * @param tier  Its tier.
+     * @return The tier line, followed on the same line by the
+     *         {@link #REGION_BOUND_KEY} usage hint in gray if
+     *         {@link #isRegionBound} holds for {@code stack}.
+     */
+    private static Component tierLineWithUsage(ItemStack stack, Tier tier) {
+        MutableComponent line = tierLine(tier, lineKeyOf(stack)).copy();
+        if (isRegionBound(stack))
+            line.append(" ").append(Component.translatable(REGION_BOUND_KEY).withStyle(ChatFormatting.GRAY));
+        return line;
+    }
+
+    /**
+     * @param stack The stack to check.
+     * @return Whether {@code stack} is the planting item of a Spice that, going
+     *         by the current config, can only be planted in the Spice Region
+     *         that supports it (see {@code Spice#canBeCultivatedAt}), such as
+     *         seeds, cuttings and saplings of a high harvest difficulty.
+     */
+    private static boolean isRegionBound(ItemStack stack) {
+        if (stack.is(SpiceItemTags.SPICES) || !Services.CONFIG.isSpiceRegionPlantingRestricted())
+            return false;
+        return tierOf(stack)
+                .filter(tier -> tier.getMinHarvestDifficulty() > Services.CONFIG.getSpiceHardyHarvestDifficulty())
+                .isPresent();
+    }
+
+    /**
+     * @param stack A filled Spice Mix.
+     * @return The "Contains:" header and one line per held spice with its count.
+     */
+    private static List<Component> mixContentsLines(ItemStack stack) {
+        List<Component> lines = new ArrayList<>();
+        SpiceMixes.contentsOf(stack).ifPresent(mix -> {
+            lines.add(Component.translatable(MIX_CONTENTS_KEY).withStyle(ChatFormatting.GRAY));
+            mix.spices().forEach((item, count) -> lines.add(Component.literal(" ")
+                    .append(Component.translatable(FLAVOR_CONTRIBUTOR_KEY, item.getDescription(), count))
+                    .withStyle(ChatFormatting.DARK_GRAY)));
+        });
+        return lines;
+    }
+
+    /**
+     * @param stack The stack to look up.
+     * @return The Effective Profile of a Spice Item, or of a filled Spice Mix
+     *         (see {@link SpiceProfiles#getEffectiveMix}).
+     */
+    private static Optional<SpiceProfile> displayProfile(ItemStack stack) {
+        Optional<SpiceProfile> profile = SpiceProfiles.getEffective(stack);
+        return profile.isPresent() ? profile : SpiceProfiles.getEffectiveMix(stack);
+    }
+
+    /**
+     * @param stack The stack being hovered.
      * @return The lines shown while Shift is held: a Spice Item's tier line
      *         (which is merged into {@link #shiftHintLine(ItemStack)} while Shift
-     *         isn't held) and flavor axes, or a seasoned food's Flavor
-     *         Contributors.
+     *         isn't held) and flavor axes, a Spice Mix's averaged flavor axes, or
+     *         a seasoned food's Flavor Contributors.
      */
     private static List<Component> shiftLines(ItemStack stack) {
         List<Component> lines = new ArrayList<>();
         if (stack.is(SpiceItemTags.SPICES))
             tierOf(stack).map(tier -> tierLine(tier, lineKeyOf(stack))).ifPresent(lines::add);
-        SpiceProfiles.getEffective(stack)
+        displayProfile(stack)
                 .map(profile -> SpiceFlavorTooltips.formatFlavorAxes(profile, SPICE_ITEM_BAR_SCALE))
                 .ifPresent(lines::addAll);
 
@@ -211,7 +282,7 @@ public final class SpiceProfileTooltips {
      *         with the hint, otherwise the plain hint.
      */
     private static Component shiftHintLine(ItemStack stack) {
-        boolean isSpice = stack.is(SpiceItemTags.SPICES);
+        boolean isSpice = stack.is(SpiceItemTags.SPICES) || stack.has(ModDataComponents.SPICE_MIX.get());
         Optional<Tier> tier = isSpice ? tierOf(stack) : Optional.empty();
         if (tier.isPresent())
             return spiceHintLine(tier.get(), lineKeyOf(stack));

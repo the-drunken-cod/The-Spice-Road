@@ -1,10 +1,14 @@
 package com.drunkencod.spice_road.spice;
 
+import java.util.Map;
 import java.util.Optional;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
+import com.drunkencod.spice_road.mix.SpiceMix;
 import com.drunkencod.spice_road.platform.Services;
+import com.drunkencod.spice_road.registry.ModDataComponents;
 
 /**
  * Single choke point for reading an {@link ItemStack}'s {@link SpiceProfile}.
@@ -37,6 +41,27 @@ public final class SpiceProfiles {
      */
     public static Optional<SpiceProfile> getEffective(ItemStack stack) {
         return get(stack).map(SpiceProfiles::effective);
+    }
+
+    /**
+     * @param stack The stack to look up.
+     * @return The Effective Profile of a filled Spice Mix: the average of the
+     *         Default Profiles of the spices it holds, weighted by their counts,
+     *         so it reads as the character of one spoonful. Empty if
+     *         {@code stack} isn't a filled Spice Mix or none of its spices has a
+     *         non-zero Default Profile.
+     */
+    public static Optional<SpiceProfile> getEffectiveMix(ItemStack stack) {
+        SpiceMix mix = stack.get(ModDataComponents.SPICE_MIX.get());
+        if (mix == null || mix.total() <= 0)
+            return Optional.empty();
+        SpiceProfile sum = SpiceProfile.ZERO;
+        for (Map.Entry<Item, Integer> spice : mix.spices().entrySet()) {
+            Optional<SpiceProfile> profile = SpiceProfileRegistry.getDefault(spice.getKey());
+            if (profile.isPresent())
+                sum = sum.add(profile.get().scale(spice.getValue()));
+        }
+        return sum.isZero() ? Optional.empty() : Optional.of(effective(sum.scale(1D / mix.total())));
     }
 
     /**

@@ -27,6 +27,9 @@ public class SpiceGrinderItem extends Item {
     /** Translation key of the GUI's title. */
     public static final String TITLE_KEY = "container." + Constants.MOD_ID + ".spice_grinder";
 
+    /** Translation key of the tooltip line telling what the item is for. */
+    private static final String USAGE_TOOLTIP_KEY = Constants.MOD_ID + ".tooltip.grinder_usage";
+
     /** Translation key of the tooltip line naming the food of a run in progress. */
     private static final String SESSION_TOOLTIP_KEY = Constants.MOD_ID + ".tooltip.grinder_session";
 
@@ -39,6 +42,7 @@ public class SpiceGrinderItem extends Item {
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip,
             TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltip, flag);
+        tooltip.add(Component.translatable(USAGE_TOOLTIP_KEY).withStyle(ChatFormatting.GRAY));
         SeasoningSession session = stack.get(ModDataComponents.GRINDER_SESSION.get());
         if (session != null)
             tooltip.add(Component.translatable(SESSION_TOOLTIP_KEY, session.food().getCount(),

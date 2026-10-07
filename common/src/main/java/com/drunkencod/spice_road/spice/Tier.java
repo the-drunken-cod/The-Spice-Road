@@ -65,6 +65,19 @@ public enum Tier implements StringRepresentable {
     }
 
     /**
+     * @return The lowest 1-5 harvest and cultivation difficulty that maps to
+     *         this tier. See {@link #fromHarvestDifficulty}.
+     */
+    public int getMinHarvestDifficulty() {
+        return switch (this) {
+            case COMMON -> 1;
+            case UNCOMMON -> 2;
+            case RARE -> 4;
+            case EPIC -> 5;
+        };
+    }
+
+    /**
      * Derives a {@link Tier} from a 1-5 harvest and cultivation difficulty value.
      * <p>
      * Mapping: {@code 1 -> COMMON}, {@code {2, 3} -> UNCOMMON},
