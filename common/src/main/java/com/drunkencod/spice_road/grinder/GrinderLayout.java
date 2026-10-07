@@ -47,9 +47,9 @@ public final class GrinderLayout {
     public static final int PANEL_HEIGHT = 164;
 
     /** Left edge of the food slot's item, 1 px inside its frame. */
-    public static final int FOOD_SLOT_X = 332;
+    public static final int FOOD_SLOT_X = 331;
     /** Top edge of the food slot's item. */
-    public static final int FOOD_SLOT_Y = 20;
+    public static final int FOOD_SLOT_Y = 21;
 
     // #region Draft view
 
@@ -65,9 +65,9 @@ public final class GrinderLayout {
     // #region Run view
 
     /** Left edge of the 3x3 direction pad, centered left of the board. */
-    public static final int PAD_X = PANEL_X + 17;
+    public static final int PAD_X = PANEL_X + 20;
     /** Top edge of the 3x3 direction pad. */
-    public static final int PAD_Y = PANEL_Y + 7;
+    public static final int PAD_Y = PANEL_Y + 12;
     /** Edge length of a pad button. */
     public static final int PAD_BUTTON = 11;
     /** Gap between two pad buttons. */
@@ -75,20 +75,21 @@ public final class GrinderLayout {
     /** Left edge of the points bars. */
     public static final int POINTS_X = 156;
     /** Top edge of the first points bar. */
-    public static final int POINTS_Y = 67;
+    public static final int POINTS_Y = 73;
     /** Height of one points bar row. */
     public static final int POINTS_ROW_HEIGHT = 11;
     /** Height of a points bar, drawn 1 px below the top of its row. */
-    public static final int POINTS_BAR_HEIGHT = 9;    /**
+    public static final int POINTS_BAR_HEIGHT = 9;
+    /**
      * Fewest pixels between two notches of a points bar before they are left out.
      */
     public static final int POINTS_NOTCH_MIN_SPACING = 1;
     /** Width of a points bar. */
     public static final int POINTS_WIDTH = 64;
     /** Left edge of the board. */
-    public static final int BOARD_X = 223;
+    public static final int BOARD_X = 226;
     /** Top edge of the board. */
-    public static final int BOARD_Y = 19;
+    public static final int BOARD_Y = 20;
     /** Edge length of one board cell. */
     public static final int CELL = 11;
     /** Edge length of the sprites on board cells and pad buttons. */
@@ -96,9 +97,9 @@ public final class GrinderLayout {
     /** Offset of a cell's sprite from the cell's top left corner. */
     public static final int CELL_SPRITE_OFFSET = (CELL - SPRITE_SIZE) / 2;
     /** Left edge of the line summarizing the effects. */
-    public static final int EFFECTS_X = 223;
+    public static final int EFFECTS_X = 226;
     /** Top edge of the line summarizing the effects. */
-    public static final int EFFECTS_Y = 124;
+    public static final int EFFECTS_Y = 129;
 
     // #region Status line (both phases)
 
@@ -116,9 +117,9 @@ public final class GrinderLayout {
     // #region Buttons (both phases)
 
     /** Height of a button. */
-    public static final int BUTTON_HEIGHT = 12;
+    public static final int BUTTON_HEIGHT = 14;
     /** Top edge of the buttons, just above the status line's divider. */
-    public static final int BUTTONS_Y = STATUS_DIVIDER_Y - 3 - BUTTON_HEIGHT;
+    public static final int BUTTONS_Y = STATUS_DIVIDER_Y - BUTTON_HEIGHT - 1;
     /** Left edge of the primary button while drafting (Season). */
     public static final int DRAFT_PRIMARY_X = 230;
     /** Top edge of the primary button while drafting. */
@@ -126,7 +127,7 @@ public final class GrinderLayout {
     /** Width of the primary button while drafting. */
     public static final int DRAFT_PRIMARY_WIDTH = 118;
     /** Left edge of the primary button during a run (Accept). */
-    public static final int RUN_PRIMARY_X = 223;
+    public static final int RUN_PRIMARY_X = 226;
     /** Top edge of the primary button during a run. */
     public static final int RUN_PRIMARY_Y = BUTTONS_Y;
     /** Width of the primary button during a run. */
