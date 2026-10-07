@@ -20,32 +20,32 @@ import com.drunkencod.spice_road.spice.effect.SeasoningEffect;
  * it. It is sent whole after every accepted action, so a lost or reordered
  * packet can't desync the screen, and it never holds hidden board information.
  *
- * @param phase       Whether a draft or a run is shown.
- * @param food        The food stack: the one in the food slot while drafting,
- *                    the one being seasoned during a run.
- * @param spices      The spices and Spice Mixes per food: the draft's while
- *                    drafting, the consumed ones (as loose spices) during a run.
- * @param points      The points per axis in {@link FlavorAxis} order: the
- *                    preview of the draft, or what is left in a run.
- * @param poles       The pole per axis in {@link FlavorAxis} order.
- * @param x           The pawn's column, during a run.
- * @param y           The pawn's row, during a run.
- * @param cells       What the player sees of each cell, row-major, during a
- *                    run; empty while drafting.
- * @param effects     The effects gathered so far.
- * @param stepsLeft   For each {@link Direction}, how many steps that way the
- *                    points still pay for, {@code 0} if one can't be taken.
- * @param canLockIn   Whether the cell the pawn stands on can be locked in.
- * @param canSeason   Whether the draft can be started.
- * @param event       What the last action did, for a sound and a message.
- * @param maxPerKind  The most spices of one kind that count.
- * @param maxTotal    The most spices of all kinds that count.
- * @param available   How many of each loose spice and kind of Spice Mix the
- *                    player's inventory and the nearby spice storage hold
- *                    together.
- * @param stepCost    Points one step costs, during a run.
- * @param lockInCost  Points locking in the cell the pawn stands on costs, or
- *                    {@code 0} if it isn't an effect cell.
+ * @param phase      Whether a draft or a run is shown.
+ * @param food       The food stack: the one in the food slot while drafting,
+ *                   the one being seasoned during a run.
+ * @param spices     The spices and Spice Mixes per food: the draft's while
+ *                   drafting, the consumed ones (as loose spices) during a run.
+ * @param points     The points per axis in {@link FlavorAxis} order: the
+ *                   preview of the draft, or what is left in a run.
+ * @param poles      The pole per axis in {@link FlavorAxis} order.
+ * @param x          The pawn's column, during a run.
+ * @param y          The pawn's row, during a run.
+ * @param cells      What the player sees of each cell, row-major, during a
+ *                   run; empty while drafting.
+ * @param effects    The effects gathered so far.
+ * @param stepsLeft  For each {@link Direction}, how many steps that way the
+ *                   points still pay for, {@code 0} if one can't be taken.
+ * @param canLockIn  Whether the cell the pawn stands on can be locked in.
+ * @param canSeason  Whether the draft can be started.
+ * @param event      What the last action did, for a sound and a message.
+ * @param maxPerKind The most spices of one kind that count.
+ * @param maxTotal   The most spices of all kinds that count.
+ * @param available  How many of each loose spice and kind of Spice Mix the
+ *                   player's inventory and the nearby spice storage hold
+ *                   together.
+ * @param stepCost   Points one step costs.
+ * @param lockInCost Points locking in the cell the pawn stands on costs, or
+ *                   {@code 0} if it isn't an effect cell.
  */
 public record GrinderView(Phase phase, ItemStack food, Map<GrinderSpice, Integer> spices, List<Double> points,
         List<Integer> poles, int x, int y, List<CellView> cells, List<SeasoningEffect> effects,
@@ -56,7 +56,8 @@ public record GrinderView(Phase phase, ItemStack food, Map<GrinderSpice, Integer
     public static final GrinderView EMPTY = new GrinderView(Phase.DRAFT, ItemStack.EMPTY, Map.of(),
             java.util.Collections.nCopies(FlavorAxis.values().length, 0D),
             java.util.Collections.nCopies(FlavorAxis.values().length, 0), 0, 0, List.of(), List.of(),
-            java.util.Collections.nCopies(Direction.values().length, 0), false, false, Event.NONE, 3, 16, Map.of(), 0D, 0D);
+            java.util.Collections.nCopies(Direction.values().length, 0), false, false, Event.NONE, 3, 16, Map.of(), 0D,
+            0D);
 
     /** Network codec. */
     public static final StreamCodec<RegistryFriendlyByteBuf, GrinderView> STREAM_CODEC = StreamCodec.of(

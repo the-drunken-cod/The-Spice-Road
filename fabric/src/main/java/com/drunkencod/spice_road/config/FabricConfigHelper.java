@@ -322,6 +322,11 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean isGrinderPadOutlineColored() {
+        return client().grinder.coloredPadOutlines;
+    }
+
+    @Override
     public boolean isTooltipBothAxisLabelsShown() {
         return client().tooltip.showBothAxisLabels;
     }
@@ -708,6 +713,8 @@ public class FabricConfigHelper implements IConfigHelper {
 
         /** Spice Grinder GUI behavior. */
         public static class Grinder {
+            @ConfigEntry.Gui.Tooltip
+            public boolean coloredPadOutlines = ConfigSchema.GRINDER_COLORED_PAD_OUTLINES.getDefault();
             @ConfigEntry.Gui.Tooltip
             public int inputBufferMs = ConfigSchema.GRINDER_INPUT_BUFFER_MS.getDefault();
         }

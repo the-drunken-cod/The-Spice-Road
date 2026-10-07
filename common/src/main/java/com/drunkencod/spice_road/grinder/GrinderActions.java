@@ -252,7 +252,10 @@ public final class GrinderActions {
         return total <= config.getSeasoningMaxSpices();
     }
 
-    /** Gives the player the jars of the Spice Mixes they used, dropping what doesn't fit. */
+    /**
+     * Gives the player the jars of the Spice Mixes they used, dropping what doesn't
+     * fit.
+     */
     private static void returnJars(ServerPlayer player, int count) {
         Item jar = ModItems.JAR.get();
         int left = count;
@@ -342,7 +345,8 @@ public final class GrinderActions {
         return new GrinderView(GrinderView.Phase.DRAFT, menu.food().copy(), new LinkedHashMap<>(menu.draft()),
                 points, poles, 0, 0, List.of(), List.of(),
                 java.util.Collections.nCopies(Direction.values().length, 0), false, canSeason(menu, available), event,
-                config.getSeasoningMaxSpicesPerKind(), config.getSeasoningMaxSpices(), available, 0D, 0D);
+                config.getSeasoningMaxSpicesPerKind(), config.getSeasoningMaxSpices(), available,
+                config.getSeasoningStepCost(), 0D);
     }
 
     // #region Helpers

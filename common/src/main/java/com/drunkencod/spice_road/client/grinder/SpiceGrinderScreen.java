@@ -112,8 +112,9 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
     private boolean primaryWasActive;
 
     /**
-     * One line of the spice list: a group header, or a loose spice or kind of
-     * Spice Mix with the amount the player holds.
+     * One line of the spice list: a group header, an empty spacer (both
+     * {@code spice} and {@code header} are {@code null}) or a loose spice or kind
+     * of Spice Mix with the amount the player holds.
      */
     private record Row(Component header, GrinderSpice spice, int count) {
     }
@@ -230,7 +231,8 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
     }
 
     private int padX(Direction direction) {
-        return leftPos + GrinderLayout.PAD_X + (direction.dx() + 1) * (GrinderLayout.PAD_BUTTON + GrinderLayout.PAD_GAP);
+        return leftPos + GrinderLayout.PAD_X
+                + (direction.dx() + 1) * (GrinderLayout.PAD_BUTTON + GrinderLayout.PAD_GAP);
     }
 
     private int padY(Direction direction) {
@@ -287,17 +289,30 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
                 : Component.translatable(KEY_PREFIX + "season"));
         overflowTooltip(primaryButton);
         overflowTooltip(cancelButton);
+        boolean colored = running && Services.CONFIG.isGrinderPadOutlineColored();
         for (PadButton button : padButtons) {
             int steps = running ? view.stepsLeft().get(button.direction.ordinal()) : 0;
             button.steps = steps;
+            button.outline = colored ? axisOutline(button.direction.axis(), view) : COLOR_PANEL_BORDER;
             button.visible = running;
             button.active = steps > 0;
         }
         lockInButton.visible = running;
         lockInButton.active = running && view.canLockIn();
+        FlavorAxis zone = colored ? BoardGeometry.zoneAxis(view.x(), view.y()) : null;
+        lockInButton.outline = zone == null ? COLOR_PANEL_BORDER : axisOutline(zone, view);
         if (primaryButton.active && (running || !primaryWasActive) && getFocused() != primaryButton)
             setFocused(primaryButton);
         primaryWasActive = primaryButton.active;
+    }
+
+    /**
+     * @return The opaque color of the axis' current pole, or the default outline
+     *         color if the axis has none.
+     */
+    private static int axisOutline(FlavorAxis axis, GrinderView view) {
+        int pole = view.poles().get(axis.ordinal());
+        return pole == 0 ? COLOR_PANEL_BORDER : 0xFF000000 | axis.getColor(pole > 0);
     }
 
     /**
@@ -408,12 +423,12 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         held.sort(Comparator.comparing((Map.Entry<GrinderSpice, Integer> entry) -> sortKey(entry.getKey())));
 
         rows.clear();
+        addGroup("group.mixes", held, spice -> spice.mix().isPresent());
+        addGroup("group.processed", held, spice -> spice.mix().isEmpty()
+                && spice.item().getDefaultInstance().is(SpiceItemTags.PROCESSED_SPICES));
         addGroup("group.raw", held, spice -> spice.mix().isEmpty()
                 && !spice.item().getDefaultInstance().is(SpiceItemTags.PROCESSED_SPICES)
                 && spice.item().getDefaultInstance().is(SpiceItemTags.SPICES));
-        addGroup("group.processed", held, spice -> spice.mix().isEmpty()
-                && spice.item().getDefaultInstance().is(SpiceItemTags.PROCESSED_SPICES));
-        addGroup("group.mixes", held, spice -> spice.mix().isPresent());
         addGroup("group.other", held, spice -> spice.mix().isEmpty()
                 && !spice.item().getDefaultInstance().is(SpiceItemTags.SPICES)
                 && !spice.item().getDefaultInstance().is(SpiceItemTags.PROCESSED_SPICES));
@@ -499,6 +514,8 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         });
         if (group.isEmpty())
             return;
+        if (!rows.isEmpty())
+            rows.add(new Row(null, null, 0));
         rows.add(new Row(Component.translatable(KEY_PREFIX + key), null, 0));
         rows.addAll(group);
     }
@@ -674,7 +691,7 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
             color = COLOR_WARNING;
         } else if (!running() && view().food().isEmpty()) {
             text = Component.translatable(KEY_PREFIX + "no_food");
-            color = COLOR_DIM;
+            color = COLOR_TEXT;
         } else {
             return;
         }
@@ -729,7 +746,8 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
             Row row = rows.get(scroll + i);
             int y = baseY + i * GrinderLayout.LIST_ROW_HEIGHT;
             if (row.spice == null) {
-                drawClipped(graphics, row.header, baseX, y + 2, GrinderLayout.LIST_WIDTH - 8, COLOR_DIM);
+                if (row.header != null)
+                    drawClipped(graphics, row.header, baseX, y + 2, GrinderLayout.LIST_WIDTH - 8, COLOR_DIM);
                 continue;
             }
             if (row == hovered)
@@ -777,6 +795,7 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
             if (points > 0D)
                 graphics.fill(barX, y + 2, barX + Math.max(1, (int) (barWidth * Math.min(1D, points / scale))), y + 8,
                         0xFF000000 | axis.getColor(pole > 0));
+            renderNotches(graphics, barX, y + 2, y + 8, barWidth, scale, view.stepCost());
             graphics.drawString(font, String.format("%.1f", points), barX + barWidth + 3, y + 1, axisColor, false);
         }
     }
@@ -801,7 +820,7 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
                     : 0;
             if (filled > 0)
                 graphics.fill(x, barTop, x + filled, barBottom, 0xFF000000 | axis.getColor(pole > 0));
-            renderNotches(graphics, x, barTop, barBottom, filled, scale, view.stepCost());
+            renderNotches(graphics, x, barTop, barBottom, GrinderLayout.POINTS_WIDTH, scale, view.stepCost());
         }
         for (int cy = 0; cy < BoardGeometry.SIZE; cy++) {
             for (int cx = 0; cx < BoardGeometry.SIZE; cx++)
@@ -816,23 +835,23 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
     }
 
     /**
-     * Draws a notch across a points bar at the end of every step the bar's points
-     * could pay for. Left out if they would sit closer than
+     * Draws a black notch at the bottom of a points bar at the end of every step
+     * the bar could show. Left out if they would sit closer than
      * {@value GrinderLayout#POINTS_NOTCH_MIN_SPACING} px.
      *
-     * @param filled   Width of the filled part of the bar, in px.
+     * @param width    Width of the bar, in px.
      * @param scale    Points a full bar stands for.
      * @param stepCost Points one step costs.
      */
-    private static void renderNotches(GuiGraphics graphics, int x, int top, int bottom, int filled, double scale,
+    private static void renderNotches(GuiGraphics graphics, int x, int top, int bottom, int width, double scale,
             double stepCost) {
-        double spacing = GrinderLayout.POINTS_WIDTH * stepCost / scale;
+        double spacing = width * stepCost / scale;
         if (stepCost <= 0D || spacing < GrinderLayout.POINTS_NOTCH_MIN_SPACING)
             return;
-        for (int step = 1; step * spacing < GrinderLayout.POINTS_WIDTH; step++) {
-            int end = (int) (step * spacing);
-            int notchX = x + end - 1;
-            graphics.fill(notchX, top, notchX + 1, bottom, end <= filled ? 0x80000000 : 0xFF4A4A4A);
+        int notchTop = bottom - (bottom - top) / 2;
+        for (int step = 1; step * spacing < width; step++) {
+            int notchX = x + (int) (step * spacing) - 1;
+            graphics.fill(notchX, notchTop, notchX + 1, bottom, 0xFF000000);
         }
     }
 
@@ -981,7 +1000,8 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         int color = pole == 0 ? 0xFFFFFF : axis.getColor(pole > 0);
         List<Component> lines = new ArrayList<>();
         lines.add(Component.translatable(KEY_PREFIX + "axis", Component.translatable(axis.positiveTranslationKey()),
-                Component.translatable(axis.negativeTranslationKey())).withStyle(Style.EMPTY.withColor(color & 0xFFFFFF)));
+                Component.translatable(axis.negativeTranslationKey()))
+                .withStyle(Style.EMPTY.withColor(color & 0xFFFFFF)));
         lines.add(Component.translatable(KEY_PREFIX + "bar.points", formatPoints(view().points().get(axis.ordinal())))
                 .withStyle(ChatFormatting.GRAY));
         lines.add(Component.translatable(KEY_PREFIX + "bar.steps", stepsLeft(axis)).withStyle(ChatFormatting.GRAY));
@@ -1052,8 +1072,10 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         switch (cell.kind()) {
             case UNKNOWN -> {
                 lines.add(Component.translatable(KEY_PREFIX + "cell.unknown"));
-                lines.add(Component.translatable(KEY_PREFIX + (cell.effectCount() == 1 ? "cell.effect_count.one" : "cell.effect_count"),
-                        cell.effectCount())
+                lines.add(Component
+                        .translatable(
+                                KEY_PREFIX + (cell.effectCount() == 1 ? "cell.effect_count.one" : "cell.effect_count"),
+                                cell.effectCount())
                         .withStyle(net.minecraft.ChatFormatting.GRAY));
                 if (cell.boons() >= 0) {
                     int unknown = cell.randoms();
@@ -1103,13 +1125,15 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
 
     /**
      * A direction or lock-in button drawn as a flat square with a sprite on top:
-     * yellow with one step left, gray without any. It is never focusable.
+     * yellow with one step left, gray without any. Its outline takes the color of
+     * its axis. It is never focusable.
      */
     private static final class PadButton extends Button {
 
         private final Direction direction;
         private final ResourceLocation icon;
         private int steps;
+        private int outline = COLOR_PANEL_BORDER;
 
         private PadButton(Direction direction, int x, int y, Runnable action) {
             super(x, y, GrinderLayout.PAD_BUTTON, GrinderLayout.PAD_BUTTON, CommonComponents.EMPTY,
@@ -1133,7 +1157,7 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
                 color = isHoveredOrFocused() ? 0xFFFFE070 : 0xFFD9B030;
             else
                 color = isHoveredOrFocused() ? 0xFFB0B0B0 : 0xFF808080;
-            graphics.fill(getX(), getY(), getX() + width, getY() + height, 0xFF111111);
+            graphics.fill(getX(), getY(), getX() + width, getY() + height, outline);
             graphics.fill(getX() + 1, getY() + 1, getX() + width - 1, getY() + height - 1, color);
             int offset = (width - GrinderLayout.SPRITE_SIZE) / 2;
             graphics.setColor(1F, 1F, 1F, active ? 1F : 0.4F);

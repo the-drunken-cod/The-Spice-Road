@@ -64,10 +64,10 @@ public final class GrinderLayout {
 
     // #region Run view
 
-    /** Left edge of the 3x3 direction pad, 2 px inside the right panel's corner. */
-    public static final int PAD_X = PANEL_X + 3;
-    /** Top edge of the 3x3 direction pad, 2 px inside the right panel's corner. */
-    public static final int PAD_Y = PANEL_Y + 3;
+    /** Left edge of the 3x3 direction pad, centered left of the board. */
+    public static final int PAD_X = PANEL_X + 17;
+    /** Top edge of the 3x3 direction pad. */
+    public static final int PAD_Y = PANEL_Y + 7;
     /** Edge length of a pad button. */
     public static final int PAD_BUTTON = 11;
     /** Gap between two pad buttons. */
@@ -75,19 +75,18 @@ public final class GrinderLayout {
     /** Left edge of the points bars. */
     public static final int POINTS_X = 156;
     /** Top edge of the first points bar. */
-    public static final int POINTS_Y = 76;
+    public static final int POINTS_Y = 67;
     /** Height of one points bar row. */
-    public static final int POINTS_ROW_HEIGHT = 9;
+    public static final int POINTS_ROW_HEIGHT = 11;
     /** Height of a points bar, drawn 1 px below the top of its row. */
-    public static final int POINTS_BAR_HEIGHT = 7;
-    /**
+    public static final int POINTS_BAR_HEIGHT = 9;    /**
      * Fewest pixels between two notches of a points bar before they are left out.
      */
-    public static final int POINTS_NOTCH_MIN_SPACING = 2;
+    public static final int POINTS_NOTCH_MIN_SPACING = 1;
     /** Width of a points bar. */
-    public static final int POINTS_WIDTH = 34;
+    public static final int POINTS_WIDTH = 64;
     /** Left edge of the board. */
-    public static final int BOARD_X = 211;
+    public static final int BOARD_X = 223;
     /** Top edge of the board. */
     public static final int BOARD_Y = 19;
     /** Edge length of one board cell. */
@@ -97,7 +96,7 @@ public final class GrinderLayout {
     /** Offset of a cell's sprite from the cell's top left corner. */
     public static final int CELL_SPRITE_OFFSET = (CELL - SPRITE_SIZE) / 2;
     /** Left edge of the line summarizing the effects. */
-    public static final int EFFECTS_X = 211;
+    public static final int EFFECTS_X = 223;
     /** Top edge of the line summarizing the effects. */
     public static final int EFFECTS_Y = 124;
 
@@ -127,7 +126,7 @@ public final class GrinderLayout {
     /** Width of the primary button while drafting. */
     public static final int DRAFT_PRIMARY_WIDTH = 118;
     /** Left edge of the primary button during a run (Accept). */
-    public static final int RUN_PRIMARY_X = 211;
+    public static final int RUN_PRIMARY_X = 223;
     /** Top edge of the primary button during a run. */
     public static final int RUN_PRIMARY_Y = BUTTONS_Y;
     /** Width of the primary button during a run. */

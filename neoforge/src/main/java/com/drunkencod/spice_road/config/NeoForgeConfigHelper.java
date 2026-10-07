@@ -374,6 +374,11 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean isGrinderPadOutlineColored() {
+        return value(ConfigSchema.GRINDER_COLORED_PAD_OUTLINES);
+    }
+
+    @Override
     public boolean isTooltipBothAxisLabelsShown() {
         return value(ConfigSchema.TOOLTIP_SHOW_BOTH_AXIS_LABELS);
     }

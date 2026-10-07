@@ -397,6 +397,14 @@ public interface IConfigHelper {
     int getGrinderInputBufferMs();
 
     /**
+     * Client-side. Whether the Spice Grinder's movement and lock-in buttons are
+     * outlined in the color of their Flavor Axis.
+     *
+     * @return Whether the button outlines are colored.
+     */
+    boolean isGrinderPadOutlineColored();
+
+    /**
      * Client-side. Whether Flavor Axis tooltips show both pole labels of each
      * axis (e.g. {@code [Spicy / Cooling]}), emphasizing the one matching the
      * value's sign, instead of only the matching one.

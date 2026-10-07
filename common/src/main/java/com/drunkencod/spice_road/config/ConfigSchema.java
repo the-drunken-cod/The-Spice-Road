@@ -308,6 +308,10 @@ public final class ConfigSchema {
     public static final ConfigOption<Boolean> TOOLTIP_ANIMATE_AXES = add(
             ConfigOption.ofBoolean(TOOLTIP, "animateAxes", true));
 
+    /** Whether the Spice Grinder's movement buttons are outlined in their axis' color. */
+    public static final ConfigOption<Boolean> GRINDER_COLORED_PAD_OUTLINES = add(
+            ConfigOption.ofBoolean(GRINDER, "coloredPadOutlines", true));
+
     /**
      * Milliseconds the Spice Grinder GUI waits for a second movement key to make a
      * diagonal step.
