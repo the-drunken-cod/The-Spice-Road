@@ -198,3 +198,7 @@
     - [ ] Feature to select spice profiles (checkbox on list item) to juxtapose up to 4 spices.
     - [ ] Feature to export all changed JSONs as a ZIP.
     - [ ] Feature to reset an adjusted profile to the default value.
+- [ ] JEI / EMI integration:
+    - [ ] Spice Grinder category that renders the Spice Profile values for spice ingredients and Spice Mixes.
+    - [ ] Spice Origin category that renders the worldgen info, like rarity tier, hardiness, climate and yield.
+    - [ ] Category for Drying Rack recipes (refer to mycomancy_src for a base template).
