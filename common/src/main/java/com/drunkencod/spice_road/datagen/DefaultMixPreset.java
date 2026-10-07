@@ -13,6 +13,7 @@ import net.minecraft.world.item.Item;
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.mix.MixPreset;
 import com.drunkencod.spice_road.mix.PresetSlot;
+import com.drunkencod.spice_road.spice.ProcessedSpice;
 import com.drunkencod.spice_road.spice.Spice;
 
 /**
@@ -20,7 +21,8 @@ import com.drunkencod.spice_road.spice.Spice;
  * {@code data/spice_road/mix_preset/} and given their own item models by
  * datagen. Datapacks may add, change or remove presets; this only seeds the
  * defaults. A slot is either a single {@link Spice} or a hand-written item tag
- * of this mod's namespace, whose members are interchangeable.
+ * of this mod's namespace, whose members are interchangeable. A Spice with
+ * Processed Spices fills its slot with its raw or any processed item.
  */
 public enum DefaultMixPreset {
     BENGALI("bengali", 1,
@@ -46,8 +48,8 @@ public enum DefaultMixPreset {
             spice(Spice.SAFFRON), spice(Spice.TURMERIC), tag("spice/cinnamon"), tag("spice/peppercorn"),
             spice(Spice.CARDAMOM)),
     PUMPKIN_SPICE("pumpkin_spice", 9,
-            tag("spice/cinnamon"), spice(Spice.NUTMEG), spice(Spice.CLOVE), spice(Spice.ALLSPICE),
-            spice(Spice.GINGER)),
+            tag("spice/cinnamon"), spice(Spice.NUTMEG), spice(Spice.CLOVE),
+            spice(Spice.ALLSPICE), spice(Spice.GINGER)),
     RAS_EL_HANOUT("ras_el_hanout", 10,
             spice(Spice.CARDAMOM), spice(Spice.CUMIN), spice(Spice.CLOVE), tag("spice/cinnamon"),
             spice(Spice.NUTMEG), spice(Spice.ALLSPICE), tag("spice/peppercorn"), spice(Spice.MASTIC)),
@@ -59,17 +61,24 @@ public enum DefaultMixPreset {
     /**
      * One proportion of a default preset.
      *
-     * @param spice The Spice, or {@code null} if this slot is a tag.
+     * @param spice The Spice (taking its processed forms too), or {@code null} if
+     *              this slot is a tag.
      * @param tag   The path of the item tag in this mod's namespace, or
      *              {@code null} if this slot is a single Spice.
      * @param count How many of it one batch holds.
      */
     public record Slot(Spice spice, String tag, int count) {
 
-        /** @return The slot as the preset's own slot, with the Spice's raw item. */
+        /**
+         * @return The slot as the preset's own slot: the Spice's variant tag if it
+         *         has Processed Spices, else its raw item.
+         */
         PresetSlot toPresetSlot() {
-            if (spice != null)
-                return new PresetSlot(Either.left(Spice.getRawById(spice.getId())), count);
+            if (spice != null) {
+                TagKey<Item> variants = ProcessedSpice.variantTag(spice);
+                return new PresetSlot(variants != null ? Either.right(variants)
+                        : Either.left(Spice.getRawById(spice.getId())), count);
+            }
             TagKey<Item> key = TagKey.create(Registries.ITEM,
                     ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, tag));
             return new PresetSlot(Either.right(key), count);

@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 import com.drunkencod.spice_road.Constants;
@@ -29,6 +31,8 @@ import com.drunkencod.spice_road.mix.MixPreset;
 import com.drunkencod.spice_road.mix.MixPresetReloadListener;
 import com.drunkencod.spice_road.mix.PresetSlot;
 import com.drunkencod.spice_road.mix.SpiceMix;
+import com.drunkencod.spice_road.spice.ProcessedSpice;
+import com.drunkencod.spice_road.spice.Spice;
 
 /**
  * Writes every {@link DefaultMixPreset} as
@@ -38,7 +42,7 @@ import com.drunkencod.spice_road.mix.SpiceMix;
  * presets: its result carries the same components the jar-and-spices recipe
  * would produce, so whichever of the two a grid matches, the result is the
  * same. A preset's tags are hand-written, so the recipe takes the first item
- * each lists. Raw JSON, so it runs unchanged on both loaders. Every preset is
+ * each lists (the raw item for a Spice's variant tag). Raw JSON, so it runs unchanged on both loaders. Every preset is
  * built and written through the real codec, so datagen fails on a preset the
  * game would reject.
  */
@@ -82,15 +86,30 @@ public class MixPresetProvider implements DataProvider {
 
     /**
      * @return One batch of the preset as concrete spices, with each tag
-     *         replaced by the first item its hand-written tag file lists.
+     *         replaced by the first item its tag file lists: the raw item for a
+     *         generated variant tag, else the hand-written file's first.
      */
     private static Map<Item, Integer> representativeSpices(MixPreset preset) {
         Map<Item, Integer> spices = new LinkedHashMap<>();
         for (PresetSlot slot : preset.slots()) {
-            Item item = slot.source().map(own -> own, tag -> firstItemOf(tag.location(), 0));
+            Item item = slot.source().map(own -> own,
+                    tag -> variantTagRaw(tag).orElseGet(() -> firstItemOf(tag.location(), 0)));
             spices.merge(item, slot.count(), Integer::sum);
         }
         return spices;
+    }
+
+    /**
+     * @param tag An item tag.
+     * @return The raw item of the Spice whose generated variant tag {@code tag}
+     *         is, as those files don't exist yet while datagen runs; empty if
+     *         it is none.
+     */
+    private static Optional<Item> variantTagRaw(TagKey<Item> tag) {
+        return Arrays.stream(Spice.values())
+                .filter(spice -> tag.equals(ProcessedSpice.variantTag(spice)))
+                .findFirst()
+                .map(spice -> Spice.getRawById(spice.getId()));
     }
 
     /**

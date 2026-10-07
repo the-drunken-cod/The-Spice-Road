@@ -5,8 +5,12 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
+import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.registry.ModItems;
 
 /**
@@ -73,5 +77,18 @@ public enum ProcessedSpice {
      */
     public static List<ProcessedSpice> bySource(Spice source) {
         return Arrays.stream(values()).filter(processed -> processed.source == source).toList();
+    }
+
+    /**
+     * @param source A Spice.
+     * @return The item tag {@code spice_road:spice/<id>} holding {@code source}'s
+     *         raw item and all of its Processed Spices, so a Mix Preset slot can
+     *         take either; {@code null} if {@code source} has no Processed Spice.
+     */
+    public static @Nullable TagKey<Item> variantTag(Spice source) {
+        if (bySource(source).isEmpty())
+            return null;
+        return TagKey.create(Registries.ITEM,
+                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "spice/" + source.getId()));
     }
 }

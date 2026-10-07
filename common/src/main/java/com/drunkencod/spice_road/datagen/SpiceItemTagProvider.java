@@ -10,6 +10,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
@@ -30,6 +31,8 @@ import com.drunkencod.spice_road.spice.Tier;
  * and {@link SpiceItemTags#SPICES} including both.</li>
  * <li>Each {@link Tier#getItemTag() tier tag}, from its Spices' raw,
  * processed, seeds, sapling and vine items.</li>
+ * <li>Each {@link ProcessedSpice#variantTag variant tag}: a Spice's raw item and
+ * its Processed Spices, which Mix Presets use to take either.</li>
  * <li>{@link SpiceItemTags#SPICE_PLANT_SEEDS} and the Spice Tree log, leaves
  * and sapling tags, plus {@code c:stripped_logs}.</li>
  * <li>The (initially empty) {@link SpiceItemTags#RETAINS_FLAVOR} and
@@ -57,6 +60,14 @@ public class SpiceItemTagProvider extends RawTagProvider<Item> {
                 TagValue.tag(SpiceItemTags.PROCESSED_SPICES))));
         for (Tier tier : Tier.values())
             futures.add(save(cachedOutput, tier.getItemTag(), entries(tierItems(tier))));
+        for (Spice spice : Spice.values()) {
+            TagKey<Item> variants = ProcessedSpice.variantTag(spice);
+            if (variants != null) {
+                futures.add(save(cachedOutput, variants, entries(Stream.concat(
+                        Stream.of(Spice.getRawById(spice.getId())),
+                        ProcessedSpice.bySource(spice).stream().map(ProcessedSpice::getItem)))));
+            }
+        }
 
         // #region plants and trees
         futures.add(save(cachedOutput, SpiceItemTags.SPICE_PLANT_SEEDS,

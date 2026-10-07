@@ -187,7 +187,7 @@
 - [x] Display spice profile tooltip for spice mixes too.
 - [x] Make `<tier> spice ingredient` tooltip show up for raw and processed spices without a spice profile (without the `[Shift] for info` part).
 - [x] Allow tags in spice mixes, e.g. `#spice_road:spice/peppercorn` and `#spice_road:spice/cinnamon`
-- [ ] Use dried spices in spice mixes (e.g. `ProcessedSpice.DRIED_CLOVE` instead of `Spice.CLOVE`).
+- [x] Let spice mixes take raw or dried spices (e.g. `#spice_road:spice/clove` = `clove` + `dried_clove`).
 - [ ] Change sounds when clicking movement buttons to a pitched down grindstone sound.
     - [ ] Add movement sounds to Spice Grinder GUI when moving via keyboard inputs.
 - [ ] Create spice balancing tool.
