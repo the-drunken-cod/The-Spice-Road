@@ -10,12 +10,19 @@
         - Crops: garlic (temperate), sesame (tropical).
         - Trees: tonka (tropical).
     - Added 4 new processed spices (no recipe yet): dried_clove, dried_long_pepper, dried_mustard, dried_nutmeg, dried_tonka.
+        - Moved spice profile from the raw/fresh spices to their new dried/processed spice counterparts.
     - Added some more original textures to replace their placeholders.
 - **Changes:**
+    - Edited Spice Grinder GUI:
+        - Adjusted layout to be more spacious, cohesive and hopefully more intuitive.
+        - Added scroll bar to spice ingredient list.
+        - Added notches to the spice profile value bars that can help estimate how many steps are left.
+        - Added colored outlines around the movement buttons.
+        - Added and improved sound effects when adding and removing spices and moving on the board.
+        - Improved board cell sprites.
+        - Better area for info and warning messages.
     - Reworked some more textures.
-    - Rebalanced some spice profiles.
-- **Fixes:**
-    - Adjusted Spice Grinder GUI to be less squished together, so nothing is obscured. Also added QoL improvements like notched bars, an actual scroll bar, and a better spot for info/warning messages.
+    - Rebalanced some spice profile values.
 
 <br>
 
