@@ -163,14 +163,6 @@
     - [x] Flawlessly seasoned foods amount (no negative effects).
     - [x] Seasoned foods eaten amount.
     - [x] Spice Grinder moves made.
-- [ ] Patchouli documentation:
-    - Spice types:
-        - [ ] Custom page type that lists all spice crop attributes and worldgen overview.
-        - [ ] Custom page type that renders a given spice profile, similar to the already existing tooltip.
-    - Mechanics:
-        - [ ] Spice Grinder:
-            - [ ] Nearby spice sourcing.
-            - [ ] Minigame.
 - [x] Drop more spices and spice seeds when the effect Luck is active, worse drops if Bad Luck is active.
 - [x] Convert all baked datagen config values into live config values, else (if not possible or not worth it) add a note to the affected config values stating that changing it will require datagen to be re-run / the mod to be recompiled.
 - [x] Spice Grinder GUI improvements:
@@ -192,6 +184,24 @@
     - [x] Change sounds when clicking movement buttons to a pitched down grindstone sound.
     - [x] Add movement sounds to Spice Grinder GUI when moving via keyboard inputs (same pitched down grindstone sound).
     - [x] Add sounds when adding and removing ingredients in the Spice Grinder GUI (UI click, pitched up or down for adding/removing - pitched even more when holding shift).
+- [ ] JEI / EMI integration:
+    - [ ] Spice Grinder category that renders the Spice Profile values for spice ingredients and Spice Mixes.
+    - [ ] Spice Origin category that renders the worldgen info, like rarity tier, hardiness, climate and yield.
+    - [ ] Category for Drying Rack recipes (refer to mycomancy_src for a base template).
+- [ ] Spice Grinder fixes:
+    - [ ] Combine duplicate effects. If exceeds cap, clamp to max level value.
+- [ ] Patchouli documentation:
+    - Spice types:
+        - [ ] List of all spices:
+            - [ ] Custom page type that lists all spice crop attributes and worldgen overview (tier/rarity, climate, hand-harvest, harvest tools), and whether it's been collected (same mechanism as the stats).
+            - [ ] Custom page type that renders a given spice profile, similar to the already existing tooltip.
+    - Mechanics:
+        - [ ] Spice Grinder:
+            - [ ] Nearby spice sourcing.
+            - [ ] Minigame.
+        - [ ] Spice Mixes:
+            - [ ] List of all preset mixes.
+            - [ ] Crafting recipe page.
 - [ ] Create spice balancing tool.
     - Website that loads a set of spice profile JSONs and allows easy comparing and adjusting and exporting.
     - [ ] List all spices and their profiles using color-coded and prefixed slider inputs.
@@ -200,9 +210,3 @@
     - [ ] Feature to select spice profiles (checkbox on list item) to juxtapose up to 4 spices.
     - [ ] Feature to export all changed JSONs as a ZIP.
     - [ ] Feature to reset an adjusted profile to the default value.
-- [ ] JEI / EMI integration:
-    - [ ] Spice Grinder category that renders the Spice Profile values for spice ingredients and Spice Mixes.
-    - [ ] Spice Origin category that renders the worldgen info, like rarity tier, hardiness, climate and yield.
-    - [ ] Category for Drying Rack recipes (refer to mycomancy_src for a base template).
-- [ ] Spice Grinder fixes:
-    - [ ] Combine duplicate effects. If exceeds cap, clamp to max level value.
