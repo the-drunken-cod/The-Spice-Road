@@ -43,7 +43,7 @@ Warning: may contain outdated information, and is only to be used as a guideline
         - 1 input slot, 1 output slot, 1 extra slot per side, so 6 slots in total. This is an intentional deviation from Mycomancy's 4 slots.
     - Add Processed Spice items made by drying (e.g. dried nutmeg), each its own item with its own spice profile values.
         - Some spices will have more beneficial values when dried, others will have less.
-        - Not all spices can be dried. Other processing methods (soaking, smoking, cutting, etc.) may follow in the future .
+        - Not all spices can be dried. Other processing methods (soaking, smoking, cutting, etc.) may follow in the future.
     - Drying Rack will be faster when placed next to a hot block (identified by a tag, again, refer to Mycomancy).
 7. [ ] **Spice Effects / Boons & Banes**
     - [ ] Add 16 boons (mostly custom, maybe some vanilla).
