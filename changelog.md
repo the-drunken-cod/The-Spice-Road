@@ -6,12 +6,16 @@
             - Preset ingredients may be item tags (e.g. `spice_road:spice/cinnamon`), of which any combination of members counts.
         - Added 12 default spice mix presets (look up ingredients with JEI/EMI): bengali, biryani, cajun, curry, holiday, mediterranean, mexican, persian, pumpkin_spice, ras_el_hanout, salad, zaatar.
     - Added 6 new spices:
-        - Bushes: TODO: Basil (temperate), Oregano (arid), Parsley (temperate).
-        - Crops: TODO: Garlic (temperate), Sesame (tropical).
-        - Trees: TODO: Tonka (tropical).
+        - Bushes: basil (temperate), oregano (arid), parsley (temperate).
+        - Crops: garlic (temperate), sesame (tropical).
+        - Trees: tonka (tropical).
+    - Added 4 new processed spices (no recipe yet): dried_clove, dried_long_pepper, dried_mustard, dried_nutmeg, dried_tonka.
+    - Added some more original textures to replace their placeholders.
 - **Changes:**
     - Reworked some more textures.
+    - Rebalanced some spice profiles.
 - **Fixes:**
+    - Adjusted Spice Grinder GUI to be less squished together, so nothing is obscured. Also added QoL improvements like notched bars, an actual scroll bar, and a better spot for info/warning messages.
 
 <br>
 
