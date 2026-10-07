@@ -23,7 +23,8 @@ public enum ProcessedSpice {
     DRIED_CLOVE("dried_clove", Spice.CLOVE, ProcessingMethod.DRYING),
     DRIED_LONG_PEPPER("dried_long_pepper", Spice.LONG_PEPPER, ProcessingMethod.DRYING),
     DRIED_MUSTARD("dried_mustard", Spice.MUSTARD, ProcessingMethod.DRYING),
-    DRIED_NUTMEG("dried_nutmeg", Spice.NUTMEG, ProcessingMethod.DRYING);
+    DRIED_NUTMEG("dried_nutmeg", Spice.NUTMEG, ProcessingMethod.DRYING),
+    DRIED_TONKA("dried_tonka", Spice.TONKA, ProcessingMethod.DRYING);
 
     private final String id;
     private final Spice source;
