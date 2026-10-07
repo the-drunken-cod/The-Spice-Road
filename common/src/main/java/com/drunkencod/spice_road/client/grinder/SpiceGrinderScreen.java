@@ -21,6 +21,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.CommonComponents;
@@ -78,6 +79,13 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
     private static final int COLOR_DIM = 0xFF808080;
     private static final int COLOR_WARNING = 0xFFFFD040;
     private static final int MESSAGE_TICKS = 60;
+    /** Pitch of the grindstone sound played when the pawn moves. */
+    private static final float PITCH_MOVE = 1.4F;
+    private static final float PITCH_ADD = 1.1F;
+    private static final float PITCH_REMOVE = 0.9F;
+    /** Pitches of adding and removing a whole batch, pushed further out. */
+    private static final float PITCH_ADD_BATCH = 1.3F;
+    private static final float PITCH_REMOVE_BATCH = 0.7F;
     private static final ResourceLocation CELL_WALL = sprite("cells/wall");
     private static final ResourceLocation CELL_UNKNOWN = sprite("cells/unknown");
     private static final ResourceLocation CELL_MINE = sprite("cells/mine");
@@ -260,9 +268,18 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
     }
 
     private void announce(SoundEvent sound, float pitch, String key) {
-        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(sound, pitch));
+        playUi(Minecraft.getInstance().getSoundManager(), sound, pitch);
         message = Component.translatable(KEY_PREFIX + key);
         messageTicks = MESSAGE_TICKS;
+    }
+
+    private static void playUi(SoundManager manager, SoundEvent sound, float pitch) {
+        manager.play(SimpleSoundInstance.forUI(sound, pitch));
+    }
+
+    /** Plays the sound of the pawn taking a step. */
+    private static void playMoveSound(SoundManager manager) {
+        playUi(manager, SoundEvents.GRINDSTONE_USE, PITCH_MOVE);
     }
 
     private GrinderView view() {
@@ -363,19 +380,25 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
      */
     private void clickSpice(Row row, boolean remove, boolean batch) {
         int amount = batch ? GrinderActions.BATCH_SIZE : 1;
+        SoundManager sounds = Minecraft.getInstance().getSoundManager();
         if (running()) {
-            if (!remove && canAddMore(row.spice))
+            if (!remove && canAddMore(row.spice)) {
                 send(GrinderIntentPayload.Kind.ADD_SPICE, amount, row.spice);
-            else
-                Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1F));
+                playUi(sounds, SoundEvents.UI_BUTTON_CLICK.value(), batch ? PITCH_ADD_BATCH : PITCH_ADD);
+            } else {
+                playUi(sounds, SoundEvents.VILLAGER_NO, 1F);
+            }
             return;
         }
-        if (remove && view().spices().getOrDefault(row.spice, 0) > 0)
+        if (remove && view().spices().getOrDefault(row.spice, 0) > 0) {
             send(GrinderIntentPayload.Kind.REMOVE_DRAFT_SPICE, amount, row.spice);
-        else if (!remove && canAddMore(row.spice))
+            playUi(sounds, SoundEvents.UI_BUTTON_CLICK.value(), batch ? PITCH_REMOVE_BATCH : PITCH_REMOVE);
+        } else if (!remove && canAddMore(row.spice)) {
             send(GrinderIntentPayload.Kind.ADD_DRAFT_SPICE, amount, row.spice);
-        else
-            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1F));
+            playUi(sounds, SoundEvents.UI_BUTTON_CLICK.value(), batch ? PITCH_ADD_BATCH : PITCH_ADD);
+        } else {
+            playUi(sounds, SoundEvents.VILLAGER_NO, 1F);
+        }
     }
 
     /**
@@ -621,8 +644,11 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         if (buffering && Util.getMillis() - bufferStartMs >= Services.CONFIG.getGrinderInputBufferMs()) {
             buffering = false;
             for (Direction direction : Direction.values()) {
-                if (direction.dx() == bufferedDx && direction.dy() == bufferedDy)
+                if (direction.dx() == bufferedDx && direction.dy() == bufferedDy) {
                     send(GrinderIntentPayload.Kind.MOVE, direction.ordinal(), null);
+                    if (view().stepsLeft().get(direction.ordinal()) > 0)
+                        playMoveSound(Minecraft.getInstance().getSoundManager());
+                }
             }
         }
         updateWidgets();
@@ -1163,6 +1189,17 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
             graphics.setColor(1F, 1F, 1F, active ? 1F : 0.4F);
             blitSprite(graphics, icon, getX() + offset, getY() + offset);
             graphics.setColor(1F, 1F, 1F, 1F);
+        }
+
+        /**
+         * Direction buttons grind instead of clicking; lock-in keeps the default click.
+         */
+        @Override
+        public void playDownSound(SoundManager handler) {
+            if (direction == null)
+                super.playDownSound(handler);
+            else
+                playMoveSound(handler);
         }
 
         @Override

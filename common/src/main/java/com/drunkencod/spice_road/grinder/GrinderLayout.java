@@ -56,7 +56,7 @@ public final class GrinderLayout {
     /** Left edge of the draft's flavor rows. */
     public static final int DRAFT_ROWS_X = 156;
     /** Top edge of the first of the draft's flavor rows. */
-    public static final int DRAFT_ROWS_Y = 40;
+    public static final int DRAFT_ROWS_Y = 44;
     /** Height of one flavor row. */
     public static final int DRAFT_ROW_HEIGHT = 11;
     /** Width of a flavor row. */
@@ -119,7 +119,7 @@ public final class GrinderLayout {
     /** Height of a button. */
     public static final int BUTTON_HEIGHT = 14;
     /** Top edge of the buttons, just above the status line's divider. */
-    public static final int BUTTONS_Y = STATUS_DIVIDER_Y - BUTTON_HEIGHT - 1;
+    public static final int BUTTONS_Y = STATUS_DIVIDER_Y - BUTTON_HEIGHT - 3;
     /** Left edge of the primary button while drafting (Season). */
     public static final int DRAFT_PRIMARY_X = 230;
     /** Top edge of the primary button while drafting. */

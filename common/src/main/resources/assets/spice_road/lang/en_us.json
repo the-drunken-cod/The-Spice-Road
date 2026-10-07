@@ -458,7 +458,7 @@
     "spice_road.gui.grinder.move.up": "Move up",
     "spice_road.gui.grinder.no_food": "Put some food in the slot.",
     "spice_road.gui.grinder.no_spices": "No spices found. Spices in your inventory and in nearby containers show up here.",
-    "spice_road.gui.grinder.season": "Season",
+    "spice_road.gui.grinder.season": "Start Seasoning",
     "spice_road.gui.grinder.spice_hint.add": "[%s] to add this spice.",
     "spice_road.gui.grinder.spice_hint.batch": "[%s] to transfer up to %s at once.",
     "spice_road.gui.grinder.spice_hint.remove": "[%s] to remove it again.",
