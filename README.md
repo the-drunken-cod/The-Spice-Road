@@ -58,24 +58,26 @@ Then simply place the downloaded JAR file into your Minecraft `mods` folder and 
 <br>
 
 ## Integrations:
-- [Farmer's Delight](https://modrinth.com/mod/farmers-delight)
-  - Recipe compatibility for the cooking pot and cutting board (ingredient spice profiles get correctly summed for the outputs).
-  - Food block (pumpkin pie, etc.) placement is prevented by default unless sneaking to avoid accidentally voiding spiced foods.
+- [Farmer's Delight](https://modrinth.com/mod/farmers-delight):
+  - Recipe compatibility for the cooking pot and cutting board (ingredient spice profiles get correctly summed up and carried over to the output).
+  - Food block placement (pumpkin pie, [Display Delight mod](https://modrinth.com/mod/display-delight) etc.) is prevented by default unless sneaking. Placing these foods unfortunately voids the spice data, since they are blocks and not blockentities.
   - Tag-level compatibility (knives as cutting tool, etc.).
-- [Cooking For Blockheads](https://modrinth.com/mod/cooking-for-blockheads)
+- [Cooking For Blockheads](https://modrinth.com/mod/cooking-for-blockheads):
   - Recipe compatibility for the toaster and oven (ingredient spice profiles get correctly combined for the output, even if the GUI doesn't show it).
-  - Spices on a nearby Spice Rack are included in the Spice Grinder.
-- [Serene Seasons](https://modrinth.com/mod/serene-seasons)
-  - Spice crops have realistic season data attached to them, with different sets of plants growing throughout the whole year.
-- [AppleSkin](https://modrinth.com/mod/appleskin)
-    - Saturation boost correctly shows up in the tooltip (not in the hunger bar above the hotbar).
-- [Create](https://modrinth.com/mod/create)
-  - Spices can be harvested via deployers, unless they require hand-picking (like Vanilla and Saffron).
-- [Sable](https://modrinth.com/mod/sable) / [Create Aeronautics](https://modrinth.com/mod/create-aeronautics)
+  - Spices on a nearby Spice Rack are included in the Spice Grinder's nearby ingredient search.
+- [Serene Seasons](https://modrinth.com/mod/serene-seasons):
+  - Spices have realistic season data attached to them, with different sets of plants growing throughout the year.
+- [AppleSkin](https://modrinth.com/mod/appleskin):
+    - Saturation boost correctly shows up in the tooltip (but not in the hunger bar above the hotbar until consumed).
+- [Create](https://modrinth.com/mod/create):
+  - Spices can be harvested via Mechanical Harvesters and Deployers, unless they require hand-picking (like Vanilla and Saffron).
+- [Sable](https://modrinth.com/mod/sable) / [Create Aeronautics](https://modrinth.com/mod/create-aeronautics):
   - Sublevels sample the spice region from the correct overworld coordinates, meaning crops on mobile bases correctly react to the current spice region.
   - Accurately scaled block weights.
-- [Botany Pots](https://modrinth.com/mod/botany-pots) & [Botany Trees](https://modrinth.com/mod/botany-trees), [Immersive Engineering](https://modrinth.com/mod/immersiveengineering)
-    - Botany Pots and Garden Cloches can be used to grow hardy crops (common and uncommon tier). Note: unfortunately these blockentities will not respond to cultivation and harvest config changes until the mod datagen is run again or the mod is recompiled. The recipes for each of these mods can be turned off in the common config (applies after `/reload`).
+- [Botany Pots](https://modrinth.com/mod/botany-pots) & [Trees](https://modrinth.com/mod/botany-trees), [Immersive Engineering](https://modrinth.com/mod/immersiveengineering):
+    - Botany Pots and Garden Cloches can be used to grow hardy spice crops and trees (common and uncommon tier).  
+      Note: unfortunately these blockentities will not respond to cultivation and harvest config changes until the mod datagen is run again or the mod is recompiled.  
+      The recipes for each of these mods can be turned off in the common config (applies after `/reload`).
 
 <br>
 
