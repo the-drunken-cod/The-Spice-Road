@@ -465,4 +465,14 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     public boolean areDryingRackParticlesEnabled() {
         return value(ConfigSchema.DRYING_RACK_PARTICLES);
     }
+
+    @Override
+    public boolean areSpiceRackItemsRendered() {
+        return value(ConfigSchema.SPICE_RACK_RENDER_ITEMS);
+    }
+
+    @Override
+    public int getSpiceRackItemRenderDistance() {
+        return value(ConfigSchema.SPICE_RACK_ITEM_RENDER_DISTANCE);
+    }
 }

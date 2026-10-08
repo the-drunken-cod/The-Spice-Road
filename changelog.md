@@ -6,6 +6,13 @@
         - Spice Profile: the flavor of every spice and Spice Mix preset, including datapack-added ones.
         - Spice Origin: each spice's tier, climate, whether it's hardy or region-bound, yield, plant, harvest action and tool, and seasons.
         - Drying: every Drying Rack recipe, with result chances and the drying time with and without heat.
+    - Added the Spice Rack in every vanilla wood variant (crafted from 6 slabs around an iron ingot), which stores 8 stacks of spices and spice mixes and shows them off in a fancy way.
+        - Has three models for when it is placed on the floor, on a wall or on a ceiling, and doesn't need a supporting block.
+        - Right-click with a spice or spice mix to put it in, with an empty hand to open the GUI.
+        - Hoppers and pipes can fill and empty it from any side, and a comparator reads how full it is.
+        - Items it accepts can be extended with the `#spice_road:spice_rack_storable` item tag.
+        - The Spice Grinder takes spices from nearby racks (`#spice_road:spice_racks` is part of `#spice_road:spice_storage`).
+        - Configurable item display and item render distance on the client.
 - **Changes:**
     - Spice Grinder doesn't consume spices anymore when player is in creative mode.
     - Spice Grinder GUI movement buttons have two warning colors now; yellow and red, with configurable steps-left-thresholds.

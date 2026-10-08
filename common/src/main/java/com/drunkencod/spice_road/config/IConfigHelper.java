@@ -532,4 +532,19 @@ public interface IConfigHelper {
      * @return Whether a drying and a finished Drying Rack show particles.
      */
     boolean areDryingRackParticlesEnabled();
+
+    /**
+     * Client-side.
+     *
+     * @return Whether Spice Racks draw the items they hold.
+     */
+    boolean areSpiceRackItemsRendered();
+
+    /**
+     * Client-side.
+     *
+     * @return How close, in blocks, the camera has to be for a Spice Rack to
+     *         draw its items.
+     */
+    int getSpiceRackItemRenderDistance();
 }

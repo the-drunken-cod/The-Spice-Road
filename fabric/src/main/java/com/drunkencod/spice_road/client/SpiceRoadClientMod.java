@@ -15,6 +15,8 @@ import com.drunkencod.spice_road.config.ConfigSync;
 import com.drunkencod.spice_road.config.ConfigSyncOverride;
 import com.drunkencod.spice_road.client.drying.DryingRackRenderer;
 import com.drunkencod.spice_road.client.grinder.SpiceGrinderScreen;
+import com.drunkencod.spice_road.client.rack.SpiceRackRenderer;
+import com.drunkencod.spice_road.client.rack.SpiceRackScreen;
 import com.drunkencod.spice_road.grinder.GrinderViewPayload;
 import com.drunkencod.spice_road.mix.MixPresetSync;
 import com.drunkencod.spice_road.registry.ModBlockEntities;
@@ -42,6 +44,7 @@ public class SpiceRoadClientMod implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(GrinderViewPayload.TYPE, (payload, context) -> payload.handle());
         SpiceGrinderScreen.registerViewHandler();
         MenuScreens.register(ModMenus.SPICE_GRINDER.get(), SpiceGrinderScreen::new);
+        MenuScreens.register(ModMenus.SPICE_RACK.get(), SpiceRackScreen::new);
         ClientPlayNetworking.registerGlobalReceiver(ConfigSync.TYPE, (payload, context) -> payload.handle());
         // The override must not outlive the connection that sent it - a later
         // singleplayer world or a different server needs its own values.
@@ -50,6 +53,9 @@ public class SpiceRoadClientMod implements ClientModInitializer {
         registerSpicePlantRenderLayers();
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.DRYING_RACK.get(), RenderType.cutout());
         BlockEntityRenderers.register(ModBlockEntities.DRYING_RACK.get(), DryingRackRenderer::new);
+        ModBlocks.SPICE_RACKS.values()
+                .forEach(rack -> BlockRenderLayerMap.INSTANCE.putBlock(rack.get(), RenderType.cutout()));
+        BlockEntityRenderers.register(ModBlockEntities.SPICE_RACK.get(), SpiceRackRenderer::new);
     }
 
     /**

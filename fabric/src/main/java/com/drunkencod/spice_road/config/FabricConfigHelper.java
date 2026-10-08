@@ -421,6 +421,16 @@ public class FabricConfigHelper implements IConfigHelper {
         return client().dryingRackEffects.particles;
     }
 
+    @Override
+    public boolean areSpiceRackItemsRendered() {
+        return client().spiceRack.renderItems;
+    }
+
+    @Override
+    public int getSpiceRackItemRenderDistance() {
+        return client().spiceRack.itemRenderDistance;
+    }
+
     // #region Clamping
 
     /**
@@ -770,6 +780,8 @@ public class FabricConfigHelper implements IConfigHelper {
         @ConfigEntry.Gui.CollapsibleObject
         public DryingRackEffects dryingRackEffects = new DryingRackEffects();
         @ConfigEntry.Gui.CollapsibleObject
+        public SpiceRackDisplay spiceRack = new SpiceRackDisplay();
+        @ConfigEntry.Gui.CollapsibleObject
         public RecipeViewer recipeViewer = new RecipeViewer();
 
         @Override
@@ -781,6 +793,14 @@ public class FabricConfigHelper implements IConfigHelper {
         public static class DryingRackEffects {
             @ConfigEntry.Gui.Tooltip
             public boolean particles = ConfigSchema.DRYING_RACK_PARTICLES.getDefault();
+        }
+
+        /** Spice Rack display. */
+        public static class SpiceRackDisplay {
+            @ConfigEntry.Gui.Tooltip
+            public boolean renderItems = ConfigSchema.SPICE_RACK_RENDER_ITEMS.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public int itemRenderDistance = ConfigSchema.SPICE_RACK_ITEM_RENDER_DISTANCE.getDefault();
         }
 
         /** Which of the mod's categories Recipe Viewers show, one field per category. */

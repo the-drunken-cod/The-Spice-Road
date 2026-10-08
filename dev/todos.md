@@ -83,6 +83,11 @@
     - [x] `items_dried` stat and `spice_road:item_dried` trigger (Hang Out to Dry advancement).
     - [ ] Tune the item offsets in `DryingRackRenderer` against the model in-game (hanging input, outputs lying on the shelf, secondary stacked above the primary).
     - [ ] Test hoppers (left/right/top/front/back/bottom), a comparator and a redstone signal pausing it in-game on both loaders.
+- [x] Spice Rack (8 slots in 2 tiers; floor, wall and ceiling models; one block per vanilla wood; plain `Container` so every face is open to automation; GUI; comparator; custom name; client config `spiceRack.renderItems` / `itemRenderDistance`; storable item tag `spice_road:spice_rack_storable`).
+    - [x] Datagenned blockstates, models, recipes (6 slabs around a wooden rod) and loot tables for all 11 woods.
+    - [ ] Tune the item offsets and scales in `SpiceRackRenderer` against the three models in-game (shelf rows, the standing rings and the hanging ones).
+    - [ ] Test hoppers, a comparator, quick-inserting by right-click and the Spice Grinder taking from a rack in-game on both loaders.
+    - [ ] Replace the placeholder pole texture (`iron_bars`) and fix the bare texture names in the hand-made `models/block/spice_rack/*.json`.
 - [x] Rework assets like textures and models to be separated into folders per spice (e.g. `textures/block/cinnamon/stripped_cinnamon_log.png`)
 - [x] Prevent other spices from spawning when a spice grove borders two different buckets, so groves only yield a single spice plant.
 - [x] Rework seed loot, so there's only a chance to drop 1 seeds (or cutting for rhizomes) item when harvesting spices, decreases by tier. Excludes trees and vines.

@@ -16,10 +16,11 @@ Warning: may contain outdated information, and is only to be used as a guideline
     - [x] A mix used as a recipe ingredient brings all its spices into the output (conserved like loose spices), and the empty jar is returned as the crafting remainder. Mixes can't be merged, topped up or unmixed.
     - [x] The Spice Grinder accepts mixes (from the inventory and spice storage), expanding them into their spices under the usual caps, returning the jars.
     - [x] Datapack-defined Mix Presets (~8 eventually, starting with Pumpkin Spice: cinnamon, nutmeg, clove at 1:1:1) with their own name and model (`custom_model_data`). A grid matching a preset's ratio at any multiple that fits yields the preset instead of a custom mix. Presets are listed in the creative tab.
-3. [ ] **Spice Rack**
+3. [x] **Spice Rack**
     - Way to store and display spices.
     - Inventory is exposed to the mod loader so automation is supported.
-    - Similar in shape to vanilla shelves in 1.21.whatever.
+    - Similar in shape to vanilla shelves in 1.21.whatever when placed against a wall. When placed on the floor or ceiling, uses different, center-aligned and supported models.
+    - 8 slots in two tiers of 4, accepting Spice Items and Spice Mixes plus the `spice_road:spice_rack_storable` item tag. One block per vanilla wood. Needs no supporting block.
 4. [x] **Spice Grinder**
     - Note: texture and sounds already implemented in Mycomancy, need to be ported.
     - Used to apply spices to food items using a custom roguelite minigame.

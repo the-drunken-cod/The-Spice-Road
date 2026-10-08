@@ -35,8 +35,8 @@ import com.drunkencod.spice_road.spice.Tier;
  * its Processed Spices, which Mix Presets use to take either.</li>
  * <li>{@link SpiceItemTags#SPICE_PLANT_SEEDS} and the Spice Tree log, leaves
  * and sapling tags, plus {@code c:stripped_logs}.</li>
- * <li>The (initially empty) {@link SpiceItemTags#RETAINS_FLAVOR} and
- * {@link SpiceItemTags#UNSEASONABLE} tags so they exist for datapacks to add
+ * <li>The (initially empty) {@link SpiceItemTags#RETAINS_FLAVOR},
+ * {@link SpiceItemTags#UNSEASONABLE} and {@link SpiceItemTags#SPICE_RACK_STORABLE} tags so they exist for datapacks to add
  * to, and {@link SpiceItemTags#VOIDS_FLAVOR_WHEN_PLACED} with its one known
  * default member.</li>
  * </ul>
@@ -88,6 +88,7 @@ public class SpiceItemTagProvider extends RawTagProvider<Item> {
                 TagValue.of("#c:mushrooms"),
                 TagValue.optional("#c:crops/grain"))));
         futures.add(save(cachedOutput, SpiceItemTags.UNSEASONABLE, List.of()));
+        futures.add(save(cachedOutput, SpiceItemTags.SPICE_RACK_STORABLE, List.of()));
         futures.add(save(cachedOutput, SpiceItemTags.VOIDS_FLAVOR_WHEN_PLACED, List.of(
                 TagValue.of("minecraft:pumpkin_pie"))));
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));

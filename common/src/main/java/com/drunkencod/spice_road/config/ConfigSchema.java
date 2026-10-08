@@ -72,6 +72,8 @@ public final class ConfigSchema {
     /** Client-side Drying Rack effects. */
     public static final ConfigSection DRYING_RACK_EFFECTS = ConfigSection.root(ConfigFile.CLIENT,
             "dryingRackEffects");
+    /** Client-side Spice Rack display. */
+    public static final ConfigSection SPICE_RACK = ConfigSection.root(ConfigFile.CLIENT, "spiceRack");
     /** Client-side tooltip display. */
     public static final ConfigSection TOOLTIP = ConfigSection.root(ConfigFile.CLIENT, "tooltip");
     /** Client-side Spice Grinder GUI behavior. */
@@ -320,6 +322,16 @@ public final class ConfigSchema {
     /** Whether a drying and a finished Drying Rack show particles. */
     public static final ConfigOption<Boolean> DRYING_RACK_PARTICLES = add(
             ConfigOption.ofBoolean(DRYING_RACK_EFFECTS, "particles", true));
+
+    // #region Spice Rack
+
+    /** Whether Spice Racks draw the items they hold. */
+    public static final ConfigOption<Boolean> SPICE_RACK_RENDER_ITEMS = add(
+            ConfigOption.ofBoolean(SPICE_RACK, "renderItems", true));
+
+    /** How close, in blocks, the camera has to be for a Spice Rack to draw its items. */
+    public static final ConfigOption<Integer> SPICE_RACK_ITEM_RENDER_DISTANCE = add(
+            ConfigOption.ofInt(SPICE_RACK, "itemRenderDistance", 24, 1, 128));
 
     // #region GUI
 

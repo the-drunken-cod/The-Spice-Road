@@ -1,10 +1,7 @@
 {
   "replace": false,
   "values": [
-    {
-      "id": "spice_road:spice_rack",
-      "required": false
-    },
+    "#spice_road:spice_racks",
     {
       "id": "#cookingforblockheads:kitchen_item_providers",
       "required": false

@@ -89,6 +89,7 @@ Then simply place the downloaded JAR file into your Minecraft `mods` folder and 
   - Added base config services for Neo and Fabric.
   - Added a base registry helper for Neo and Fabric.
   - Added base datagen services for Neo and Fabric.
+- [Blockbench](https://blockbench.net/) for creating models.
 
 <br>
 

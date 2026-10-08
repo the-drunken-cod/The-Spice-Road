@@ -1,6 +1,7 @@
 package com.drunkencod.spice_road.registry;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -184,9 +185,10 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
     @Override
     @SuppressWarnings("unchecked")
     public <T extends BlockEntity> Supplier<BlockEntityType<T>> registerBlockEntityType(String id,
-            BiFunction<BlockPos, BlockState, T> factory, Supplier<? extends Block> block) {
+            BiFunction<BlockPos, BlockState, T> factory, Collection<? extends Supplier<? extends Block>> blocks) {
         return (Supplier<BlockEntityType<T>>) (Supplier<?>) blockEntityTypes.register(id,
-                () -> BlockEntityType.Builder.<T>of(factory::apply, block.get()).build(null));
+                () -> BlockEntityType.Builder.<T>of(factory::apply,
+                        blocks.stream().map(Supplier::get).toArray(Block[]::new)).build(null));
     }
 
     @Override

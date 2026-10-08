@@ -1,5 +1,7 @@
 package com.drunkencod.spice_road.registry;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import net.minecraft.advancements.CriterionTrigger;
@@ -211,14 +213,30 @@ public interface IRegistryHelper {
      *
      * @param id      Registry path (e.g. {@code "my_block_entity"})
      * @param factory Creates a block entity of the type
-     * @param block   The block the type is valid for; on Fabric this is read
-     *                immediately, so it must already be registered
+     * @param blocks  The blocks the type is valid for; on Fabric these are read
+     *                immediately, so they must already be registered
      * @param <T>     The block entity class
      * @return A supplier of the registered type, only usable once registration
      *         has run.
      */
     <T extends BlockEntity> Supplier<BlockEntityType<T>> registerBlockEntityType(String id,
-            BiFunction<BlockPos, BlockState, T> factory, Supplier<? extends Block> block);
+            BiFunction<BlockPos, BlockState, T> factory, Collection<? extends Supplier<? extends Block>> blocks);
+
+    /**
+     * {@link #registerBlockEntityType(String, BiFunction, Collection)} for a
+     * type valid for a single block.
+     *
+     * @param id      Registry path (e.g. {@code "my_block_entity"})
+     * @param factory Creates a block entity of the type
+     * @param block   The block the type is valid for
+     * @param <T>     The block entity class
+     * @return A supplier of the registered type, only usable once registration
+     *         has run.
+     */
+    default <T extends BlockEntity> Supplier<BlockEntityType<T>> registerBlockEntityType(String id,
+            BiFunction<BlockPos, BlockState, T> factory, Supplier<? extends Block> block) {
+        return registerBlockEntityType(id, factory, List.of(block));
+    }
 
     /**
      * Register a {@link SoundEvent} under the mod's namespace, defined in

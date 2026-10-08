@@ -3,6 +3,7 @@ package com.drunkencod.spice_road.datagen;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -18,6 +19,7 @@ import com.drunkencod.spice_road.block.SpicePlants;
 import com.drunkencod.spice_road.block.SpiceTree;
 import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.block.SpiceVines;
+import com.drunkencod.spice_road.registry.ModBlocks;
 import com.drunkencod.spice_road.spice.Season;
 import com.drunkencod.spice_road.spice.Spice;
 
@@ -25,7 +27,7 @@ import com.drunkencod.spice_road.spice.Spice;
  * Datagens every block tag that lists the mod's blocks by ID, from the
  * registered Spice Plants, Trees and Vines:
  * <ul>
- * <li>The {@link SpiceBlockTags} Spice crop, tree and vine tags.</li>
+ * <li>The {@link SpiceBlockTags} Spice crop, tree, vine and rack tags.</li>
  * <li>{@code c:stripped_logs} and {@code minecraft:overworld_natural_logs}.</li>
  * <li>{@code minecraft:flowers}: Spice crops, vines and fruiting leaves, so
  * bees pollinate them.</li>
@@ -58,6 +60,8 @@ public class SpiceBlockTagProvider extends RawTagProvider<Block> {
                 entries(trees.stream().map(tree -> tree.getSapling().get()))));
         futures.add(save(cachedOutput, SpiceBlockTags.SPICE_VINES,
                 entries(SpiceVines.getRegistered().values().stream().map(vine -> vine.block().get()))));
+        futures.add(save(cachedOutput, SpiceBlockTags.SPICE_RACKS,
+                entries(ModBlocks.SPICE_RACKS.values().stream().map(Supplier::get))));
 
         // #region vanilla and conventional
         futures.add(save(cachedOutput, ResourceLocation.fromNamespaceAndPath("c", "stripped_logs"),

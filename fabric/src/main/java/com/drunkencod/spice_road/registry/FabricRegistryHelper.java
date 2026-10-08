@@ -1,5 +1,6 @@
 package com.drunkencod.spice_road.registry;
 
+import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
@@ -154,10 +155,11 @@ public class FabricRegistryHelper implements IRegistryHelper {
 
     @Override
     public <T extends BlockEntity> Supplier<BlockEntityType<T>> registerBlockEntityType(String id,
-            BiFunction<BlockPos, BlockState, T> factory, Supplier<? extends Block> block) {
+            BiFunction<BlockPos, BlockState, T> factory, Collection<? extends Supplier<? extends Block>> blocks) {
         BlockEntityType<T> type = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,
                 ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id),
-                BlockEntityType.Builder.<T>of(factory::apply, block.get()).build(null));
+                BlockEntityType.Builder.<T>of(factory::apply,
+                        blocks.stream().map(Supplier::get).toArray(Block[]::new)).build(null));
         return () -> type;
     }
 

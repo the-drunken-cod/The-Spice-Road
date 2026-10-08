@@ -13,6 +13,8 @@ import com.drunkencod.spice_road.datagen.DryingRecipeProvider;
 import com.drunkencod.spice_road.datagen.ImmersiveEngineeringClocheRecipeProvider;
 import com.drunkencod.spice_road.datagen.MixPresetProvider;
 import com.drunkencod.spice_road.datagen.SpiceMixModelProvider;
+import com.drunkencod.spice_road.datagen.SpiceRackAssetProvider;
+import com.drunkencod.spice_road.datagen.SpiceRackDataProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeBlockStateProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeItemModelProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeSpiceDataMapProvider;
@@ -168,6 +170,12 @@ public class SpiceRoadMod {
                 event.includeClient(),
                 new SpiceMixModelProvider(event.getGenerator().getPackOutput()));
         event.getGenerator().addProvider(
+                event.includeClient(),
+                new SpiceRackAssetProvider(event.getGenerator().getPackOutput()));
+        event.getGenerator().addProvider(
+                event.includeServer(),
+                new SpiceRackDataProvider(event.getGenerator().getPackOutput()));
+        event.getGenerator().addProvider(
                 event.includeServer(),
                 new AdvancementProvider(event.getGenerator().getPackOutput(), event.getLookupProvider(),
                         List.of(new SpiceRoadAdvancements())));
@@ -200,12 +208,15 @@ public class SpiceRoadMod {
     }
 
     /**
-     * Exposes the Drying Rack's {@code WorldlyContainer} to item handlers, which
-     * NeoForge only does by itself for a fixed list of vanilla block entities.
-     * Fabric's Transfer API wraps it automatically.
+     * Exposes the Drying Rack's {@code WorldlyContainer} and the Spice Rack's
+     * {@code WorldlyContainer} to item handlers, which NeoForge only does by itself
+     * for a fixed list of vanilla block entities. Fabric's Transfer API wraps
+     * them automatically.
      */
     private static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntities.DRYING_RACK.get(),
+                (rack, side) -> side == null ? new InvWrapper(rack) : new SidedInvWrapper(rack, side));
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntities.SPICE_RACK.get(),
                 (rack, side) -> side == null ? new InvWrapper(rack) : new SidedInvWrapper(rack, side));
     }
 

@@ -74,6 +74,7 @@ public class ModItems {
         output.accept(SPICE_GRINDER.get().getDefaultInstance());
         output.accept(JAR.get().getDefaultInstance());
         output.accept(ModBlocks.DRYING_RACK_ITEM.get().getDefaultInstance());
+        ModBlocks.SPICE_RACK_ITEMS.values().forEach(rack -> output.accept(rack.get().getDefaultInstance()));
         MixPresetRegistry.getAll().forEach((id, preset) -> SpiceMixes.ofPreset(id, preset)
                 .ifPresent(stack -> output.accept(stack)));
     }

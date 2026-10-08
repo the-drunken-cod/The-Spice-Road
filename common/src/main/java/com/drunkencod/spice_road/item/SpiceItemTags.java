@@ -85,6 +85,12 @@ public class SpiceItemTags {
      */
     public static final TagKey<Item> VOIDS_FLAVOR_WHEN_PLACED = create("voids_flavor_when_placed");
 
+    /**
+     * Items a Spice Rack accepts besides Spice Items and Spice Mixes, which it
+     * always accepts. Empty by default; datapacks add e.g. salt or sugar.
+     */
+    public static final TagKey<Item> SPICE_RACK_STORABLE = create("spice_rack_storable");
+
     private SpiceItemTags() {
     }
 
