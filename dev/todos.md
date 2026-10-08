@@ -210,3 +210,4 @@
     - [ ] Feature to select spice profiles (checkbox on list item) to juxtapose up to 4 spices.
     - [ ] Feature to export all changed JSONs as a ZIP.
     - [ ] Feature to reset an adjusted profile to the default value.
+- [ ] Make Spice Grinder placeable as a blockentity via sneak-r-click. R-click to use it in-world. Shift-r-click to pick it back up.
