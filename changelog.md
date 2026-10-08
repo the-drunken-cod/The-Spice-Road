@@ -1,8 +1,11 @@
 # `0.1.0`
 ## `0.1.0-alpha.4`
 - **Features:**
+    - Added some more original textures to replace their placeholders. Spice Mixes are now fully textured.
 - **Changes:**
 - **Fixes:**
+    - Dried spices are now correctly used in the Spice Mix recipes.
+    - `#spice/peppercorns` tag now correctly uses Dried Long Pepper.
 
 <br>
 
