@@ -56,19 +56,19 @@ public class NeoForgeConfigHelper implements IConfigHelper {
         return builder.build();
     }
 
-    /** Emits one section, its options, and then its subsections, in schema order. */
+    /**
+     * Emits one section, its options, and then its subsections, in schema order.
+     */
     private static void appendSection(ModConfigSpec.Builder builder, ConfigFile file, ConfigSection section) {
         builder.comment(ConfigText.comment(section.getTranslationKey()))
                 .translation(section.getTranslationKey())
                 .push(section.getName());
         for (ConfigOption<?> entry : ConfigSchema.options(file)) {
-            if (entry.getSection() == section) {
+            if (entry.getSection() == section)
                 VALUES.put(entry, define(builder, entry));
-            }
         }
-        for (ConfigSection child : childrenOf(file, section)) {
+        for (ConfigSection child : childrenOf(file, section))
             appendSection(builder, file, child);
-        }
         builder.pop();
     }
 
@@ -98,8 +98,10 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     /**
-     * Defines a numeric option through the primitive overloads on purpose: the generic
-     * {@code defineInRange(..., Class)} overload hands back whatever boxed type the TOML
+     * Defines a numeric option through the primitive overloads on purpose: the
+     * generic
+     * {@code defineInRange(..., Class)} overload hands back whatever boxed type the
+     * TOML
      * parser produced, so a small {@code long} comes back as an {@code Integer} and
      * fails the cast in {@link #value}.
      */
@@ -366,6 +368,11 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     @Override
     public int getSeasoningDiversityFullDiversity() {
         return value(ConfigSchema.SEASONING_DIVERSITY_FULL_DIVERSITY);
+    }
+
+    @Override
+    public boolean isDarkMode() {
+        return value(ConfigSchema.DARK_MODE);
     }
 
     @Override

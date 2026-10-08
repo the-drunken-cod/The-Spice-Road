@@ -317,6 +317,11 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean isDarkMode() {
+        return client().gui.darkMode;
+    }
+
+    @Override
     public int getGrinderInputBufferMs() {
         return client().grinder.inputBufferMs;
     }
@@ -706,7 +711,9 @@ public class FabricConfigHelper implements IConfigHelper {
         }
     }
 
-    /** Values read when datapacks load, mirroring {@code spice_road-common.toml}. */
+    /**
+     * Values read when datapacks load, mirroring {@code spice_road-common.toml}.
+     */
     @Config(name = "common")
     public static class CommonConfigData implements ConfigData {
 
@@ -734,6 +741,8 @@ public class FabricConfigHelper implements IConfigHelper {
     public static class ClientConfigData implements ConfigData {
 
         @ConfigEntry.Gui.CollapsibleObject
+        public Gui gui = new Gui();
+        @ConfigEntry.Gui.CollapsibleObject
         public TooltipDisplay tooltip = new TooltipDisplay();
         @ConfigEntry.Gui.CollapsibleObject
         public Grinder grinder = new Grinder();
@@ -749,6 +758,12 @@ public class FabricConfigHelper implements IConfigHelper {
         public static class DryingRackEffects {
             @ConfigEntry.Gui.Tooltip
             public boolean particles = ConfigSchema.DRYING_RACK_PARTICLES.getDefault();
+        }
+
+        /** Look shared by all of the mod's GUIs. */
+        public static class Gui {
+            @ConfigEntry.Gui.Tooltip
+            public boolean darkMode = ConfigSchema.DARK_MODE.getDefault();
         }
 
         /** Spice Grinder GUI behavior. */

@@ -21,11 +21,15 @@ public final class GrinderLayout {
     public static final int LIST_WIDTH = 140;
     /** Height of the spice list panel. */
     public static final int LIST_HEIGHT = 164;
+    /** Spice list group header offset. */
+    public static final int LIST_GROUP_HEADER_X = 2;
+    /** ItemStack renderer offset. */
+    public static final int LIST_ITEM_X = 1;
     /**
      * Left edge of a row's item name, relative to the row's start. Leaves room for
      * the 16 px item icon.
      */
-    public static final int LIST_NAME_X = 18;
+    public static final int LIST_NAME_X = 19;
     /** Height of one row of the spice list. */
     public static final int LIST_ROW_HEIGHT = 14;
     /** Rows visible at once. */
@@ -65,13 +69,13 @@ public final class GrinderLayout {
     // #region Run view
 
     /** Left edge of the 3x3 direction pad, centered left of the board. */
-    public static final int PAD_X = PANEL_X + 20;
+    public static final int PAD_X = PANEL_X + 16;
     /** Top edge of the 3x3 direction pad. */
-    public static final int PAD_Y = PANEL_Y + 12;
+    public static final int PAD_Y = PANEL_Y + 8;
     /** Edge length of a pad button. */
-    public static final int PAD_BUTTON = 11;
+    public static final int PAD_BUTTON = 13;
     /** Gap between two pad buttons. */
-    public static final int PAD_GAP = 1;
+    public static final int PAD_GAP = 2;
     /** Left edge of the points bars. */
     public static final int POINTS_X = 156;
     /** Top edge of the first points bar. */

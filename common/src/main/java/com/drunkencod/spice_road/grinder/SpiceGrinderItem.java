@@ -16,6 +16,7 @@ import net.minecraft.world.level.Level;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.grinder.GrinderView.Event;
+import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.ModDataComponents;
 
 /**
@@ -56,7 +57,8 @@ public class SpiceGrinderItem extends Item {
             int slot = hand == InteractionHand.MAIN_HAND ? player.getInventory().selected : 40;
             serverPlayer.openMenu(new SimpleMenuProvider(
                     (containerId, inventory, ignored) -> new SpiceGrinderMenu(containerId, inventory, slot),
-                    Component.translatable(TITLE_KEY)));
+                    Component.translatable(TITLE_KEY).withStyle(
+                            Services.CONFIG.isDarkMode() ? ChatFormatting.WHITE : ChatFormatting.DARK_GRAY)));
             if (serverPlayer.containerMenu instanceof SpiceGrinderMenu menu)
                 menu.syncView(Event.NONE);
         }

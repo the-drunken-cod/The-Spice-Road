@@ -72,9 +72,11 @@ public final class ConfigSchema {
     public static final ConfigSection DRYING_RACK_EFFECTS = ConfigSection.root(ConfigFile.CLIENT,
             "dryingRackEffects");
     /** Client-side tooltip display. */
-    public static final ConfigSection TOOLTIP =ConfigSection.root(ConfigFile.CLIENT, "tooltip");
+    public static final ConfigSection TOOLTIP = ConfigSection.root(ConfigFile.CLIENT, "tooltip");
     /** Client-side Spice Grinder GUI behavior. */
     public static final ConfigSection GRINDER = ConfigSection.root(ConfigFile.CLIENT, "grinder");
+    /** Client-side look shared by all of the mod's GUIs. */
+    public static final ConfigSection GUI = ConfigSection.root(ConfigFile.CLIENT, "gui");
     /** Player statistics the mod tracks. */
     public static final ConfigSection STATS = ConfigSection.root(ConfigFile.SERVER, "stats");
     /** Behavior around other mods' placeable food items. */
@@ -271,7 +273,7 @@ public final class ConfigSchema {
 
     /** Most bonus saturation of a seasoned food without effects. */
     public static final ConfigOption<Double> SEASONING_PARTICIPATION_MAX_SATURATION = add(
-            ConfigOption.ofDouble(SEASONING_PARTICIPATION, "maxSaturation", 3, 0.0, 20.0));
+            ConfigOption.ofDouble(SEASONING_PARTICIPATION, "maxSaturation", 4, 0.0, 20.0));
 
     /** Spices per food that earn the full bonus saturation. */
     public static final ConfigOption<Double> SEASONING_PARTICIPATION_FULL_DOSE = add(
@@ -283,7 +285,7 @@ public final class ConfigSchema {
 
     /** Bonus saturation of a seasoned food at full spice diversity. */
     public static final ConfigOption<Double> SEASONING_DIVERSITY_MAX_SATURATION = add(
-            ConfigOption.ofDouble(SEASONING_DIVERSITY, "maxSaturation", 3.0, 0.0, 20.0));
+            ConfigOption.ofDouble(SEASONING_DIVERSITY, "maxSaturation", 4.0, 0.0, 20.0));
 
     /** Kinds of spice per food that earn the full diversity bonus. */
     public static final ConfigOption<Integer> SEASONING_DIVERSITY_FULL_DIVERSITY = add(
@@ -301,7 +303,10 @@ public final class ConfigSchema {
     public static final ConfigOption<Double> DRYING_RACK_SPEED_MULTIPLIER = add(
             ConfigOption.ofDouble(DRYING_RACK, "speedMultiplier", 1.0, 0.01, 100.0));
 
-    /** Extra speed multiplier, on top of {@link #DRYING_RACK_SPEED_MULTIPLIER}, while a Drying Rack is heated. */
+    /**
+     * Extra speed multiplier, on top of {@link #DRYING_RACK_SPEED_MULTIPLIER},
+     * while a Drying Rack is heated.
+     */
     public static final ConfigOption<Double> DRYING_RACK_HEATED_SPEED_MULTIPLIER = add(
             ConfigOption.ofDouble(DRYING_RACK, "heatedSpeedMultiplier", 1.33, 0.01, 100.0));
 
@@ -312,6 +317,11 @@ public final class ConfigSchema {
     /** Whether a drying and a finished Drying Rack show particles. */
     public static final ConfigOption<Boolean> DRYING_RACK_PARTICLES = add(
             ConfigOption.ofBoolean(DRYING_RACK_EFFECTS, "particles", true));
+
+    // #region GUI
+
+    /** Whether to render GUI backgrounds in dark mode, if supported. */
+    public static final ConfigOption<Boolean> DARK_MODE = add(ConfigOption.ofBoolean(GUI, "darkMode", false));
 
     // #region Tooltip
 
@@ -331,7 +341,10 @@ public final class ConfigSchema {
     public static final ConfigOption<Boolean> TOOLTIP_ANIMATE_AXES = add(
             ConfigOption.ofBoolean(TOOLTIP, "animateAxes", true));
 
-    /** Whether the Spice Grinder's movement buttons are outlined in their axis' color. */
+    /**
+     * Whether the Spice Grinder's movement buttons are outlined in their axis'
+     * color.
+     */
     public static final ConfigOption<Boolean> GRINDER_COLORED_PAD_OUTLINES = add(
             ConfigOption.ofBoolean(GRINDER, "coloredPadOutlines", true));
 

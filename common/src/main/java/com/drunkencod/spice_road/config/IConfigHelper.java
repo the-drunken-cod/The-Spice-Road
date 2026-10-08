@@ -389,6 +389,11 @@ public interface IConfigHelper {
     int getSeasoningDiversityFullDiversity();
 
     /**
+     * Client-side. Whether GUIs should be rendered in dark mode, if supported.
+     */
+    boolean isDarkMode();
+
+    /**
      * Client-side. How long the Spice Grinder GUI waits after a movement key
      * for a second one, so two keys pressed almost together make a diagonal step.
      *

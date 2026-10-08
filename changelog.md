@@ -20,6 +20,7 @@
     - Added 5 new processed spices, each with a drying recipe (longer for rarer spices): dried_clove, dried_long_pepper, dried_mustard, dried_nutmeg, dried_tonka.
         - Moved spice profile from the raw/fresh spices to their new dried/processed spice counterparts.
     - Added some more original textures to replace their placeholders.
+    - Added optional GUI dark mode (can be enabled via client config).
 - **Changes:**
     - Edited Spice Grinder GUI:
         - Adjusted layout to be more spacious, cohesive and hopefully more intuitive.

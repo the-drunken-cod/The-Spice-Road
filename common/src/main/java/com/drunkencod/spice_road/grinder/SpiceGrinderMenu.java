@@ -39,7 +39,7 @@ public class SpiceGrinderMenu extends AbstractContainerMenu {
      * Ticks between looks at what spices the inventory and nearby storage hold, to
      * tell the client when it changed.
      */
-    private static final int AVAILABLE_CHECK_TICKS = 10;
+    private static final int AVAILABLE_CHECK_TICKS = 20;
 
     private final Inventory inventory;
     private final int grinderSlot;
@@ -215,9 +215,8 @@ public class SpiceGrinderMenu extends AbstractContainerMenu {
         if (index == FOOD_SLOT) {
             if (!moveItemStackTo(stack, 1, slots.size(), true))
                 return ItemStack.EMPTY;
-        } else if (!slots.get(FOOD_SLOT).mayPlace(stack) || !moveItemStackTo(stack, FOOD_SLOT, FOOD_SLOT + 1, false)) {
+        } else if (!slots.get(FOOD_SLOT).mayPlace(stack) || !moveItemStackTo(stack, FOOD_SLOT, FOOD_SLOT + 1, false))
             return ItemStack.EMPTY;
-        }
         if (stack.isEmpty())
             slot.setByPlayer(ItemStack.EMPTY);
         else

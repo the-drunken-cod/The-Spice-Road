@@ -93,6 +93,7 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
     private static final ResourceLocation CELL_BANE = sprite("cells/bane");
     private static final ResourceLocation PAWN = sprite("cells/pawn");
     private static final ResourceLocation BACKGROUND = sprite("background");
+    private static final ResourceLocation BACKGROUND_DARK = sprite("background_dark");
     /** Size of the background texture; it is stretched to the GUI's size. */
     private static final int BACKGROUND_TEXTURE_WIDTH = 9;
     private static final int BACKGROUND_TEXTURE_HEIGHT = 9;
@@ -676,7 +677,8 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
 
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
-        blitNineSliced(graphics, BACKGROUND, leftPos, topPos, imageWidth, imageHeight);
+        blitNineSliced(graphics, Services.CONFIG.isDarkMode() ? BACKGROUND_DARK : BACKGROUND,
+                leftPos, topPos, imageWidth, imageHeight);
         panel(graphics, leftPos + GrinderLayout.LIST_X, topPos + GrinderLayout.LIST_Y, GrinderLayout.LIST_WIDTH,
                 GrinderLayout.LIST_HEIGHT, COLOR_PANEL);
         panel(graphics, leftPos + GrinderLayout.PANEL_X, topPos + GrinderLayout.PANEL_Y, GrinderLayout.PANEL_WIDTH,
@@ -773,7 +775,8 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
             int y = baseY + i * GrinderLayout.LIST_ROW_HEIGHT;
             if (row.spice == null) {
                 if (row.header != null)
-                    drawClipped(graphics, row.header, baseX, y + 2, GrinderLayout.LIST_WIDTH - 8, COLOR_DIM);
+                    drawClipped(graphics, row.header, baseX + GrinderLayout.LIST_GROUP_HEADER_X, y + 2,
+                            GrinderLayout.LIST_WIDTH - 8, COLOR_TEXT);
                 continue;
             }
             if (row == hovered)
@@ -781,10 +784,10 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
                         0xFF454545);
             int chosen = view().spices().getOrDefault(row.spice, 0);
             ItemStack stack = row.spice.displayStack();
-            graphics.renderItem(stack, baseX - 1, y - 2 + 0);
+            graphics.renderItem(stack, baseX - 1 + GrinderLayout.LIST_ITEM_X, y - 1);
             String amount = (chosen > 0 ? chosen + "/" : "") + row.count;
             int amountX = baseX + GrinderLayout.LIST_WIDTH - 12 - font.width(amount);
-            drawClipped(graphics, stack.getHoverName(), baseX + GrinderLayout.LIST_NAME_X, y + 2,
+            drawClipped(graphics, stack.getHoverName(), baseX + GrinderLayout.LIST_NAME_X, y + 3,
                     amountX - 3 - (baseX + GrinderLayout.LIST_NAME_X), canAddMore(row.spice) ? COLOR_TEXT : COLOR_DIM);
             graphics.drawString(font, amount, amountX, y + 2, chosen > 0 ? COLOR_WARNING : COLOR_DIM, false);
         }

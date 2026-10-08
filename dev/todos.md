@@ -208,6 +208,13 @@
         - [ ] Spice Grinder:
             - [ ] Nearby spice sourcing.
             - [ ] Minigame.
+                - [ ] Spice Ingredients & Draft Spice Profile Values.
+                - [ ] Board Cell Types.
+                - [ ] Board Movement & Axis Mapping.
+                - [ ] Cell Effect Ring Distribution.
+                - [ ] Cell Lock-in.
+            - [ ] Diversity Saturation Bonus.
+            - [ ] Participation Saturation Bonus.
         - [ ] Spice Mixes:
             - [ ] List of all preset mixes.
             - [ ] Crafting recipe page.
