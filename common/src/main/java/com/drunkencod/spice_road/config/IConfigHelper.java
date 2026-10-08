@@ -410,6 +410,22 @@ public interface IConfigHelper {
     boolean isGrinderPadOutlineColored();
 
     /**
+     * Client-side. Steps left at or below which a Spice Grinder movement button
+     * turns yellow.
+     *
+     * @return The threshold, or {@code 0} if the color is disabled.
+     */
+    int getGrinderPadYellowSteps();
+
+    /**
+     * Client-side. Steps left at or below which a Spice Grinder movement button
+     * turns red.
+     *
+     * @return The threshold, or {@code 0} if the color is disabled.
+     */
+    int getGrinderPadRedSteps();
+
+    /**
      * Client-side. Whether Flavor Axis tooltips show both pole labels of each
      * axis (e.g. {@code [Spicy / Cooling]}), emphasizing the one matching the
      * value's sign, instead of only the matching one.

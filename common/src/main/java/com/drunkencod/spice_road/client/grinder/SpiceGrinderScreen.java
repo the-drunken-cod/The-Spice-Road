@@ -1154,8 +1154,9 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
 
     /**
      * A direction or lock-in button drawn as a flat square with a sprite on top:
-     * yellow with one step left, gray without any. Its outline takes the color of
-     * its axis. It is never focusable.
+     * red or yellow once few enough steps are left (the thresholds are configured,
+     * {@code 0} disables a color), dark gray without any. Its outline takes the
+     * color of its axis. It is never focusable.
      */
     private static final class PadButton extends Button {
 
@@ -1182,7 +1183,9 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
                 color = 0xFF3A3A3A;
             else if (direction == null)
                 color = isHoveredOrFocused() ? 0xFF6FD06F : 0xFF3F8A4B;
-            else if (steps == 1)
+            else if (steps <= Services.CONFIG.getGrinderPadRedSteps())
+                color = isHoveredOrFocused() ? 0xFFE86060 : 0xFFB83030;
+            else if (steps <= Services.CONFIG.getGrinderPadYellowSteps())
                 color = isHoveredOrFocused() ? 0xFFFFE070 : 0xFFD9B030;
             else
                 color = isHoveredOrFocused() ? 0xFFB0B0B0 : 0xFF808080;

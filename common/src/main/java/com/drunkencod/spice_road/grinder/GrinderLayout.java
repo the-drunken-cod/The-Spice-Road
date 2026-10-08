@@ -31,13 +31,13 @@ public final class GrinderLayout {
      */
     public static final int LIST_NAME_X = 19;
     /** Height of one row of the spice list. */
-    public static final int LIST_ROW_HEIGHT = 14;
+    public static final int LIST_ROW_HEIGHT = 16;
     /** Rows visible at once. */
-    public static final int LIST_ROWS = 11;
+    public static final int LIST_ROWS = 10;
     /** Width of the list's scroll bar, at the right edge of the list panel. */
     public static final int LIST_SCROLLBAR_WIDTH = 4;
     /** Shortest the scroll bar's handle gets, however long the list is. */
-    public static final int LIST_SCROLLBAR_MIN_HANDLE = 8;
+    public static final int LIST_SCROLLBAR_MIN_HANDLE = 10;
 
     // #region Right panel
 

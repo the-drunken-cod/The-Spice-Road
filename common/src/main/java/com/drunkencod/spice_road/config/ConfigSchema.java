@@ -355,6 +355,20 @@ public final class ConfigSchema {
     public static final ConfigOption<Integer> GRINDER_INPUT_BUFFER_MS = add(
             ConfigOption.ofInt(GRINDER, "inputBufferMs", 100, 0, 500));
 
+    /**
+     * Steps left at or below which a Spice Grinder movement button turns yellow;
+     * {@code 0} disables the color.
+     */
+    public static final ConfigOption<Integer> GRINDER_PAD_YELLOW_STEPS = add(
+            ConfigOption.ofInt(GRINDER, "padYellowSteps", 3, 0, 20));
+
+    /**
+     * Steps left at or below which a Spice Grinder movement button turns red;
+     * {@code 0} disables the color.
+     */
+    public static final ConfigOption<Integer> GRINDER_PAD_RED_STEPS = add(
+            ConfigOption.ofInt(GRINDER, "padRedSteps", 1, 0, 20));
+
     /** Duration, in milliseconds, of the Flavor Axis tooltip count-up. */
     public static final ConfigOption<Integer> TOOLTIP_ANIMATION_DURATION_MS = add(
             ConfigOption.ofInt(TOOLTIP, "animationDurationMs", 600, 50, 5000));
