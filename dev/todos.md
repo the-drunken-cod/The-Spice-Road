@@ -205,7 +205,10 @@
 - [x] Spice Grinder edits:
     - [x] Yellow movement button background when <=3 steps left, red when <=1.
     - [x] Don't use up spice ingredients when player is in creative mode, only food item.
-- [ ] Make Spice Grinder placeable as a blockentity via sneak-r-click. R-click to use it in-world. Shift-r-click to pick it back up.
+- [x] Make Spice Grinder placeable as a blockentity via sneak-r-click. R-click to use it in-world. Shift-r-click to pick it back up.
+- [x] Add more advancements:
+    - [x] Nice Rack: Spice Rack fully filled (64 in each slot).
+    - [x] Mix-and-Match: Create any spice mix.
 - [ ] Patchouli documentation:
     - Spice types:
         - [ ] List of all spices:

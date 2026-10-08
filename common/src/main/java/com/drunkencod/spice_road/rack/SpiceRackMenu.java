@@ -1,5 +1,6 @@
 package com.drunkencod.spice_road.rack;
 
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -8,6 +9,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
+import com.drunkencod.spice_road.advancement.ModCriteriaTriggers;
 import com.drunkencod.spice_road.registry.ModMenus;
 
 /**
@@ -34,6 +36,7 @@ public class SpiceRackMenu extends AbstractContainerMenu {
     public static final int INVENTORY_LABEL_Y = 56;
 
     private final Container rack;
+    private final Player viewer;
 
     /**
      * Client-side constructor, as created from the menu type.
@@ -59,6 +62,7 @@ public class SpiceRackMenu extends AbstractContainerMenu {
         super(ModMenus.SPICE_RACK.get(), containerId);
         checkContainerSize(rack, SpiceRackBlockEntity.SLOT_COUNT);
         this.rack = rack;
+        this.viewer = inventory.player;
         rack.startOpen(inventory.player);
         for (int slot = 0; slot < SpiceRackBlockEntity.SLOT_COUNT; slot++) {
             boolean upper = slot >= SpiceRackBlockEntity.TIER_SIZE;
@@ -71,6 +75,14 @@ public class SpiceRackMenu extends AbstractContainerMenu {
         }
         for (int col = 0; col < 9; col++)
             addSlot(new Slot(inventory, col, 8 + col * 18, HOTBAR_Y));
+    }
+
+    /** Syncs as usual, and rewards the viewer once the rack is full. */
+    @Override
+    public void broadcastChanges() {
+        super.broadcastChanges();
+        if (viewer instanceof ServerPlayer serverPlayer && SpiceRackBlockEntity.isFull(rack))
+            ModCriteriaTriggers.SPICE_RACK_FILLED.get().trigger(serverPlayer);
     }
 
     @Override

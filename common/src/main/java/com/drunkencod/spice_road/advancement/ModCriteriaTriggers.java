@@ -17,6 +17,14 @@ public final class ModCriteriaTriggers {
     public static final Supplier<ItemDriedTrigger> ITEM_DRIED = Services.REGISTRY
             .registerCriterionTrigger("item_dried", ItemDriedTrigger::new);
 
+    /** {@code spice_road:spice_rack_filled} - see {@link SpiceRackFilledTrigger}. */
+    public static final Supplier<SpiceRackFilledTrigger> SPICE_RACK_FILLED = Services.REGISTRY
+            .registerCriterionTrigger("spice_rack_filled", SpiceRackFilledTrigger::new);
+
+    /** {@code spice_road:spice_mix_crafted} - see {@link SpiceMixCraftedTrigger}. */
+    public static final Supplier<SpiceMixCraftedTrigger> SPICE_MIX_CRAFTED = Services.REGISTRY
+            .registerCriterionTrigger("spice_mix_crafted", SpiceMixCraftedTrigger::new);
+
     private ModCriteriaTriggers() {
     }
 

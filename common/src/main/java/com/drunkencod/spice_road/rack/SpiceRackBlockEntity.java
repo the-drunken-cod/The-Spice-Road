@@ -13,6 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -70,6 +71,19 @@ public class SpiceRackBlockEntity extends BaseContainerBlockEntity implements Wo
      */
     public static boolean accepts(ItemStack stack) {
         return !stack.isEmpty() && (GrinderSpice.of(stack).isPresent() || stack.is(SpiceItemTags.SPICE_RACK_STORABLE));
+    }
+
+    /**
+     * @param rack A rack's contents.
+     * @return Whether every slot holds a full stack.
+     */
+    public static boolean isFull(Container rack) {
+        for (int slot = 0; slot < rack.getContainerSize(); slot++) {
+            ItemStack stack = rack.getItem(slot);
+            if (stack.isEmpty() || stack.getCount() < stack.getMaxStackSize())
+                return false;
+        }
+        return true;
     }
 
     /**

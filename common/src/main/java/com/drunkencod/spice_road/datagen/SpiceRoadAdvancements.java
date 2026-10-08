@@ -18,14 +18,20 @@ import net.minecraft.world.item.Items;
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.advancement.FoodEatenTrigger;
 import com.drunkencod.spice_road.advancement.ItemDriedTrigger;
+import com.drunkencod.spice_road.advancement.SpiceMixCraftedTrigger;
+import com.drunkencod.spice_road.advancement.SpiceRackFilledTrigger;
+import com.drunkencod.spice_road.rack.SpiceRackWood;
+import com.drunkencod.spice_road.registry.ModBlocks;
+import com.drunkencod.spice_road.registry.ModItems;
 import com.drunkencod.spice_road.spice.ProcessedSpice;
 import com.drunkencod.spice_road.spice.Spice;
 
 /**
  * Datagens the {@code spice_road} advancement tab: a hidden, auto-granted
  * root (own tab, so future advancements don't crowd a vanilla one) plus
- * Everything Bagel and Pumpkin Purist (see {@code dev/todos.md}). Plain vanilla
- * {@code AdvancementProvider}, so this runs unchanged on both loaders.
+ * Everything Bagel, Hang Out to Dry, Pie Purist (a child of Hang Out to Dry),
+ * Nice Rack and Mix-and-Match. Plain vanilla {@code AdvancementProvider}, so
+ * this runs unchanged on both loaders.
  */
 public class SpiceRoadAdvancements implements AdvancementSubProvider {
 
@@ -59,8 +65,40 @@ public class SpiceRoadAdvancements implements AdvancementSubProvider {
                 .build(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "everything_bagel"));
         saver.accept(everythingBagel);
 
-        AdvancementHolder pumpkinPurist = Advancement.Builder.advancement()
+        AdvancementHolder hangOutToDry = Advancement.Builder.advancement()
                 .parent(root)
+                .display(ProcessedSpice.DRIED_NUTMEG.getItem(),
+                        Component.translatable("advancements.spice_road.hang_out_to_dry.title"),
+                        Component.translatable("advancements.spice_road.hang_out_to_dry.description"),
+                        null, AdvancementType.TASK, true, true, false)
+                .addCriterion("item_dried", ItemDriedTrigger.TriggerInstance.itemDried(Optional.empty(),
+                        Optional.empty()))
+                .build(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "hang_out_to_dry"));
+        saver.accept(hangOutToDry);
+
+        AdvancementHolder niceRack = Advancement.Builder.advancement()
+                .parent(root)
+                .display(ModBlocks.SPICE_RACK_ITEMS.get(SpiceRackWood.OAK).get(),
+                        Component.translatable("advancements.spice_road.nice_rack.title"),
+                        Component.translatable("advancements.spice_road.nice_rack.description"),
+                        null, AdvancementType.TASK, true, true, false)
+                .addCriterion("spice_rack_filled", SpiceRackFilledTrigger.TriggerInstance.spiceRackFilled())
+                .build(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "nice_rack"));
+        saver.accept(niceRack);
+
+        AdvancementHolder mixAndMatch = Advancement.Builder.advancement()
+                .parent(root)
+                .display(ModItems.SPICE_MIX.get(),
+                        Component.translatable("advancements.spice_road.mix_and_match.title"),
+                        Component.translatable("advancements.spice_road.mix_and_match.description"),
+                        null, AdvancementType.TASK, true, true, false)
+                .addCriterion("spice_mix_crafted",
+                        SpiceMixCraftedTrigger.TriggerInstance.spiceMixCrafted(Optional.empty()))
+                .build(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "mix_and_match"));
+        saver.accept(mixAndMatch);
+
+        AdvancementHolder pumpkinPurist = Advancement.Builder.advancement()
+                .parent(hangOutToDry)
                 .display(Items.PUMPKIN_PIE, Component.translatable(
                         "advancements.spice_road.pumpkin_purist.title"),
                         Component.translatable(
@@ -88,16 +126,5 @@ public class SpiceRoadAdvancements implements AdvancementSubProvider {
                         Optional.empty()))
                 .build(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "pumpkin_purist"));
         saver.accept(pumpkinPurist);
-
-        AdvancementHolder hangOutToDry = Advancement.Builder.advancement()
-                .parent(root)
-                .display(ProcessedSpice.DRIED_NUTMEG.getItem(),
-                        Component.translatable("advancements.spice_road.hang_out_to_dry.title"),
-                        Component.translatable("advancements.spice_road.hang_out_to_dry.description"),
-                        null, AdvancementType.TASK, true, true, false)
-                .addCriterion("item_dried", ItemDriedTrigger.TriggerInstance.itemDried(Optional.empty(),
-                        Optional.empty()))
-                .build(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "hang_out_to_dry"));
-        saver.accept(hangOutToDry);
     }
 }

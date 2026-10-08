@@ -7,6 +7,7 @@ import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
@@ -38,6 +39,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+
+import com.drunkencod.spice_road.advancement.ModCriteriaTriggers;
 
 /**
  * The Spice Rack: stores spices and shows them off. It stands on the floor, on
@@ -206,6 +209,8 @@ public class SpiceRackBlock extends BaseEntityBlock {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         level.playSound(null, pos, SoundEvents.BUNDLE_INSERT, SoundSource.BLOCKS, 0.8F,
                 level.random.nextFloat() * 0.1F + 0.9F);
+        if (player instanceof ServerPlayer serverPlayer && SpiceRackBlockEntity.isFull(rack))
+            ModCriteriaTriggers.SPICE_RACK_FILLED.get().trigger(serverPlayer);
         return ItemInteractionResult.CONSUME;
     }
 
