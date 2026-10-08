@@ -27,18 +27,18 @@ import com.drunkencod.spice_road.spice.Spice;
  */
 public enum DefaultMixPreset {
     BENGALI("bengali", 1,
-            spice(Spice.FENUGREEK), spice(Spice.NIGELLA), spice(Spice.CUMIN), spice(Spice.MUSTARD),
+            spice(Spice.FENUGREEK), spice(Spice.NIGELLA), spice(Spice.CUMIN), spice(ProcessedSpice.DRIED_MUSTARD),
             spice(Spice.FENNEL)),
     BIRYANI("biryani", 2,
             spice(Spice.CORIANDER, 2), spice(Spice.CARDAMOM), spice(Spice.FENNEL), spice(Spice.CARAWAY),
-            spice(Spice.CLOVE)),
+            spice(ProcessedSpice.DRIED_CLOVE)),
     CAJUN("cajun", 3,
             spice(Spice.HABANERO), spice(Spice.GARLIC), tag("spice/peppercorn"), spice(Spice.THYME)),
     CURRY("curry", 4,
             spice(Spice.CURRY), spice(Spice.CUMIN), spice(Spice.CORIANDER), spice(Spice.TURMERIC),
             spice(Spice.FENNEL), spice(Spice.FENUGREEK)),
     HOLIDAY("holiday", 5,
-            spice(Spice.TONKA), spice(Spice.STAR_ANISE), spice(Spice.VANILLA), spice(Spice.LICORICE),
+            spice(ProcessedSpice.DRIED_TONKA), spice(Spice.STAR_ANISE), spice(Spice.VANILLA), spice(Spice.LICORICE),
             tag("spice/cinnamon")),
     MEDITERRANEAN("mediterranean", 6,
             spice(Spice.THYME), spice(Spice.OREGANO), spice(Spice.ROSEMARY), spice(Spice.PARSLEY),
@@ -49,15 +49,15 @@ public enum DefaultMixPreset {
             spice(Spice.SAFFRON), spice(Spice.TURMERIC), tag("spice/cinnamon"), tag("spice/peppercorn"),
             spice(Spice.CARDAMOM)),
     PUMPKIN_SPICE("pumpkin_spice", 9,
-            tag("spice/cinnamon"), spice(ProcessedSpice.DRIED_NUTMEG), spice(Spice.CLOVE),
+            tag("spice/cinnamon"), spice(ProcessedSpice.DRIED_NUTMEG), spice(ProcessedSpice.DRIED_CLOVE),
             spice(Spice.ALLSPICE), spice(Spice.GINGER)),
     RAS_EL_HANOUT("ras_el_hanout", 10,
-            spice(Spice.CARDAMOM), spice(Spice.CUMIN), spice(Spice.CLOVE), tag("spice/cinnamon"),
+            spice(Spice.CARDAMOM), spice(Spice.CUMIN), spice(ProcessedSpice.DRIED_CLOVE), tag("spice/cinnamon"),
             spice(ProcessedSpice.DRIED_NUTMEG), spice(Spice.ALLSPICE), tag("spice/peppercorn"), spice(Spice.MASTIC)),
     SALAD("salad", 11, spice(Spice.TURMERIC), spice(Spice.PARSLEY), spice(Spice.DILL), spice(Spice.GARLIC)),
     ZAATAR("zaatar", 12,
             spice(Spice.THYME), spice(Spice.SUMAC), spice(Spice.OREGANO), spice(Spice.SESAME),
-            spice(Spice.CLOVE));
+            spice(ProcessedSpice.DRIED_CLOVE));
 
     /**
      * One proportion of a default preset. Exactly one of {@code spice},
