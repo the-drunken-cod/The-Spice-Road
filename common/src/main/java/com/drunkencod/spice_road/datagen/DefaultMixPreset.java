@@ -22,7 +22,8 @@ import com.drunkencod.spice_road.spice.Spice;
  * datagen. Datapacks may add, change or remove presets; this only seeds the
  * defaults. A slot is either a single {@link Spice} or a hand-written item tag
  * of this mod's namespace, whose members are interchangeable. A Spice with
- * Processed Spices fills its slot with its raw or any processed item.
+ * Processed Spices fills its slot with its raw or any processed item, unless
+ * the slot names a single {@link ProcessedSpice}, which then only takes that.
  */
 public enum DefaultMixPreset {
     BENGALI("bengali", 1,
@@ -48,32 +49,37 @@ public enum DefaultMixPreset {
             spice(Spice.SAFFRON), spice(Spice.TURMERIC), tag("spice/cinnamon"), tag("spice/peppercorn"),
             spice(Spice.CARDAMOM)),
     PUMPKIN_SPICE("pumpkin_spice", 9,
-            tag("spice/cinnamon"), spice(Spice.NUTMEG), spice(Spice.CLOVE),
+            tag("spice/cinnamon"), spice(ProcessedSpice.DRIED_NUTMEG), spice(Spice.CLOVE),
             spice(Spice.ALLSPICE), spice(Spice.GINGER)),
     RAS_EL_HANOUT("ras_el_hanout", 10,
             spice(Spice.CARDAMOM), spice(Spice.CUMIN), spice(Spice.CLOVE), tag("spice/cinnamon"),
-            spice(Spice.NUTMEG), spice(Spice.ALLSPICE), tag("spice/peppercorn"), spice(Spice.MASTIC)),
+            spice(ProcessedSpice.DRIED_NUTMEG), spice(Spice.ALLSPICE), tag("spice/peppercorn"), spice(Spice.MASTIC)),
     SALAD("salad", 11, spice(Spice.TURMERIC), spice(Spice.PARSLEY), spice(Spice.DILL), spice(Spice.GARLIC)),
     ZAATAR("zaatar", 12,
             spice(Spice.THYME), spice(Spice.SUMAC), spice(Spice.OREGANO), spice(Spice.SESAME),
             spice(Spice.CLOVE));
 
     /**
-     * One proportion of a default preset.
+     * One proportion of a default preset. Exactly one of {@code spice},
+     * {@code processed} and {@code tag} is set.
      *
-     * @param spice The Spice (taking its processed forms too), or {@code null} if
-     *              this slot is a tag.
-     * @param tag   The path of the item tag in this mod's namespace, or
-     *              {@code null} if this slot is a single Spice.
-     * @param count How many of it one batch holds.
+     * @param spice     The Spice (taking its processed forms too), or {@code null}.
+     * @param processed One specific Processed Spice, excluding the raw item and
+     *                  its siblings, or {@code null}.
+     * @param tag       The path of the item tag in this mod's namespace, or
+     *                  {@code null}.
+     * @param count     How many of it one batch holds.
      */
-    public record Slot(Spice spice, String tag, int count) {
+    public record Slot(Spice spice, ProcessedSpice processed, String tag, int count) {
 
         /**
-         * @return The slot as the preset's own slot: the Spice's variant tag if it
-         *         has Processed Spices, else its raw item.
+         * @return The slot as the preset's own slot: the Processed Spice's item, or
+         *         the Spice's variant tag if it has Processed Spices (else its raw
+         *         item), or the hand-written tag.
          */
         PresetSlot toPresetSlot() {
+            if (processed != null)
+                return new PresetSlot(Either.left(processed.getItem()), count);
             if (spice != null) {
                 TagKey<Item> variants = ProcessedSpice.variantTag(spice);
                 return new PresetSlot(variants != null ? Either.right(variants)
@@ -100,11 +106,19 @@ public enum DefaultMixPreset {
     }
 
     private static Slot spice(Spice spice, int count) {
-        return new Slot(spice, null, count);
+        return new Slot(spice, null, null, count);
+    }
+
+    private static Slot spice(ProcessedSpice processed) {
+        return spice(processed, 1);
+    }
+
+    private static Slot spice(ProcessedSpice processed, int count) {
+        return new Slot(null, processed, null, count);
     }
 
     private static Slot tag(String path) {
-        return new Slot(null, path, 1);
+        return new Slot(null, null, path, 1);
     }
 
     /** @return The preset's ID path, also the name of its texture and model. */
