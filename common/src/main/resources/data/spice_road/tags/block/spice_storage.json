@@ -6,7 +6,39 @@
       "required": false
     },
     {
+      "id": "#cookingforblockheads:counters",
+      "required": false
+    },
+    {
+      "id": "#cookingforblockheads:cabinets",
+      "required": false
+    },
+    {
+      "id": "#cookingforblockheads:fridges",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:fruit_basket",
+      "required": false
+    },
+    {
       "id": "cookingforblockheads:spice_rack",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:tool_rack",
+      "required": false
+    },
+    {
+      "id": "#farmersdelight:cabinets",
+      "required": false
+    },
+    {
+      "id": "farmersdelight:wooden_basket",
+      "required": false
+    },
+    {
+      "id": "farmersdelight:bamboo_basket",
       "required": false
     }
   ]
