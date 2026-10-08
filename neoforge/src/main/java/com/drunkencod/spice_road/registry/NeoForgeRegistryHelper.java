@@ -2,15 +2,18 @@ package com.drunkencod.spice_road.registry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -18,7 +21,11 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator;
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecoratorType;
@@ -81,6 +88,15 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
 
     private final DeferredRegister<RecipeSerializer<?>> recipeSerializers = DeferredRegister
             .create(Registries.RECIPE_SERIALIZER, Constants.MOD_ID);
+
+    private final DeferredRegister<RecipeType<?>> recipeTypes = DeferredRegister.create(Registries.RECIPE_TYPE,
+            Constants.MOD_ID);
+
+    private final DeferredRegister<BlockEntityType<?>> blockEntityTypes = DeferredRegister
+            .create(Registries.BLOCK_ENTITY_TYPE, Constants.MOD_ID);
+
+    private final DeferredRegister<SoundEvent> soundEvents = DeferredRegister.create(Registries.SOUND_EVENT,
+            Constants.MOD_ID);
 
     private final List<PreparableReloadListener> pendingReloadListeners = new ArrayList<>();
 
@@ -159,6 +175,27 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public <T extends Recipe<?>> Supplier<RecipeType<T>> registerRecipeType(String id) {
+        return (Supplier<RecipeType<T>>) (Supplier<?>) recipeTypes.register(id,
+                () -> IRegistryHelper.newRecipeType(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id)));
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends BlockEntity> Supplier<BlockEntityType<T>> registerBlockEntityType(String id,
+            BiFunction<BlockPos, BlockState, T> factory, Supplier<? extends Block> block) {
+        return (Supplier<BlockEntityType<T>>) (Supplier<?>) blockEntityTypes.register(id,
+                () -> BlockEntityType.Builder.<T>of(factory::apply, block.get()).build(null));
+    }
+
+    @Override
+    public Supplier<SoundEvent> registerSoundEvent(String id) {
+        return soundEvents.register(id,
+                () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id)));
+    }
+
+    @Override
     public void registerReloadListener(ResourceLocation id, PreparableReloadListener listener) {
         pendingReloadListeners.add(listener);
     }
@@ -201,6 +238,9 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
         menuTypes.register(eventBus);
         customStats.register(eventBus);
         recipeSerializers.register(eventBus);
+        recipeTypes.register(eventBus);
+        blockEntityTypes.register(eventBus);
+        soundEvents.register(eventBus);
         // AddReloadListenerEvent is a game event, not a mod-bus event.
         NeoForge.EVENT_BUS.addListener(this::onAddReloadListeners);
     }

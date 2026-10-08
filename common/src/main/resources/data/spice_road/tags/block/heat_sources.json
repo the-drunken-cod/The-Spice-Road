@@ -1,0 +1,26 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:campfires",
+    "#minecraft:fire",
+    "minecraft:lava_cauldron",
+    "minecraft:lava",
+    "minecraft:magma_block",
+    {
+      "id": "farmersdelight:stove",
+      "required": false
+    },
+    {
+      "id": "supplementaries:blaze_rod",
+      "required": false
+    },
+    {
+      "id": "supplementaries:fire_pit",
+      "required": false
+    },
+    {
+      "id": "twilightforest:fiery_block",
+      "required": false
+    }
+  ]
+}

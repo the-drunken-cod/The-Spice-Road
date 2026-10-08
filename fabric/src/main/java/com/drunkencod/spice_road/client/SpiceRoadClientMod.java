@@ -6,15 +6,19 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 
 import com.drunkencod.spice_road.block.SpicePlants;
 import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.block.SpiceVines;
 import com.drunkencod.spice_road.config.ConfigSync;
 import com.drunkencod.spice_road.config.ConfigSyncOverride;
+import com.drunkencod.spice_road.client.drying.DryingRackRenderer;
 import com.drunkencod.spice_road.client.grinder.SpiceGrinderScreen;
 import com.drunkencod.spice_road.grinder.GrinderViewPayload;
 import com.drunkencod.spice_road.mix.MixPresetSync;
+import com.drunkencod.spice_road.registry.ModBlockEntities;
+import com.drunkencod.spice_road.registry.ModBlocks;
 import com.drunkencod.spice_road.registry.ModMenus;
 import com.drunkencod.spice_road.spice.SpiceProfileSync;
 import com.drunkencod.spice_road.spice.effect.SeasoningEffectSync;
@@ -44,6 +48,8 @@ public class SpiceRoadClientMod implements ClientModInitializer {
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ConfigSyncOverride.clear());
 
         registerSpicePlantRenderLayers();
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.DRYING_RACK.get(), RenderType.cutout());
+        BlockEntityRenderers.register(ModBlockEntities.DRYING_RACK.get(), DryingRackRenderer::new);
     }
 
     /**

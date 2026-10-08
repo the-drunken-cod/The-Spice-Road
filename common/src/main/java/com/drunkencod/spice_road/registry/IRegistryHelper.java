@@ -1,18 +1,25 @@
 package com.drunkencod.spice_road.registry;
 
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator;
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecoratorType;
@@ -168,6 +175,62 @@ public interface IRegistryHelper {
      */
     <T extends Recipe<?>> Supplier<RecipeSerializer<T>> registerRecipeSerializer(String id,
             Supplier<RecipeSerializer<T>> factory);
+
+    /**
+     * Register a {@link RecipeType} under the mod's namespace. Frozen as early
+     * as {@link #registerFeature}, with the same consequences.
+     *
+     * @param id  Registry path (e.g. {@code "my_recipe"}), which is also the
+     *            type's ID
+     * @param <T> The recipe class of the type
+     * @return A supplier of the registered type, only usable once registration
+     *         has run.
+     */
+    <T extends Recipe<?>> Supplier<RecipeType<T>> registerRecipeType(String id);
+
+    /**
+     * Creates the (still unregistered) type {@link #registerRecipeType} registers;
+     * vanilla only offers this through its own, vanilla-namespaced registration.
+     *
+     * @param id  The type's ID, used as its name in logs
+     * @param <T> The recipe class of the type
+     * @return A new recipe type.
+     */
+    static <T extends Recipe<?>> RecipeType<T> newRecipeType(ResourceLocation id) {
+        return new RecipeType<>() {
+            @Override
+            public String toString() {
+                return id.toString();
+            }
+        };
+    }
+
+    /**
+     * Register a {@link BlockEntityType} under the mod's namespace. Frozen as
+     * early as {@link #registerFeature}, with the same consequences.
+     *
+     * @param id      Registry path (e.g. {@code "my_block_entity"})
+     * @param factory Creates a block entity of the type
+     * @param block   The block the type is valid for; on Fabric this is read
+     *                immediately, so it must already be registered
+     * @param <T>     The block entity class
+     * @return A supplier of the registered type, only usable once registration
+     *         has run.
+     */
+    <T extends BlockEntity> Supplier<BlockEntityType<T>> registerBlockEntityType(String id,
+            BiFunction<BlockPos, BlockState, T> factory, Supplier<? extends Block> block);
+
+    /**
+     * Register a {@link SoundEvent} under the mod's namespace, defined in
+     * {@code sounds.json}. Frozen as early as {@link #registerFeature}, with the
+     * same consequences.
+     *
+     * @param id Registry path (e.g. {@code "block.my_block.click"}), which is
+     *           also the event's ID
+     * @return A supplier of the registered event, only usable once registration
+     *         has run.
+     */
+    Supplier<SoundEvent> registerSoundEvent(String id);
 
     /**
      * Register a datapack JSON reload listener under the mod's namespace.

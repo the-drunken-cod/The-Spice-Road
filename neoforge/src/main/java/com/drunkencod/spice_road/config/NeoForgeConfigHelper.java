@@ -422,4 +422,24 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     public int getSpiceMixCapacity() {
         return value(ConfigSchema.SPICE_MIX_CAPACITY);
     }
+
+    @Override
+    public double getDryingRackSpeedMultiplier() {
+        return value(ConfigSchema.DRYING_RACK_SPEED_MULTIPLIER);
+    }
+
+    @Override
+    public double getDryingRackHeatedSpeedMultiplier() {
+        return value(ConfigSchema.DRYING_RACK_HEATED_SPEED_MULTIPLIER);
+    }
+
+    @Override
+    public boolean areDryingRackSoundsEnabled() {
+        return value(ConfigSchema.DRYING_RACK_SOUNDS);
+    }
+
+    @Override
+    public boolean areDryingRackParticlesEnabled() {
+        return value(ConfigSchema.DRYING_RACK_PARTICLES);
+    }
 }

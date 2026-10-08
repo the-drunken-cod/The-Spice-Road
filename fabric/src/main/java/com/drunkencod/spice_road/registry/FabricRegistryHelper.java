@@ -2,11 +2,13 @@ package com.drunkencod.spice_road.registry;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
@@ -17,6 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.flag.FeatureFlags;
@@ -25,7 +28,11 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator;
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecoratorType;
@@ -135,6 +142,31 @@ public class FabricRegistryHelper implements IRegistryHelper {
         RecipeSerializer<T> serializer = Registry.register(BuiltInRegistries.RECIPE_SERIALIZER,
                 ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id), factory.get());
         return () -> serializer;
+    }
+
+    @Override
+    public <T extends Recipe<?>> Supplier<RecipeType<T>> registerRecipeType(String id) {
+        ResourceLocation location = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id);
+        RecipeType<T> type = Registry.register(BuiltInRegistries.RECIPE_TYPE, location,
+                IRegistryHelper.newRecipeType(location));
+        return () -> type;
+    }
+
+    @Override
+    public <T extends BlockEntity> Supplier<BlockEntityType<T>> registerBlockEntityType(String id,
+            BiFunction<BlockPos, BlockState, T> factory, Supplier<? extends Block> block) {
+        BlockEntityType<T> type = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,
+                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id),
+                BlockEntityType.Builder.<T>of(factory::apply, block.get()).build(null));
+        return () -> type;
+    }
+
+    @Override
+    public Supplier<SoundEvent> registerSoundEvent(String id) {
+        ResourceLocation location = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id);
+        SoundEvent event = Registry.register(BuiltInRegistries.SOUND_EVENT, location,
+                SoundEvent.createVariableRangeEvent(location));
+        return () -> event;
     }
 
     @Override

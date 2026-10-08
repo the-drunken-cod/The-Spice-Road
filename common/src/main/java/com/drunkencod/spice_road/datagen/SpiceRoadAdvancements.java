@@ -17,6 +17,8 @@ import net.minecraft.world.item.Items;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.advancement.FoodEatenTrigger;
+import com.drunkencod.spice_road.advancement.ItemDriedTrigger;
+import com.drunkencod.spice_road.spice.ProcessedSpice;
 import com.drunkencod.spice_road.spice.Spice;
 
 /**
@@ -86,5 +88,16 @@ public class SpiceRoadAdvancements implements AdvancementSubProvider {
                         Optional.empty()))
                 .build(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "pumpkin_purist"));
         saver.accept(pumpkinPurist);
+
+        AdvancementHolder hangOutToDry = Advancement.Builder.advancement()
+                .parent(root)
+                .display(ProcessedSpice.DRIED_NUTMEG.getItem(),
+                        Component.translatable("advancements.spice_road.hang_out_to_dry.title"),
+                        Component.translatable("advancements.spice_road.hang_out_to_dry.description"),
+                        null, AdvancementType.TASK, true, true, false)
+                .addCriterion("item_dried", ItemDriedTrigger.TriggerInstance.itemDried(Optional.empty(),
+                        Optional.empty()))
+                .build(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "hang_out_to_dry"));
+        saver.accept(hangOutToDry);
     }
 }

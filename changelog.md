@@ -9,7 +9,15 @@
         - Bushes: basil (temperate), oregano (arid), parsley (temperate).
         - Crops: garlic (temperate), sesame (tropical).
         - Trees: tonka (tropical).
-    - Added 4 new processed spices (no recipe yet): dried_clove, dried_long_pepper, dried_mustard, dried_nutmeg, dried_tonka.
+    - Added the Drying Rack, which dries up to 2 items at once (one per side) into processed spices and more.
+        - Dries faster while heated, by a heat source block next to it (`#spice_road:heat_sources`) or in a hot biome (`#spice_road:drying_always_heated`, the nether by default).
+        - Right-click the left or right half to hang an item up or take one off (sneak with an empty hand for the input). Hoppers and pipes feed the left and right sides from the left and right, share the load from the top, front and back, and extract from below.
+        - A redstone signal pauses it and a comparator reads its progress.
+        - Added the `items_dried` statistic and the Hang Out to Dry advancement.
+        - Has an input, an output and a secondary output per side. Drying recipes (`spice_road:drying`) can yield a second item, each with its own chance.
+        - Default recipes include turning raw spices into processed spices, and bleaching dyes to make them brighter.
+        - Configurable speed multipliers, sounds and particles.
+    - Added 5 new processed spices, each with a drying recipe (longer for rarer spices): dried_clove, dried_long_pepper, dried_mustard, dried_nutmeg, dried_tonka.
         - Moved spice profile from the raw/fresh spices to their new dried/processed spice counterparts.
     - Added some more original textures to replace their placeholders.
 - **Changes:**

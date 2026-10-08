@@ -1,0 +1,11 @@
+{
+    "type": "spice_road:drying",
+    "drying_time": 1200,
+    "ingredient": {
+        "item": "minecraft:brown_dye"
+    },
+    "result": {
+        "id": "minecraft:orange_dye",
+        "count": 1
+    }
+}

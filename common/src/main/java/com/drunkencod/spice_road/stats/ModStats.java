@@ -37,6 +37,8 @@ public final class ModStats {
     public static final ResourceLocation SEASONED_FOODS_EATEN = register("seasoned_foods_eaten");
     /** Steps made on the Seasoning Board. */
     public static final ResourceLocation GRINDER_MOVES = register("grinder_moves");
+    /** Items that finished drying on a Drying Rack the player put them on by hand. */
+    public static final ResourceLocation ITEMS_DRIED = register("items_dried");
 
     private ModStats() {
     }

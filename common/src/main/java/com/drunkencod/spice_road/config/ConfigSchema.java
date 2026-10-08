@@ -66,8 +66,13 @@ public final class ConfigSchema {
     public static final ConfigSection SEASONING_DIVERSITY = SEASONING.child("diversity");
     /** Spice Mixes and their crafting. */
     public static final ConfigSection SPICE_MIX = ConfigSection.root(ConfigFile.SERVER, "spiceMix");
+    /** The Drying Rack's speed and sounds. */
+    public static final ConfigSection DRYING_RACK = ConfigSection.root(ConfigFile.SERVER, "dryingRack");
+    /** Client-side Drying Rack effects. */
+    public static final ConfigSection DRYING_RACK_EFFECTS = ConfigSection.root(ConfigFile.CLIENT,
+            "dryingRackEffects");
     /** Client-side tooltip display. */
-    public static final ConfigSection TOOLTIP = ConfigSection.root(ConfigFile.CLIENT, "tooltip");
+    public static final ConfigSection TOOLTIP =ConfigSection.root(ConfigFile.CLIENT, "tooltip");
     /** Client-side Spice Grinder GUI behavior. */
     public static final ConfigSection GRINDER = ConfigSection.root(ConfigFile.CLIENT, "grinder");
     /** Player statistics the mod tracks. */
@@ -289,6 +294,24 @@ public final class ConfigSchema {
     /** Most spices of all kinds one Spice Mix holds. */
     public static final ConfigOption<Integer> SPICE_MIX_CAPACITY = add(
             ConfigOption.ofInt(SPICE_MIX, "capacity", 8, 1, 64));
+
+    // #region Drying Rack
+
+    /** Multiplier on how fast every Drying Rack dries. */
+    public static final ConfigOption<Double> DRYING_RACK_SPEED_MULTIPLIER = add(
+            ConfigOption.ofDouble(DRYING_RACK, "speedMultiplier", 1.0, 0.01, 100.0));
+
+    /** Extra speed multiplier, on top of {@link #DRYING_RACK_SPEED_MULTIPLIER}, while a Drying Rack is heated. */
+    public static final ConfigOption<Double> DRYING_RACK_HEATED_SPEED_MULTIPLIER = add(
+            ConfigOption.ofDouble(DRYING_RACK, "heatedSpeedMultiplier", 1.33, 0.01, 100.0));
+
+    /** Whether the Drying Rack plays sounds when items are put in or taken out. */
+    public static final ConfigOption<Boolean> DRYING_RACK_SOUNDS = add(
+            ConfigOption.ofBoolean(DRYING_RACK, "sounds", true));
+
+    /** Whether a drying and a finished Drying Rack show particles. */
+    public static final ConfigOption<Boolean> DRYING_RACK_PARTICLES = add(
+            ConfigOption.ofBoolean(DRYING_RACK_EFFECTS, "particles", true));
 
     // #region Tooltip
 

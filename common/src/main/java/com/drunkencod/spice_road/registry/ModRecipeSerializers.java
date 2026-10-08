@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 
+import com.drunkencod.spice_road.drying.DryingRecipe;
 import com.drunkencod.spice_road.mix.SpiceMixRecipe;
 import com.drunkencod.spice_road.platform.Services;
 
@@ -20,6 +21,13 @@ public final class ModRecipeSerializers {
     public static final Supplier<RecipeSerializer<SpiceMixRecipe>> SPICE_MIX = Services.REGISTRY
             .registerRecipeSerializer("crafting_special_spice_mix",
                     () -> new SimpleCraftingRecipeSerializer<>(SpiceMixRecipe::new));
+
+    /**
+     * Drying an item on a Drying Rack - see {@link DryingRecipe}. Serializer
+     * ID {@code spice_road:drying}.
+     */
+    public static final Supplier<RecipeSerializer<DryingRecipe>> DRYING = Services.REGISTRY
+            .registerRecipeSerializer("drying", DryingRecipe.Serializer::new);
 
     private ModRecipeSerializers() {
     }

@@ -78,6 +78,11 @@
         - There should be different variants of groves depending on the biome (badlands, desert, rocky beach/stony and gravelly mountain biomes), with biome appropriate foliage.
 - [x] Rework "dried" spices to instead be called "processed" and to be more independent of raw spices.
     - Recipes to turn raw into processed spices should usually involve the drying rack, but could theoretically be done with other processes like soaking, smoking, cutting, etc. in the future.
+- [x] Drying Rack (6 slots: input, output and secondary output per side; `spice_road:drying` recipes; heated by `#spice_road:heat_sources` / `#spice_road:drying_always_heated`; automation through a `WorldlyContainer`; vanilla block entity renderer instead of Geckolib).
+    - [x] Datagenned drying recipes for the 5 dried spices, time scaled by tier (1.0 / 1.5 / 2.0 / 3.0 x 1200 ticks).
+    - [x] `items_dried` stat and `spice_road:item_dried` trigger (Hang Out to Dry advancement).
+    - [ ] Tune the item offsets in `DryingRackRenderer` against the model in-game (hanging input, outputs lying on the shelf, secondary stacked above the primary).
+    - [ ] Test hoppers (left/right/top/front/back/bottom), a comparator and a redstone signal pausing it in-game on both loaders.
 - [x] Rework assets like textures and models to be separated into folders per spice (e.g. `textures/block/cinnamon/stripped_cinnamon_log.png`)
 - [x] Prevent other spices from spawning when a spice grove borders two different buckets, so groves only yield a single spice plant.
 - [x] Rework seed loot, so there's only a chance to drop 1 seeds (or cutting for rhizomes) item when harvesting spices, decreases by tier. Excludes trees and vines.
@@ -188,6 +193,10 @@
     - [ ] Spice Grinder category that renders the Spice Profile values for spice ingredients and Spice Mixes.
     - [ ] Spice Origin category that renders the worldgen info, like rarity tier, hardiness, climate and yield.
     - [ ] Category for Drying Rack recipes (refer to mycomancy_src for a base template).
+- [ ] Fix JEI error:
+    - [08Oct2026 03:04:21.663] [Render thread/WARN] [mezz.jei.library.plugins.vanilla.ingredients.ItemStackListFactory/]: 11 duplicate items were found in 'Spice Road' creative tab's: displayItems  
+      This may indicate that these types of item need a subtype interpreter added to JEI:  
+      [spice_road:spice_mix]
 - [ ] Spice Grinder fixes:
     - [ ] Combine duplicate effects. If exceeds cap, clamp to max level value.
 - [ ] Patchouli documentation:

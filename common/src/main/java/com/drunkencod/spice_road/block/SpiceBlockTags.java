@@ -34,6 +34,13 @@ public final class SpiceBlockTags {
      */
     public static final TagKey<Block> SPICE_STORAGE = create("spice_storage");
 
+    /**
+     * Blocks that heat a Drying Rack standing next to them, so it dries faster.
+     * Hand-written, so datapacks can add any hot block; a block with a
+     * {@code lit} property only heats while it is lit.
+     */
+    public static final TagKey<Block> HEAT_SOURCES = create("heat_sources");
+
     /** Every Spice Vine block. */
     public static final TagKey<Block> SPICE_VINES = create("spice_vines");
 

@@ -10,6 +10,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.drunkencod.spice_road.datagen.BoardLayoutProvider;
 import com.drunkencod.spice_road.datagen.BotanyPotsRecipeProvider;
+import com.drunkencod.spice_road.datagen.DryingRecipeProvider;
 import com.drunkencod.spice_road.datagen.MixPresetProvider;
 import com.drunkencod.spice_road.datagen.SpiceMixModelProvider;
 import com.drunkencod.spice_road.datagen.SeasoningEffectProvider;
@@ -41,6 +42,7 @@ public class ModDataGen implements DataGeneratorEntrypoint {
         pack.addProvider((FabricDataOutput output) -> new SpiceTreeCompatRecipeProvider(output));
         pack.addProvider((FabricDataOutput output) -> new BotanyPotsRecipeProvider(output));
         pack.addProvider((FabricDataOutput output) -> new SpiceTreePlanksRecipeProvider(output));
+        pack.addProvider((FabricDataOutput output) -> new DryingRecipeProvider(output));
         pack.addProvider((FabricDataOutput output) -> new SpiceItemTagProvider(output));
         pack.addProvider((FabricDataOutput output) -> new SpiceBlockTagProvider(output));
         pack.addProvider((FabricDataOutput output) -> new SeasoningEffectProvider(output));

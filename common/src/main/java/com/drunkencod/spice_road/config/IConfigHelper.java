@@ -477,4 +477,29 @@ public interface IConfigHelper {
      * @return The most spices of all kinds one Spice Mix holds.
      */
     int getSpiceMixCapacity();
+
+    /**
+     * @return The multiplier on how fast every Drying Rack dries.
+     */
+    double getDryingRackSpeedMultiplier();
+
+    /**
+     * @return The extra multiplier, on top of
+     *         {@link #getDryingRackSpeedMultiplier()}, while a Drying Rack is
+     *         heated.
+     */
+    double getDryingRackHeatedSpeedMultiplier();
+
+    /**
+     * @return Whether the Drying Rack plays sounds when items are put in or
+     *         taken out.
+     */
+    boolean areDryingRackSoundsEnabled();
+
+    /**
+     * Client-side.
+     *
+     * @return Whether a drying and a finished Drying Rack show particles.
+     */
+    boolean areDryingRackParticlesEnabled();
 }

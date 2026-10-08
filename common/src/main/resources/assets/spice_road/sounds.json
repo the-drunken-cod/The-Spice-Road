@@ -1,0 +1,20 @@
+{
+    "block.drying_rack.add_item": {
+        "sounds": [
+            {
+                "name": "minecraft:entity.item_frame.add_item",
+                "type": "event"
+            }
+        ],
+        "subtitle": "subtitles.spice_road.drying_rack.add_item"
+    },
+    "block.drying_rack.remove_item": {
+        "sounds": [
+            {
+                "name": "minecraft:entity.item_frame.remove_item",
+                "type": "event"
+            }
+        ],
+        "subtitle": "subtitles.spice_road.drying_rack.remove_item"
+    }
+}

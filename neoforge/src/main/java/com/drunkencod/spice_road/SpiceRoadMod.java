@@ -9,6 +9,7 @@ import com.drunkencod.spice_road.compat.appleskin.AppleSkinCompat;
 import com.drunkencod.spice_road.client.NeoForgeSpiceTooltipHandler;
 import com.drunkencod.spice_road.config.NeoForgeConfigHelper;
 import com.drunkencod.spice_road.datagen.BotanyPotsRecipeProvider;
+import com.drunkencod.spice_road.datagen.DryingRecipeProvider;
 import com.drunkencod.spice_road.datagen.ImmersiveEngineeringClocheRecipeProvider;
 import com.drunkencod.spice_road.datagen.MixPresetProvider;
 import com.drunkencod.spice_road.datagen.SpiceMixModelProvider;
@@ -26,6 +27,7 @@ import com.drunkencod.spice_road.datagen.SpiceTreePlanksRecipeProvider;
 import com.drunkencod.spice_road.loot.LootInjections;
 import com.drunkencod.spice_road.mix.MixPresetSync;
 import com.drunkencod.spice_road.platform.Services;
+import com.drunkencod.spice_road.registry.ModBlockEntities;
 import com.drunkencod.spice_road.registry.NeoForgeConditions;
 import com.drunkencod.spice_road.registry.NeoForgeCreativeTabHelper;
 import com.drunkencod.spice_road.registry.NeoForgeRegistryHelper;
@@ -45,7 +47,11 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.items.wrapper.InvWrapper;
+import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
@@ -92,6 +98,7 @@ public class SpiceRoadMod {
         eventBus.addListener(this::onCommonSetup);
         eventBus.addListener(this::onClientSetup);
         eventBus.addListener(SpiceRoadMod::onRegisterPayloadHandlers);
+        eventBus.addListener(SpiceRoadMod::onRegisterCapabilities);
         NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onTagsUpdated);
         NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onServerAboutToStart);
         NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onServerStopped);
@@ -141,6 +148,9 @@ public class SpiceRoadMod {
                 new SpiceTreePlanksRecipeProvider(event.getGenerator().getPackOutput()));
         event.getGenerator().addProvider(
                 event.includeServer(),
+                new DryingRecipeProvider(event.getGenerator().getPackOutput()));
+        event.getGenerator().addProvider(
+                event.includeServer(),
                 new SpiceItemTagProvider(event.getGenerator().getPackOutput()));
         event.getGenerator().addProvider(
                 event.includeServer(),
@@ -187,6 +197,16 @@ public class SpiceRoadMod {
                         (payload, context) -> payload.handle())
                 .playToServer(GrinderIntentPayload.TYPE, GrinderIntentPayload.STREAM_CODEC,
                         (payload, context) -> payload.handle((ServerPlayer) context.player()));
+    }
+
+    /**
+     * Exposes the Drying Rack's {@code WorldlyContainer} to item handlers, which
+     * NeoForge only does by itself for a fixed list of vanilla block entities.
+     * Fabric's Transfer API wraps it automatically.
+     */
+    private static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntities.DRYING_RACK.get(),
+                (rack, side) -> side == null ? new InvWrapper(rack) : new SidedInvWrapper(rack, side));
     }
 
     /** Remembers the world seed for Automatic Seasoning, which can't reach a level from a recipe. */

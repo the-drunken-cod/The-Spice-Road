@@ -36,7 +36,7 @@ Warning: may contain outdated information, and is only to be used as a guideline
     - There is a mechanic that makes different kinds of spices interact differently and yield different buffs of different levels.
         - The mechanic yields diminishing returns, a good amount of spices for max benefits should be around 8-10 (configurable).
     - Buffs have 3 levels of potency (with configurable multipliers).
-6. [ ] **Drying Rack**
+6. [x] **Drying Rack**
     - Note: mostly already implemented in Mycomancy, needs to be ported, except for the model, since it's limited to 2 inputs and outputs, and since Mycomancy only runs on NeoForge.
     - Dries up to 2 items at the same time, hard limited by the model and renderer.
     - Custom recipe serializer (see Mycomancy).

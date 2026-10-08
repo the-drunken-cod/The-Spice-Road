@@ -375,6 +375,26 @@ public class FabricConfigHelper implements IConfigHelper {
         return value(ConfigSchema.SPICE_MIX_CAPACITY, server().spiceMix.capacity);
     }
 
+    @Override
+    public double getDryingRackSpeedMultiplier() {
+        return value(ConfigSchema.DRYING_RACK_SPEED_MULTIPLIER, server().dryingRack.speedMultiplier);
+    }
+
+    @Override
+    public double getDryingRackHeatedSpeedMultiplier() {
+        return value(ConfigSchema.DRYING_RACK_HEATED_SPEED_MULTIPLIER, server().dryingRack.heatedSpeedMultiplier);
+    }
+
+    @Override
+    public boolean areDryingRackSoundsEnabled() {
+        return value(ConfigSchema.DRYING_RACK_SOUNDS, server().dryingRack.sounds);
+    }
+
+    @Override
+    public boolean areDryingRackParticlesEnabled() {
+        return client().dryingRackEffects.particles;
+    }
+
     // #region Clamping
 
     /**
@@ -493,6 +513,8 @@ public class FabricConfigHelper implements IConfigHelper {
         public Seasoning seasoning = new Seasoning();
         @ConfigEntry.Gui.CollapsibleObject
         public SpiceMix spiceMix = new SpiceMix();
+        @ConfigEntry.Gui.CollapsibleObject
+        public DryingRack dryingRack = new DryingRack();
         @ConfigEntry.Gui.CollapsibleObject
         public Stats stats = new Stats();
         @ConfigEntry.Gui.CollapsibleObject
@@ -661,6 +683,16 @@ public class FabricConfigHelper implements IConfigHelper {
             public int capacity = ConfigSchema.SPICE_MIX_CAPACITY.getDefault();
         }
 
+        /** The Drying Rack's speed and sounds. */
+        public static class DryingRack {
+            @ConfigEntry.Gui.Tooltip
+            public double speedMultiplier = ConfigSchema.DRYING_RACK_SPEED_MULTIPLIER.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public double heatedSpeedMultiplier = ConfigSchema.DRYING_RACK_HEATED_SPEED_MULTIPLIER.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public boolean sounds = ConfigSchema.DRYING_RACK_SOUNDS.getDefault();
+        }
+
         /** Player statistics the mod tracks. */
         public static class Stats {
             @ConfigEntry.Gui.Tooltip
@@ -705,10 +737,18 @@ public class FabricConfigHelper implements IConfigHelper {
         public TooltipDisplay tooltip = new TooltipDisplay();
         @ConfigEntry.Gui.CollapsibleObject
         public Grinder grinder = new Grinder();
+        @ConfigEntry.Gui.CollapsibleObject
+        public DryingRackEffects dryingRackEffects = new DryingRackEffects();
 
         @Override
         public void validatePostLoad() {
             clampToSchema(this, ConfigFile.CLIENT);
+        }
+
+        /** Drying Rack effects. */
+        public static class DryingRackEffects {
+            @ConfigEntry.Gui.Tooltip
+            public boolean particles = ConfigSchema.DRYING_RACK_PARTICLES.getDefault();
         }
 
         /** Spice Grinder GUI behavior. */
