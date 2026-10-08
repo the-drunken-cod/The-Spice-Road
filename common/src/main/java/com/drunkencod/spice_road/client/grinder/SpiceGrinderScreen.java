@@ -787,9 +787,11 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
             graphics.renderItem(stack, baseX - 1 + GrinderLayout.LIST_ITEM_X, y - 1);
             String amount = (chosen > 0 ? chosen + "/" : "") + row.count;
             int amountX = baseX + GrinderLayout.LIST_WIDTH - 12 - font.width(amount);
-            drawClipped(graphics, stack.getHoverName(), baseX + GrinderLayout.LIST_NAME_X, y + 3,
-                    amountX - 3 - (baseX + GrinderLayout.LIST_NAME_X), canAddMore(row.spice) ? COLOR_TEXT : COLOR_DIM);
-            graphics.drawString(font, amount, amountX, y + 2, chosen > 0 ? COLOR_WARNING : COLOR_DIM, false);
+            drawClipped(graphics, stack.getHoverName(), baseX + GrinderLayout.LIST_NAME_X,
+                    y + GrinderLayout.LIST_NAME_Y, amountX - 3 - (baseX + GrinderLayout.LIST_NAME_X),
+                    canAddMore(row.spice) ? COLOR_TEXT : COLOR_DIM);
+            graphics.drawString(font, amount, amountX, y + GrinderLayout.LIST_NAME_Y,
+                    chosen > 0 ? COLOR_WARNING : COLOR_DIM, false);
         }
         if (scrollable())
             renderScrollbar(graphics, mouseX, mouseY);

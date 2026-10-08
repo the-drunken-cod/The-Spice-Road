@@ -30,6 +30,10 @@ public final class GrinderLayout {
      * the 16 px item icon.
      */
     public static final int LIST_NAME_X = 19;
+    /**
+     * Offset from the top edge of the list item row, for label and amount number.
+     */
+    public static final int LIST_NAME_Y = 4;
     /** Height of one row of the spice list. */
     public static final int LIST_ROW_HEIGHT = 16;
     /** Rows visible at once. */
