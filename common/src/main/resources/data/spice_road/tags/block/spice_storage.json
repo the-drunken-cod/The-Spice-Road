@@ -6,15 +6,207 @@
       "required": false
     },
     {
-      "id": "#cookingforblockheads:counters",
+      "id": "#cookingforblockheads:kitchen_item_providers",
       "required": false
     },
     {
-      "id": "#cookingforblockheads:cabinets",
+      "id": "cookingforblockheads:cabinet",
       "required": false
     },
     {
-      "id": "#cookingforblockheads:fridges",
+      "id": "cookingforblockheads:counter",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:white_cabinet",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:orange_cabinet",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:magenta_cabinet",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:light_blue_cabinet",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:yellow_cabinet",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:lime_cabinet",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:pink_cabinet",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:gray_cabinet",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:light_gray_cabinet",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:cyan_cabinet",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:purple_cabinet",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:blue_cabinet",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:brown_cabinet",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:green_cabinet",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:red_cabinet",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:black_cabinet",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:white_counter",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:orange_counter",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:magenta_counter",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:light_blue_counter",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:yellow_counter",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:lime_counter",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:pink_counter",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:gray_counter",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:light_gray_counter",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:cyan_counter",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:purple_counter",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:blue_counter",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:brown_counter",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:green_counter",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:red_counter",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:black_counter",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:white_fridge",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:orange_fridge",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:magenta_fridge",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:light_blue_fridge",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:yellow_fridge",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:lime_fridge",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:pink_fridge",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:gray_fridge",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:light_gray_fridge",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:cyan_fridge",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:purple_fridge",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:blue_fridge",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:brown_fridge",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:green_fridge",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:red_fridge",
+      "required": false
+    },
+    {
+      "id": "cookingforblockheads:black_fridge",
       "required": false
     },
     {
@@ -23,10 +215,6 @@
     },
     {
       "id": "cookingforblockheads:spice_rack",
-      "required": false
-    },
-    {
-      "id": "cookingforblockheads:tool_rack",
       "required": false
     },
     {
