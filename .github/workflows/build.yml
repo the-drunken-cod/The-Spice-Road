@@ -111,10 +111,13 @@ jobs:
               run: |
                   MOD_ID=$(pnpm --silent extract-prop gradle.properties mod_id)
                   echo "MOD_ID=$MOD_ID" >> $GITHUB_OUTPUT
+                  echo "Found value: MOD_ID=$MOD_ID"
                   MOD_VERSION=$(pnpm --silent extract-prop gradle.properties version)
                   echo "MOD_VERSION=$MOD_VERSION" >> $GITHUB_OUTPUT
+                  echo "Found value: MOD_VERSION=$MOD_VERSION"
                   MC_VERSION=$(pnpm --silent extract-prop gradle.properties mc_version)
                   echo "MC_VERSION=$MC_VERSION" >> $GITHUB_OUTPUT
+                  echo "Found value: MC_VERSION=$MC_VERSION"
 
             - name: "[NeoForge] Run DataGen"
               if: ${{ inputs.build_neoforge == true }}
