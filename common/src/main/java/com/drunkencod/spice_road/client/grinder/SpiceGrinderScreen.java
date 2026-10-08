@@ -784,7 +784,7 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
                         0xFF454545);
             int chosen = view().spices().getOrDefault(row.spice, 0);
             ItemStack stack = row.spice.displayStack();
-            graphics.renderItem(stack, baseX - 1 + GrinderLayout.LIST_ITEM_X, y - 1);
+            graphics.renderItem(stack, baseX - 1 + GrinderLayout.LIST_ITEM_X, y - 1 + GrinderLayout.LIST_ITEM_Y);
             String amount = (chosen > 0 ? chosen + "/" : "") + row.count;
             int amountX = baseX + GrinderLayout.LIST_WIDTH - 12 - font.width(amount);
             drawClipped(graphics, stack.getHoverName(), baseX + GrinderLayout.LIST_NAME_X,

@@ -1,6 +1,7 @@
 package com.drunkencod.spice_road.config;
 
 import com.drunkencod.spice_road.compat.CompatRecipeMod;
+import com.drunkencod.spice_road.compat.viewer.ViewerCategory;
 import com.drunkencod.spice_road.spice.Tier;
 
 /**
@@ -487,6 +488,14 @@ public interface IConfigHelper {
      * @return Whether its recipes are enabled.
      */
     boolean isCompatRecipeEnabled(CompatRecipeMod mod);
+
+    /**
+     * Client-side. Only consulted when a Recipe Viewer (re)loads.
+     *
+     * @param category One of the mod's Recipe Viewer categories.
+     * @return Whether Recipe Viewers show it.
+     */
+    boolean isRecipeViewerCategoryEnabled(ViewerCategory category);
 
     /**
      * @return Ticks between checks of each player's inventory for newly found

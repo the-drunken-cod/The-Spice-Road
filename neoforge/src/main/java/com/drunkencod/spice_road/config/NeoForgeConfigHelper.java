@@ -10,6 +10,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 import com.drunkencod.spice_road.compat.CompatRecipeMod;
+import com.drunkencod.spice_road.compat.viewer.ViewerCategory;
 import com.drunkencod.spice_road.spice.Tier;
 
 /**
@@ -428,6 +429,11 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     @Override
     public boolean isCompatRecipeEnabled(CompatRecipeMod mod) {
         return value(ConfigSchema.COMPAT_RECIPES_ENABLED.get(mod));
+    }
+
+    @Override
+    public boolean isRecipeViewerCategoryEnabled(ViewerCategory category) {
+        return value(ConfigSchema.RECIPE_VIEWER_CATEGORIES.get(category));
     }
 
     @Override

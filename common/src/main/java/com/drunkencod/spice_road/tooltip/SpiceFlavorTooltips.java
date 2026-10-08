@@ -93,6 +93,22 @@ public class SpiceFlavorTooltips {
      * @return One tooltip line per Flavor Axis
      */
     public static List<Component> formatFlavorAxes(SpiceProfile profile, double barScale) {
+        return formatFlavorAxes(profile, barScale, Services.CONFIG.isTooltipAnimated());
+    }
+
+    /**
+     * Formats every {@link FlavorAxis} of a {@link SpiceProfile} as a
+     * tooltip line, in {@link FlavorAxis} enum order.
+     *
+     * @param profile  The Spice Profile to format
+     * @param barScale Score magnitude at which a bar is full, e.g. {@code 1}
+     *                 for a single spice
+     * @param animated Whether the scores count up from zero (see
+     *                 {@link FlavorTooltipAnimator}); pass {@code false} where
+     *                 the lines aren't re-formatted every frame
+     * @return One tooltip line per Flavor Axis
+     */
+    public static List<Component> formatFlavorAxes(SpiceProfile profile, double barScale, boolean animated) {
         boolean bothLabels = Services.CONFIG.isTooltipBothAxisLabelsShown();
         boolean showValues = Services.CONFIG.isTooltipAxisValueShown();
         Padder padder = Padder.measure();
@@ -124,7 +140,7 @@ public class SpiceFlavorTooltips {
         int barWidth = padder.alignedWidth(barWidths, padder::isPaddable);
 
         // Layout above is sized for the final values, so it stays put while counting up
-        double progress = Services.CONFIG.isTooltipAnimated()
+        double progress = animated
                 ? FlavorTooltipAnimator.progress(profile, barScale, Services.CONFIG.getTooltipAnimationDurationMs(),
                         System.currentTimeMillis())
                 : 1D;

@@ -1,6 +1,7 @@
 package com.drunkencod.spice_road.mix;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 import com.mojang.datafixers.util.Either;
@@ -74,6 +75,18 @@ public record PresetSlot(Either<Item, TagKey<Item>> source, int count) {
         return source.map(
                 own -> own == item,
                 tag -> BuiltInRegistries.ITEM.wrapAsHolder(item).is(tag));
+    }
+
+    /**
+     * @return The slot's item, or every member of its tag in tag order; empty
+     *         if the tag is unknown or has no members.
+     */
+    public List<Item> members() {
+        return source.map(
+                List::of,
+                tag -> BuiltInRegistries.ITEM.getTag(tag)
+                        .map(members -> members.stream().map(Holder::value).toList())
+                        .orElse(List.of()));
     }
 
     /**

@@ -321,7 +321,7 @@ public final class SpiceProfileTooltips {
      * @return The {@link Tier} whose {@link Tier#getItemTag() tag} contains
      *         {@code stack}, or empty if none does.
      */
-    private static Optional<Tier> tierOf(ItemStack stack) {
+    public static Optional<Tier> tierOf(ItemStack stack) {
         return Arrays.stream(Tier.values()).filter(tier -> stack.is(tier.getItemTag())).findFirst();
     }
 
@@ -344,7 +344,7 @@ public final class SpiceProfileTooltips {
      * @param tier The tier to describe.
      * @return The tier's icon from {@link #TIER_ICON_FONT}.
      */
-    private static Component tierIcon(Tier tier) {
+    public static Component tierIcon(Tier tier) {
         return Component.literal(String.valueOf((char) (TIER_ICON_FIRST_CHAR + tier.ordinal())))
                 .withStyle(style -> style.withFont(TIER_ICON_FONT).withColor(ChatFormatting.WHITE));
     }
@@ -353,7 +353,7 @@ public final class SpiceProfileTooltips {
      * @param tier The tier to describe.
      * @return The tier's name, like {@code "Rare"}, uncolored.
      */
-    private static MutableComponent tierName(Tier tier) {
+    public static MutableComponent tierName(Tier tier) {
         return Component.translatable(Constants.MOD_ID + ".tooltip.spice_tier." + tier.getSerializedName());
     }
 }

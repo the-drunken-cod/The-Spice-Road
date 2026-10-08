@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.compat.CompatRecipeMod;
+import com.drunkencod.spice_road.compat.viewer.ViewerCategory;
 import com.drunkencod.spice_road.spice.Tier;
 
 import me.shedaniel.autoconfig.AutoConfig;
@@ -377,6 +378,16 @@ public class FabricConfigHelper implements IConfigHelper {
         return switch (mod) {
             case BOTANY_POTS -> recipes.botanypots;
             case IMMERSIVE_ENGINEERING -> recipes.immersiveengineering;
+        };
+    }
+
+    @Override
+    public boolean isRecipeViewerCategoryEnabled(ViewerCategory category) {
+        ClientConfigData.RecipeViewer viewer = client().recipeViewer;
+        return switch (category) {
+            case SPICE_PROFILE -> viewer.spiceProfile;
+            case SPICE_ORIGIN -> viewer.spiceOrigin;
+            case DRYING -> viewer.drying;
         };
     }
 
@@ -758,6 +769,8 @@ public class FabricConfigHelper implements IConfigHelper {
         public Grinder grinder = new Grinder();
         @ConfigEntry.Gui.CollapsibleObject
         public DryingRackEffects dryingRackEffects = new DryingRackEffects();
+        @ConfigEntry.Gui.CollapsibleObject
+        public RecipeViewer recipeViewer = new RecipeViewer();
 
         @Override
         public void validatePostLoad() {
@@ -768,6 +781,18 @@ public class FabricConfigHelper implements IConfigHelper {
         public static class DryingRackEffects {
             @ConfigEntry.Gui.Tooltip
             public boolean particles = ConfigSchema.DRYING_RACK_PARTICLES.getDefault();
+        }
+
+        /** Which of the mod's categories Recipe Viewers show, one field per category. */
+        public static class RecipeViewer {
+            @ConfigEntry.Gui.Tooltip
+            public boolean spiceProfile = ConfigSchema.RECIPE_VIEWER_CATEGORIES.get(ViewerCategory.SPICE_PROFILE)
+                    .getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public boolean spiceOrigin = ConfigSchema.RECIPE_VIEWER_CATEGORIES.get(ViewerCategory.SPICE_ORIGIN)
+                    .getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public boolean drying = ConfigSchema.RECIPE_VIEWER_CATEGORIES.get(ViewerCategory.DRYING).getDefault();
         }
 
         /** Look shared by all of the mod's GUIs. */

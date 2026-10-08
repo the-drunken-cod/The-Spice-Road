@@ -10,6 +10,7 @@ import java.util.Set;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.compat.CompatRecipeMod;
+import com.drunkencod.spice_road.compat.viewer.ViewerCategory;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Tier;
 
@@ -77,6 +78,8 @@ public final class ConfigSchema {
     public static final ConfigSection GRINDER = ConfigSection.root(ConfigFile.CLIENT, "grinder");
     /** Client-side look shared by all of the mod's GUIs. */
     public static final ConfigSection GUI = ConfigSection.root(ConfigFile.CLIENT, "gui");
+    /** Which of the mod's categories Recipe Viewers (JEI, EMI) show. */
+    public static final ConfigSection RECIPE_VIEWER = ConfigSection.root(ConfigFile.CLIENT, "recipeViewer");
     /** Player statistics the mod tracks. */
     public static final ConfigSection STATS = ConfigSection.root(ConfigFile.SERVER, "stats");
     /** Behavior around other mods' placeable food items. */
@@ -396,6 +399,14 @@ public final class ConfigSchema {
      */
     public static final Map<CompatRecipeMod, ConfigOption<Boolean>> COMPAT_RECIPES_ENABLED = compatRecipeToggles();
 
+    // #region Recipe Viewer
+
+    /**
+     * Whether Recipe Viewers show each {@link ViewerCategory}, keyed by its
+     * config key. Read whenever a viewer (re)loads.
+     */
+    public static final Map<ViewerCategory, ConfigOption<Boolean>> RECIPE_VIEWER_CATEGORIES = recipeViewerToggles();
+
     private ConfigSchema() {
     }
 
@@ -421,9 +432,8 @@ public final class ConfigSchema {
      */
     public static Set<ConfigSection> sections(ConfigFile file) {
         Set<ConfigSection> found = new LinkedHashSet<>();
-        for (ConfigOption<?> option : options(file)) {
+        for (ConfigOption<?> option : options(file))
             addWithAncestors(found, option.getSection());
-        }
         return found;
     }
 
@@ -452,9 +462,8 @@ public final class ConfigSchema {
     }
 
     private static void addWithAncestors(Set<ConfigSection> found, ConfigSection section) {
-        if (section.getParent() != null) {
+        if (section.getParent() != null)
             addWithAncestors(found, section.getParent());
-        }
         found.add(section);
     }
 
@@ -471,10 +480,16 @@ public final class ConfigSchema {
      */
     private static Map<CompatRecipeMod, ConfigOption<Boolean>> compatRecipeToggles() {
         Map<CompatRecipeMod, ConfigOption<Boolean>> byMod = new EnumMap<>(CompatRecipeMod.class);
-        for (CompatRecipeMod mod : CompatRecipeMod.values()) {
+        for (CompatRecipeMod mod : CompatRecipeMod.values())
             byMod.put(mod, add(ConfigOption.ofBoolean(COMPAT_RECIPES, mod.getModId(), true)));
-        }
         return Collections.unmodifiableMap(byMod);
+    }
+
+    private static Map<ViewerCategory, ConfigOption<Boolean>> recipeViewerToggles() {
+        Map<ViewerCategory, ConfigOption<Boolean>> byCategory = new EnumMap<>(ViewerCategory.class);
+        for (ViewerCategory category : ViewerCategory.values())
+            byCategory.put(category, add(ConfigOption.ofBoolean(RECIPE_VIEWER, category.getConfigKey(), true)));
+        return Collections.unmodifiableMap(byCategory);
     }
 
     /**
@@ -494,10 +509,9 @@ public final class ConfigSchema {
             double rare, double epic, double min, double max) {
         Map<Tier, ConfigOption<Double>> byTier = new EnumMap<>(Tier.class);
         double[] defaults = { common, uncommon, rare, epic };
-        for (Tier tier : Tier.values()) {
+        for (Tier tier : Tier.values())
             byTier.put(tier,
                     add(ConfigOption.ofDouble(section, tier.getSerializedName(), defaults[tier.ordinal()], min, max)));
-        }
         return Collections.unmodifiableMap(byTier);
     }
 }

@@ -71,6 +71,11 @@ dependencies {
     compileOnly "maven.modrinth:cooking-for-blockheads:${cooking_for_blockheads_neoforge_version}"
     // Optional compat target for the food tooltip, only needed to compile against its API
     compileOnly "maven.modrinth:appleskin:${appleskin_neoforge_version}"
+    // Optional recipe viewers, only needed to recompile the integration from common.
+    // The same Mojang-mapped API jars as common, so no remapping (and no Loom
+    // version constraint of the viewers' own loader jars) is involved.
+    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
+    compileOnly "dev.emi:emi-xplat-mojmap:${emi_version}:api"
 
     // Sable Companion.
     // jarJar bundles the actual shim jar into our own, so it ships and runs

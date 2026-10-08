@@ -24,6 +24,11 @@ dependencies {
     compileOnly 'io.github.llamalad7:mixinextras-common:0.3.5'
     annotationProcessor 'io.github.llamalad7:mixinextras-common:0.3.5'
 
+    // Recipe viewers (optional). Their loader-neutral APIs, so the integration
+    // lives here once; each loader adds its own API jar for the recompile.
+    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
+    compileOnly "dev.emi:emi-xplat-mojmap:${emi_version}:api"
+
     // Sable Companion.
     // Only lets this module's own standalone compile see the API; fabric/ and
     // neoforge/ each declare their own loader-specific artifact that actually

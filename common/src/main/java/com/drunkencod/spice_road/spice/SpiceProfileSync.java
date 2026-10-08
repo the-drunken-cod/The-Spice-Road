@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
 import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.compat.viewer.ViewerRefresh;
 
 /**
  * Server-to-client payload carrying every Spice Item's Default Profile, since
@@ -42,6 +43,7 @@ public record SpiceProfileSync(Map<Item, SpiceProfile> profiles) implements Cust
     /** Applies a received payload on the client. */
     public void handle() {
         SpiceProfileRegistry.acceptSync(profiles);
+        ViewerRefresh.onDataChanged();
     }
 
     @Override

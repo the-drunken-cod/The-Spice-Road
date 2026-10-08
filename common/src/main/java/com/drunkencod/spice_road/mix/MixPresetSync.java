@@ -10,6 +10,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 
 import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.compat.viewer.ViewerRefresh;
 
 /**
  * Server-to-client payload carrying every Mix Preset, since
@@ -40,6 +41,7 @@ public record MixPresetSync(Map<ResourceLocation, MixPreset> presets) implements
     /** Applies a received payload on the client. */
     public void handle() {
         MixPresetRegistry.set(presets);
+        ViewerRefresh.onDataChanged();
     }
 
     @Override

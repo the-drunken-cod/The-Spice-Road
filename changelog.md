@@ -2,12 +2,17 @@
 ## `0.1.0-alpha.4`
 - **Features:**
     - Added some more original textures to replace their placeholders. Spice Mixes are now fully textured.
+    - Added JEI and EMI categories (each can be hidden via client config):
+        - Spice Profile: the flavor of every spice and Spice Mix preset, including datapack-added ones.
+        - Spice Origin: each spice's tier, climate, whether it's hardy or region-bound, yield, plant, harvest action and tool, and seasons.
+        - Drying: every Drying Rack recipe, with result chances and the drying time with and without heat.
 - **Changes:**
     - Spice Grinder doesn't consume spices anymore when player is in creative mode.
     - Spice Grinder GUI movement buttons have two warning colors now; yellow and red, with configurable steps-left-thresholds.
 - **Fixes:**
     - Dried spices are now correctly used in the Spice Mix recipes.
     - `#spice/peppercorns` tag now correctly uses Dried Long Pepper.
+    - JEI and EMI now tell Spice Mixes with different contents apart.
 
 <br>
 

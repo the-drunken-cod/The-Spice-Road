@@ -189,10 +189,10 @@
     - [x] Change sounds when clicking movement buttons to a pitched down grindstone sound.
     - [x] Add movement sounds to Spice Grinder GUI when moving via keyboard inputs (same pitched down grindstone sound).
     - [x] Add sounds when adding and removing ingredients in the Spice Grinder GUI (UI click, pitched up or down for adding/removing - pitched even more when holding shift).
-- [ ] JEI / EMI integration:
-    - [ ] Spice Grinder category that renders the Spice Profile values for spice ingredients and Spice Mixes.
-    - [ ] Spice Origin category that renders the worldgen info, like rarity tier, hardiness, climate and yield.
-    - [ ] Category for Drying Rack recipes (refer to mycomancy_src for a base template).
+- [x] JEI / EMI integration:
+    - [x] Spice Grinder category that renders the Spice Profile values for spice ingredients and Spice Mixes.
+    - [x] Spice Origin category that renders the worldgen info, like rarity tier, hardiness, climate and yield.
+    - [x] Category for Drying Rack recipes (refer to mycomancy_src for a base template).
 - [ ] Fix JEI error:
     - [08Oct2026 03:04:21.663] [Render thread/WARN] [mezz.jei.library.plugins.vanilla.ingredients.ItemStackListFactory/]: 11 duplicate items were found in 'Spice Road' creative tab's: displayItems  
       This may indicate that these types of item need a subtype interpreter added to JEI:  

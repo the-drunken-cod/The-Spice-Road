@@ -23,8 +23,10 @@ public final class GrinderLayout {
     public static final int LIST_HEIGHT = 164;
     /** Spice list group header offset. */
     public static final int LIST_GROUP_HEADER_X = 2;
-    /** ItemStack renderer offset. */
+    /** ItemStack renderer offset from the left edge. */
     public static final int LIST_ITEM_X = 1;
+    /** ItemStack renderer offset from the top edge. */
+    public static final int LIST_ITEM_Y = 1;
     /**
      * Left edge of a row's item name, relative to the row's start. Leaves room for
      * the 16 px item icon.
