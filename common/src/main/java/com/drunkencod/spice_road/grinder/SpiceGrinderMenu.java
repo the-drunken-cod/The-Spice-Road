@@ -3,9 +3,14 @@ package com.drunkencod.spice_road.grinder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -13,6 +18,7 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.ModDataComponents;
@@ -41,8 +47,12 @@ public class SpiceGrinderMenu extends AbstractContainerMenu {
      */
     private static final int AVAILABLE_CHECK_TICKS = 20;
 
+    /** Furthest a player may be from a placed Grinder, squared, as for vanilla block menus. */
+    private static final double MAX_BLOCK_DISTANCE_SQR = 64D;
+
     private final Inventory inventory;
     private final int grinderSlot;
+    private final @Nullable SpiceGrinderBlockEntity block;
     private final SimpleContainer foodContainer = new SimpleContainer(1);
     /**
      * The inventory slot holding the Grinder, kept in sync with the client so both
@@ -70,9 +80,23 @@ public class SpiceGrinderMenu extends AbstractContainerMenu {
      *                    client.
      */
     public SpiceGrinderMenu(int containerId, Inventory inventory, int grinderSlot) {
+        this(containerId, inventory, grinderSlot, null);
+    }
+
+    /**
+     * @param containerId The menu ID.
+     * @param inventory   The player's inventory.
+     * @param grinderSlot The inventory slot holding the Grinder, {@code -1} if
+     *                    there is none.
+     * @param block       The placed Grinder the menu is for, {@code null} if it
+     *                    is for the item.
+     */
+    private SpiceGrinderMenu(int containerId, Inventory inventory, int grinderSlot,
+            @Nullable SpiceGrinderBlockEntity block) {
         super(ModMenus.SPICE_GRINDER.get(), containerId);
         this.inventory = inventory;
         this.grinderSlot = grinderSlot;
+        this.block = block;
         lockedSlot.set(grinderSlot);
         addDataSlot(lockedSlot);
 
@@ -87,9 +111,31 @@ public class SpiceGrinderMenu extends AbstractContainerMenu {
         foodContainer.addListener(container -> slotsChanged(container));
     }
 
-    /** @return The Grinder item stack this menu belongs to; empty on the client. */
-    public ItemStack grinder() {
-        return grinderSlot < 0 ? ItemStack.EMPTY : inventory.getItem(grinderSlot);
+    /**
+     * Opens the GUI of a Grinder for a player and sends them its first view.
+     *
+     * @param player      The player.
+     * @param grinderSlot The inventory slot holding the Grinder item, ignored if
+     *                    {@code block} is given.
+     * @param block       The placed Grinder to open, {@code null} to open the
+     *                    item in {@code grinderSlot}.
+     */
+    public static void open(ServerPlayer player, int grinderSlot, @Nullable SpiceGrinderBlockEntity block) {
+        player.openMenu(new SimpleMenuProvider((containerId, inventory, ignored) -> {
+            SpiceGrinderMenu menu = new SpiceGrinderMenu(containerId, inventory, block == null ? grinderSlot : -1,
+                    block);
+            if (block != null)
+                block.setUser(player);
+            return menu;
+        }, Component.translatable(SpiceGrinderItem.TITLE_KEY).withStyle(
+                Services.CONFIG.isDarkMode() ? ChatFormatting.WHITE : ChatFormatting.DARK_GRAY)));
+        if (player.containerMenu instanceof SpiceGrinderMenu menu)
+            menu.syncView(GrinderView.Event.NONE);
+    }
+
+    /** @return The placed Grinder this menu is for; {@code null} for the item and on the client. */
+    public @Nullable SpiceGrinderBlockEntity block() {
+        return block;
     }
 
     /**
@@ -98,8 +144,25 @@ public class SpiceGrinderMenu extends AbstractContainerMenu {
      *         {@link SeasoningSession#PLACEHOLDER}) is not a run.
      */
     public SeasoningSession session() {
-        SeasoningSession session = grinder().get(ModDataComponents.GRINDER_SESSION.get());
+        if (block != null)
+            return block.session();
+        SeasoningSession session = grinderSlot < 0 ? null
+                : inventory.getItem(grinderSlot).get(ModDataComponents.GRINDER_SESSION.get());
         return SeasoningSession.isPlaceholder(session) ? null : session;
+    }
+
+    /**
+     * Server-side. Saves the run on the Grinder.
+     *
+     * @param session The new state of the run, {@code null} to end it.
+     */
+    void setSession(@Nullable SeasoningSession session) {
+        if (block != null)
+            block.setSession(session);
+        else if (grinderSlot >= 0 && session != null)
+            inventory.getItem(grinderSlot).set(ModDataComponents.GRINDER_SESSION.get(), session);
+        else if (grinderSlot >= 0)
+            inventory.getItem(grinderSlot).remove(ModDataComponents.GRINDER_SESSION.get());
     }
 
     /** @return The inventory the menu was opened for. */
@@ -193,6 +256,9 @@ public class SpiceGrinderMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player player) {
+        if (block != null)
+            return !block.isRemoved() && player.level().getBlockEntity(block.getBlockPos()) == block
+                    && player.distanceToSqr(Vec3.atCenterOf(block.getBlockPos())) <= MAX_BLOCK_DISTANCE_SQR;
         if (grinderSlot < 0)
             return true;
         return inventory.getItem(grinderSlot).getItem() instanceof SpiceGrinderItem;
@@ -203,6 +269,8 @@ public class SpiceGrinderMenu extends AbstractContainerMenu {
         super.removed(player);
         if (!player.level().isClientSide())
             clearContainer(player, foodContainer);
+        if (block != null)
+            block.setUser(null);
     }
 
     @Override

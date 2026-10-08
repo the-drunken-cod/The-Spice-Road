@@ -205,6 +205,7 @@
 - [x] Spice Grinder edits:
     - [x] Yellow movement button background when <=3 steps left, red when <=1.
     - [x] Don't use up spice ingredients when player is in creative mode, only food item.
+- [ ] Make Spice Grinder placeable as a blockentity via sneak-r-click. R-click to use it in-world. Shift-r-click to pick it back up.
 - [ ] Patchouli documentation:
     - Spice types:
         - [ ] List of all spices:
@@ -232,4 +233,5 @@
     - [ ] Feature to select spice profiles (checkbox on list item) to juxtapose up to 4 spices.
     - [ ] Feature to export all changed JSONs as a ZIP.
     - [ ] Feature to reset an adjusted profile to the default value.
-- [ ] Make Spice Grinder placeable as a blockentity via sneak-r-click. R-click to use it in-world. Shift-r-click to pick it back up.
+- [ ] Add sound effect when finishing spice run.
+    - Progressive sound effects for participation award, regular run and flawless run.

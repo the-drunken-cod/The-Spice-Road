@@ -9,6 +9,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 
 import com.drunkencod.spice_road.drying.DryingRackBlock;
+import com.drunkencod.spice_road.grinder.SpiceGrinderBlock;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.rack.SpiceRackBlock;
 import com.drunkencod.spice_road.rack.SpiceRackWood;
@@ -28,6 +29,10 @@ public final class ModBlocks {
     /** The Drying Rack's item. Its model is hand-written, not generated. */
     public static final Supplier<Item> DRYING_RACK_ITEM = Services.REGISTRY.registerItem("drying_rack",
             () -> new BlockItem(DRYING_RACK.get(), new Item.Properties()));
+
+    /** The Spice Grinder as placed in the world. Its item is registered by {@link ModItems#registerGrinder()}. */
+    public static final Supplier<SpiceGrinderBlock> SPICE_GRINDER = Services.REGISTRY.registerBlock("spice_grinder",
+            () -> new SpiceGrinderBlock(SpiceGrinderBlock.createProperties()));
 
     /** The Spice Rack of every wood, in enum order. */
     public static final Map<SpiceRackWood, Supplier<SpiceRackBlock>> SPICE_RACKS;

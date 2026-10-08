@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import com.drunkencod.spice_road.drying.DryingRackBlockEntity;
+import com.drunkencod.spice_road.grinder.SpiceGrinderBlockEntity;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.rack.SpiceRackBlockEntity;
 
@@ -17,6 +18,10 @@ public final class ModBlockEntities {
     /** The block entity of the Drying Rack. */
     public static final Supplier<BlockEntityType<DryingRackBlockEntity>> DRYING_RACK = Services.REGISTRY
             .registerBlockEntityType("drying_rack", DryingRackBlockEntity::new, ModBlocks.DRYING_RACK);
+
+    /** The block entity of the placed Spice Grinder. */
+    public static final Supplier<BlockEntityType<SpiceGrinderBlockEntity>> SPICE_GRINDER = Services.REGISTRY
+            .registerBlockEntityType("spice_grinder", SpiceGrinderBlockEntity::new, ModBlocks.SPICE_GRINDER);
 
     /** The block entity of every Spice Rack. */
     public static final Supplier<BlockEntityType<SpiceRackBlockEntity>> SPICE_RACK = Services.REGISTRY

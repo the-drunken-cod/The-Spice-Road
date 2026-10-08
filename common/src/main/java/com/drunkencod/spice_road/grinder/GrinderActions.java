@@ -156,8 +156,7 @@ public final class GrinderActions {
         SeasoningRun run = new SeasoningRun(board, AutomaticSeasoning.rules(config),
                 PointsLedger.start(rawProfile(spices, config), SpiceProfiles::effectiveValue));
 
-        menu.grinder().set(ModDataComponents.GRINDER_SESSION.get(),
-                new SeasoningSession(food, spices, boardSeed, layout, run.state()));
+        menu.setSession(new SeasoningSession(food, spices, boardSeed, layout, run.state()));
         menu.clearFood();
         menu.draft().clear();
         return Event.NONE;
@@ -198,7 +197,7 @@ public final class GrinderActions {
         SeasoningRun.MoveResult result = run.run.move(Direction.values()[ordinal]);
         if (!result.moved())
             return Event.REFUSED;
-        menu.grinder().set(ModDataComponents.GRINDER_SESSION.get(), session.withState(run.run.state()));
+        menu.setSession(session.withState(run.run.state()));
         ModStats.award(player, ModStats.GRINDER_MOVES);
         if (result.mineHit())
             return result.dud() ? Event.MINE_DUD : Event.MINE_HIT;
@@ -213,7 +212,7 @@ public final class GrinderActions {
         int cell = BoardGeometry.index(run.run.x(), run.run.y());
         if (!run.run.lockIn())
             return Event.REFUSED;
-        menu.grinder().set(ModDataComponents.GRINDER_SESSION.get(), session.withState(run.run.state()));
+        menu.setSession(session.withState(run.run.state()));
         if (CellDiscoveries.of(player.server).record(player.getUUID(),
                 new DiscoveryLog.Entry(session.boardSeed(), session.layout().hashCode(), cell),
                 Services.CONFIG.getSeasoningDiscoveryLimit()))
@@ -231,7 +230,7 @@ public final class GrinderActions {
         if (!withinCaps(spices, Services.CONFIG)
                 || !consumeSpices(player, SpiceSources.of(player), Map.of(spice, foods)))
             return Event.REFUSED;
-        menu.grinder().set(ModDataComponents.GRINDER_SESSION.get(), session.withSpices(spices));
+        menu.setSession(session.withSpices(spices));
         if (spice.mix().isPresent())
             returnJars(player, foods);
         return Event.NONE;
@@ -298,7 +297,7 @@ public final class GrinderActions {
         session.spices().forEach((item, count) -> contributors.put(item, count.doubleValue()));
         ItemStack result = session.food().copy();
         result.set(ModDataComponents.SEASONING.get(), new Seasoning(contributors, run.run.effects()));
-        menu.grinder().remove(ModDataComponents.GRINDER_SESSION.get());
+        menu.setSession(null);
         if (SeasoningEffects.isFlawless(run.run.effects(), SeasoningEffectRegistry.catalog()))
             ModStats.award(player, ModStats.FLAWLESS_RUNS);
         player.getInventory().placeItemBackInInventory(result);

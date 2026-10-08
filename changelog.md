@@ -13,6 +13,9 @@
         - Items it accepts can be extended with the `#spice_road:spice_rack_storable` item tag.
         - The Spice Grinder takes spices from nearby racks (`#spice_road:spice_racks` is part of `#spice_road:spice_storage`).
         - Configurable item display and item render distance on the client.
+    - The Spice Grinder can now be placed on the floor by sneaking and right-clicking the top of a block, in one of 4 rotations.
+        - Placing keeps the run in progress, and right-clicking it opens the same GUI. Sneak with empty hands to pick it up again.
+        - Only one player can use it at a time, and it drops itself with its run when broken or when its support is removed.
 - **Changes:**
     - Spice Grinder doesn't consume spices anymore when player is in creative mode.
     - Spice Grinder GUI movement buttons have two warning colors now; yellow and red, with configurable steps-left-thresholds.

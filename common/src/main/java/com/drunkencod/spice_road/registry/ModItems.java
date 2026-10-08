@@ -46,7 +46,8 @@ public class ModItems {
      * mod initialization (see {@code SpiceRoad#init()}).
      */
     public static void registerGrinder() {
-        SPICE_GRINDER = Services.REGISTRY.registerItem("spice_grinder", SpiceGrinderItem::new);
+        SPICE_GRINDER = Services.REGISTRY.registerItem("spice_grinder",
+                () -> new SpiceGrinderItem(ModBlocks.SPICE_GRINDER.get()));
         ItemModelHelper.addFlatItem("spice_grinder", ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID,
                 "item/spice_grinder"));
     }
