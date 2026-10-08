@@ -386,6 +386,16 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public int getGrinderPadYellowSteps() {
+        return value(ConfigSchema.GRINDER_PAD_YELLOW_STEPS);
+    }
+
+    @Override
+    public int getGrinderPadRedSteps() {
+        return value(ConfigSchema.GRINDER_PAD_RED_STEPS);
+    }
+
+    @Override
     public boolean isTooltipBothAxisLabelsShown() {
         return value(ConfigSchema.TOOLTIP_SHOW_BOTH_AXIS_LABELS);
     }

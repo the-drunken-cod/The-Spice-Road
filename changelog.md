@@ -3,6 +3,8 @@
 - **Features:**
     - Added some more original textures to replace their placeholders. Spice Mixes are now fully textured.
 - **Changes:**
+    - Spice Grinder doesn't consume spices anymore when player is in creative mode.
+    - Spice Grinder GUI movement buttons have two warning colors now; yellow and red, with configurable steps-left-thresholds.
 - **Fixes:**
     - Dried spices are now correctly used in the Spice Mix recipes.
     - `#spice/peppercorns` tag now correctly uses Dried Long Pepper.

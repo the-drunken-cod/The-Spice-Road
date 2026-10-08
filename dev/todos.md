@@ -197,8 +197,9 @@
     - [08Oct2026 03:04:21.663] [Render thread/WARN] [mezz.jei.library.plugins.vanilla.ingredients.ItemStackListFactory/]: 11 duplicate items were found in 'Spice Road' creative tab's: displayItems  
       This may indicate that these types of item need a subtype interpreter added to JEI:  
       [spice_road:spice_mix]
-- [ ] Spice Grinder fixes:
-    - [ ] Combine duplicate effects. If exceeds cap, clamp to max level value.
+- [x] Spice Grinder edits:
+    - [x] Yellow movement button background when <=3 steps left, red when <=1.
+    - [x] Don't use up spice ingredients when player is in creative mode, only food item.
 - [ ] Patchouli documentation:
     - Spice types:
         - [ ] List of all spices:
@@ -206,7 +207,7 @@
             - [ ] Custom page type that renders a given spice profile, similar to the already existing tooltip.
     - Mechanics:
         - [ ] Spice Grinder:
-            - [ ] Nearby spice sourcing.
+            - [ ] Nearby spice sourcing, including list of all blocks.
             - [ ] Minigame.
                 - [ ] Spice Ingredients & Draft Spice Profile Values.
                 - [ ] Board Cell Types.

@@ -139,7 +139,7 @@ public final class GrinderActions {
         Map<GrinderSpice, Integer> draft = new LinkedHashMap<>(menu.draft());
         Map<GrinderSpice, Integer> needed = new LinkedHashMap<>();
         draft.forEach((spice, count) -> needed.put(spice, count * food.getCount()));
-        if (!sources.consume(needed))
+        if (!consumeSpices(player, sources, needed))
             return Event.REFUSED;
         int jars = 0;
         for (Map.Entry<GrinderSpice, Integer> entry : needed.entrySet())
@@ -228,7 +228,8 @@ public final class GrinderActions {
         int foods = session.food().getCount();
         Map<Item, Integer> spices = new LinkedHashMap<>(session.spices());
         spice.perUnit().forEach((item, count) -> spices.merge(item, count, Integer::sum));
-        if (!withinCaps(spices, Services.CONFIG) || !SpiceSources.of(player).consume(Map.of(spice, foods)))
+        if (!withinCaps(spices, Services.CONFIG)
+                || !consumeSpices(player, SpiceSources.of(player), Map.of(spice, foods)))
             return Event.REFUSED;
         menu.grinder().set(ModDataComponents.GRINDER_SESSION.get(), session.withSpices(spices));
         if (spice.mix().isPresent())
@@ -253,10 +254,29 @@ public final class GrinderActions {
     }
 
     /**
+     * Takes spices from the player's sources. A player with infinite materials
+     * (creative mode) still has to have them, but keeps them.
+     *
+     * @param player  The player.
+     * @param sources Where the player's spices are.
+     * @param needed  How many of each spice to take.
+     * @return Whether the player had them all; nothing is taken otherwise.
+     */
+    private static boolean consumeSpices(ServerPlayer player, SpiceSources sources,
+            Map<GrinderSpice, Integer> needed) {
+        if (!player.getAbilities().instabuild)
+            return sources.consume(needed);
+        return needed.entrySet().stream().allMatch(entry -> sources.count(entry.getKey()) >= entry.getValue());
+    }
+
+    /**
      * Gives the player the jars of the Spice Mixes they used, dropping what doesn't
-     * fit.
+     * fit. Nothing is returned to a player with infinite materials, as their
+     * Spice Mixes weren't used up.
      */
     private static void returnJars(ServerPlayer player, int count) {
+        if (player.getAbilities().instabuild)
+            return;
         Item jar = ModItems.JAR.get();
         int left = count;
         while (left > 0) {

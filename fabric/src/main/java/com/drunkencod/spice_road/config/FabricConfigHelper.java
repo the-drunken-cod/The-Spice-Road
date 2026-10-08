@@ -332,6 +332,16 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public int getGrinderPadYellowSteps() {
+        return client().grinder.padYellowSteps;
+    }
+
+    @Override
+    public int getGrinderPadRedSteps() {
+        return client().grinder.padRedSteps;
+    }
+
+    @Override
     public boolean isTooltipBothAxisLabelsShown() {
         return client().tooltip.showBothAxisLabels;
     }
@@ -772,6 +782,10 @@ public class FabricConfigHelper implements IConfigHelper {
             public boolean coloredPadOutlines = ConfigSchema.GRINDER_COLORED_PAD_OUTLINES.getDefault();
             @ConfigEntry.Gui.Tooltip
             public int inputBufferMs = ConfigSchema.GRINDER_INPUT_BUFFER_MS.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public int padYellowSteps = ConfigSchema.GRINDER_PAD_YELLOW_STEPS.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public int padRedSteps = ConfigSchema.GRINDER_PAD_RED_STEPS.getDefault();
         }
 
         /** What the mod shows on item tooltips. */
