@@ -1,4 +1,11 @@
 # `0.1.0`
+## `0.1.0-alpha.4`
+- **Features:**
+- **Changes:**
+- **Fixes:**
+
+<br>
+
 ## `0.1.0-alpha.3`
 - **Features:**
     - Added Spice Mix, which combines a jar (new item) with up to 8 spices in any configuration.
