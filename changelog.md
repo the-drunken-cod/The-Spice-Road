@@ -27,6 +27,7 @@
     - Pie Purist advancement is now a child of Hang Out to Dry.
     - Spice Grinder doesn't consume spices anymore when player is in creative mode.
     - Spice Grinder GUI movement buttons have two warning colors now; yellow and red, with configurable steps-left-thresholds.
+    - The Spice Grinder GUI shows the name the Grinder was renamed to, also while it is placed.
 - **Fixes:**
     - Dried spices are now correctly used in the Spice Mix recipes.
     - `#spice/peppercorns` tag now correctly uses Dried Long Pepper.

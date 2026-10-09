@@ -6,7 +6,9 @@ import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -127,10 +129,21 @@ public class SpiceGrinderMenu extends AbstractContainerMenu {
             if (block != null)
                 block.setUser(player);
             return menu;
-        }, Component.translatable(SpiceGrinderItem.TITLE_KEY).withStyle(
-                Services.CONFIG.isDarkMode() ? ChatFormatting.WHITE : ChatFormatting.DARK_GRAY)));
+        }, title(block == null ? player.getInventory().getItem(grinderSlot).get(DataComponents.CUSTOM_NAME)
+                : block.components().get(DataComponents.CUSTOM_NAME))));
         if (player.containerMenu instanceof SpiceGrinderMenu menu)
             menu.syncView(GrinderView.Event.NONE);
+    }
+
+    /**
+     * @param customName The name the Grinder was renamed to, {@code null} if it
+     *                   wasn't.
+     * @return The GUI title, in the color its background calls for.
+     */
+    private static Component title(@Nullable Component customName) {
+        MutableComponent title = customName == null ? Component.translatable(SpiceGrinderItem.TITLE_KEY)
+                : customName.copy();
+        return title.withStyle(Services.CONFIG.isDarkMode() ? ChatFormatting.WHITE : ChatFormatting.DARK_GRAY);
     }
 
     /** @return The placed Grinder this menu is for; {@code null} for the item and on the client. */
