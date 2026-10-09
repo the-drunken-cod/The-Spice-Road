@@ -15,9 +15,9 @@ import com.drunkencod.spice_road.rack.SpiceRackBlockEntity;
  */
 public final class ModBlockEntities {
 
-    /** The block entity of the Drying Rack. */
+    /** The block entity of every Drying Rack. */
     public static final Supplier<BlockEntityType<DryingRackBlockEntity>> DRYING_RACK = Services.REGISTRY
-            .registerBlockEntityType("drying_rack", DryingRackBlockEntity::new, ModBlocks.DRYING_RACK);
+            .registerBlockEntityType("drying_rack", DryingRackBlockEntity::new, ModBlocks.DRYING_RACKS.values());
 
     /** The block entity of the placed Spice Grinder. */
     public static final Supplier<BlockEntityType<SpiceGrinderBlockEntity>> SPICE_GRINDER = Services.REGISTRY

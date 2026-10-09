@@ -9,6 +9,8 @@ import com.drunkencod.spice_road.compat.appleskin.AppleSkinCompat;
 import com.drunkencod.spice_road.client.NeoForgeSpiceTooltipHandler;
 import com.drunkencod.spice_road.config.NeoForgeConfigHelper;
 import com.drunkencod.spice_road.datagen.BotanyPotsRecipeProvider;
+import com.drunkencod.spice_road.datagen.DryingRackAssetProvider;
+import com.drunkencod.spice_road.datagen.DryingRackDataProvider;
 import com.drunkencod.spice_road.datagen.DryingRecipeProvider;
 import com.drunkencod.spice_road.datagen.ImmersiveEngineeringClocheRecipeProvider;
 import com.drunkencod.spice_road.datagen.MixPresetProvider;
@@ -170,6 +172,12 @@ public class SpiceRoadMod {
         event.getGenerator().addProvider(
                 event.includeClient(),
                 new SpiceMixModelProvider(event.getGenerator().getPackOutput()));
+        event.getGenerator().addProvider(
+                event.includeClient(),
+                new DryingRackAssetProvider(event.getGenerator().getPackOutput()));
+        event.getGenerator().addProvider(
+                event.includeServer(),
+                new DryingRackDataProvider(event.getGenerator().getPackOutput()));
         event.getGenerator().addProvider(
                 event.includeClient(),
                 new SpiceRackAssetProvider(event.getGenerator().getPackOutput()));

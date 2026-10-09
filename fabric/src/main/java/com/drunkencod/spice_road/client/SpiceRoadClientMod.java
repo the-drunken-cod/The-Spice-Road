@@ -51,7 +51,8 @@ public class SpiceRoadClientMod implements ClientModInitializer {
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ConfigSyncOverride.clear());
 
         registerSpicePlantRenderLayers();
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.DRYING_RACK.get(), RenderType.cutout());
+        ModBlocks.DRYING_RACKS.values()
+                .forEach(rack -> BlockRenderLayerMap.INSTANCE.putBlock(rack.get(), RenderType.cutout()));
         BlockEntityRenderers.register(ModBlockEntities.DRYING_RACK.get(), DryingRackRenderer::new);
         ModBlocks.SPICE_RACKS.values()
                 .forEach(rack -> BlockRenderLayerMap.INSTANCE.putBlock(rack.get(), RenderType.cutout()));

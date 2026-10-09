@@ -28,7 +28,6 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -37,7 +36,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
@@ -49,10 +47,12 @@ import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.SpiceBlockTags;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.ModBlockEntities;
+import com.drunkencod.spice_road.rack.SpiceRackWood;
 import com.drunkencod.spice_road.registry.ModSounds;
 
 /**
- * The Drying Rack: dries up to two items at once, one on each of its sides.
+ * The Drying Rack, which comes in every vanilla wood: dries up to two items at
+ * once, one on each of its sides.
  * Players put items on it and take them off by hand, choosing the side by which
  * half of the rack they click; see {@link DryingRackBlockEntity} for the rest.
  * <p>
@@ -77,16 +77,20 @@ public class DryingRackBlock extends BaseEntityBlock {
     private static final VoxelShape SHAPE_ALONG_Z = Block.box(3, 0, 1, 13, 13, 15);
 
     /**
-     * @param properties The block's properties, see {@link #createProperties()}.
+     * @param properties The block's properties, see
+     *                   {@link #createProperties(SpiceRackWood)}.
      */
     public DryingRackBlock(Properties properties) {
         super(properties);
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(HEATED, false));
     }
 
-    /** @return The properties of the Drying Rack. */
-    public static Properties createProperties() {
-        return Properties.of().noOcclusion().strength(0.5F).mapColor(MapColor.WOOD).sound(SoundType.WOOD)
+    /**
+     * @param wood The wood the rack is made of.
+     * @return The properties of that wood's Drying Rack.
+     */
+    public static Properties createProperties(SpiceRackWood wood) {
+        return Properties.of().noOcclusion().strength(0.5F).mapColor(wood.getMapColor()).sound(wood.getSoundType())
                 .pushReaction(PushReaction.BLOCK);
     }
 

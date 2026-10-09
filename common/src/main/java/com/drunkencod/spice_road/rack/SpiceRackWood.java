@@ -6,8 +6,9 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
 
 /**
- * Every vanilla wood a Spice Rack comes in: what its planks and slab are, for
- * the recipe and the texture, and how its block looks and sounds.
+ * Every vanilla wood the Spice Rack and the Drying Rack come in: what its
+ * planks and slab are, for the recipe and the texture, and how its block looks
+ * and sounds.
  */
 public enum SpiceRackWood {
     OAK("oak", Items.OAK_SLAB, MapColor.WOOD, SoundType.WOOD),
@@ -39,27 +40,41 @@ public enum SpiceRackWood {
         return id;
     }
 
-    /** @return The registry path of this wood's rack, e.g. {@code "dark_oak_spice_rack"}. */
+    /**
+     * @return The registry path of this wood's rack, e.g.
+     *         {@code "dark_oak_spice_rack"}.
+     */
     public String getRackId() {
         return id + "_spice_rack";
     }
 
-    /** @return The wood's planks block texture, e.g. {@code "minecraft:block/dark_oak_planks"}. */
+    /**
+     * @return The registry path of this wood's Drying Rack, e.g.
+     *         {@code "dark_oak_drying_rack"}.
+     */
+    public String getDryingRackId() {
+        return id + "_drying_rack";
+    }
+
+    /**
+     * @return The wood's planks block texture, e.g.
+     *         {@code "minecraft:block/dark_oak_planks"}.
+     */
     public String getPlanksTexture() {
         return "minecraft:block/" + id + "_planks";
     }
 
-    /** @return This wood's vanilla slab item, which the rack is crafted from. */
+    /** @return This wood's vanilla slab item, which its racks are crafted from. */
     public Item getSlab() {
         return slab;
     }
 
-    /** @return The map color of this wood's rack. */
+    /** @return The map color of this wood's racks. */
     public MapColor getMapColor() {
         return mapColor;
     }
 
-    /** @return The sounds of this wood's rack. */
+    /** @return The sounds of this wood's racks. */
     public SoundType getSoundType() {
         return soundType;
     }

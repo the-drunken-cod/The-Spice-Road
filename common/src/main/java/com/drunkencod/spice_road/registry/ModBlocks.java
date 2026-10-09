@@ -22,13 +22,11 @@ import com.drunkencod.spice_road.rack.SpiceRackWood;
  */
 public final class ModBlocks {
 
-    /** The Drying Rack, which dries items into Processed Spices and more. */
-    public static final Supplier<DryingRackBlock> DRYING_RACK = Services.REGISTRY.registerBlock("drying_rack",
-            () -> new DryingRackBlock(DryingRackBlock.createProperties()));
+    /** The Drying Rack of every wood, in enum order. They dry items into Processed Spices and more. */
+    public static final Map<SpiceRackWood, Supplier<DryingRackBlock>> DRYING_RACKS;
 
-    /** The Drying Rack's item. Its model is hand-written, not generated. */
-    public static final Supplier<Item> DRYING_RACK_ITEM = Services.REGISTRY.registerItem("drying_rack",
-            () -> new BlockItem(DRYING_RACK.get(), new Item.Properties()));
+    /** The item of every Drying Rack. Their models are datagenned. */
+    public static final Map<SpiceRackWood, Supplier<Item>> DRYING_RACK_ITEMS;
 
     /** The Spice Grinder as placed in the world. Its item is registered by {@link ModItems#registerGrinder()}. */
     public static final Supplier<SpiceGrinderBlock> SPICE_GRINDER = Services.REGISTRY.registerBlock("spice_grinder",
@@ -43,15 +41,24 @@ public final class ModBlocks {
     static {
         Map<SpiceRackWood, Supplier<SpiceRackBlock>> racks = new EnumMap<>(SpiceRackWood.class);
         Map<SpiceRackWood, Supplier<Item>> items = new EnumMap<>(SpiceRackWood.class);
+        Map<SpiceRackWood, Supplier<DryingRackBlock>> dryingRacks = new EnumMap<>(SpiceRackWood.class);
+        Map<SpiceRackWood, Supplier<Item>> dryingRackItems = new EnumMap<>(SpiceRackWood.class);
         for (SpiceRackWood wood : SpiceRackWood.values()) {
             Supplier<SpiceRackBlock> rack = Services.REGISTRY.registerBlock(wood.getRackId(),
                     () -> new SpiceRackBlock(SpiceRackBlock.createProperties(wood)));
             racks.put(wood, rack);
             items.put(wood, Services.REGISTRY.registerItem(wood.getRackId(),
                     () -> new BlockItem(rack.get(), new Item.Properties())));
+            Supplier<DryingRackBlock> dryingRack = Services.REGISTRY.registerBlock(wood.getDryingRackId(),
+                    () -> new DryingRackBlock(DryingRackBlock.createProperties(wood)));
+            dryingRacks.put(wood, dryingRack);
+            dryingRackItems.put(wood, Services.REGISTRY.registerItem(wood.getDryingRackId(),
+                    () -> new BlockItem(dryingRack.get(), new Item.Properties())));
         }
         SPICE_RACKS = Collections.unmodifiableMap(racks);
         SPICE_RACK_ITEMS = Collections.unmodifiableMap(items);
+        DRYING_RACKS = Collections.unmodifiableMap(dryingRacks);
+        DRYING_RACK_ITEMS = Collections.unmodifiableMap(dryingRackItems);
     }
 
     private ModBlocks() {

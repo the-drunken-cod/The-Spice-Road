@@ -9,7 +9,7 @@ import com.drunkencod.spice_road.Constants;
 
 /**
  * Block tags of the mod. Those listing its own Spice blocks are generated from
- * the registered Spice Plants, Trees, Vines and Racks, so they can't fall out of sync
+ * the registered Spice Plants, Trees, Vines, Spice Racks and Drying Racks, so they can't fall out of sync
  * with registration.
  */
 public final class SpiceBlockTags {
@@ -28,6 +28,9 @@ public final class SpiceBlockTags {
 
     /** Every Spice Rack block, of every wood. */
     public static final TagKey<Block> SPICE_RACKS = create("spice_racks");
+
+    /** Every Drying Rack block, of every wood. */
+    public static final TagKey<Block> DRYING_RACKS = create("drying_racks");
 
     /**
      * Blocks whose block entity stores items that the Spice Grinder may take

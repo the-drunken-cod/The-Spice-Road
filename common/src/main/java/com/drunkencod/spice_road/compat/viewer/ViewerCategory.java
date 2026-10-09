@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.platform.Services;
+import com.drunkencod.spice_road.rack.SpiceRackWood;
 import com.drunkencod.spice_road.registry.ModBlocks;
 import com.drunkencod.spice_road.registry.ModItems;
 import com.drunkencod.spice_road.spice.Spice;
@@ -88,7 +89,7 @@ public enum ViewerCategory {
                 Item planting = SpiceOriginEntry.plantingItem(Spice.CINNAMON);
                 yield planting != null ? planting.getDefaultInstance() : ItemStack.EMPTY;
             }
-            case DRYING -> ModBlocks.DRYING_RACK_ITEM.get().getDefaultInstance();
+            case DRYING -> ModBlocks.DRYING_RACK_ITEMS.get(SpiceRackWood.OAK).get().getDefaultInstance();
         };
     }
 
@@ -101,7 +102,8 @@ public enum ViewerCategory {
         return switch (this) {
             case SPICE_PROFILE -> List.of(ModItems.SPICE_GRINDER.get().getDefaultInstance());
             case SPICE_ORIGIN -> List.of();
-            case DRYING -> List.of(ModBlocks.DRYING_RACK_ITEM.get().getDefaultInstance());
+            case DRYING -> ModBlocks.DRYING_RACK_ITEMS.values().stream()
+                    .map(rack -> rack.get().getDefaultInstance()).toList();
         };
     }
 
