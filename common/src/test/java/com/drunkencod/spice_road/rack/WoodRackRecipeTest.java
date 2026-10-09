@@ -1,6 +1,7 @@
 package com.drunkencod.spice_road.rack;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -98,7 +99,25 @@ class WoodRackRecipeTest {
         assertEquals(2, variant.result().getCount());
         assertEquals(9, variant.ingredients().size());
         assertTrue(variant.ingredients().get(7).test(new ItemStack(Items.CHERRY_SLAB)));
+        assertTrue(variant.ingredients().get(4).test(new ItemStack(Items.CHERRY_SLAB)));
         assertTrue(variant.ingredients().get(1).test(new ItemStack(Items.STICK)));
         assertTrue(variant.ingredients().get(0).isEmpty());
+    }
+
+    /** @return A 3x3 grid matching the recipe's pattern, with {@code center} and {@code other} as its two slab slots. */
+    private static CraftingInput patternWith(Item center, Item other) {
+        Item[] items = { Items.AIR, Items.STICK, Items.AIR, Items.STICK, other, Items.STICK, Items.STICK, center,
+                Items.STICK };
+        return CraftingInput.of(3, 3, Stream.of(items).map(ItemStack::new).toList());
+    }
+
+    @Test
+    void slabsOfTheSameWoodMatch() {
+        assertTrue(recipe.matches(patternWith(Items.CHERRY_SLAB, Items.CHERRY_SLAB), null));
+    }
+
+    @Test
+    void slabsOfDifferentWoodsDontMatch() {
+        assertFalse(recipe.matches(patternWith(Items.CHERRY_SLAB, Items.OAK_SLAB), null));
     }
 }

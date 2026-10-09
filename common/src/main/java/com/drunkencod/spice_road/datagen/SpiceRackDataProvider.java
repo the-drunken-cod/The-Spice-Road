@@ -20,14 +20,16 @@ import com.drunkencod.spice_road.rack.WoodRackRecipe;
 
 /**
  * Writes the recipe and its unlock advancement, and the loot table of every
- * wood's Spice Rack. A rack is six wooden slabs around an iron ingot, and the
- * slab in the bottom center decides the wood (see {@link WoodRackRecipe}). It
+ * wood's Spice Rack. A rack is six wooden slabs of the same wood around an iron
+ * ingot, which decide the wood (see {@link WoodRackRecipe}). It
  * drops itself with its custom name (its contents spill out when it breaks).
  * Raw JSON, so it runs unchanged on both loaders.
  */
 public class SpiceRackDataProvider implements DataProvider {
 
-    /** The slab tag every wood's rack is crafted from, which modded woods can join. */
+    /**
+     * The slab tag every wood's rack is crafted from, which modded woods can join.
+     */
     static final String WOODEN_SLABS = "minecraft:wooden_slabs";
 
     private final PackOutput.PathProvider recipePathProvider;
@@ -70,9 +72,9 @@ public class SpiceRackDataProvider implements DataProvider {
     }
 
     /**
-     * @return Any wooden slabs on the top and bottom row and an iron ingot between,
-     *         making a rack of the wood of the bottom center slab, or an oak one
-     *         if that wood has no rack.
+     * @return Wooden slabs of one wood on the top and bottom row and an iron ingot
+     *         between, making a rack of that wood, or an oak one if that wood has
+     *         no rack.
      */
     private static JsonObject recipe() {
         JsonObject slabIngredient = new JsonObject();
