@@ -41,9 +41,10 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import com.drunkencod.spice_road.Constants;
 
 /**
- * A Spice Grinder set down in the world. It stands on the top face of a block
- * with a sturdy top and pops off, dropping the Grinder with its run, when that
- * block goes. Right-clicking it opens the GUI of the Grinder item;
+ * A Spice Grinder set down in the world. It can be placed against any face, but
+ * always stands on the floor of its own block, so the block below has to be able
+ * to support its center. It pops off, dropping the Grinder with its run, when
+ * that block goes. Right-clicking it opens the GUI of the Grinder item;
  * shift-right-clicking with both hands empty picks it up into the main hand.
  * See {@link SpiceGrinderBlockEntity} for what it holds.
  */
@@ -88,8 +89,6 @@ public class SpiceGrinderBlock extends BaseEntityBlock {
 
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
-        if (context.getClickedFace() != Direction.UP)
-            return null;
         return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
 
@@ -107,8 +106,7 @@ public class SpiceGrinderBlock extends BaseEntityBlock {
 
     @Override
     protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
-        BlockPos below = pos.below();
-        return level.getBlockState(below).isFaceSturdy(level, below, Direction.UP);
+        return canSupportCenter(level, pos.below(), Direction.UP);
     }
 
     @Override

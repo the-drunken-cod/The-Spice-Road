@@ -18,7 +18,7 @@
         - Slabs of other woods, like modded ones, make the oak rack. Both racks are crafted from any slab in `#minecraft:wooden_slabs`.
         - The recipes use the type `spice_road:crafting_wood_rack`, a shaped recipe whose `variants` map each slab to the rack it makes.
         - All Drying Racks are in the `#spice_road:drying_racks` block tag.
-    - The Spice Grinder can now be placed on the floor by sneaking and right-clicking the top of a block, in one of 4 rotations.
+    - The Spice Grinder can now be placed by sneaking and right-clicking any face of a block, in one of 4 rotations. It always stands on the block below its spot, which only needs to support its center (so fences and walls work too).
         - Placing keeps the run in progress, and right-clicking it opens the same GUI. Sneak with empty hands to pick it up again.
         - Only one player can use it at a time, and it drops itself with its run when broken or when its support is removed.
     - Added the advancements Nice Rack (fill a Spice Rack with full stacks) and Mix-and-Match (craft a Spice Mix), with the criteria `spice_road:spice_rack_filled` and `spice_road:spice_mix_crafted` for datapacks.

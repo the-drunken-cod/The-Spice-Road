@@ -20,8 +20,8 @@ import com.drunkencod.spice_road.registry.ModDataComponents;
 
 /**
  * The Spice Grinder: a hand-held item that opens the seasoning GUI when used,
- * or is set down as a {@link SpiceGrinderBlock} by shift-right-clicking the top
- * of a block. It never stacks, since it can hold a run in progress.
+ * or is set down as a {@link SpiceGrinderBlock} by shift-right-clicking a
+ * block. It never stacks, since it can hold a run in progress.
  */
 public class SpiceGrinderItem extends BlockItem {
 
@@ -30,6 +30,7 @@ public class SpiceGrinderItem extends BlockItem {
 
     /** Translation key of the tooltip line telling what the item is for. */
     private static final String USAGE_TOOLTIP_KEY = Constants.MOD_ID + ".tooltip.grinder_usage";
+    private static final String PLACEMENT_TOOLTIP_KEY = Constants.MOD_ID + ".tooltip.grinder_placement";
 
     /** Translation key of the tooltip line naming the food of a run in progress. */
     private static final String SESSION_TOOLTIP_KEY = Constants.MOD_ID + ".tooltip.grinder_session";
@@ -48,6 +49,7 @@ public class SpiceGrinderItem extends BlockItem {
             TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltip, flag);
         tooltip.add(Component.translatable(USAGE_TOOLTIP_KEY).withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.translatable(PLACEMENT_TOOLTIP_KEY).withStyle(ChatFormatting.GRAY));
         SeasoningSession session = stack.get(ModDataComponents.GRINDER_SESSION.get());
         if (session != null)
             tooltip.add(Component.translatable(SESSION_TOOLTIP_KEY, session.food().getCount(),
