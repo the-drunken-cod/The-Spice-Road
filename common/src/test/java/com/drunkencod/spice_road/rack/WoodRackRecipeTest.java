@@ -87,4 +87,18 @@ class WoodRackRecipeTest {
                 REGISTRIES);
         assertTrue(result.is(Items.OAK_PLANKS));
     }
+
+    @Test
+    void viewerVariantsListEachExistingVariantWithItsSlabAtTheBottomCenter() {
+        List<WoodRackRecipe.Variant> variants = recipe.getVariants();
+        assertEquals(1, variants.size());
+        WoodRackRecipe.Variant variant = variants.get(0);
+        assertEquals(Items.CHERRY_SLAB, variant.slab());
+        assertTrue(variant.result().is(Items.CHERRY_PLANKS));
+        assertEquals(2, variant.result().getCount());
+        assertEquals(9, variant.ingredients().size());
+        assertTrue(variant.ingredients().get(7).test(new ItemStack(Items.CHERRY_SLAB)));
+        assertTrue(variant.ingredients().get(1).test(new ItemStack(Items.STICK)));
+        assertTrue(variant.ingredients().get(0).isEmpty());
+    }
 }

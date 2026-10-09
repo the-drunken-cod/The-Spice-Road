@@ -1,6 +1,8 @@
 package com.drunkencod.spice_road.compat.viewer.jei;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -9,6 +11,7 @@ import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
@@ -18,7 +21,13 @@ import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.compat.viewer.DryingEntry;
@@ -27,6 +36,7 @@ import com.drunkencod.spice_road.compat.viewer.SpiceProfileEntry;
 import com.drunkencod.spice_road.compat.viewer.ViewerCategory;
 import com.drunkencod.spice_road.compat.viewer.ViewerRefresh;
 import com.drunkencod.spice_road.mix.SpiceMix;
+import com.drunkencod.spice_road.rack.WoodRackRecipe;
 import com.drunkencod.spice_road.registry.ModDataComponents;
 import com.drunkencod.spice_road.registry.ModItems;
 
@@ -102,8 +112,31 @@ public final class SpiceRoadJeiPlugin implements IModPlugin {
         if (ViewerCategory.SPICE_ORIGIN.isEnabled())
             registration.addRecipes(SPICE_ORIGIN, SpiceOriginEntry.all());
         var level = Minecraft.getInstance().level;
+        if (level != null)
+            addWoodRackVariants(registration, level.getRecipeManager());
         if (ViewerCategory.DRYING.isEnabled() && level != null)
             registration.addRecipes(DRYING, DryingEntry.all(level.getRecipeManager()));
+    }
+
+    /**
+     * JEI shows a {@link WoodRackRecipe} once, for its own result, so each other
+     * wood's rack gets a crafting recipe of its own with its slab filled in.
+     */
+    private static void addWoodRackVariants(IRecipeRegistration registration, RecipeManager recipes) {
+        List<RecipeHolder<CraftingRecipe>> shown = new ArrayList<>();
+        for (RecipeHolder<CraftingRecipe> holder : recipes
+                .getAllRecipesFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING)) {
+            if (!(holder.value() instanceof WoodRackRecipe recipe))
+                continue;
+            for (WoodRackRecipe.Variant variant : recipe.getVariants()) {
+                ShapedRecipePattern pattern = new ShapedRecipePattern(variant.width(), variant.height(),
+                        variant.ingredients(), Optional.empty());
+                shown.add(new RecipeHolder<>(
+                        holder.id().withSuffix("/" + BuiltInRegistries.ITEM.getKey(variant.slab()).getPath()),
+                        new ShapedRecipe(recipe.getGroup(), recipe.category(), pattern, variant.result(), false)));
+            }
+        }
+        registration.addRecipes(RecipeTypes.CRAFTING, shown);
     }
 
     @Override

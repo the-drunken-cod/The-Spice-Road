@@ -1,5 +1,6 @@
 package com.drunkencod.spice_road.compat.viewer.emi;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -7,9 +8,14 @@ import java.util.Map;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
+import dev.emi.emi.api.recipe.EmiCraftingRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.Comparison;
+import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.compat.viewer.DryingEntry;
@@ -18,6 +24,7 @@ import com.drunkencod.spice_road.compat.viewer.SpiceProfileEntry;
 import com.drunkencod.spice_road.compat.viewer.ViewerCategory;
 import com.drunkencod.spice_road.compat.viewer.ViewerEntry;
 import com.drunkencod.spice_road.compat.viewer.ViewerRefresh;
+import com.drunkencod.spice_road.rack.WoodRackRecipe;
 import com.drunkencod.spice_road.registry.ModDataComponents;
 import com.drunkencod.spice_road.registry.ModItems;
 
@@ -46,12 +53,36 @@ public final class SpiceRoadEmiPlugin implements EmiPlugin {
         registry.setDefaultComparison(EmiStack.of(ModItems.SPICE_MIX.get()),
                 Comparison.compareData(stack -> stack.get(ModDataComponents.SPICE_MIX.get())));
 
+        addWoodRackVariants(registry);
         if (ViewerCategory.SPICE_PROFILE.isEnabled())
             addAll(registry, ViewerCategory.SPICE_PROFILE, SpiceProfileEntry.all(TRACKER.begin()));
         if (ViewerCategory.SPICE_ORIGIN.isEnabled())
             addAll(registry, ViewerCategory.SPICE_ORIGIN, SpiceOriginEntry.all());
         if (ViewerCategory.DRYING.isEnabled())
             addAll(registry, ViewerCategory.DRYING, DryingEntry.all(registry.getRecipeManager()));
+    }
+
+    /**
+     * EMI shows a {@link WoodRackRecipe} once, for its own result, so each other
+     * wood's rack gets a crafting recipe of its own with its slab filled in. Their
+     * IDs start with {@code /}, which is how EMI tells a synthetic recipe from one
+     * missing in the recipe manager.
+     */
+    private static void addWoodRackVariants(EmiRegistry registry) {
+        for (RecipeHolder<?> holder : registry.getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING)) {
+            if (!(holder.value() instanceof WoodRackRecipe recipe))
+                continue;
+            for (WoodRackRecipe.Variant variant : recipe.getVariants()) {
+                List<EmiIngredient> inputs = new ArrayList<>();
+                for (int i = 0; i < 9; i++)
+                    inputs.add(EmiStack.EMPTY);
+                for (int i = 0; i < variant.ingredients().size(); i++)
+                    inputs.set(i / variant.width() * 3 + i % variant.width(),
+                            EmiIngredient.of(variant.ingredients().get(i)));
+                registry.addRecipe(new EmiCraftingRecipe(inputs, EmiStack.of(variant.result()),
+                        holder.id().withPath(path -> "/" + path + "/" + BuiltInRegistries.ITEM.getKey(variant.slab()).getPath())));
+            }
+        }
     }
 
     private static void addAll(EmiRegistry registry, ViewerCategory category, List<? extends ViewerEntry> entries) {

@@ -1,6 +1,8 @@
 package com.drunkencod.spice_road.rack;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.mojang.serialization.Codec;
@@ -9,14 +11,17 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
@@ -74,6 +79,46 @@ public class WoodRackRecipe extends ShapedRecipe {
     @Override
     public RecipeSerializer<?> getSerializer() {
         return ModRecipeSerializers.WOOD_RACK.get();
+    }
+
+    /**
+     * One wood's way of crafting this recipe, for recipe viewers, which only know a
+     * recipe by its single result.
+     *
+     * @param slab        The slab the wood is made from.
+     * @param result      What the recipe makes from that slab.
+     * @param ingredients The recipe's ingredients, row by row, with {@code slab}
+     *                    as the bottom center one.
+     * @param width       How many columns the {@code ingredients} have.
+     * @param height      How many rows the {@code ingredients} have.
+     */
+    public record Variant(Item slab, ItemStack result, NonNullList<Ingredient> ingredients, int width, int height) {
+    }
+
+    /**
+     * @return The {@link Variant} of every slab that makes a different rack than
+     *         the recipe's own {@code result}, which viewers already show; empty
+     *         if the bottom center of the recipe is no ingredient. Variants of items
+     *         that don't exist are left out.
+     */
+    public List<Variant> getVariants() {
+        List<Variant> found = new ArrayList<>();
+        int width = getWidth();
+        int height = getHeight();
+        int slot = width * (height - 1) + width / 2;
+        NonNullList<Ingredient> base = getIngredients();
+        if (slot >= base.size() || base.get(slot).isEmpty())
+            return found;
+        variants.forEach((slabId, resultId) -> {
+            Item slab = BuiltInRegistries.ITEM.getOptional(slabId).orElse(null);
+            Item result = BuiltInRegistries.ITEM.getOptional(resultId).orElse(null);
+            if (slab == null || result == null || result == fallback.getItem())
+                return;
+            NonNullList<Ingredient> ingredients = NonNullList.of(Ingredient.EMPTY, base.toArray(Ingredient[]::new));
+            ingredients.set(slot, Ingredient.of(slab));
+            found.add(new Variant(slab, new ItemStack(result, fallback.getCount()), ingredients, width, height));
+        });
+        return found;
     }
 
     /** Reads and sends the recipe: the fields of a shaped recipe plus the {@code variants}. */
