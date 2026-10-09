@@ -32,8 +32,9 @@ import com.drunkencod.spice_road.registry.ModBlockEntities;
  * The inventory of a {@link SpiceRackBlock}: two tiers of {@value #TIER_SIZE}
  * slots, the lower tier first. Every face and slot is open to hoppers and the
  * loaders' item transfer APIs, limited to what {@link #accepts} allows, and
- * each slot takes the item's full stack size. Slots fill up and empty from the
- * last to the first, whether by hand or by automation, which is why it is a
+ * each slot takes the item's full stack size. Slots fill up and empty in the
+ * order the GUI shows them, top row first and each row from left to right,
+ * whether by hand or by automation, which is why it is a
  * {@link WorldlyContainer}. Players can name it like a chest.
  * <p>
  * Its items are saved under {@code Items} like any container's, which is how
@@ -43,16 +44,23 @@ public class SpiceRackBlockEntity extends BaseContainerBlockEntity implements Wo
 
     /** Slots per tier, which is also how many items fit in one row or ring. */
     public static final int TIER_SIZE = 4;
-    /** The lower tier is slots {@code 0} to {@code 3}, the upper tier {@code 4} to {@code 7}. */
+    /**
+     * The lower tier is slots {@code 0} to {@code 3}, the upper tier {@code 4} to
+     * {@code 7}.
+     */
     public static final int TIERS = 2;
     /** Slots in total. */
     public static final int SLOT_COUNT = TIER_SIZE * TIERS;
 
     private static final String TITLE_KEY = "container." + Constants.MOD_ID + ".spice_rack";
 
-    /** Every slot, last to first, which is the order automation fills and empties them in. */
-    private static final int[] SLOTS_LAST_FIRST = IntStream.rangeClosed(1, SLOT_COUNT)
-            .map(i -> SLOT_COUNT - i).toArray();
+    /**
+     * Every slot in the order the GUI shows them, the upper tier's row first and
+     * each row from left to right, which is the order they are filled and emptied
+     * in.
+     */
+    private static final int[] FILL_ORDER = IntStream.range(0, SLOT_COUNT)
+            .map(i -> (TIERS - 1 - i / TIER_SIZE) * TIER_SIZE + i % TIER_SIZE).toArray();
 
     private NonNullList<ItemStack> items = NonNullList.withSize(SLOT_COUNT, ItemStack.EMPTY);
 
@@ -88,7 +96,7 @@ public class SpiceRackBlockEntity extends BaseContainerBlockEntity implements Wo
 
     /**
      * Puts as much of {@code stack} as fits into the rack, topping up matching
-     * stacks before using empty slots, the last slot first. Shrinks
+     * stacks before using empty slots, in the GUI's order. Shrinks
      * {@code stack} by what was inserted.
      *
      * @param stack What to insert, if the rack {@link #accepts} it.
@@ -98,7 +106,7 @@ public class SpiceRackBlockEntity extends BaseContainerBlockEntity implements Wo
         if (!accepts(stack))
             return 0;
         int before = stack.getCount();
-        for (int slot : SLOTS_LAST_FIRST) {
+        for (int slot : FILL_ORDER) {
             if (stack.isEmpty())
                 break;
             ItemStack present = items.get(slot);
@@ -110,7 +118,7 @@ public class SpiceRackBlockEntity extends BaseContainerBlockEntity implements Wo
                 stack.shrink(moved);
             }
         }
-        for (int slot : SLOTS_LAST_FIRST) {
+        for (int slot : FILL_ORDER) {
             if (stack.isEmpty())
                 break;
             if (items.get(slot).isEmpty())
@@ -151,7 +159,7 @@ public class SpiceRackBlockEntity extends BaseContainerBlockEntity implements Wo
 
     @Override
     public int[] getSlotsForFace(Direction face) {
-        return SLOTS_LAST_FIRST;
+        return FILL_ORDER;
     }
 
     @Override
