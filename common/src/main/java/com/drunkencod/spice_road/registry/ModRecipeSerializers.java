@@ -8,6 +8,7 @@ import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import com.drunkencod.spice_road.drying.DryingRecipe;
 import com.drunkencod.spice_road.mix.SpiceMixRecipe;
 import com.drunkencod.spice_road.platform.Services;
+import com.drunkencod.spice_road.rack.WoodRackRecipe;
 
 /**
  * Custom {@link RecipeSerializer}s, via {@link Services#REGISTRY}.
@@ -28,6 +29,13 @@ public final class ModRecipeSerializers {
      */
     public static final Supplier<RecipeSerializer<DryingRecipe>> DRYING = Services.REGISTRY
             .registerRecipeSerializer("drying", DryingRecipe.Serializer::new);
+
+    /**
+     * Crafting a Spice Rack or Drying Rack of the wood of a slab - see
+     * {@link WoodRackRecipe}. Serializer ID {@code spice_road:crafting_wood_rack}.
+     */
+    public static final Supplier<RecipeSerializer<WoodRackRecipe>> WOOD_RACK = Services.REGISTRY
+            .registerRecipeSerializer("crafting_wood_rack", WoodRackRecipe.Serializer::new);
 
     private ModRecipeSerializers() {
     }

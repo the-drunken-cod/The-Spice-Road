@@ -7,7 +7,6 @@ import java.util.concurrent.CompletableFuture;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -15,11 +14,12 @@ import net.minecraft.resources.ResourceLocation;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.rack.SpiceRackWood;
+import com.drunkencod.spice_road.rack.WoodRackRecipe;
 
 /**
- * Writes the recipe, its unlock advancement and the loot table of every wood's
- * Drying Rack. The wood of a rack is taken from the slab in the bottom row's
- * center slot of its recipe, so each wood has a recipe of its own. A rack drops
+ * Writes the recipe and its unlock advancement, and the loot table of every
+ * wood's Drying Rack. The wood of a rack is taken from the slab in the bottom
+ * row's center slot of the recipe (see {@link WoodRackRecipe}). A rack drops
  * itself (its contents spill out when it breaks).
  * Raw JSON, so it runs unchanged on both loaders.
  */
@@ -39,13 +39,14 @@ public class DryingRackDataProvider implements DataProvider {
     @Override
     public CompletableFuture<?> run(CachedOutput cachedOutput) {
         List<CompletableFuture<?>> writes = new ArrayList<>();
+        ResourceLocation recipeId = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "drying_rack");
+        writes.add(DataProvider.saveStable(cachedOutput, recipe(),
+                recipePathProvider.json(recipeId.withPrefix("crafting/"))));
+        writes.add(DataProvider.saveStable(cachedOutput,
+                SpiceRackDataProvider.unlockAdvancement(recipeId, "#" + SpiceRackDataProvider.WOODEN_SLABS),
+                advancementPathProvider.json(recipeId.withPrefix("recipes/building/"))));
         for (SpiceRackWood wood : SpiceRackWood.values()) {
             ResourceLocation id = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, wood.getDryingRackId());
-            ResourceLocation slab = BuiltInRegistries.ITEM.getKey(wood.getSlab());
-            writes.add(DataProvider.saveStable(cachedOutput, recipe(id, slab),
-                    recipePathProvider.json(id.withPrefix("crafting/"))));
-            writes.add(DataProvider.saveStable(cachedOutput, SpiceRackDataProvider.unlockAdvancement(id, slab),
-                    advancementPathProvider.json(id.withPrefix("recipes/building/"))));
             writes.add(DataProvider.saveStable(cachedOutput, lootTable(id),
                     lootPathProvider.json(id.withPrefix("blocks/"))));
         }
@@ -53,16 +54,16 @@ public class DryingRackDataProvider implements DataProvider {
     }
 
     /**
-     * @return Wooden rods around a tripwire hook above a slab, making one rack of
-     *         the slab's wood.
+     * @return Wooden rods around a tripwire hook above a wooden slab, making a
+     *         rack of the slab's wood, or an oak one if that wood has no rack.
      */
-    private static JsonObject recipe(ResourceLocation rack, ResourceLocation slab) {
+    private static JsonObject recipe() {
         JsonObject rodIngredient = new JsonObject();
         rodIngredient.addProperty("tag", "c:rods/wooden");
         JsonObject hookIngredient = new JsonObject();
         hookIngredient.addProperty("item", "minecraft:tripwire_hook");
         JsonObject slabIngredient = new JsonObject();
-        slabIngredient.addProperty("item", slab.toString());
+        slabIngredient.addProperty("tag", SpiceRackDataProvider.WOODEN_SLABS);
         JsonObject key = new JsonObject();
         key.add("S", rodIngredient);
         key.add("H", hookIngredient);
@@ -72,15 +73,16 @@ public class DryingRackDataProvider implements DataProvider {
         pattern.add("SHS");
         pattern.add("SWS");
         JsonObject result = new JsonObject();
-        result.addProperty("id", rack.toString());
+        result.addProperty("id", ResourceLocation
+                .fromNamespaceAndPath(Constants.MOD_ID, SpiceRackWood.OAK.getDryingRackId()).toString());
         result.addProperty("count", 1);
         JsonObject json = new JsonObject();
-        json.addProperty("type", "minecraft:crafting_shaped");
+        json.addProperty("type", "spice_road:crafting_wood_rack");
         json.addProperty("category", "building");
-        json.addProperty("group", "drying_rack");
         json.add("pattern", pattern);
         json.add("key", key);
         json.add("result", result);
+        json.add("variants", SpiceRackDataProvider.variants(SpiceRackWood::getDryingRackId));
         return json;
     }
 

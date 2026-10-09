@@ -15,14 +15,15 @@
         - The Spice Grinder takes spices from nearby racks (`#spice_road:spice_racks` is part of `#spice_road:spice_storage`).
         - Configurable item display and item render distance on the client.
     - Added the Drying Rack in every vanilla wood variant, like the Spice Rack. The wood is taken from the slab in the bottom center of the recipe, and the rack's model uses that wood's planks.
-        - All of them are in the `#spice_road:drying_racks` block tag.
+        - Slabs of other woods, like modded ones, make the oak rack. Both racks are crafted from any slab in `#minecraft:wooden_slabs`.
+        - The recipes use the type `spice_road:crafting_wood_rack`, a shaped recipe whose `variants` map each slab to the rack it makes.
+        - All Drying Racks are in the `#spice_road:drying_racks` block tag.
     - The Spice Grinder can now be placed on the floor by sneaking and right-clicking the top of a block, in one of 4 rotations.
         - Placing keeps the run in progress, and right-clicking it opens the same GUI. Sneak with empty hands to pick it up again.
         - Only one player can use it at a time, and it drops itself with its run when broken or when its support is removed.
     - Added the advancements Nice Rack (fill a Spice Rack with full stacks) and Mix-and-Match (craft a Spice Mix), with the criteria `spice_road:spice_rack_filled` and `spice_road:spice_mix_crafted` for datapacks.
 - **Changes:**
     - ⚠️ **BREAKING:** The Drying Rack `spice_road:drying_rack` is replaced by one block per vanilla wood type, e.g. `spice_road:oak_drying_rack`. Existing racks in worlds disappear.
-    - The Drying Rack recipe now only accepts the slabs of vanilla woods instead of anything in `#minecraft:wooden_slabs`.
     - Pie Purist advancement is now a child of Hang Out to Dry.
     - Spice Grinder doesn't consume spices anymore when player is in creative mode.
     - Spice Grinder GUI movement buttons have two warning colors now; yellow and red, with configurable steps-left-thresholds.

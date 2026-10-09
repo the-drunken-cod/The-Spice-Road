@@ -3,6 +3,7 @@ package com.drunkencod.spice_road.datagen;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -15,14 +16,19 @@ import net.minecraft.resources.ResourceLocation;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.rack.SpiceRackWood;
+import com.drunkencod.spice_road.rack.WoodRackRecipe;
 
 /**
- * Writes the recipe, its unlock advancement and the loot table of every wood's
- * Spice Rack. A rack is six slabs of its wood around a wooden rod, and drops
- * itself with its custom name (its contents spill out when it breaks).
+ * Writes the recipe and its unlock advancement, and the loot table of every
+ * wood's Spice Rack. A rack is six wooden slabs around an iron ingot, and the
+ * slab in the bottom center decides the wood (see {@link WoodRackRecipe}). It
+ * drops itself with its custom name (its contents spill out when it breaks).
  * Raw JSON, so it runs unchanged on both loaders.
  */
 public class SpiceRackDataProvider implements DataProvider {
+
+    /** The slab tag every wood's rack is crafted from, which modded woods can join. */
+    static final String WOODEN_SLABS = "minecraft:wooden_slabs";
 
     private final PackOutput.PathProvider recipePathProvider;
     private final PackOutput.PathProvider advancementPathProvider;
@@ -38,12 +44,12 @@ public class SpiceRackDataProvider implements DataProvider {
     @Override
     public CompletableFuture<?> run(CachedOutput cachedOutput) {
         List<CompletableFuture<?>> writes = new ArrayList<>();
+        ResourceLocation recipeId = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "spice_rack");
+        writes.add(DataProvider.saveStable(cachedOutput, recipe(), recipePathProvider.json(recipeId)));
+        writes.add(DataProvider.saveStable(cachedOutput, unlockAdvancement(recipeId, "#" + WOODEN_SLABS),
+                advancementPathProvider.json(recipeId.withPrefix("recipes/misc/"))));
         for (SpiceRackWood wood : SpiceRackWood.values()) {
             ResourceLocation id = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, wood.getRackId());
-            ResourceLocation slab = BuiltInRegistries.ITEM.getKey(wood.getSlab());
-            writes.add(DataProvider.saveStable(cachedOutput, recipe(id, slab), recipePathProvider.json(id)));
-            writes.add(DataProvider.saveStable(cachedOutput, unlockAdvancement(id, slab),
-                    advancementPathProvider.json(id.withPrefix("recipes/misc/"))));
             writes.add(DataProvider.saveStable(cachedOutput, lootTable(id),
                     lootPathProvider.json(id.withPrefix("blocks/"))));
         }
@@ -51,11 +57,26 @@ public class SpiceRackDataProvider implements DataProvider {
     }
 
     /**
-     * @return Slabs on the top and bottom row and a rod between, making one rack.
+     * @param rackId Gets a wood's rack ID path.
+     * @return The rack to make from each wood's slab, as the {@code variants} of a
+     *         {@link WoodRackRecipe}.
      */
-    private static JsonObject recipe(ResourceLocation rack, ResourceLocation slab) {
+    static JsonObject variants(Function<SpiceRackWood, String> rackId) {
+        JsonObject variants = new JsonObject();
+        for (SpiceRackWood wood : SpiceRackWood.values())
+            variants.addProperty(BuiltInRegistries.ITEM.getKey(wood.getSlab()).toString(),
+                    ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, rackId.apply(wood)).toString());
+        return variants;
+    }
+
+    /**
+     * @return Any wooden slabs on the top and bottom row and an iron ingot between,
+     *         making a rack of the wood of the bottom center slab, or an oak one
+     *         if that wood has no rack.
+     */
+    private static JsonObject recipe() {
         JsonObject slabIngredient = new JsonObject();
-        slabIngredient.addProperty("item", slab.toString());
+        slabIngredient.addProperty("tag", WOODEN_SLABS);
         JsonObject ironIngredient = new JsonObject();
         ironIngredient.addProperty("tag", "c:ingots/iron");
         JsonObject key = new JsonObject();
@@ -66,23 +87,26 @@ public class SpiceRackDataProvider implements DataProvider {
         pattern.add(" I ");
         pattern.add("SSS");
         JsonObject result = new JsonObject();
-        result.addProperty("id", rack.toString());
+        result.addProperty("id",
+                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, SpiceRackWood.OAK.getRackId()).toString());
         result.addProperty("count", 1);
         JsonObject json = new JsonObject();
-        json.addProperty("type", "minecraft:crafting_shaped");
+        json.addProperty("type", "spice_road:crafting_wood_rack");
         json.addProperty("category", "misc");
-        json.addProperty("group", "spice_rack");
         json.add("pattern", pattern);
         json.add("key", key);
         json.add("result", result);
+        json.add("variants", variants(SpiceRackWood::getRackId));
         return json;
     }
 
     /**
-     * @return The advancement unlocking the recipe once the player holds the wood's
-     *         slab.
+     * @param recipe The recipe to unlock.
+     * @param slabs  The item ID or {@code #}-prefixed item tag of the slabs.
+     * @return The advancement unlocking the recipe once the player holds one of
+     *         the slabs.
      */
-    static JsonObject unlockAdvancement(ResourceLocation recipe, ResourceLocation slab) {
+    static JsonObject unlockAdvancement(ResourceLocation recipe, String slabs) {
         JsonObject json = new JsonObject();
         json.addProperty("parent", "minecraft:recipes/root");
         JsonArray recipes = new JsonArray();
@@ -92,7 +116,7 @@ public class SpiceRackDataProvider implements DataProvider {
         json.add("rewards", rewards);
 
         JsonObject itemPredicate = new JsonObject();
-        itemPredicate.addProperty("items", slab.toString());
+        itemPredicate.addProperty("items", slabs);
         JsonArray items = new JsonArray();
         items.add(itemPredicate);
         JsonObject conditions = new JsonObject();

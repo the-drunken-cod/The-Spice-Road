@@ -35,6 +35,7 @@ generated/
 *.ignore.*
 *.ignore
 *.log
+common/logs/
 
 # local-only version overrides
 versions/*.local.properties
