@@ -2,8 +2,8 @@
 	"format_version": "1.9.0",
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "basalt_side",
-		"particle": "basalt_side"
+		"0": "minecraft:block/basalt_side",
+		"particle": "minecraft:block/basalt_side"
 	},
 	"elements": [
 		{

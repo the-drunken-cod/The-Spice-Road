@@ -198,8 +198,7 @@
     - [x] Spice Grinder category that renders the Spice Profile values for spice ingredients and Spice Mixes.
     - [x] Spice Origin category that renders the worldgen info, like rarity tier, hardiness, climate and yield.
     - [x] Category for Drying Rack recipes (refer to mycomancy_src for a base template).
-- [ ] Fix JEI error:
-    - [08Oct2026 03:04:21.663] [Render thread/WARN] [mezz.jei.library.plugins.vanilla.ingredients.ItemStackListFactory/]: 11 duplicate items were found in 'Spice Road' creative tab's: displayItems  
+    - [x] Fix JEI error: [08Oct2026 03:04:21.663] [Render thread/WARN] [mezz.jei.library.plugins.vanilla.ingredients.ItemStackListFactory/]: 11 duplicate items were found in 'Spice Road' creative tab's: displayItems  
       This may indicate that these types of item need a subtype interpreter added to JEI:  
       [spice_road:spice_mix]
 - [x] Spice Grinder edits:
