@@ -237,3 +237,5 @@
     - [ ] Feature to reset an adjusted profile to the default value.
 - [ ] Add sound effect when finishing spice run.
     - Progressive sound effects for participation award, regular run and flawless run.
+- [ ] Add all vanilla wood variants for Drying Rack.
+    - [ ] Change model so it doesn't use a custom atlas anymore.
