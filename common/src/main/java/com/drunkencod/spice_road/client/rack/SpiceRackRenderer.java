@@ -93,15 +93,14 @@ public class SpiceRackRenderer implements BlockEntityRenderer<SpiceRackBlockEnti
         pose.pushPose();
         pose.translate(0.5, 0, 0.5);
         AttachFace face = state.getValue(SpiceRackBlock.FACE);
-        if (face == AttachFace.WALL) {
-            Direction facing = state.getValue(SpiceRackBlock.FACING);
-            // Same rotation the blockstate gives the model: 0 for north, clockwise from
-            // there.
-            pose.mulPose(Axis.YP.rotationDegrees(-((facing.toYRot() + 180) % 360)));
+        Direction facing = state.getValue(SpiceRackBlock.FACING);
+        // Same rotation the blockstate gives the model: 0 for north, clockwise from
+        // there.
+        pose.mulPose(Axis.YP.rotationDegrees(-((facing.toYRot() + 180) % 360)));
+        if (face == AttachFace.WALL)
             renderShelves(rack, pose, buffers, light, overlay);
-        } else {
+        else
             renderRings(rack, face == AttachFace.CEILING, pose, buffers, light, overlay);
-        }
         pose.popPose();
     }
 

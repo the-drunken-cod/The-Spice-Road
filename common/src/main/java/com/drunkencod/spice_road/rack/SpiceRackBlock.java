@@ -59,8 +59,9 @@ public class SpiceRackBlock extends BaseEntityBlock {
      */
     public static final EnumProperty<AttachFace> FACE = BlockStateProperties.ATTACH_FACE;
     /**
-     * The side a wall rack faces, away from the wall. Floor and ceiling racks
-     * look the same from all sides, so it has no effect on them.
+     * The side a wall rack faces, away from the wall. A floor or ceiling rack
+     * faces back at the player who placed it, so one placed while looking south
+     * faces north, which is how its model is drawn.
      */
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 

@@ -28,8 +28,8 @@ public class SpiceRackAssetProvider implements DataProvider {
     private static final String FOLDER = "block/spice_rack/";
     private static final String[] SHAPES = { "floor", "ceiling", "wall" };
     private static final String[] DIRECTIONS = { "north", "east", "south", "west" };
-    /** The blockstate rotation that turns the north-facing wall model to each of {@link #DIRECTIONS}. */
-    private static final int[] WALL_ROTATIONS = { 0, 90, 180, 270 };
+    /** The blockstate rotation that turns a north-facing model to each of {@link #DIRECTIONS}. */
+    private static final int[] ROTATIONS = { 0, 90, 180, 270 };
     private static final String POLE_TEXTURE = "minecraft:block/iron_bars";
 
     private final PackOutput.PathProvider modelPathProvider;
@@ -83,16 +83,18 @@ public class SpiceRackAssetProvider implements DataProvider {
     }
 
     /**
-     * @return The blockstate: the floor and ceiling models for every facing,
-     *         which they look the same from, and the wall model turned to each.
+     * @return The blockstate: the ceiling, floor and wall models turned to each
+     *         facing.
      */
     private static JsonObject blockstate(SpiceRackWood wood) {
         JsonObject variants = new JsonObject();
         for (int i = 0; i < DIRECTIONS.length; i++) {
-            variants.add("face=ceiling,facing=" + DIRECTIONS[i], variant(blockModelLocation(wood, "ceiling"), 0));
-            variants.add("face=floor,facing=" + DIRECTIONS[i], variant(blockModelLocation(wood, "floor"), 0));
+            variants.add("face=ceiling,facing=" + DIRECTIONS[i],
+                    variant(blockModelLocation(wood, "ceiling"), ROTATIONS[i]));
+            variants.add("face=floor,facing=" + DIRECTIONS[i],
+                    variant(blockModelLocation(wood, "floor"), ROTATIONS[i]));
             variants.add("face=wall,facing=" + DIRECTIONS[i],
-                    variant(blockModelLocation(wood, "wall"), WALL_ROTATIONS[i]));
+                    variant(blockModelLocation(wood, "wall"), ROTATIONS[i]));
         }
         JsonObject json = new JsonObject();
         json.add("variants", variants);
