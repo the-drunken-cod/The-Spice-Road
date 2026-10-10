@@ -3,6 +3,7 @@
     "scripts": {
         "create_placeholder_texture": "pnpm --filter create_placeholder_texture start",
         "extract-prop": "pnpm --filter extract_prop start",
-        "pad_csv": "pnpm --filter pad_csv start"
+        "pad_csv": "pnpm --filter pad_csv start",
+        "spice_balancer": "pnpm --filter spice_balancer start"
     }
 }

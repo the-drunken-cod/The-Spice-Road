@@ -239,3 +239,5 @@
     - Progressive sound effects for participation award, regular run and flawless run.
 - [x] Add all vanilla wood variants for Drying Rack.
     - [x] Change model so it doesn't use a custom atlas anymore.
+- [ ] Auto-scale spice profile axis scale to -1..1, then -10..10 depending on whether abs(largest_value) > 1.0, then -20..20 when >10, and so on.
+    - [ ] Show a centered header above the tooltip, something like `<gray>Spice Profile <lgray>(/<max_range>)<reset>`

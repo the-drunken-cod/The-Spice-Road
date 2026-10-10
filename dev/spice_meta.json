@@ -1,0 +1,788 @@
+{
+  "axes": [
+    {
+      "id": "heat_cooling",
+      "positive_color": "#ff5533",
+      "negative_color": "#55ccff"
+    },
+    {
+      "id": "sweet_bitter",
+      "positive_color": "#ff88cc",
+      "negative_color": "#b08850"
+    },
+    {
+      "id": "sour_mellow",
+      "positive_color": "#ddee33",
+      "negative_color": "#e8c890"
+    },
+    {
+      "id": "earthy_floral",
+      "positive_color": "#a0703c",
+      "negative_color": "#cc88ff"
+    },
+    {
+      "id": "woody_green",
+      "positive_color": "#c08a5a",
+      "negative_color": "#55dd55"
+    },
+    {
+      "id": "pungent_soft",
+      "positive_color": "#ffaa00",
+      "negative_color": "#ffc8d8"
+    },
+    {
+      "id": "resinous_clean",
+      "positive_color": "#d4a017",
+      "negative_color": "#d8f0ff"
+    },
+    {
+      "id": "savory_delicate",
+      "positive_color": "#cc6644",
+      "negative_color": "#e8d8ff"
+    }
+  ],
+  "tiers": [
+    {
+      "id": "common",
+      "color": "#ffffff"
+    },
+    {
+      "id": "uncommon",
+      "color": "#ffff55"
+    },
+    {
+      "id": "rare",
+      "color": "#55ffff"
+    },
+    {
+      "id": "epic",
+      "color": "#ff55ff"
+    }
+  ],
+  "items": [
+    {
+      "item": "spice_road:allspice",
+      "spice": "allspice",
+      "tier": "uncommon",
+      "harvest_difficulty": 2,
+      "climate": "tropical",
+      "seasons": [
+        "summer"
+      ],
+      "source_type": "tree",
+      "harvest_action": "pick",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:cassia",
+      "spice": "cassia",
+      "tier": "rare",
+      "harvest_difficulty": 4,
+      "climate": "tropical",
+      "seasons": [
+        "spring",
+        "summer"
+      ],
+      "source_type": "tree",
+      "harvest_action": "strip",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:cinnamon",
+      "spice": "cinnamon",
+      "tier": "epic",
+      "harvest_difficulty": 5,
+      "climate": "tropical",
+      "seasons": [
+        "spring",
+        "summer"
+      ],
+      "source_type": "tree",
+      "harvest_action": "strip",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:clove",
+      "spice": "clove",
+      "tier": "epic",
+      "harvest_difficulty": 5,
+      "climate": "tropical",
+      "seasons": [
+        "summer",
+        "autumn"
+      ],
+      "source_type": "tree",
+      "harvest_action": "shear",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:curry",
+      "spice": "curry",
+      "tier": "uncommon",
+      "harvest_difficulty": 2,
+      "climate": "tropical",
+      "seasons": [
+        "spring",
+        "summer"
+      ],
+      "source_type": "tree",
+      "harvest_action": "shear",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:mastic",
+      "spice": "mastic",
+      "tier": "rare",
+      "harvest_difficulty": 4,
+      "climate": "arid",
+      "seasons": [
+        "summer"
+      ],
+      "source_type": "tree",
+      "harvest_action": "strip",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:nutmeg",
+      "spice": "nutmeg",
+      "tier": "epic",
+      "harvest_difficulty": 5,
+      "climate": "tropical",
+      "seasons": [
+        "summer",
+        "autumn"
+      ],
+      "source_type": "tree",
+      "harvest_action": "shear",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:star_anise",
+      "spice": "star_anise",
+      "tier": "rare",
+      "harvest_difficulty": 4,
+      "climate": "temperate",
+      "seasons": [
+        "spring",
+        "autumn"
+      ],
+      "source_type": "tree",
+      "harvest_action": "pick",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:tamarind",
+      "spice": "tamarind",
+      "tier": "uncommon",
+      "harvest_difficulty": 3,
+      "climate": "tropical",
+      "seasons": [
+        "summer",
+        "autumn"
+      ],
+      "source_type": "tree",
+      "harvest_action": "pick",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:tonka",
+      "spice": "tonka",
+      "tier": "rare",
+      "harvest_difficulty": 4,
+      "climate": "tropical",
+      "seasons": [
+        "summer"
+      ],
+      "source_type": "tree",
+      "harvest_action": "pick",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:basil",
+      "spice": "basil",
+      "tier": "uncommon",
+      "harvest_difficulty": 2,
+      "climate": "temperate",
+      "seasons": [
+        "spring",
+        "summer"
+      ],
+      "source_type": "bush",
+      "harvest_action": "pick",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:caper",
+      "spice": "caper",
+      "tier": "uncommon",
+      "harvest_difficulty": 3,
+      "climate": "arid",
+      "seasons": [
+        "summer"
+      ],
+      "source_type": "bush",
+      "harvest_action": "pick",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:oregano",
+      "spice": "oregano",
+      "tier": "uncommon",
+      "harvest_difficulty": 2,
+      "climate": "arid",
+      "seasons": [
+        "summer"
+      ],
+      "source_type": "bush",
+      "harvest_action": "pick",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:parsley",
+      "spice": "parsley",
+      "tier": "common",
+      "harvest_difficulty": 1,
+      "climate": "temperate",
+      "seasons": [
+        "spring",
+        "summer"
+      ],
+      "source_type": "bush",
+      "harvest_action": "pick",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:rosemary",
+      "spice": "rosemary",
+      "tier": "common",
+      "harvest_difficulty": 1,
+      "climate": "arid",
+      "seasons": [
+        "spring",
+        "summer",
+        "winter"
+      ],
+      "source_type": "bush",
+      "harvest_action": "pick",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:sage",
+      "spice": "sage",
+      "tier": "common",
+      "harvest_difficulty": 1,
+      "climate": "temperate",
+      "seasons": [
+        "spring",
+        "summer"
+      ],
+      "source_type": "bush",
+      "harvest_action": "pick",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:sumac",
+      "spice": "sumac",
+      "tier": "uncommon",
+      "harvest_difficulty": 2,
+      "climate": "arid",
+      "seasons": [
+        "summer",
+        "autumn"
+      ],
+      "source_type": "bush",
+      "harvest_action": "pick",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:thyme",
+      "spice": "thyme",
+      "tier": "common",
+      "harvest_difficulty": 1,
+      "climate": "arid",
+      "seasons": [
+        "spring",
+        "summer"
+      ],
+      "source_type": "bush",
+      "harvest_action": "pick",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:long_pepper",
+      "spice": "long_pepper",
+      "tier": "rare",
+      "harvest_difficulty": 4,
+      "climate": "tropical",
+      "seasons": [
+        "summer",
+        "autumn"
+      ],
+      "source_type": "vine",
+      "harvest_action": "pick",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:vanilla",
+      "spice": "vanilla",
+      "tier": "epic",
+      "harvest_difficulty": 5,
+      "climate": "tropical",
+      "seasons": [
+        "spring",
+        "summer"
+      ],
+      "source_type": "vine",
+      "harvest_action": "pick",
+      "aquatic": false,
+      "hand_pick": true
+    },
+    {
+      "item": "spice_road:lavender",
+      "spice": "lavender",
+      "tier": "common",
+      "harvest_difficulty": 1,
+      "climate": "arid",
+      "seasons": [
+        "summer"
+      ],
+      "source_type": "flower_patch",
+      "harvest_action": "pick",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:nigella",
+      "spice": "nigella",
+      "tier": "uncommon",
+      "harvest_difficulty": 2,
+      "climate": "temperate",
+      "seasons": [
+        "spring",
+        "summer"
+      ],
+      "source_type": "flower_patch",
+      "harvest_action": "break",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:safflower",
+      "spice": "safflower",
+      "tier": "uncommon",
+      "harvest_difficulty": 2,
+      "climate": "arid",
+      "seasons": [
+        "summer"
+      ],
+      "source_type": "flower_patch",
+      "harvest_action": "break",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:saffron",
+      "spice": "saffron",
+      "tier": "epic",
+      "harvest_difficulty": 5,
+      "climate": "arid",
+      "seasons": [
+        "autumn"
+      ],
+      "source_type": "flower_patch",
+      "harvest_action": "pick",
+      "aquatic": false,
+      "hand_pick": true
+    },
+    {
+      "item": "spice_road:caraway",
+      "spice": "caraway",
+      "tier": "common",
+      "harvest_difficulty": 1,
+      "climate": "cold",
+      "seasons": [
+        "spring",
+        "autumn"
+      ],
+      "source_type": "crop",
+      "harvest_action": "break",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:coriander",
+      "spice": "coriander",
+      "tier": "common",
+      "harvest_difficulty": 1,
+      "climate": "temperate",
+      "seasons": [
+        "spring",
+        "autumn"
+      ],
+      "source_type": "crop",
+      "harvest_action": "break",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:cumin",
+      "spice": "cumin",
+      "tier": "uncommon",
+      "harvest_difficulty": 2,
+      "climate": "arid",
+      "seasons": [
+        "spring",
+        "summer"
+      ],
+      "source_type": "crop",
+      "harvest_action": "break",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:dill",
+      "spice": "dill",
+      "tier": "common",
+      "harvest_difficulty": 1,
+      "climate": "cold",
+      "seasons": [
+        "spring",
+        "summer"
+      ],
+      "source_type": "crop",
+      "harvest_action": "break",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:fennel",
+      "spice": "fennel",
+      "tier": "common",
+      "harvest_difficulty": 1,
+      "climate": "temperate",
+      "seasons": [
+        "spring",
+        "summer",
+        "autumn"
+      ],
+      "source_type": "crop",
+      "harvest_action": "break",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:fenugreek",
+      "spice": "fenugreek",
+      "tier": "uncommon",
+      "harvest_difficulty": 2,
+      "climate": "arid",
+      "seasons": [
+        "spring",
+        "autumn"
+      ],
+      "source_type": "crop",
+      "harvest_action": "break",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:garlic",
+      "spice": "garlic",
+      "tier": "uncommon",
+      "harvest_difficulty": 2,
+      "climate": "temperate",
+      "seasons": [
+        "summer",
+        "autumn"
+      ],
+      "source_type": "crop",
+      "harvest_action": "break",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:habanero",
+      "spice": "habanero",
+      "tier": "uncommon",
+      "harvest_difficulty": 3,
+      "climate": "arid",
+      "seasons": [
+        "summer"
+      ],
+      "source_type": "crop",
+      "harvest_action": "pick",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:mustard",
+      "spice": "mustard",
+      "tier": "common",
+      "harvest_difficulty": 1,
+      "climate": "cold",
+      "seasons": [
+        "spring",
+        "autumn",
+        "winter"
+      ],
+      "source_type": "crop",
+      "harvest_action": "break",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:sesame",
+      "spice": "sesame",
+      "tier": "uncommon",
+      "harvest_difficulty": 2,
+      "climate": "tropical",
+      "seasons": [
+        "summer",
+        "autumn"
+      ],
+      "source_type": "crop",
+      "harvest_action": "break",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:cardamom",
+      "spice": "cardamom",
+      "tier": "rare",
+      "harvest_difficulty": 4,
+      "climate": "tropical",
+      "seasons": [
+        "spring",
+        "summer"
+      ],
+      "source_type": "rhizome",
+      "harvest_action": "break",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:ginger",
+      "spice": "ginger",
+      "tier": "uncommon",
+      "harvest_difficulty": 3,
+      "climate": "tropical",
+      "seasons": [
+        "summer",
+        "autumn"
+      ],
+      "source_type": "rhizome",
+      "harvest_action": "break",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:horseradish",
+      "spice": "horseradish",
+      "tier": "uncommon",
+      "harvest_difficulty": 2,
+      "climate": "cold",
+      "seasons": [
+        "autumn",
+        "winter"
+      ],
+      "source_type": "rhizome",
+      "harvest_action": "break",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:licorice",
+      "spice": "licorice",
+      "tier": "uncommon",
+      "harvest_difficulty": 3,
+      "climate": "temperate",
+      "seasons": [
+        "spring",
+        "summer",
+        "autumn"
+      ],
+      "source_type": "rhizome",
+      "harvest_action": "break",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:turmeric",
+      "spice": "turmeric",
+      "tier": "uncommon",
+      "harvest_difficulty": 3,
+      "climate": "tropical",
+      "seasons": [
+        "summer",
+        "autumn"
+      ],
+      "source_type": "rhizome",
+      "harvest_action": "break",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:sweet_flag",
+      "spice": "sweet_flag",
+      "tier": "uncommon",
+      "harvest_difficulty": 2,
+      "climate": "cold",
+      "seasons": [
+        "spring",
+        "autumn",
+        "winter"
+      ],
+      "source_type": "rhizome",
+      "harvest_action": "break",
+      "aquatic": true,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:wasabi",
+      "spice": "wasabi",
+      "tier": "epic",
+      "harvest_difficulty": 5,
+      "climate": "cold",
+      "seasons": [
+        "spring",
+        "autumn",
+        "winter"
+      ],
+      "source_type": "rhizome",
+      "harvest_action": "break",
+      "aquatic": true,
+      "hand_pick": true
+    },
+    {
+      "item": "spice_road:water_pepper",
+      "spice": "water_pepper",
+      "tier": "uncommon",
+      "harvest_difficulty": 3,
+      "climate": "temperate",
+      "seasons": [
+        "spring",
+        "summer",
+        "autumn"
+      ],
+      "source_type": "rhizome",
+      "harvest_action": "break",
+      "aquatic": true,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:dried_clove",
+      "spice": "clove",
+      "processing": "drying",
+      "tier": "epic",
+      "harvest_difficulty": 5,
+      "climate": "tropical",
+      "seasons": [
+        "summer",
+        "autumn"
+      ],
+      "source_type": "tree",
+      "harvest_action": "shear",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:dried_long_pepper",
+      "spice": "long_pepper",
+      "processing": "drying",
+      "tier": "rare",
+      "harvest_difficulty": 4,
+      "climate": "tropical",
+      "seasons": [
+        "summer",
+        "autumn"
+      ],
+      "source_type": "vine",
+      "harvest_action": "pick",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:dried_mustard",
+      "spice": "mustard",
+      "processing": "drying",
+      "tier": "common",
+      "harvest_difficulty": 1,
+      "climate": "cold",
+      "seasons": [
+        "spring",
+        "autumn",
+        "winter"
+      ],
+      "source_type": "crop",
+      "harvest_action": "break",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:dried_nutmeg",
+      "spice": "nutmeg",
+      "processing": "drying",
+      "tier": "epic",
+      "harvest_difficulty": 5,
+      "climate": "tropical",
+      "seasons": [
+        "summer",
+        "autumn"
+      ],
+      "source_type": "tree",
+      "harvest_action": "shear",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:dried_star_anise",
+      "spice": "star_anise",
+      "processing": "drying",
+      "tier": "rare",
+      "harvest_difficulty": 4,
+      "climate": "temperate",
+      "seasons": [
+        "spring",
+        "autumn"
+      ],
+      "source_type": "tree",
+      "harvest_action": "pick",
+      "aquatic": false,
+      "hand_pick": false
+    },
+    {
+      "item": "spice_road:dried_tonka",
+      "spice": "tonka",
+      "processing": "drying",
+      "tier": "rare",
+      "harvest_difficulty": 4,
+      "climate": "tropical",
+      "seasons": [
+        "summer"
+      ],
+      "source_type": "tree",
+      "harvest_action": "pick",
+      "aquatic": false,
+      "hand_pick": false
+    }
+  ]
+}

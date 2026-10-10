@@ -14,6 +14,7 @@ import com.drunkencod.spice_road.datagen.DryingRackAssetProvider;
 import com.drunkencod.spice_road.datagen.DryingRackDataProvider;
 import com.drunkencod.spice_road.datagen.DryingRecipeProvider;
 import com.drunkencod.spice_road.datagen.MixPresetProvider;
+import com.drunkencod.spice_road.datagen.SpiceMetaProvider;
 import com.drunkencod.spice_road.datagen.SpiceMixModelProvider;
 import com.drunkencod.spice_road.datagen.SpiceGrinderBlockProvider;
 import com.drunkencod.spice_road.datagen.SpiceRackAssetProvider;
@@ -59,6 +60,7 @@ public class ModDataGen implements DataGeneratorEntrypoint {
         pack.addProvider((FabricDataOutput output) -> new SpiceRackAssetProvider(output));
         pack.addProvider((FabricDataOutput output) -> new SpiceRackDataProvider(output));
         pack.addProvider((FabricDataOutput output) -> new SpiceGrinderBlockProvider(output));
+        pack.addProvider((FabricDataOutput output) -> new SpiceMetaProvider(output));
         pack.addProvider((FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registries) -> new AdvancementProvider(
                 output, registries, List.of(new SpiceRoadAdvancements())));
     }

@@ -17,6 +17,14 @@ These tools are to be used in the command line and offer various shortcuts:
         - `-N` / `--number`: Non-negative integer drawn on the top row as a binary counter (one pixel per bit, least significant bit on the right). Must fit into `width` bits. The text is centered below it. Defaults to undefined (off).
         - `--help`: Prints the usage.
 - **`pnpm pad_csv ./in.csv ./out.csv`**: Makes a CSV look better by aligning its cells horizontally.
+- **`pnpm spice_balancer`**: Opens a local web tool for rebalancing the spice profiles in `data/spice_road/spice_profile/`.
+    - Spices are listed by Tier, with their harvest difficulty, climate and growing seasons (`SP`, `SU`, `AU`, `WI`) and one slider per Flavor Axis.
+    - The Potency (sum of absolute axis values) is shown per spice and per Tier. "Scale" multiplies a whole profile so it hits its Tier's target Potency while keeping its shape.
+    - Tick the checkbox on up to 4 spices to compare and edit them side by side.
+    - Edits and notes are kept in persistent browser storage until they're reset. "Export ZIP" downloads only the changed JSONs at their datapack paths, ready to be copied over `common/src/main/resources/`.
+    - "Load folder..." uses another set of profile JSONs (e.g. a datapack) as the baseline to compare against.
+    - Tiers, climates and seasons come from `dev/spice_meta.json`, which is written by datagen. Run datagen after changing a Spice's metadata or Java enum values.
+    - Slider range, step and the target Potency per Tier are constants in `tools/spice_balancer/src/config.ts`.
 
 <br>
 

@@ -1,0 +1,23 @@
+{
+  "name": "spice_balancer",
+  "version": "1.0.0",
+  "description": "Web tool for comparing, rebalancing and exporting spice profile JSONs.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "vite",
+    "check": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "packageManager": "pnpm@11.4.0",
+  "dependencies": {
+    "fflate": "0.8.3"
+  },
+  "devDependencies": {
+    "@types/node": "25.8.0",
+    "typescript": "7.0.2",
+    "vite": "8.3.1"
+  }
+}
