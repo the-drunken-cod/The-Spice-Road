@@ -40,7 +40,7 @@ public class SpiceFlavorTooltips {
     /**
      * Number of bar characters on either side of the label at a full-scale score.
      */
-    public static final int BAR_LENGTH = 5;
+    public static final int BAR_LENGTH = 8;
     /** Character progress bars are drawn with. */
     public static final String BAR_CHAR = "+";
     /**
