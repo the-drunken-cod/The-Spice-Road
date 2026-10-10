@@ -43,6 +43,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.item.SpiceItemTags;
 import com.drunkencod.spice_road.platform.Services;
+import com.drunkencod.spice_road.registry.ModItems;
 import com.drunkencod.spice_road.spice.Spice;
 import com.drunkencod.spice_road.stats.ModStats;
 import com.drunkencod.spice_road.spice.Tier;
@@ -164,7 +165,8 @@ public abstract class SpicePlantBlock extends CropBlock {
 
     /**
      * @param height The outline height in pixels ({@code 0-16}).
-     * @return A {@code 14x14} pixel wide outline centered in the block, {@code height} pixels tall.
+     * @return A {@code 14x14} pixel wide outline centered in the block,
+     *         {@code height} pixels tall.
      */
     protected static VoxelShape shapeOfHeight(double height) {
         return Block.box(1.0D, 0.0D, 1.0D, 15.0D, height, 15.0D);
@@ -360,7 +362,8 @@ public abstract class SpicePlantBlock extends CropBlock {
      * it regrows instead of breaking. Like the break loot table, it also
      * drops one seed with the {@link Tier#getSeedDropChance() seed drop
      * chance} of the Spice's tier, wherever it was harvested. Both the yield
-     * and that chance are scaled by the player's {@link HarvestLuck}. The break loot
+     * and that chance are scaled by the player's {@link HarvestLuck}. The break
+     * loot
      * table of a Hand-Pick Spice only drops the seed, so this is the only way
      * to obtain its Spice; for every other Spice, it's a shortcut that spares
      * the plant instead of breaking it.
@@ -376,7 +379,7 @@ public abstract class SpicePlantBlock extends CropBlock {
         int yield = SpiceHarvesting.rollPlantYield(spice, level.getRandom(), player);
         if (yield > 0 && spice.canBeCultivatedAt(serverLevel, pos))
             popResourceFromFace(level, pos, hitResult.getDirection(),
-                    new ItemStack(Spice.getRawById(spice.getId()), yield));
+                    new ItemStack(ModItems.byId(spice.getId()), yield));
 
         if (level.getRandom().nextFloat() < HarvestLuck.seedChance(spice.getTier().getSeedDropChance(), player))
             popResourceFromFace(level, pos, hitResult.getDirection(), new ItemStack(seedItem.get()));

@@ -341,14 +341,6 @@ public enum Spice implements StringRepresentable {
     }
 
     /**
-     * Returns the raw spice item with the given enum ID from the registry, if it
-     * exists.
-     */
-    public static @Nullable Item getRawById(String id) {
-        return ModItems.byPath(id);
-    }
-
-    /**
      * Returns the planting item (seeds, or cuttings for rhizomes - see
      * {@link #getPlantingItemSuffix()}) of the spice with the given enum ID
      * from the registry, if it exists.

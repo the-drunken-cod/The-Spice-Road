@@ -13,6 +13,7 @@ import net.minecraft.world.item.Item;
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.mix.MixPreset;
 import com.drunkencod.spice_road.mix.PresetSlot;
+import com.drunkencod.spice_road.registry.ModItems;
 import com.drunkencod.spice_road.spice.ProcessedSpice;
 import com.drunkencod.spice_road.spice.Spice;
 
@@ -83,7 +84,7 @@ public enum DefaultMixPreset {
             if (spice != null) {
                 TagKey<Item> variants = ProcessedSpice.variantTag(spice);
                 return new PresetSlot(variants != null ? Either.right(variants)
-                        : Either.left(Spice.getRawById(spice.getId())), count);
+                        : Either.left(ModItems.byId(spice.getId())), count);
             }
             TagKey<Item> key = TagKey.create(Registries.ITEM,
                     ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, tag));

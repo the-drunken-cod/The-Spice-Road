@@ -24,6 +24,7 @@ import com.drunkencod.spice_road.block.SpiceTree;
 import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.block.SpiceVines;
 import com.drunkencod.spice_road.platform.Services;
+import com.drunkencod.spice_road.registry.ModItems;
 import com.drunkencod.spice_road.spice.Season;
 import com.drunkencod.spice_road.spice.SourceType;
 import com.drunkencod.spice_road.spice.Spice;
@@ -41,14 +42,15 @@ import com.drunkencod.spice_road.tooltip.SpiceProfileTooltips;
 public record SpiceOriginEntry(Spice spice) implements ViewerEntry {
 
     /** GUI sprite of the arrow between the planting and the raw item. */
-    private static final ResourceLocation ARROW = ResourceLocation.withDefaultNamespace("container/furnace/burn_progress");
+    private static final ResourceLocation ARROW = ResourceLocation
+            .withDefaultNamespace("container/furnace/burn_progress");
 
     /**
      * @return One entry per Spice that has a raw item, in enum order.
      */
     public static List<SpiceOriginEntry> all() {
         return Arrays.stream(Spice.values())
-                .filter(spice -> Spice.getRawById(spice.getId()) != null)
+                .filter(spice -> Spice.byId(spice.getId()) != null)
                 .map(SpiceOriginEntry::new)
                 .toList();
     }
@@ -71,7 +73,7 @@ public record SpiceOriginEntry(Spice spice) implements ViewerEntry {
             layout.slot(ViewerLayout.Role.INPUT, 0, 0, List.of(planting.getDefaultInstance()), List.of());
         layout.sprite(ARROW, 22, 1, 24, 16);
         layout.slot(ViewerLayout.Role.OUTPUT, 50, 0,
-                List.of(Objects.requireNonNull(Spice.getRawById(spice.getId())).getDefaultInstance()), List.of());
+                List.of(Objects.requireNonNull(ModItems.byId(spice.getId())).getDefaultInstance()), List.of());
         if (spice.requiresHarvestTool()) {
             List<ItemStack> tools = BuiltInRegistries.ITEM.getTag(spice.getHarvestToolTag())
                     .map(tag -> tag.stream().map(Holder::value).map(Item::getDefaultInstance).toList())

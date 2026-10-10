@@ -16,9 +16,9 @@ import net.minecraft.world.item.Item;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.drying.DryingRecipe;
+import com.drunkencod.spice_road.registry.ModItems;
 import com.drunkencod.spice_road.spice.ProcessedSpice;
 import com.drunkencod.spice_road.spice.ProcessingMethod;
-import com.drunkencod.spice_road.spice.Spice;
 import com.drunkencod.spice_road.spice.Tier;
 
 /**
@@ -31,7 +31,10 @@ import com.drunkencod.spice_road.spice.Tier;
  */
 public class DryingRecipeProvider implements DataProvider {
 
-    /** How many times longer a Spice of each tier takes to dry than {@link DryingRecipe#DEFAULT_DRYING_TIME}. */
+    /**
+     * How many times longer a Spice of each tier takes to dry than
+     * {@link DryingRecipe#DEFAULT_DRYING_TIME}.
+     */
     private static final Map<Tier, Double> TIME_MULTIPLIERS = Map.of(
             Tier.COMMON, 1.0,
             Tier.UNCOMMON, 1.5,
@@ -50,7 +53,7 @@ public class DryingRecipeProvider implements DataProvider {
         for (ProcessedSpice processed : ProcessedSpice.values()) {
             if (processed.getMethod() != ProcessingMethod.DRYING)
                 continue;
-            Item raw = Spice.getRawById(processed.getSource().getId());
+            Item raw = ModItems.byId(processed.getSource().getId());
             Item dried = processed.getItem();
             if (raw == null || dried == null)
                 continue;

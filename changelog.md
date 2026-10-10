@@ -22,7 +22,12 @@
         - Placing keeps the run in progress, and right-clicking it opens the same GUI. Sneak with empty hands to pick it up again.
         - Only one player can use it at a time, and it drops itself with its run when broken or when its support is removed.
     - Added `dried_star_anise` and made holiday spice mix require it over raw Star Anise.
-    - Added the advancements Nice Rack (fill a Spice Rack with full stacks) and Mix-and-Match (craft a Spice Mix), with the criteria `spice_road:spice_rack_filled` and `spice_road:spice_mix_crafted` for datapacks.
+    - Added advancements:
+        - Molcajete: craft a Spice Grinder. This is now the parent of advancements that require applying seasonings.
+        - Where the Pepper Grows: have every raw spice in your inventory at least once. Added the criterion `spice_road:all_spices_found` for datapacks. Spices added to `#spice_road:spices/raw` by a datapack are included (and are the ones counted by the "Different Spices Found" statistic as well).
+        - Nice Rack: fill a Spice Rack with full stacks. Added the criterion `spice_road:spice_rack_filled` for datapacks.
+        - Mix-and-Match: craft a Spice Mix. Added the criterion `spice_road:spice_mix_crafted` for datapacks.
+        - Made advancements grant experience points relative to the difficulty.
     - Added the (unfinished) Flavor Folio, an in-game guide book (requires the optional mod [Patchouli](https://modrinth.com/mod/patchouli)). Craft it from a book and any spice.
         - Has a page for every spice with its tier, climate, yield, plant and harvest, a flavor bar chart and whether you have found it yet, plus articles on the Drying Rack, Spice Rack, Spice Grinder and Spice Mixes.
         - Resource packs can add entries or translate the book, in `assets/spice_road/patchouli_books/flavor_folio/<locale>/`.

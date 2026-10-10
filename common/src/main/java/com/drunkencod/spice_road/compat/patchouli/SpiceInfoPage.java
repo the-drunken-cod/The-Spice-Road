@@ -9,6 +9,7 @@ import net.minecraft.world.level.Level;
 
 import com.drunkencod.spice_road.compat.viewer.SpiceOriginEntry;
 import com.drunkencod.spice_road.compat.viewer.ViewerLayout;
+import com.drunkencod.spice_road.registry.ModItems;
 import com.drunkencod.spice_road.spice.Spice;
 import com.drunkencod.spice_road.stats.ClientSpiceFindings;
 
@@ -38,7 +39,7 @@ public class SpiceInfoPage extends ViewerEntryPage {
 
     @Override
     protected Component defaultTitle() {
-        Item raw = resolved == null ? null : Spice.getRawById(resolved.getId());
+        Item raw = resolved == null ? null : ModItems.byId(resolved.getId());
         return raw == null ? Component.empty() : raw.getDefaultInstance().getHoverName();
     }
 

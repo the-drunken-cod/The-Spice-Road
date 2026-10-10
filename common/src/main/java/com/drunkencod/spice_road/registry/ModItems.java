@@ -90,7 +90,7 @@ public class ModItems {
     public static void populateSpicesTab(CreativeModeTab.Output output) {
         for (Spice spice : Spice.values()) {
             Item spiceSeeds = Spice.getSeedsById(spice.getId());
-            Item spiceRaw = Spice.getRawById(spice.getId());
+            Item spiceRaw = byId(spice.getId());
 
             if (spiceRaw != null)
                 output.accept(spiceRaw.getDefaultInstance());
@@ -120,5 +120,13 @@ public class ModItems {
     public static @Nullable Item byPath(String path) {
         ResourceLocation itemId = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, path);
         return BuiltInRegistries.ITEM.getOptional(itemId).orElse(null);
+    }
+
+    /**
+     * Returns the spice road item with the given enum ID from the registry, if it
+     * exists.
+     */
+    public static @Nullable Item byId(String id) {
+        return ModItems.byPath(id);
     }
 }

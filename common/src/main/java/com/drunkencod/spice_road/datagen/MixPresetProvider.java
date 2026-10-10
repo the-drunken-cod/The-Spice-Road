@@ -31,6 +31,7 @@ import com.drunkencod.spice_road.mix.MixPreset;
 import com.drunkencod.spice_road.mix.MixPresetReloadListener;
 import com.drunkencod.spice_road.mix.PresetSlot;
 import com.drunkencod.spice_road.mix.SpiceMix;
+import com.drunkencod.spice_road.registry.ModItems;
 import com.drunkencod.spice_road.spice.ProcessedSpice;
 import com.drunkencod.spice_road.spice.Spice;
 
@@ -42,7 +43,8 @@ import com.drunkencod.spice_road.spice.Spice;
  * presets: its result carries the same components the jar-and-spices recipe
  * would produce, so whichever of the two a grid matches, the result is the
  * same. A preset's tags are hand-written, so the recipe takes the first item
- * each lists (the raw item for a Spice's variant tag). Raw JSON, so it runs unchanged on both loaders. Every preset is
+ * each lists (the raw item for a Spice's variant tag). Raw JSON, so it runs
+ * unchanged on both loaders. Every preset is
  * built and written through the real codec, so datagen fails on a preset the
  * game would reject.
  */
@@ -109,7 +111,7 @@ public class MixPresetProvider implements DataProvider {
         return Arrays.stream(Spice.values())
                 .filter(spice -> tag.equals(ProcessedSpice.variantTag(spice)))
                 .findFirst()
-                .map(spice -> Spice.getRawById(spice.getId()));
+                .map(spice -> ModItems.byId(spice.getId()));
     }
 
     /**

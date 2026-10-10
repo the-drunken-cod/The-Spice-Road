@@ -19,6 +19,7 @@ import com.drunkencod.spice_road.block.SpiceTree;
 import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.block.SpiceVines;
 import com.drunkencod.spice_road.item.SpiceItemTags;
+import com.drunkencod.spice_road.registry.ModItems;
 import com.drunkencod.spice_road.spice.ProcessedSpice;
 import com.drunkencod.spice_road.spice.Spice;
 import com.drunkencod.spice_road.spice.Tier;
@@ -31,12 +32,15 @@ import com.drunkencod.spice_road.spice.Tier;
  * and {@link SpiceItemTags#SPICES} including both.</li>
  * <li>Each {@link Tier#getItemTag() tier tag}, from its Spices' raw,
  * processed, seeds, sapling and vine items.</li>
- * <li>Each {@link ProcessedSpice#variantTag variant tag}: a Spice's raw item and
+ * <li>Each {@link ProcessedSpice#variantTag variant tag}: a Spice's raw item
+ * and
  * its Processed Spices, which Mix Presets use to take either.</li>
  * <li>{@link SpiceItemTags#SPICE_PLANT_SEEDS} and the Spice Tree log, leaves
  * and sapling tags, plus {@code c:stripped_logs}.</li>
  * <li>The (initially empty) {@link SpiceItemTags#RETAINS_FLAVOR},
- * {@link SpiceItemTags#UNSEASONABLE} and {@link SpiceItemTags#SPICE_RACK_STORABLE} tags so they exist for datapacks to add
+ * {@link SpiceItemTags#UNSEASONABLE} and
+ * {@link SpiceItemTags#SPICE_RACK_STORABLE} tags so they exist for datapacks to
+ * add
  * to, and {@link SpiceItemTags#VOIDS_FLAVOR_WHEN_PLACED} with its one known
  * default member.</li>
  * </ul>
@@ -52,7 +56,7 @@ public class SpiceItemTagProvider extends RawTagProvider<Item> {
         List<CompletableFuture<?>> futures = new ArrayList<>();
         // #region spices
         futures.add(save(cachedOutput, SpiceItemTags.RAW_SPICES,
-                entries(Arrays.stream(Spice.values()).map(spice -> Spice.getRawById(spice.getId())))));
+                entries(Arrays.stream(Spice.values()).map(spice -> ModItems.byId(spice.getId())))));
         futures.add(save(cachedOutput, SpiceItemTags.PROCESSED_SPICES,
                 entries(Arrays.stream(ProcessedSpice.values()).map(ProcessedSpice::getItem))));
         futures.add(save(cachedOutput, SpiceItemTags.SPICES, List.of(
@@ -64,7 +68,7 @@ public class SpiceItemTagProvider extends RawTagProvider<Item> {
             TagKey<Item> variants = ProcessedSpice.variantTag(spice);
             if (variants != null) {
                 futures.add(save(cachedOutput, variants, entries(Stream.concat(
-                        Stream.of(Spice.getRawById(spice.getId())),
+                        Stream.of(ModItems.byId(spice.getId())),
                         ProcessedSpice.bySource(spice).stream().map(ProcessedSpice::getItem)))));
             }
         }
@@ -107,7 +111,7 @@ public class SpiceItemTagProvider extends RawTagProvider<Item> {
                     SpiceTree tree = SpiceTrees.getRegistered().get(spice);
                     SpiceVines.RegisteredSpiceVine vine = SpiceVines.getRegistered().get(spice);
                     Stream<Item> processed = ProcessedSpice.bySource(spice).stream().map(ProcessedSpice::getItem);
-                    return Stream.concat(Stream.of(Spice.getRawById(spice.getId())), Stream.concat(processed,
+                    return Stream.concat(Stream.of(ModItems.byId(spice.getId())), Stream.concat(processed,
                             Stream.of(Spice.getSeedsById(spice.getId()),
                                     tree != null ? tree.getSaplingItem().get() : null,
                                     vine != null ? vine.vineItem().get() : null)));

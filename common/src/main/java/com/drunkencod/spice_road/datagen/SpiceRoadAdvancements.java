@@ -6,7 +6,9 @@ import java.util.function.Consumer;
 
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.AdvancementType;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.PlayerTrigger;
 import net.minecraft.core.HolderLookup;
@@ -16,6 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 
 import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.advancement.AllSpicesFoundTrigger;
 import com.drunkencod.spice_road.advancement.FoodEatenTrigger;
 import com.drunkencod.spice_road.advancement.ItemDriedTrigger;
 import com.drunkencod.spice_road.advancement.SpiceMixCraftedTrigger;
@@ -40,7 +43,7 @@ public class SpiceRoadAdvancements implements AdvancementSubProvider {
     @Override
     public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> saver) {
         AdvancementHolder root = Advancement.Builder.advancement()
-                .display(Spice.getRawById(Spice.HABANERO.getId()),
+                .display(ModItems.byId(Spice.HABANERO.getId()),
                         Component.translatable("advancements.spice_road.root.title"),
                         Component.translatable("advancements.spice_road.root.description"),
                         ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID,
@@ -50,13 +53,24 @@ public class SpiceRoadAdvancements implements AdvancementSubProvider {
                 .build(ROOT_ID);
         saver.accept(root);
 
-        AdvancementHolder everythingBagel = Advancement.Builder.advancement()
+        AdvancementHolder spiceGrinder = Advancement.Builder.advancement()
                 .parent(root)
+                .rewards(AdvancementRewards.Builder.experience(15))
+                .display(ModItems.SPICE_GRINDER.get(),
+                        Component.translatable("advancements.spice_road.molcajete.title"),
+                        Component.translatable("advancements.spice_road.molcajete.description"),
+                        null, AdvancementType.CHALLENGE, true, true, false)
+                .addCriterion("have_spice_grinder",
+                        InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.SPICE_GRINDER.get()))
+                .build(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "molcajete"));
+        saver.accept(spiceGrinder);
+
+        AdvancementHolder everythingBagel = Advancement.Builder.advancement()
+                .parent(spiceGrinder)
+                .rewards(AdvancementRewards.Builder.experience(250))
                 .display(Items.BREAD,
-                        Component.translatable(
-                                "advancements.spice_road.everything_bagel.title"),
-                        Component.translatable(
-                                "advancements.spice_road.everything_bagel.description"),
+                        Component.translatable("advancements.spice_road.everything_bagel.title"),
+                        Component.translatable("advancements.spice_road.everything_bagel.description"),
                         null, AdvancementType.CHALLENGE, true, true, false)
                 .addCriterion("everything_bagel", FoodEatenTrigger.TriggerInstance.foodEaten(
                         Optional.of(ItemPredicate.Builder.item().of(Items.BREAD)),
@@ -67,6 +81,7 @@ public class SpiceRoadAdvancements implements AdvancementSubProvider {
 
         AdvancementHolder hangOutToDry = Advancement.Builder.advancement()
                 .parent(root)
+                .rewards(AdvancementRewards.Builder.experience(15))
                 .display(ProcessedSpice.DRIED_NUTMEG.getItem(),
                         Component.translatable("advancements.spice_road.hang_out_to_dry.title"),
                         Component.translatable("advancements.spice_road.hang_out_to_dry.description"),
@@ -78,6 +93,7 @@ public class SpiceRoadAdvancements implements AdvancementSubProvider {
 
         AdvancementHolder niceRack = Advancement.Builder.advancement()
                 .parent(root)
+                .rewards(AdvancementRewards.Builder.experience(200))
                 .display(ModBlocks.SPICE_RACK_ITEMS.get(SpiceRackWood.OAK).get(),
                         Component.translatable("advancements.spice_road.nice_rack.title"),
                         Component.translatable("advancements.spice_road.nice_rack.description"),
@@ -88,6 +104,7 @@ public class SpiceRoadAdvancements implements AdvancementSubProvider {
 
         AdvancementHolder mixAndMatch = Advancement.Builder.advancement()
                 .parent(root)
+                .rewards(AdvancementRewards.Builder.experience(15))
                 .display(ModItems.SPICE_MIX.get(),
                         Component.translatable("advancements.spice_road.mix_and_match.title"),
                         Component.translatable("advancements.spice_road.mix_and_match.description"),
@@ -98,7 +115,8 @@ public class SpiceRoadAdvancements implements AdvancementSubProvider {
         saver.accept(mixAndMatch);
 
         AdvancementHolder pumpkinPurist = Advancement.Builder.advancement()
-                .parent(hangOutToDry)
+                .parent(spiceGrinder)
+                .rewards(AdvancementRewards.Builder.experience(150))
                 .display(Items.PUMPKIN_PIE, Component.translatable(
                         "advancements.spice_road.pumpkin_purist.title"),
                         Component.translatable(
@@ -108,11 +126,11 @@ public class SpiceRoadAdvancements implements AdvancementSubProvider {
                         Optional.of(ItemPredicate.Builder.item().of(Items.PUMPKIN_PIE)),
                         List.of(
                                 ItemPredicate.Builder.item()
-                                        .of(Spice.getRawById(Spice.CINNAMON.getId())),
+                                        .of(ModItems.byId(Spice.CINNAMON.getId())),
                                 ItemPredicate.Builder.item()
-                                        .of(Spice.getRawById(Spice.CLOVE.getId())),
+                                        .of(ModItems.byId(Spice.CLOVE.getId())),
                                 ItemPredicate.Builder.item()
-                                        .of(Spice.getRawById(Spice.NUTMEG.getId()))
+                                        .of(ModItems.byId(Spice.NUTMEG.getId()))
                         // ItemPredicate.Builder.item()
                         // .of(Spice.getRawById(Spice.CINNAMON.getId()),
                         // ProcessedSpice.DRIED_CINNAMON.getItem()),
@@ -126,5 +144,17 @@ public class SpiceRoadAdvancements implements AdvancementSubProvider {
                         Optional.empty()))
                 .build(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "pumpkin_purist"));
         saver.accept(pumpkinPurist);
+
+        AdvancementHolder whereThePepperGrows = Advancement.Builder.advancement()
+                .parent(root)
+                .rewards(AdvancementRewards.Builder.experience(1000))
+                .display(ModItems.byId(Spice.LONG_PEPPER.getId()), Component.translatable(
+                        "advancements.spice_road.where_the_pepper_grows.title"),
+                        Component.translatable(
+                                "advancements.spice_road.where_the_pepper_grows.description"),
+                        null, AdvancementType.CHALLENGE, true, true, false)
+                .addCriterion("all_spices_found", AllSpicesFoundTrigger.TriggerInstance.allSpicesFound())
+                .build(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "where_the_pepper_grows"));
+        saver.accept(whereThePepperGrows);
     }
 }

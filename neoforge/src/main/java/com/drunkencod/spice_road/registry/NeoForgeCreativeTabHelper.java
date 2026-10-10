@@ -28,7 +28,7 @@ public class NeoForgeCreativeTabHelper implements ICreativeTabHelper {
                 .build());
         creativeTabs.register(ICreativeTabHelper.TAB_SPICES_KEY, () -> CreativeModeTab.builder()
                 .title(Component.translatable(ICreativeTabHelper.TAB_SPICES_TR_KEY))
-                .icon(() -> new ItemStack(Spice.getRawById(Spice.HABANERO.getId())))
+                .icon(() -> new ItemStack(ModItems.byId(Spice.HABANERO.getId())))
                 .displayItems((params, output) -> ModItems.populateSpicesTab(output))
                 .build());
     }
