@@ -15,6 +15,7 @@ import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.block.SpiceVines;
 import com.drunkencod.spice_road.datagen.ItemModelHelper;
 import com.drunkencod.spice_road.grinder.SpiceGrinderItem;
+import com.drunkencod.spice_road.item.JarItem;
 import com.drunkencod.spice_road.mix.MixPresetRegistry;
 import com.drunkencod.spice_road.mix.SpiceMixItem;
 import com.drunkencod.spice_road.mix.SpiceMixes;
@@ -58,7 +59,7 @@ public class ModItems {
      * called during mod initialization (see {@code SpiceRoad#init()}).
      */
     public static void registerSpiceMixes() {
-        JAR = Services.REGISTRY.registerItem("jar", () -> new Item(new Item.Properties()));
+        JAR = Services.REGISTRY.registerItem("jar", () -> new JarItem(new Item.Properties()));
         ItemModelHelper.addFlatItem("jar", ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "item/jar"));
         SPICE_MIX = Services.REGISTRY.registerItem("spice_mix",
                 () -> new SpiceMixItem(new Item.Properties().craftRemainder(JAR.get())));
