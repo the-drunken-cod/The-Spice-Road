@@ -167,7 +167,7 @@ public class SpiceFlavorTooltips {
      * @param showValues Whether to show the scaled value after the label
      * @param padder     Builds the padding
      * @param labelWidth Common width of the space between the brackets
-     * @param barWidth   Common width of the space left of the opening bracket
+     * @param barWidth   Common width of the space on either side of the brackets, which a bar fills
      * @return The formatted tooltip line
      */
     private static Component formatLine(FlavorAxis axis, boolean positive, double value, double barScale,
@@ -196,8 +196,9 @@ public class SpiceFlavorTooltips {
                     .append(padder.build(labelPadding - labelPaddingLeft));
         }
         line.append(Component.literal("]").withColor(BRACKET_COLOR));
-        if (positive)
-            line.append(bar);
+        // Padded on the bar's side too, so every line is equally wide and the block stays centered
+        Component rightBar = positive ? bar : Component.empty();
+        line.append(rightBar).append(padder.build(barWidth - width(rightBar)));
         return line;
     }
 
