@@ -8,6 +8,9 @@ import { parseArgs } from "node:util";
  * sorted into the category of its Tier. Existing entries are never touched, so hand-written articles are safe
  * and the tool can be re-run whenever a Spice is added.
  *
+ * The Spice Profile pages of a skeleton point to the Spice's Processed Spices (read from `ProcessedSpice.java`), as
+ * only those carry a profile; Spices without any use the raw item.
+ *
  * Options:
  * - `-L` / `--lang`: Locale folder of the book to stamp into, defaults to `en_us`.
  * - `--check`: Writes nothing. Lists Spices without an entry, entries of unknown Spices and entries sitting in the
@@ -44,6 +47,7 @@ interface RawSpice {
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const metaPath = join(repoRoot, "dev", "spice_meta.json");
 const langPath = join(repoRoot, "common", "src", "main", "resources", "assets", "spice_road", "lang", "en_us.json");
+const processedPath = join(repoRoot, "common", "src", "main", "java", "com", "drunkencod", "spice_road", "spice", "ProcessedSpice.java");
 const bookPath = join(repoRoot, "common", "src", "main", "resources", "assets", "spice_road", "patchouli_books", "flavor_folio");
 
 // #region helpers
@@ -52,6 +56,17 @@ const bookPath = join(repoRoot, "common", "src", "main", "resources", "assets", 
 function readRawSpices(): RawSpice[] {
   const meta = JSON.parse(readFileSync(metaPath, "utf8")) as { items: MetaItem[] };
   return meta.items.filter(item => item.processing === undefined).map(item => ({ id: item.spice, tier: item.tier }));
+}
+
+/** @returns The item IDs of the Processed Spices in `ProcessedSpice.java`, grouped by the ID of the Spice they are made from. */
+function readProcessedItems(): Map<string, string[]> {
+  const bySpice = new Map<string, string[]>();
+  const source = readFileSync(processedPath, "utf8");
+  for (const match of source.matchAll(/^\s*[A-Z_]+\("([a-z_]+)",\s*Spice\.([A-Z_]+),/gm)) {
+    const spice = match[2]!.toLowerCase();
+    bySpice.set(spice, [...(bySpice.get(spice) ?? []), match[1]!]);
+  }
+  return bySpice;
 }
 
 /**
@@ -68,7 +83,9 @@ function displayName(spice: RawSpice, lang: Record<string, string>): string {
  * @param name Its display name.
  * @returns The JSON text of its skeleton entry.
  */
-function skeleton(spice: RawSpice, name: string): string {
+function skeleton(spice: RawSpice, name: string, processed: string[]): string {
+  // Spice Profiles sit on the Processed Spices if the Spice has any, else on the raw item
+  const profileItems = processed.length > 0 ? processed : [spice.id];
   return JSON.stringify({
     name,
     icon: `spice_road:${spice.id}`,
@@ -76,7 +93,7 @@ function skeleton(spice: RawSpice, name: string): string {
     pages: [
       { type: "patchouli:text", title: name, text: `TODO: write the article for ${name}.` },
       { type: "spice_road:spice_info", spice: spice.id },
-      { type: "spice_road:spice_profile", item: `spice_road:${spice.id}` },
+      ...profileItems.map(item => ({ type: "spice_road:spice_profile", item: `spice_road:${item}` })),
     ],
   }, null, 4) + "\n";
 }
@@ -112,6 +129,7 @@ function main() {
   }
 
   const spices = readRawSpices();
+  const processed = readProcessedItems();
   const lang = JSON.parse(readFileSync(langPath, "utf8")) as Record<string, string>;
   const entriesDir = join(bookPath, values.lang, "entries", "spices");
   const existing = existingEntries(entriesDir);
@@ -131,7 +149,7 @@ function main() {
       continue;
     }
     mkdirSync(dirname(path), { recursive: true });
-    writeFileSync(path, skeleton(spice, displayName(spice, lang)), "utf8");
+    writeFileSync(path, skeleton(spice, displayName(spice, lang), processed.get(spice.id) ?? []), "utf8");
     console.log(`created ${relative(repoRoot, path)}`);
   }
   for (const entry of existing) {
