@@ -504,6 +504,25 @@ public interface IConfigHelper {
     int getStatsFoundScanIntervalTicks();
 
     /**
+     * @return Whether players without operator permission may reset their own
+     *         found Spices and unlocked cells with {@code /spice_road reset}.
+     */
+    boolean isCommandPlayerResetAllowed();
+
+    /**
+     * @return The largest radius, in Spice Region cells, that
+     *         {@code /spice_road admin sample_spices} accepts.
+     */
+    int getCommandSampleMaxRadiusCells();
+
+    /**
+     * @return The time, in milliseconds, after which
+     *         {@code /spice_road admin sample_spices} stops walking cells and
+     *         reports what it has so far.
+     */
+    int getCommandSampleTimeBudgetMs();
+
+    /**
      * @return The most spices of all kinds one Spice Mix holds.
      */
     int getSpiceMixCapacity();

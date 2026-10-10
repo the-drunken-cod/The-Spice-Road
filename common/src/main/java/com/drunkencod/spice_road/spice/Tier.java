@@ -2,6 +2,8 @@ package com.drunkencod.spice_road.spice;
 
 import java.util.Locale;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.mojang.serialization.Codec;
 
 import net.minecraft.core.registries.Registries;
@@ -62,6 +64,20 @@ public enum Tier implements StringRepresentable {
     @Override
     public String getSerializedName() {
         return name().toLowerCase(Locale.ROOT);
+    }
+
+    /**
+     * Looks up a Tier by its {@link #getSerializedName() name}.
+     *
+     * @param name The Tier's name, e.g. {@code "epic"}.
+     * @return The matching Tier, or {@code null} if there is none.
+     */
+    public static @Nullable Tier byName(String name) {
+        for (Tier tier : values()) {
+            if (tier.getSerializedName().equals(name))
+                return tier;
+        }
+        return null;
     }
 
     /**

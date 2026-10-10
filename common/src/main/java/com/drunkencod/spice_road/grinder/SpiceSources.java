@@ -93,12 +93,17 @@ public final class SpiceSources {
      */
     public Map<GrinderSpice, Integer> available() {
         Map<GrinderSpice, Integer> total = new LinkedHashMap<>();
+        boolean cheating = GrinderCheatMode.isEnabled(player.getUUID());
         Inventory inventory = player.getInventory();
         for (ItemStack stack : inventoryStacks(inventory))
             GrinderSpice.of(stack).ifPresent(spice -> total.merge(spice, stack.getCount(), Integer::sum));
         for (BlockEntity storage : storages) {
             for (CompoundTag entry : ItemListNbt.entries(storage.saveWithoutMetadata(registries)))
                 spiceOf(entry).ifPresent(spice -> total.merge(spice, ItemListNbt.countOf(entry), Integer::sum));
+        }
+        if (cheating) {
+            for (Item item : SpiceProfileRegistry.getAll().keySet())
+                total.put(GrinderSpice.loose(item), GrinderCheatMode.STOCK);
         }
         return total;
     }
@@ -115,11 +120,18 @@ public final class SpiceSources {
      * Takes spices and mixes, from the inventory first and then from the
      * nearest storage. All or nothing: if anything can't be taken, everything
      * that was already taken from storage is put back and nothing is taken.
+     * A player in {@linkplain GrinderCheatMode cheat mode} takes no loose
+     * spices, only mixes.
      *
      * @param amounts How many of each loose spice and kind of mix to take.
      * @return Whether it was all taken.
      */
     public boolean consume(Map<GrinderSpice, Integer> amounts) {
+        if (GrinderCheatMode.isEnabled(player.getUUID())) {
+            Map<GrinderSpice, Integer> mixes = new LinkedHashMap<>(amounts);
+            mixes.keySet().removeIf(spice -> spice.mix().isEmpty());
+            amounts = mixes;
+        }
         Map<GrinderSpice, Integer> available = available();
         for (Map.Entry<GrinderSpice, Integer> amount : amounts.entrySet()) {
             if (available.getOrDefault(amount.getKey(), 0) < amount.getValue())

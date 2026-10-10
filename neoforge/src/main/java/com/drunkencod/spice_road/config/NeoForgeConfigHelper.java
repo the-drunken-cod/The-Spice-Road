@@ -442,6 +442,21 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean isCommandPlayerResetAllowed() {
+        return value(ConfigSchema.COMMANDS_ALLOW_PLAYER_RESET);
+    }
+
+    @Override
+    public int getCommandSampleMaxRadiusCells() {
+        return value(ConfigSchema.COMMANDS_SAMPLE_MAX_RADIUS_CELLS);
+    }
+
+    @Override
+    public int getCommandSampleTimeBudgetMs() {
+        return value(ConfigSchema.COMMANDS_SAMPLE_TIME_BUDGET_MS);
+    }
+
+    @Override
     public int getSpiceMixCapacity() {
         return value(ConfigSchema.SPICE_MIX_CAPACITY);
     }

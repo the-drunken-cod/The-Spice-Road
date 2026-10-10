@@ -84,8 +84,10 @@ public final class ConfigSchema {
     public static final ConfigSection RECIPE_VIEWER = ConfigSection.root(ConfigFile.CLIENT, "recipeViewer");
     /** Player statistics the mod tracks. */
     public static final ConfigSection STATS = ConfigSection.root(ConfigFile.SERVER, "stats");
+    /** The mod's commands. */
+    public static final ConfigSection COMMANDS = ConfigSection.root(ConfigFile.SERVER, "commands");
     /** Behavior around other mods' placeable food items. */
-    public static final ConfigSection COMPAT = ConfigSection.root(ConfigFile.SERVER, "compat");
+    public static final ConfigSection COMPAT =ConfigSection.root(ConfigFile.SERVER, "compat");
     /** Which optional mods get recipes loaded. */
     public static final ConfigSection COMPAT_RECIPES = ConfigSection.root(ConfigFile.COMMON, "compatRecipes");
 
@@ -393,6 +395,20 @@ public final class ConfigSchema {
     /** Ticks between checks of each player's inventory for newly found Spices. */
     public static final ConfigOption<Integer> STATS_FOUND_SCAN_INTERVAL_TICKS = add(
             ConfigOption.ofInt(STATS, "foundScanIntervalTicks", 200, 0, 1200));
+
+    // #region Commands
+
+    /** Whether players without operator permission may reset their own progress. */
+    public static final ConfigOption<Boolean> COMMANDS_ALLOW_PLAYER_RESET = add(
+            ConfigOption.ofBoolean(COMMANDS, "allowPlayerReset", true));
+
+    /** Largest radius, in cells, {@code /spice_road admin sample_spices} accepts. */
+    public static final ConfigOption<Integer> COMMANDS_SAMPLE_MAX_RADIUS_CELLS = add(
+            ConfigOption.ofInt(COMMANDS, "sampleMaxRadiusCells", 60, 1, 1000));
+
+    /** Time, in milliseconds, after which {@code sample_spices} stops and reports what it has. */
+    public static final ConfigOption<Integer> COMMANDS_SAMPLE_TIME_BUDGET_MS = add(
+            ConfigOption.ofInt(COMMANDS, "sampleTimeBudgetMs", 5000, 100, 30_000));
 
     // #region Compat
 

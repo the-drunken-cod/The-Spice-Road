@@ -5,6 +5,7 @@ import java.util.List;
 import com.drunkencod.spice_road.client.NeoForgeConfigScreenHandler;
 import com.drunkencod.spice_road.client.NeoForgeSpiceRegionDebugOverlay;
 import com.drunkencod.spice_road.command.SpiceLocateCommand;
+import com.drunkencod.spice_road.command.SpiceRoadCommand;
 import com.drunkencod.spice_road.compat.appleskin.AppleSkinCompat;
 import com.drunkencod.spice_road.client.NeoForgeSpiceTooltipHandler;
 import com.drunkencod.spice_road.config.NeoForgeConfigHelper;
@@ -40,6 +41,7 @@ import com.drunkencod.spice_road.registry.NeoForgeConditions;
 import com.drunkencod.spice_road.registry.NeoForgeCreativeTabHelper;
 import com.drunkencod.spice_road.registry.NeoForgeRegistryHelper;
 import com.drunkencod.spice_road.spice.SpiceProfileRegistry;
+import com.drunkencod.spice_road.grinder.GrinderCheatMode;
 import com.drunkencod.spice_road.grinder.GrinderIntentPayload;
 import com.drunkencod.spice_road.grinder.GrinderViewPayload;
 import com.drunkencod.spice_road.client.grinder.SpiceGrinderScreen;
@@ -253,6 +255,7 @@ public class SpiceRoadMod {
 
     private static void onServerStopped(ServerStoppedEvent event) {
         SeasoningWorld.clear();
+        GrinderCheatMode.clear();
     }
 
     /** Resolves Default Profiles once the server's item tags are bound. */
@@ -263,6 +266,7 @@ public class SpiceRoadMod {
 
     private static void onRegisterCommands(RegisterCommandsEvent event) {
         SpiceLocateCommand.register(event.getDispatcher());
+        SpiceRoadCommand.register(event.getDispatcher());
     }
 
     /** Adds the Spice Map listings to the cartographer's level pools. */

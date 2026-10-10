@@ -2,9 +2,11 @@ package com.drunkencod.spice_road;
 
 import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.command.SpiceLocateCommand;
+import com.drunkencod.spice_road.command.SpiceRoadCommand;
 import com.drunkencod.spice_road.compat.FabricCompatRecipesCondition;
 import com.drunkencod.spice_road.config.ConfigSync;
 import com.drunkencod.spice_road.config.FabricConfigHelper;
+import com.drunkencod.spice_road.grinder.GrinderCheatMode;
 import com.drunkencod.spice_road.grinder.GrinderIntentPayload;
 import com.drunkencod.spice_road.grinder.GrinderViewPayload;
 import com.drunkencod.spice_road.loot.LootInjections;
@@ -99,9 +101,10 @@ public class SpiceRoadMod implements ModInitializer {
          * NeoForge does the same through its own events.
          */
         private static void registerSpiceMaps() {
-                CommandRegistrationCallback.EVENT
-                                .register((dispatcher, registryAccess, environment) -> SpiceLocateCommand
-                                                .register(dispatcher));
+                CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+                        SpiceLocateCommand.register(dispatcher);
+                        SpiceRoadCommand.register(dispatcher);
+                });
                 SpiceMapTrade.TIER_BY_LEVEL.forEach((level, tier) -> TradeOfferHelper.registerVillagerOffers(
                                 VillagerProfession.CARTOGRAPHER, level,
                                 factories -> factories.add(new SpiceMapTrade(tier))));
@@ -149,7 +152,10 @@ public class SpiceRoadMod implements ModInitializer {
         private static void registerSeasoningWorld() {
                 ServerLifecycleEvents.SERVER_STARTING.register(
                                 server -> SeasoningWorld.set(server.getWorldData().worldGenOptions().seed()));
-                ServerLifecycleEvents.SERVER_STOPPED.register(server -> SeasoningWorld.clear());
+                ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+                        SeasoningWorld.clear();
+                        GrinderCheatMode.clear();
+                });
         }
 
         /**

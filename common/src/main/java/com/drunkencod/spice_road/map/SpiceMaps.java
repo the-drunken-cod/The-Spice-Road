@@ -20,6 +20,7 @@ import net.minecraft.world.level.saveddata.maps.MapDecorationType;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 
 import com.drunkencod.spice_road.registry.ModMapDecorations;
+import com.drunkencod.spice_road.spice.Climate;
 import com.drunkencod.spice_road.spice.Spice;
 import com.drunkencod.spice_road.spice.Tier;
 import com.drunkencod.spice_road.spice.region.RegionHeart;
@@ -81,6 +82,24 @@ public final class SpiceMaps {
     public static Optional<ItemStack> createForSpice(ServerLevel level, BlockPos origin, int radius, Spice spice,
             byte zoom, @Nullable Holder<MapDecorationType> decoration) {
         return RegionHeartSearch.findNearest(level, origin, radius, spice)
+                .map(heart -> create(level, heart, zoom, decoration));
+    }
+
+    /**
+     * Creates a Spice Map pointing to the nearest Region Heart whose Heart
+     * Spice is of {@code climate}.
+     *
+     * @param level      The level to search in.
+     * @param origin     The position to search from.
+     * @param radius     Maximum distance to the heart, in blocks.
+     * @param climate    The Climate the Heart's Climate must be.
+     * @param zoom       The map's zoom level.
+     * @param decoration Marker override, or {@code null} for the default.
+     * @return The map, or empty if no heart of {@code climate} is in range.
+     */
+    public static Optional<ItemStack> createForClimate(ServerLevel level, BlockPos origin, int radius,
+            Climate climate, byte zoom, @Nullable Holder<MapDecorationType> decoration) {
+        return RegionHeartSearch.findNearest(level, origin, radius, heart -> heart.climate() == climate)
                 .map(heart -> create(level, heart, zoom, decoration));
     }
 

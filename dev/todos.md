@@ -254,3 +254,23 @@
     - Progressive sound effects for participation award, regular run and flawless run.
 - [ ] Auto-scale spice profile axis scale to -1..1, then -10..10 depending on whether abs(largest_value) > 1.0, then -20..20 when >10, and so on.
     - [ ] Show a centered header above the tooltip, something like `<gray>Spice Profile <lgray>(/<max_range>)<reset>`
+- [x] Add commands (compile-verified on both loaders, not tested in game yet):
+    - regular player:
+        - [x] `/spice_road reset found_spices [<Player>]` (`<Player>` needs operator permission). Zeroes the `spices_found` stat too; any raw Spice still in the inventory is found again by the next scan.
+        - [x] `/spice_road reset unlocked_cells [<Player>]` (same). Zeroes `cells_unlocked` too.
+        - Both are two-step: the bare command previews with a clickable `[Confirm]`, which runs the same command with a trailing `confirm`. Server config `commands.allowPlayerReset` (default true) hides them from non-operators.
+    - admin/operator:
+        - [x] `/spice_road admin give_map <Player> tier <Tier>` (`tier`, not `rarity`, as in the glossary)
+        - [x] `/spice_road admin give_map <Player> climate <Climate>`
+        - [x] `/spice_road admin give_map <Player> spice <Spice>`
+            - Searched from the target's position with the configured Spice Map search radius, like `/locate spice`.
+        - [x] `/spice_road admin sample_spices [<radius>] [tier|climate|spice <value>]` - real-world scan of the Spice Regions within `radius` cells (default: the Spice Map search radius) of the operator. Reports what became of the cells (spiceless, barren, Hearts) and, per Spice, its Heart count, share of all Hearts and regions per Heart; the filter only narrows the rows. Top 15 rows in chat, everything in the server log. Server config `commands.sampleMaxRadiusCells` (60) and `commands.sampleTimeBudgetMs` (5000); a walk that runs out of time reports what it has.
+        - [x] `/spice_road admin toggle_cheat_mode` - the running operator's Spice Grinder treats every Spice Item as in stock (9999) and takes nothing, until the server stops. Spice Mixes still have to be held.
+    - [ ] Test in game on both loaders: the preview/confirm clicks, `<Player>` hidden from non-operators, the Grinder list in cheat mode, `sample_spices` timing at radius 25 / 60 on a fresh world.
+- [ ] Grinder minigame improvements:
+    - [ ] Special garnish item effects:
+        - [ ] Truffle: when used, removes negative effects.
+        - [ ] Azalea Blossom: 
+        - [ ] Salt: 
+        - [ ] Sugar: 
+        - [ ] MSG: 

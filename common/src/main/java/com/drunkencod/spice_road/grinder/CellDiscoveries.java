@@ -87,6 +87,29 @@ public final class CellDiscoveries extends SavedData {
     }
 
     /**
+     * @param player A player's UUID.
+     * @return How many locked-in cells the player's log remembers.
+     */
+    public int count(UUID player) {
+        DiscoveryLog log = logs.get(player);
+        return log == null ? 0 : log.entries().size();
+    }
+
+    /**
+     * Forgets every cell a player has locked in.
+     *
+     * @param player A player's UUID.
+     * @return How many cells the player's log remembered.
+     */
+    public int clear(UUID player) {
+        DiscoveryLog log = logs.remove(player);
+        if (log == null || log.isEmpty())
+            return 0;
+        setDirty();
+        return log.entries().size();
+    }
+
+    /**
      * Remembers that a player locked a cell in.
      *
      * @param player A player's UUID.

@@ -348,21 +348,88 @@ public final class RegionHeartSearch {
         return nearest;
     }
 
+    /**
+     * Walks the cells within {@code radiusCells} of {@code origin}'s own cell,
+     * ring by ring, and tallies what each one amounts to (see
+     * {@link HeartOutcome}). Meant for balancing worldgen, so unlike the
+     * searches it also counts the cells that have no heart, and why. Nearer
+     * cells go first, so a walk cut short by {@code budgetNanos} still covers
+     * a centered area.
+     * <p>
+     * Runs on the calling thread, and a cell costs terrain noise, so the
+     * caller bounds both {@code radiusCells} and the budget.
+     *
+     * @param level       The level to survey.
+     * @param origin      The position to survey around, projected out of a Sable
+     *                    sub-level first like in the searches.
+     * @param radiusCells Chebyshev radius around the origin's cell, in cells.
+     * @param budgetNanos Wall-clock time after which the walk stops early.
+     * @return The tally. Empty if {@code level} has no Spice Regions.
+     */
+    public static RegionSurvey survey(ServerLevel level, BlockPos origin, int radiusCells, long budgetNanos) {
+        int side = (2 * radiusCells) + 1;
+        if (!hasSpiceRegions(level))
+            return new RegionSurvey(0);
+
+        RegionSurvey survey = new RegionSurvey(side * side);
+        BlockPos effectiveOrigin = SublevelPositions.projectOutOfSubLevel(level, origin);
+        long worldSeed = level.getSeed();
+        long salt = Services.CONFIG.getSpiceRegionSalt();
+        double cellScale = Services.CONFIG.getSpiceRegionCellScale();
+        int originX = effectiveOrigin.getX();
+        int originZ = effectiveOrigin.getZ();
+        int originGridX = (int) Math.floor(originX / cellScale);
+        int originGridZ = (int) Math.floor(originZ / cellScale);
+        long deadline = System.nanoTime() + budgetNanos;
+
+        for (int ring = 0; ring <= radiusCells; ring++) {
+            for (int[] offset : ringOffsets(ring)) {
+                if (System.nanoTime() > deadline)
+                    return survey;
+
+                SpiceCell cell = SpiceRegionResolver.cellAtGrid(worldSeed, salt, cellScale,
+                        originGridX + offset[0], originGridZ + offset[1], originX, originZ);
+                HeartResolution resolution = resolveHeart(level, cell);
+                RegionHeart heart = resolution.heart();
+                HeartOutcome outcome = heart != null && groveSite(level, heart).isEmpty() ? HeartOutcome.NO_GROVE_SITE
+                        : resolution.outcome();
+                survey.record(outcome, heart == null ? null : heart.spice());
+            }
+        }
+        return survey;
+    }
+
     /** Resolves the heart of {@code cell}, see {@link #heartAt}. */
     private static Optional<RegionHeart> heartOf(ServerLevel level, SpiceCell cell) {
+        return Optional.ofNullable(resolveHeart(level, cell).heart());
+    }
+
+    /**
+     * Resolves the heart of {@code cell}, or why it has none. Doesn't look for
+     * a grove site, so a returned heart may still turn out barren.
+     */
+    private static HeartResolution resolveHeart(ServerLevel level, SpiceCell cell) {
+        if (SpiceRegionResolver.isSpiceless(cell))
+            return new HeartResolution(HeartOutcome.SPICELESS, null);
+
         int x = (int) Math.floor(cell.centerX());
         int z = (int) Math.floor(cell.centerZ());
         HeartSample sample = sample(level, x, z);
         boolean heartless = sample.biome().is(NO_REGION_HEART);
         if (heartless && !sample.biome().is(AQUATIC_REGION_HEART))
-            return Optional.empty();
+            return new HeartResolution(HeartOutcome.BARREN_BIOME, null);
 
         BlockPos pos = new BlockPos(x, sample.surfaceY(), z);
         Climate climate = Climate.fromBiome(sample.biome(), pos);
-        return SpiceRegionResolver.resolveSpice(cell, climate, Services.CONFIG.getSpiceRegionClusteringStrength())
-                .filter(RegionHeartSearch::hasWorldgenPlant)
-                .filter(spice -> !heartless || spice.isAquatic())
-                .map(spice -> new RegionHeart(cell, pos, climate, spice));
+        Spice spice = SpiceRegionResolver
+                .resolveSpice(cell, climate, Services.CONFIG.getSpiceRegionClusteringStrength()).orElse(null);
+        if (spice == null)
+            return new HeartResolution(HeartOutcome.NO_SPICE_IN_CLIMATE, null);
+        if (!hasWorldgenPlant(spice))
+            return new HeartResolution(HeartOutcome.NO_WORLDGEN_PLANT, null);
+        if (heartless && !spice.isAquatic())
+            return new HeartResolution(HeartOutcome.BARREN_BIOME, null);
+        return new HeartResolution(HeartOutcome.HEART, new RegionHeart(cell, pos, climate, spice));
     }
 
     /**
@@ -480,6 +547,10 @@ public final class RegionHeartSearch {
         for (RegionHeart heart : hearts.values())
             farthest = Math.max(farthest, heart.cell().distance());
         return farthest;
+    }
+
+    /** A cell's heart, or {@code null} and the {@code outcome} that says why it has none. */
+    private record HeartResolution(HeartOutcome outcome, @Nullable RegionHeart heart) {
     }
 
     /** Surface height (including fluids), floor height (excluding fluids) and biome at a position. */

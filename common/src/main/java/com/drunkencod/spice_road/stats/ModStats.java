@@ -77,6 +77,17 @@ public final class ModStats {
     }
 
     /**
+     * Sets a stat back to zero. Scoreboard objectives tracking it keep their
+     * score, as vanilla has no way to lower one.
+     *
+     * @param player A player.
+     * @param stat   One of this class' stats.
+     */
+    public static void reset(ServerPlayer player, ResourceLocation stat) {
+        player.getStats().setValue(player, Stats.CUSTOM.get(stat), 0);
+    }
+
+    /**
      * Creates the {@code Stat} of every stat above, which is what makes them
      * list in the Statistics screen even before they are first awarded. Must
      * run once registries are populated: a {@code Stat} derives its name from

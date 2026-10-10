@@ -397,6 +397,21 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean isCommandPlayerResetAllowed() {
+        return value(ConfigSchema.COMMANDS_ALLOW_PLAYER_RESET, server().commands.allowPlayerReset);
+    }
+
+    @Override
+    public int getCommandSampleMaxRadiusCells() {
+        return value(ConfigSchema.COMMANDS_SAMPLE_MAX_RADIUS_CELLS, server().commands.sampleMaxRadiusCells);
+    }
+
+    @Override
+    public int getCommandSampleTimeBudgetMs() {
+        return value(ConfigSchema.COMMANDS_SAMPLE_TIME_BUDGET_MS, server().commands.sampleTimeBudgetMs);
+    }
+
+    @Override
     public int getSpiceMixCapacity() {
         return value(ConfigSchema.SPICE_MIX_CAPACITY, server().spiceMix.capacity);
     }
@@ -553,6 +568,8 @@ public class FabricConfigHelper implements IConfigHelper {
         public DryingRack dryingRack = new DryingRack();
         @ConfigEntry.Gui.CollapsibleObject
         public Stats stats = new Stats();
+        @ConfigEntry.Gui.CollapsibleObject
+        public Commands commands = new Commands();
         @ConfigEntry.Gui.CollapsibleObject
         public Compat compat = new Compat();
 
@@ -733,6 +750,16 @@ public class FabricConfigHelper implements IConfigHelper {
         public static class Stats {
             @ConfigEntry.Gui.Tooltip
             public int foundScanIntervalTicks = ConfigSchema.STATS_FOUND_SCAN_INTERVAL_TICKS.getDefault();
+        }
+
+        /** The mod's commands. */
+        public static class Commands {
+            @ConfigEntry.Gui.Tooltip
+            public boolean allowPlayerReset = ConfigSchema.COMMANDS_ALLOW_PLAYER_RESET.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public int sampleMaxRadiusCells = ConfigSchema.COMMANDS_SAMPLE_MAX_RADIUS_CELLS.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public int sampleTimeBudgetMs = ConfigSchema.COMMANDS_SAMPLE_TIME_BUDGET_MS.getDefault();
         }
 
         /** Behavior around other mods' placeable food items. */

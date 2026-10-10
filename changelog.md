@@ -27,6 +27,11 @@
         - Has a page for every spice with its tier, climate, yield, plant and harvest, a flavor bar chart and whether you have found it yet, plus articles on the Drying Rack, Spice Rack, Spice Grinder and Spice Mixes.
         - Resource packs can add entries or translate the book, in `assets/spice_road/patchouli_books/flavor_folio/<locale>/`.
         - Added the Patchouli page types `spice_road:spice_info`, `spice_road:spice_profile`, `spice_road:drying_recipe`, `spice_road:mix_preset` and `spice_road:block_tag` for use in any Patchouli book.
+    - Added the `/spice_road` command:
+        - `reset found_spices` and `reset unlocked_cells` make you forget your own progress and zero its statistic, after a click-to-confirm. Operators can name another player. The server config option `commands.allowPlayerReset` can turn it off for everyone else.
+        - `admin give_map <player> spice|tier|climate <value>` gives a player a Spice Map, located from where they stand at the time of running the command.
+        - `admin toggle_cheat_mode` gives the operator unlimited spices in the Spice Grinder until the server stops.
+        - `admin sample_spices [<radius>] [tier|climate|spice <value>]` surveys the Spice Regions around the operator and lists how many Region Hearts each spice got, plus how many regions are spiceless or barren, for balancing worldgen. The server config has a maximum radius and a time limit under `commands`.
 - **Changes:**
     - ⚠️ **BREAKING:** The Drying Rack `spice_road:drying_rack` is replaced by one block per vanilla wood type, e.g. `spice_road:oak_drying_rack`. Existing racks in worlds disappear.
     - Pie Purist advancement is now a child of Hang Out to Dry.

@@ -99,6 +99,20 @@ public final class SpiceFindings extends SavedData {
     }
 
     /**
+     * Forgets every Spice a player has found.
+     *
+     * @param player A player's UUID.
+     * @return How many Spices that player had found.
+     */
+    public int clear(UUID player) {
+        Set<Spice> spices = found.remove(player);
+        if (spices == null || spices.isEmpty())
+            return 0;
+        setDirty();
+        return spices.size();
+    }
+
+    /**
      * @param player A player's UUID.
      * @return The Spices that player has found; a copy.
      */
