@@ -28,6 +28,7 @@ public enum ProcessedSpice {
     DRIED_LONG_PEPPER("dried_long_pepper", Spice.LONG_PEPPER, ProcessingMethod.DRYING),
     DRIED_MUSTARD("dried_mustard", Spice.MUSTARD, ProcessingMethod.DRYING),
     DRIED_NUTMEG("dried_nutmeg", Spice.NUTMEG, ProcessingMethod.DRYING),
+    DRIED_STAR_ANISE("dried_star_anise", Spice.STAR_ANISE, ProcessingMethod.DRYING),
     DRIED_TONKA("dried_tonka", Spice.TONKA, ProcessingMethod.DRYING);
 
     private final String id;
