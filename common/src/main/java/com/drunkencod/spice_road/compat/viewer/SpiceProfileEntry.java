@@ -20,7 +20,6 @@ import com.drunkencod.spice_road.mix.SpiceMixes;
 import com.drunkencod.spice_road.spice.SpiceProfile;
 import com.drunkencod.spice_road.spice.SpiceProfiles;
 import com.drunkencod.spice_road.tooltip.SpiceFlavorTooltips;
-import com.drunkencod.spice_road.tooltip.SpiceProfileTooltips;
 
 /**
  * An entry of {@link ViewerCategory#SPICE_PROFILE}: a Spice Item or a Mix
@@ -85,12 +84,7 @@ public sealed interface SpiceProfileEntry extends ViewerEntry {
                     .slot(ViewerLayout.Role.INPUT, 0, 0, List.of(stack), List.of())
                     .text(stack.getHoverName(), nameX, 5, ViewerText.DARK_TEXT_COLOR, false, width - nameX, 1F);
 
-            Optional<Component> tierLine = SpiceProfileTooltips.tierOf(stack).map(tier -> Component.empty()
-                    .append(SpiceProfileTooltips.tierIcon(tier))
-                    .append(" ")
-                    .append(ViewerText.translatable("spice_profile.tier", SpiceProfileTooltips.tierName(tier))
-                            .withStyle(tier.getRarity().color())));
-            return addPanel(layout, width, ViewerLayout.SLOT_SIZE, tierLine,
+            return addPanel(layout, width, ViewerLayout.SLOT_SIZE, Optional.empty(),
                     SpiceFlavorTooltips.formatFlavorAxes(SpiceProfiles.effective(profile), BAR_SCALE, false),
                     List.of());
         }

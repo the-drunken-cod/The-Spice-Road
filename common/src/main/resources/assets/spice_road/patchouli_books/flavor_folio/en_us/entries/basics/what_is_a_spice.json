@@ -19,9 +19,9 @@
             "type": "patchouli:relations",
             "title": "Next Steps",
             "entries": [
-                "mechanics/spice_grinder",
-                "mechanics/drying_rack",
-                "exploration/spice_regions"
+                "spice_road:mechanics/spice_grinder",
+                "spice_road:mechanics/drying_rack",
+                "spice_road:exploration/spice_regions"
             ]
         }
     ]

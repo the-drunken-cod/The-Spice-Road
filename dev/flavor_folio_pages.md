@@ -61,7 +61,7 @@ A page whose id doesn't resolve shows a red "Unknown ..." line instead of failin
 { "type": "patchouli:crafting", "recipe": "spice_road:spice_rack", "recipe2": "...", "title": "...", "text": "..." }
 { "type": "patchouli:smelting", "recipe": "minecraft:...", "text": "..." }   // also blasting, smoking, campfire, smithing, stonecutting
 { "type": "patchouli:image", "images": ["spice_road:textures/gui/flavor_folio/grinder_board.png"], "title": "...", "border": true, "text": "..." }
-{ "type": "patchouli:relations", "title": "See Also", "entries": ["mechanics/spice_rack", "mechanics/spice_grinder"] }
+{ "type": "patchouli:relations", "title": "See Also", "entries": ["spice_road:mechanics/spice_rack", "spice_road:mechanics/spice_grinder"] }
 { "type": "patchouli:link", "url": "https://...", "link_text": "...", "text": "..." }
 { "type": "patchouli:entity", "entity": "minecraft:villager", "name": "...", "text": "..." }
 { "type": "patchouli:multiblock", "name": "...", "multiblock_id": "...", "text": "..." }
@@ -69,6 +69,7 @@ A page whose id doesn't resolve shows a red "Unknown ..." line instead of failin
 { "type": "patchouli:empty", "draw_filler": true }
 ```
 
+- `relations` entries need the full `spice_road:` namespace (they default to `minecraft:`), unlike `$(l:...)` text links.
 - Item fields accept an item id, a list separated by commas, or `tag:namespace:path` for an item tag. Block tags can't be used there, which is what `spice_road:block_tag` is for.
 - `patchouli:crafting` takes the id of a crafting recipe, e.g. the Drying Rack's `spice_road:crafting/drying_rack` and the Spice Rack's `spice_road:spice_rack`.
 - `patchouli:image` expects 256x256 images. Screenshots go in `assets/spice_road/textures/gui/flavor_folio/`.

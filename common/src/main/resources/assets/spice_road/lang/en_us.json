@@ -628,7 +628,6 @@
     "spice_road.viewer.spice_origin.yield": "Yield",
     "spice_road.viewer.spice_profile.any_of_tag": "Any of these spices",
     "spice_road.viewer.spice_profile.averaged": "The flavor of one spoonful: the average of the spices in the jar.",
-    "spice_road.viewer.spice_profile.tier": "%s spice",
     "spice_road.viewer.time.h": "%sh",
     "spice_road.viewer.time.m": "%sm",
     "spice_road.viewer.time.s": "%ss",
