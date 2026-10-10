@@ -120,14 +120,7 @@ public class SpiceFlavorTooltips {
 
         int labelWidth;
         if (showValues) {
-            // Sized over the shown rows only, since sizing for every possible value would
-            // leave most rows with a wide gap. All padding goes between label and number,
-            // at least about a space wide
-            List<Integer> rowWidths = new ArrayList<>();
-            for (FlavorAxis axis : FlavorAxis.values())
-                rowWidths.add(valueRowWidth(axis, profile.get(axis) >= 0D, profile.get(axis), bothLabels));
-            int minGap = Math.max(1, padder.space() - 1);
-            labelWidth = padder.alignedWidth(rowWidths, px -> px >= minGap && padder.isPaddable(px));
+            labelWidth = valueRowsWidth(profile, bothLabels, padder);
         } else {
             // Sized over every label any axis could show, so the layout stays the same
             // across Spices
@@ -186,18 +179,42 @@ public class SpiceFlavorTooltips {
      */
     private static List<Component> formatPlainLines(SpiceProfile profile, double barScale, boolean animated,
             boolean bothLabels, boolean showValues) {
+        Padder padder = Padder.measure();
+        int rowsWidth = showValues ? valueRowsWidth(profile, bothLabels, padder) : 0;
         double progress = animationProgress(profile, barScale, animated);
         List<Component> lines = new ArrayList<>(FlavorAxis.values().length);
         for (FlavorAxis axis : FlavorAxis.values()) {
             double value = profile.get(axis);
             boolean positive = value >= 0D;
             MutableComponent line = Component.empty().append(axisLabel(axis, positive, bothLabels));
-            if (showValues)
-                line.append(valueSeparator()).append(" ")
-                        .append(valueNumber(axis, positive, FlavorTooltipAnimator.displayed(value, barScale, progress)));
+            if (showValues) {
+                double shown = FlavorTooltipAnimator.displayed(value, barScale, progress);
+                line.append(valueSeparator())
+                        .append(padder.build(rowsWidth - valueRowWidth(axis, positive, shown, bothLabels)))
+                        .append(valueNumber(axis, positive, shown));
+            }
             lines.add(line);
         }
         return lines;
+    }
+
+    /**
+     * Sized over the shown rows only, since sizing for every possible value would
+     * leave most rows with a wide gap. All padding goes between label and number,
+     * at least about a space wide.
+     *
+     * @param profile    The Spice Profile being shown
+     * @param bothLabels Whether to show both pole labels
+     * @param padder     Builds the padding
+     * @return Common width of the label, separator, padding and number of every
+     *         value row
+     */
+    private static int valueRowsWidth(SpiceProfile profile, boolean bothLabels, Padder padder) {
+        List<Integer> rowWidths = new ArrayList<>();
+        for (FlavorAxis axis : FlavorAxis.values())
+            rowWidths.add(valueRowWidth(axis, profile.get(axis) >= 0D, profile.get(axis), bothLabels));
+        int minGap = Math.max(1, padder.space() - 1);
+        return padder.alignedWidth(rowWidths, px -> px >= minGap && padder.isPaddable(px));
     }
 
     /**
