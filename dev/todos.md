@@ -266,7 +266,6 @@
             - Searched from the target's position with the configured Spice Map search radius, like `/locate spice`.
         - [x] `/spice_road admin sample_spices [<radius>] [tier|climate|spice <value>]` - real-world scan of the Spice Regions within `radius` cells (default: the Spice Map search radius) of the operator. Reports what became of the cells (spiceless, barren, Hearts) and, per Spice, its Heart count, share of all Hearts and regions per Heart; the filter only narrows the rows. Top 15 rows in chat, everything in the server log. Server config `commands.sampleMaxRadiusCells` (60) and `commands.sampleTimeBudgetMs` (5000); a walk that runs out of time reports what it has.
         - [x] `/spice_road admin toggle_cheat_mode` - the running operator's Spice Grinder treats every Spice Item as in stock (9999) and takes nothing, until the server stops. Spice Mixes still have to be held.
-    - [ ] Test in game on both loaders: the preview/confirm clicks, `<Player>` hidden from non-operators, the Grinder list in cheat mode, `sample_spices` timing at radius 25 / 60 on a fresh world.
 - [ ] Grinder minigame improvements:
     - [ ] Special garnish item effects:
         - [ ] Truffle: when used, removes negative effects.

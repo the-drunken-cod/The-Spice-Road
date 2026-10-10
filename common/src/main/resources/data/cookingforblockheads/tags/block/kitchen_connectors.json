@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "#spice_road:spice_racks",
+    "#spice_road:drying_racks",
+    "spice_road:spice_grinder"
+  ]
+}
