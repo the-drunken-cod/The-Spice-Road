@@ -7,7 +7,11 @@
     "minecraft:lava",
     "minecraft:magma_block",
     {
-      "id": "farmersdelight:stove",
+      "id": "#create:passive_boiler_heaters",
+      "required": false
+    },
+    {
+      "id": "#farmersdelight:heat_sources",
       "required": false
     },
     {
