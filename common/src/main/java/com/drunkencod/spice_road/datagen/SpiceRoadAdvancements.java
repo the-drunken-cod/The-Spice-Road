@@ -96,7 +96,7 @@ public class SpiceRoadAdvancements implements AdvancementSubProvider {
                 .display(ModBlocks.SPICE_RACK_ITEMS.get(SpiceRackWood.OAK).get(),
                         Component.translatable("advancements.spice_road.nice_rack.title"),
                         Component.translatable("advancements.spice_road.nice_rack.description"),
-                        null, AdvancementType.TASK, true, true, false)
+                        null, AdvancementType.CHALLENGE, true, true, false)
                 .addCriterion("spice_rack_filled", SpiceRackFilledTrigger.TriggerInstance.spiceRackFilled())
                 .build(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "nice_rack"));
         saver.accept(niceRack);
