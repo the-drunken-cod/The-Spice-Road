@@ -2,14 +2,11 @@
     "type": "minecraft:crafting_shaped",
     "category": "building",
     "pattern": [
-        " P ",
+        " B ",
         "B B",
         "BBB"
     ],
     "key": {
-        "P": {
-            "item": "minecraft:polished_basalt"
-        },
         "B": {
             "item": "minecraft:basalt"
         }
