@@ -15,8 +15,9 @@ import com.drunkencod.spice_road.spice.Spice;
 
 /**
  * Notices Spices entering players' inventories, by scanning every player's
- * inventory for raw Spice items at a configurable interval, and keeps
- * {@link ModStats#SPICES_FOUND} in step with {@link SpiceFindings}.
+ * inventory for raw Spice items at a configurable interval, keeps
+ * {@link ModStats#SPICES_FOUND} in step with {@link SpiceFindings}, and tells
+ * a player's client when their set grows.
  */
 public final class FoundSpiceTracker {
 
@@ -51,12 +52,15 @@ public final class FoundSpiceTracker {
         SpiceFindings findings = SpiceFindings.of(player.server);
         Map<Item, Spice> raw = rawItems();
         Inventory inventory = player.getInventory();
+        boolean foundNew = false;
         for (int slot = 0; slot < inventory.getContainerSize(); slot++) {
             ItemStack stack = inventory.getItem(slot);
             Spice spice = stack.isEmpty() ? null : raw.get(stack.getItem());
             if (spice != null)
-                findings.add(player.getUUID(), spice);
+                foundNew |= findings.add(player.getUUID(), spice);
         }
+        if (foundNew)
+            Services.NETWORK.sendToPlayer(player, SpiceFindingsSync.of(player));
         int missing = findings.count(player.getUUID()) - ModStats.get(player, ModStats.SPICES_FOUND);
         if (missing > 0)
             player.awardStat(ModStats.SPICES_FOUND, missing);

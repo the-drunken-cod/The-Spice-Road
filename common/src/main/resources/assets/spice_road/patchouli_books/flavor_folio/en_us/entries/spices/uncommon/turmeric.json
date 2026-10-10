@@ -1,0 +1,20 @@
+{
+    "name": "Turmeric",
+    "icon": "spice_road:turmeric",
+    "category": "spice_road:spices_uncommon",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Turmeric",
+            "text": "TODO: write the article for Turmeric."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "turmeric"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:turmeric"
+        }
+    ]
+}

@@ -1,0 +1,7 @@
+{
+    "parent": "spice_road:mechanics",
+    "name": "Grinder Minigame",
+    "description": "How the Spice Grinder's board works.",
+    "icon": "spice_road:spice_grinder",
+    "sortnum": 0
+}

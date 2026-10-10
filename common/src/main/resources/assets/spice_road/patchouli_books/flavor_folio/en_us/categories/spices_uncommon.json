@@ -1,0 +1,7 @@
+{
+    "parent": "spice_road:spices",
+    "name": "Uncommon",
+    "description": "Worth a short trip.",
+    "icon": "spice_road:ginger",
+    "sortnum": 1
+}

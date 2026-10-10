@@ -1,0 +1,26 @@
+{
+    "name": "Spice Grinder",
+    "icon": "spice_road:spice_grinder",
+    "category": "spice_road:mechanics",
+    "sortnum": 2,
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Spice Grinder",
+            "text": "$(todo)TODO$(): Summary: combines spices and seasons food; can be placed with Shift + Right-click; a run in progress is saved on the item or block; the $(cfg)grinder.inputBufferMs$() client config option."
+        },
+        {
+            "type": "patchouli:crafting",
+            "recipe": "spice_road:crafting/spice_grinder"
+        },
+        {
+            "type": "patchouli:image",
+            "title": "The Grinder",
+            "images": [
+                "spice_road:textures/gui/flavor_folio/grinder_board.png"
+            ],
+            "border": true,
+            "text": "$(todo)TODO$(): Replace this placeholder with a screenshot. `patchouli:image` takes up to several images and flips between them."
+        }
+    ]
+}

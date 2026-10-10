@@ -8,10 +8,12 @@ import com.drunkencod.spice_road.command.SpiceLocateCommand;
 import com.drunkencod.spice_road.compat.appleskin.AppleSkinCompat;
 import com.drunkencod.spice_road.client.NeoForgeSpiceTooltipHandler;
 import com.drunkencod.spice_road.config.NeoForgeConfigHelper;
+import com.drunkencod.spice_road.compat.patchouli.FlavorFolio;
 import com.drunkencod.spice_road.datagen.BotanyPotsRecipeProvider;
 import com.drunkencod.spice_road.datagen.DryingRackAssetProvider;
 import com.drunkencod.spice_road.datagen.DryingRackDataProvider;
 import com.drunkencod.spice_road.datagen.DryingRecipeProvider;
+import com.drunkencod.spice_road.datagen.FlavorFolioRecipeProvider;
 import com.drunkencod.spice_road.datagen.ImmersiveEngineeringClocheRecipeProvider;
 import com.drunkencod.spice_road.datagen.MixPresetProvider;
 import com.drunkencod.spice_road.datagen.SpiceMixModelProvider;
@@ -44,6 +46,7 @@ import com.drunkencod.spice_road.client.grinder.SpiceGrinderScreen;
 import com.drunkencod.spice_road.spice.SpiceProfileSync;
 import com.drunkencod.spice_road.spice.board.SeasoningWorld;
 import com.drunkencod.spice_road.spice.effect.SeasoningEffectSync;
+import com.drunkencod.spice_road.stats.SpiceFindingsSync;
 import com.drunkencod.spice_road.stats.FoundSpiceTracker;
 import com.drunkencod.spice_road.villager.SpiceMapTrade;
 
@@ -148,6 +151,9 @@ public class SpiceRoadMod {
                 new BotanyPotsRecipeProvider(event.getGenerator().getPackOutput()));
         event.getGenerator().addProvider(
                 event.includeServer(),
+                new FlavorFolioRecipeProvider(event.getGenerator().getPackOutput()));
+        event.getGenerator().addProvider(
+                event.includeServer(),
                 new ImmersiveEngineeringClocheRecipeProvider(event.getGenerator().getPackOutput()));
         event.getGenerator().addProvider(
                 event.includeServer(),
@@ -207,6 +213,8 @@ public class SpiceRoadMod {
             AppleSkinCompat.register();
         SpiceGrinderScreen.registerViewHandler();
         NeoForgeConfigScreenHandler.register(modContainer);
+        // Patchouli fills its page type map from its own setup handler, so add ours on the main thread afterwards
+        event.enqueueWork(FlavorFolio::registerPageTypes);
     }
 
     private static void onRegisterPayloadHandlers(RegisterPayloadHandlersEvent event) {
@@ -216,6 +224,8 @@ public class SpiceRoadMod {
                 .playToClient(SeasoningEffectSync.TYPE, SeasoningEffectSync.STREAM_CODEC,
                         (payload, context) -> payload.handle())
                 .playToClient(MixPresetSync.TYPE, MixPresetSync.STREAM_CODEC,
+                        (payload, context) -> payload.handle())
+                .playToClient(SpiceFindingsSync.TYPE, SpiceFindingsSync.STREAM_CODEC,
                         (payload, context) -> payload.handle())
                 .playToClient(GrinderViewPayload.TYPE, GrinderViewPayload.STREAM_CODEC,
                         (payload, context) -> payload.handle())
@@ -270,8 +280,9 @@ public class SpiceRoadMod {
     }
 
     /**
-     * Syncs Default Profiles, the Seasoning Effect catalog and the Mix Presets
-     * to each player on join and to everyone after {@code /reload}.
+     * Syncs Default Profiles, the Seasoning Effect catalog, the Mix Presets and
+     * the player's found Spices to each player on join and to everyone after
+     * {@code /reload}.
      */
     private static void onDatapackSync(OnDatapackSyncEvent event) {
         SpiceProfileSync profiles = SpiceProfileSync.current();
@@ -281,6 +292,7 @@ public class SpiceRoadMod {
             PacketDistributor.sendToPlayer(player, profiles);
             PacketDistributor.sendToPlayer(player, effects);
             PacketDistributor.sendToPlayer(player, presets);
+            PacketDistributor.sendToPlayer(player, SpiceFindingsSync.of(player));
         });
     }
 }

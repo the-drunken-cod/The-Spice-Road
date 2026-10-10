@@ -68,7 +68,7 @@ public record DryingEntry(RecipeHolder<DryingRecipe> recipe) implements ViewerEn
     }
 
     @Override
-    public ViewerLayout layout(HolderLookup.Provider registries) {
+    public ViewerLayout layout(HolderLookup.Provider registries, int width) {
         DryingRecipe drying = recipe.value();
         ViewerLayout.Builder layout = ViewerLayout.builder()
                 .slot(ViewerLayout.Role.INPUT, 0, SLOT_Y, List.of(drying.getIngredient().getItems()), List.of())
@@ -79,7 +79,6 @@ public record DryingEntry(RecipeHolder<DryingRecipe> recipe) implements ViewerEn
 
         double speed = Services.CONFIG.getDryingRackSpeedMultiplier();
         double seconds = drying.getDryingTime() / TICKS_PER_SECOND / speed;
-        int width = ViewerCategory.DRYING.getWidth();
         Component time = ViewerText.translatable("drying.time", ViewerText.duration(seconds));
         layout.text(time, 0, TIME_Y, ViewerText.DARK_TEXT_COLOR, false, width, 1F);
         layout.tooltip(0, TIME_Y, Math.min(SpiceFlavorTooltips.measureWidth(time), width),

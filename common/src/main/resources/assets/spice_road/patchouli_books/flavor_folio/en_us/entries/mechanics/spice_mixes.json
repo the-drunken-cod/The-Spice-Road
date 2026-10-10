@@ -1,0 +1,61 @@
+{
+    "name": "Spice Mixes",
+    "icon": "spice_road:spice_mix",
+    "category": "spice_road:mechanics",
+    "sortnum": 6,
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Spice Mixes",
+            "text": "$(todo)TODO$(): A jar of up to 8 spices. Any configuration is valid, including duplicates; named presets are fixed proportions."
+        },
+        {
+            "type": "spice_road:mix_preset",
+            "preset": "spice_road:bengali"
+        },
+        {
+            "type": "spice_road:mix_preset",
+            "preset": "spice_road:biryani"
+        },
+        {
+            "type": "spice_road:mix_preset",
+            "preset": "spice_road:cajun"
+        },
+        {
+            "type": "spice_road:mix_preset",
+            "preset": "spice_road:curry"
+        },
+        {
+            "type": "spice_road:mix_preset",
+            "preset": "spice_road:holiday"
+        },
+        {
+            "type": "spice_road:mix_preset",
+            "preset": "spice_road:mediterranean"
+        },
+        {
+            "type": "spice_road:mix_preset",
+            "preset": "spice_road:mexican"
+        },
+        {
+            "type": "spice_road:mix_preset",
+            "preset": "spice_road:persian"
+        },
+        {
+            "type": "spice_road:mix_preset",
+            "preset": "spice_road:pumpkin_spice"
+        },
+        {
+            "type": "spice_road:mix_preset",
+            "preset": "spice_road:ras_el_hanout"
+        },
+        {
+            "type": "spice_road:mix_preset",
+            "preset": "spice_road:salad"
+        },
+        {
+            "type": "spice_road:mix_preset",
+            "preset": "spice_road:zaatar"
+        }
+    ]
+}

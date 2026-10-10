@@ -1,0 +1,20 @@
+{
+    "name": "Nigella",
+    "icon": "spice_road:nigella",
+    "category": "spice_road:spices_uncommon",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Nigella",
+            "text": "TODO: write the article for Nigella."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "nigella"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:nigella"
+        }
+    ]
+}

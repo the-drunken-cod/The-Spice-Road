@@ -1,0 +1,20 @@
+{
+    "name": "Tonka Fruit",
+    "icon": "spice_road:tonka",
+    "category": "spice_road:spices_rare",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Tonka Fruit",
+            "text": "TODO: write the article for Tonka Fruit."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "tonka"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:tonka"
+        }
+    ]
+}

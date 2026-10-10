@@ -1,0 +1,20 @@
+{
+    "name": "Sweet Flag",
+    "icon": "spice_road:sweet_flag",
+    "category": "spice_road:spices_uncommon",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Sweet Flag",
+            "text": "TODO: write the article for Sweet Flag."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "sweet_flag"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:sweet_flag"
+        }
+    ]
+}

@@ -1,0 +1,20 @@
+{
+    "name": "Rosemary",
+    "icon": "spice_road:rosemary",
+    "category": "spice_road:spices_common",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Rosemary",
+            "text": "TODO: write the article for Rosemary."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "rosemary"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:rosemary"
+        }
+    ]
+}

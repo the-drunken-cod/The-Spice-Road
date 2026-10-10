@@ -13,6 +13,7 @@ import com.drunkencod.spice_road.datagen.BotanyPotsRecipeProvider;
 import com.drunkencod.spice_road.datagen.DryingRackAssetProvider;
 import com.drunkencod.spice_road.datagen.DryingRackDataProvider;
 import com.drunkencod.spice_road.datagen.DryingRecipeProvider;
+import com.drunkencod.spice_road.datagen.FlavorFolioRecipeProvider;
 import com.drunkencod.spice_road.datagen.MixPresetProvider;
 import com.drunkencod.spice_road.datagen.SpiceMetaProvider;
 import com.drunkencod.spice_road.datagen.SpiceMixModelProvider;
@@ -47,6 +48,7 @@ public class ModDataGen implements DataGeneratorEntrypoint {
         pack.addProvider(FabricSpiceLootProvider::new);
         pack.addProvider((FabricDataOutput output) -> new SpiceTreeCompatRecipeProvider(output));
         pack.addProvider((FabricDataOutput output) -> new BotanyPotsRecipeProvider(output));
+        pack.addProvider((FabricDataOutput output) -> new FlavorFolioRecipeProvider(output));
         pack.addProvider((FabricDataOutput output) -> new SpiceTreePlanksRecipeProvider(output));
         pack.addProvider((FabricDataOutput output) -> new DryingRecipeProvider(output));
         pack.addProvider((FabricDataOutput output) -> new SpiceItemTagProvider(output));

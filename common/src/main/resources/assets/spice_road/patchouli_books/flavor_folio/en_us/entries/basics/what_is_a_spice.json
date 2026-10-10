@@ -1,0 +1,28 @@
+{
+    "name": "What is a Spice?",
+    "icon": "spice_road:cinnamon",
+    "category": "spice_road:basics",
+    "sortnum": 0,
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "What is a Spice?",
+            "text": "$(todo)TODO$(): Explain Spices, their Tiers, Processed Spices and how they are used to season food. This page type is `patchouli:text`."
+        },
+        {
+            "type": "patchouli:spotlight",
+            "item": "tag:spice_road:spices",
+            "title": "Spice Items",
+            "text": "$(todo)TODO$(): `patchouli:spotlight` cycles through an item list or an item tag (`tag:namespace:path`)."
+        },
+        {
+            "type": "patchouli:relations",
+            "title": "Next Steps",
+            "entries": [
+                "mechanics/spice_grinder",
+                "mechanics/drying_rack",
+                "exploration/spice_regions"
+            ]
+        }
+    ]
+}

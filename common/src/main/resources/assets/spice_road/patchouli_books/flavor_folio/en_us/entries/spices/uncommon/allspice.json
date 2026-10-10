@@ -1,0 +1,20 @@
+{
+    "name": "Allspice",
+    "icon": "spice_road:allspice",
+    "category": "spice_road:spices_uncommon",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Allspice",
+            "text": "TODO: write the article for Allspice."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "allspice"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:allspice"
+        }
+    ]
+}

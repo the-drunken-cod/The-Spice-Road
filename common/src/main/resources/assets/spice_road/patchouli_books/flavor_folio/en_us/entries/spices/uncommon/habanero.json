@@ -1,0 +1,20 @@
+{
+    "name": "Habanero",
+    "icon": "spice_road:habanero",
+    "category": "spice_road:spices_uncommon",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Habanero",
+            "text": "TODO: write the article for Habanero."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "habanero"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:habanero"
+        }
+    ]
+}

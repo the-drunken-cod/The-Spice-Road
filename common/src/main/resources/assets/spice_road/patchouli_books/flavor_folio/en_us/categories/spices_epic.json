@@ -1,0 +1,7 @@
+{
+    "parent": "spice_road:spices",
+    "name": "Epic",
+    "description": "The rarest spices of all.",
+    "icon": "spice_road:cinnamon",
+    "sortnum": 3
+}

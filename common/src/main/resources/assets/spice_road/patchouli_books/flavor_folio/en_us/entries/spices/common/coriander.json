@@ -1,0 +1,20 @@
+{
+    "name": "Coriander",
+    "icon": "spice_road:coriander",
+    "category": "spice_road:spices_common",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Coriander",
+            "text": "TODO: write the article for Coriander."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "coriander"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:coriander"
+        }
+    ]
+}

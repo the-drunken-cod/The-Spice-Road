@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import com.drunkencod.spice_road.block.SpicePlants;
 import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.block.SpiceVines;
+import com.drunkencod.spice_road.compat.patchouli.FlavorFolio;
 import com.drunkencod.spice_road.config.ConfigSync;
 import com.drunkencod.spice_road.config.ConfigSyncOverride;
 import com.drunkencod.spice_road.client.drying.DryingRackRenderer;
@@ -24,6 +25,7 @@ import com.drunkencod.spice_road.registry.ModBlocks;
 import com.drunkencod.spice_road.registry.ModMenus;
 import com.drunkencod.spice_road.spice.SpiceProfileSync;
 import com.drunkencod.spice_road.spice.effect.SeasoningEffectSync;
+import com.drunkencod.spice_road.stats.SpiceFindingsSync;
 
 /**
  * Fabric client-only entry point. Keep this limited to client-only setup that
@@ -41,8 +43,10 @@ public class SpiceRoadClientMod implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(SpiceProfileSync.TYPE, (payload, context) -> payload.handle());
         ClientPlayNetworking.registerGlobalReceiver(SeasoningEffectSync.TYPE, (payload, context) -> payload.handle());
         ClientPlayNetworking.registerGlobalReceiver(MixPresetSync.TYPE, (payload, context) -> payload.handle());
+        ClientPlayNetworking.registerGlobalReceiver(SpiceFindingsSync.TYPE, (payload, context) -> payload.handle());
         ClientPlayNetworking.registerGlobalReceiver(GrinderViewPayload.TYPE, (payload, context) -> payload.handle());
         SpiceGrinderScreen.registerViewHandler();
+        FlavorFolio.registerPageTypes();
         MenuScreens.register(ModMenus.SPICE_GRINDER.get(), SpiceGrinderScreen::new);
         MenuScreens.register(ModMenus.SPICE_RACK.get(), SpiceRackScreen::new);
         ClientPlayNetworking.registerGlobalReceiver(ConfigSync.TYPE, (payload, context) -> payload.handle());

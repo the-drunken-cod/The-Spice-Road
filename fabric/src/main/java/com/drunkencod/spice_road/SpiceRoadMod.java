@@ -16,6 +16,7 @@ import com.drunkencod.spice_road.spice.SpiceProfileSync;
 import com.drunkencod.spice_road.spice.board.SeasoningWorld;
 import com.drunkencod.spice_road.spice.effect.SeasoningEffectSync;
 import com.drunkencod.spice_road.stats.FoundSpiceTracker;
+import com.drunkencod.spice_road.stats.SpiceFindingsSync;
 import com.drunkencod.spice_road.villager.SpiceMapTrade;
 
 import net.fabricmc.api.ModInitializer;
@@ -110,13 +111,14 @@ public class SpiceRoadMod implements ModInitializer {
 
         /**
          * Resolves Default Profiles once the server's item tags are bound, and
-         * syncs them, the Seasoning Effect catalog and the Mix Presets to each player on join and to everyone after
-         * {@code /reload}. NeoForge does the same through its own events.
+         * syncs them, the Seasoning Effect catalog, the Mix Presets and the player's found
+         * Spices to each player on join and to everyone after {@code /reload}. NeoForge does the same through its own events.
          */
         private static void registerSpiceProfileSync() {
                 PayloadTypeRegistry.playS2C().register(SpiceProfileSync.TYPE, SpiceProfileSync.STREAM_CODEC);
                 PayloadTypeRegistry.playS2C().register(SeasoningEffectSync.TYPE, SeasoningEffectSync.STREAM_CODEC);
                 PayloadTypeRegistry.playS2C().register(MixPresetSync.TYPE, MixPresetSync.STREAM_CODEC);
+                PayloadTypeRegistry.playS2C().register(SpiceFindingsSync.TYPE, SpiceFindingsSync.STREAM_CODEC);
                 CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
                         if (!client)
                                 SpiceProfileRegistry.resolve();
@@ -125,6 +127,7 @@ public class SpiceRoadMod implements ModInitializer {
                         ServerPlayNetworking.send(player, SpiceProfileSync.current());
                         ServerPlayNetworking.send(player, SeasoningEffectSync.current());
                         ServerPlayNetworking.send(player, MixPresetSync.current());
+                        ServerPlayNetworking.send(player, SpiceFindingsSync.of(player));
                 });
         }
 

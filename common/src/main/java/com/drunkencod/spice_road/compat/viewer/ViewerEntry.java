@@ -23,8 +23,21 @@ public interface ViewerEntry {
     /**
      * @param registries The client's registries, for data-driven content such
      *                   as biome tags.
+     * @param width      Pixels the content may span horizontally. Viewers pass
+     *                   their category's width; other hosts, like a book page,
+     *                   pass their own.
      * @return The entry's content as of now. Its slots' stacks must not depend
      *         on the config, since viewers index them only once.
      */
-    ViewerLayout layout(HolderLookup.Provider registries);
+    ViewerLayout layout(HolderLookup.Provider registries, int width);
+
+    /**
+     * @param registries The client's registries, for data-driven content such
+     *                   as biome tags.
+     * @return The entry's content laid out for its category's width.
+     * @see #layout(HolderLookup.Provider, int)
+     */
+    default ViewerLayout layout(HolderLookup.Provider registries) {
+        return layout(registries, category().getWidth());
+    }
 }

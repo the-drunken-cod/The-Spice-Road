@@ -1,0 +1,20 @@
+{
+    "name": "Cinnamon",
+    "icon": "spice_road:cinnamon",
+    "category": "spice_road:spices_epic",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Cinnamon",
+            "text": "TODO: write the article for Cinnamon."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "cinnamon"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:cinnamon"
+        }
+    ]
+}

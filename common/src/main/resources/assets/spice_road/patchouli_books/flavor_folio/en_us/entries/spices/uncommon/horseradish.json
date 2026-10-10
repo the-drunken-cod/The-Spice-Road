@@ -1,0 +1,20 @@
+{
+    "name": "Horseradish",
+    "icon": "spice_road:horseradish",
+    "category": "spice_road:spices_uncommon",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Horseradish",
+            "text": "TODO: write the article for Horseradish."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "horseradish"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:horseradish"
+        }
+    ]
+}

@@ -1,0 +1,20 @@
+{
+    "name": "Fenugreek",
+    "icon": "spice_road:fenugreek",
+    "category": "spice_road:spices_uncommon",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Fenugreek",
+            "text": "TODO: write the article for Fenugreek."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "fenugreek"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:fenugreek"
+        }
+    ]
+}

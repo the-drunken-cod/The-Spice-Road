@@ -1,0 +1,20 @@
+{
+    "name": "Fresh Star Anise",
+    "icon": "spice_road:star_anise",
+    "category": "spice_road:spices_rare",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Fresh Star Anise",
+            "text": "TODO: write the article for Fresh Star Anise."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "star_anise"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:star_anise"
+        }
+    ]
+}

@@ -1,0 +1,7 @@
+{
+    "parent": "spice_road:spices",
+    "name": "Rare",
+    "description": "Found far from home, and picky about where they grow.",
+    "icon": "spice_road:cardamom",
+    "sortnum": 2
+}

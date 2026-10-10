@@ -1,0 +1,13 @@
+{
+    "name": "Participation Bonus",
+    "icon": "minecraft:bread",
+    "category": "spice_road:mechanics",
+    "sortnum": 5,
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Participation Bonus",
+            "text": "$(todo)TODO$(): Bonus saturation for food that ended up with no effects after the minigame."
+        }
+    ]
+}

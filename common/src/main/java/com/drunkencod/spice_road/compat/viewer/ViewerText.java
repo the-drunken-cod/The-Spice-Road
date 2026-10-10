@@ -53,6 +53,19 @@ public final class ViewerText {
     }
 
     /**
+     * @param widest    Width of the widest line of a block of text, unscaled.
+     * @param available Width the block may span.
+     * @return The scale that fits the block into {@code available}, or 1 if it
+     *         fits already. Rounded down to a thousandth, so the scaled width
+     *         never ends up a rounding error past the limit.
+     */
+    public static float fitScale(int widest, int available) {
+        if (widest <= available)
+            return 1F;
+        return (float) Math.floor(1000D * available / widest) / 1000F;
+    }
+
+    /**
      * One unit of a {@link #duration}, e.g. the {@code 15s} of {@code 1m 15s}.
      *
      * @param unit   The unit's key, relative to {@code KEY + "time."}: {@code h},

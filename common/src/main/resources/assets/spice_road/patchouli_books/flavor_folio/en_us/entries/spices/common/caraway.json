@@ -1,0 +1,20 @@
+{
+    "name": "Caraway",
+    "icon": "spice_road:caraway",
+    "category": "spice_road:spices_common",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Caraway",
+            "text": "TODO: write the article for Caraway."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "caraway"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:caraway"
+        }
+    ]
+}

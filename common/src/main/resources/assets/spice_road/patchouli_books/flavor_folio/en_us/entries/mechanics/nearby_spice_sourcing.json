@@ -1,0 +1,19 @@
+{
+    "name": "Nearby Spice Sourcing",
+    "icon": "spice_road:oak_spice_rack",
+    "category": "spice_road:mechanics",
+    "sortnum": 3,
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Nearby Spices",
+            "text": "$(todo)TODO$(): The Grinder takes spices from your inventory first, then from storage within the $(cfg)seasoning.storageRadius$() config option, nearest first. All or nothing."
+        },
+        {
+            "type": "spice_road:block_tag",
+            "title": "Supported Storage",
+            "tag": "spice_road:spice_storage",
+            "text": "Lists whatever the block tag $(cfg)#spice_road:spice_storage$() contains."
+        }
+    ]
+}

@@ -1,0 +1,7 @@
+{
+    "parent": "spice_road:spices",
+    "name": "Common",
+    "description": "Easy to find and easy to grow.",
+    "icon": "spice_road:mustard",
+    "sortnum": 0
+}

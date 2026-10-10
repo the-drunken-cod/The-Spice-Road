@@ -1,0 +1,13 @@
+{
+    "name": "Diversity Bonus",
+    "icon": "minecraft:golden_apple",
+    "category": "spice_road:mechanics",
+    "sortnum": 4,
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Diversity Bonus",
+            "text": "$(todo)TODO$(): Bonus saturation for using many different spices. The AppleSkin tooltip is accurate, but its HUD overlay isn't."
+        }
+    ]
+}

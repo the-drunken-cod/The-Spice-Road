@@ -1,0 +1,12 @@
+{
+    "name": "Spice Regions",
+    "icon": "minecraft:map",
+    "category": "spice_road:exploration",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Spice Regions",
+            "text": "$(todo)TODO$(): Region Hearts, Heart Groves, Spice Maps, `/locate spice` and the cartographer trades."
+        }
+    ]
+}

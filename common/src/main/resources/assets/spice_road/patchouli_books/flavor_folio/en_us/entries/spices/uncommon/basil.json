@@ -1,0 +1,20 @@
+{
+    "name": "Fresh Basil",
+    "icon": "spice_road:basil",
+    "category": "spice_road:spices_uncommon",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Fresh Basil",
+            "text": "TODO: write the article for Fresh Basil."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "basil"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:basil"
+        }
+    ]
+}

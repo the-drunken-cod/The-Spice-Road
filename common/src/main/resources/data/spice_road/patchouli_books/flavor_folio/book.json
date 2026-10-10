@@ -1,0 +1,18 @@
+{
+    "name": "spice_road.guide.name",
+    "landing_text": "spice_road.guide.landing",
+    "version": 1,
+    "use_resource_pack": true,
+    "advancements_tab": "spice_road:root",
+    "creative_tab": "spice_road:spice_road_0_generic",
+    "model": "spice_road:flavor_folio",
+    "macros": {
+        "$(tier_common)": "$(#555555)",
+        "$(tier_uncommon)": "$(#a07800)",
+        "$(tier_rare)": "$(#007f99)",
+        "$(tier_epic)": "$(#9a2a9a)",
+        "$(spice)": "$(#8a4b08)",
+        "$(cfg)": "$(#1a5fa8)",
+        "$(todo)": "$(#c00000)"
+    }
+}

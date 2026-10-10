@@ -1,0 +1,20 @@
+{
+    "name": "Cardamom",
+    "icon": "spice_road:cardamom",
+    "category": "spice_road:spices_rare",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Cardamom",
+            "text": "TODO: write the article for Cardamom."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "cardamom"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:cardamom"
+        }
+    ]
+}

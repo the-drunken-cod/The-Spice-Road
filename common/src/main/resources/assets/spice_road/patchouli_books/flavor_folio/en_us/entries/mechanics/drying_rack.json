@@ -1,0 +1,36 @@
+{
+    "name": "Drying Rack",
+    "icon": "spice_road:oak_drying_rack",
+    "category": "spice_road:mechanics",
+    "sortnum": 0,
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Drying Rack",
+            "text": "$(todo)TODO$(): Summary: two sides with input, output and secondary output; heat sources and hot biomes speed it up; redstone pauses it; hoppers work; comparators read progress."
+        },
+        {
+            "type": "patchouli:crafting",
+            "recipe": "spice_road:crafting/drying_rack",
+            "text": "$(todo)TODO$(): Mention the different wood types and the fallback to oak for modded slabs."
+        },
+        {
+            "type": "spice_road:drying_recipe",
+            "title": "Dried Spices",
+            "recipe": "spice_road:drying/dried_clove",
+            "recipe2": "spice_road:drying/dried_long_pepper"
+        },
+        {
+            "type": "spice_road:drying_recipe",
+            "title": "Dried Spices",
+            "recipe": "spice_road:drying/dried_mustard",
+            "recipe2": "spice_road:drying/dried_nutmeg"
+        },
+        {
+            "type": "spice_road:drying_recipe",
+            "title": "Dried Spices",
+            "recipe": "spice_road:drying/dried_star_anise",
+            "recipe2": "spice_road:drying/dried_tonka"
+        }
+    ]
+}

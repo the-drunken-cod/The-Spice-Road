@@ -1,0 +1,20 @@
+{
+    "name": "Cassia",
+    "icon": "spice_road:cassia",
+    "category": "spice_road:spices_rare",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Cassia",
+            "text": "TODO: write the article for Cassia."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "cassia"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:cassia"
+        }
+    ]
+}

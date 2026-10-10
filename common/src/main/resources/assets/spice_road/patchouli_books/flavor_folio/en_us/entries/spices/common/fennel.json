@@ -1,0 +1,20 @@
+{
+    "name": "Fennel",
+    "icon": "spice_road:fennel",
+    "category": "spice_road:spices_common",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Fennel",
+            "text": "TODO: write the article for Fennel."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "fennel"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:fennel"
+        }
+    ]
+}

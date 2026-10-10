@@ -218,25 +218,38 @@
     - Feature to reset an adjusted profile to the default value.
 - [x] Add all vanilla wood variants for Drying Rack.
     - [x] Change model so it doesn't use a custom atlas anymore.
-- [ ] Patchouli documentation:
+- [ ] Patchouli documentation (the Flavor Folio):
+    - [x] Boilerplate: optional Patchouli dependency on both loaders, the book (`spice_road:flavor_folio`), recipe, categories, skeleton entries for all raw spices (`pnpm flavor_folio_entries`), example entries, `dev/flavor_folio_pages.md` cheatsheet, `dev/asset_bom.md`. Only the articles are left to write; each unwritten page has a red TODO.
+    - [ ] Test in game on both loaders (needs Patchouli in the run's mods folder): the five page types at page width, the found marker, the book recipe, the creative tab entry, reloading with F3+T.
     - Spice types:
         - [ ] List of all spices:
-            - [ ] Custom page type that lists all spice crop attributes and worldgen overview (tier/rarity, climate, hand-harvest, harvest tools), and whether it's been collected (same mechanism as the stats).
-            - [ ] Custom page type that renders a given spice profile, similar to the already existing tooltip.
+            - [x] Custom page type that lists all spice crop attributes and worldgen overview (tier/rarity, climate, hand-harvest, harvest tools), and whether it's been collected (same mechanism as the stats). (`spice_road:spice_info`)
+            - [x] Custom page type that renders a given spice profile, similar to the already existing tooltip. (`spice_road:spice_profile`)
     - Mechanics:
+        - [ ] Drying Rack:
+            - [ ] Summary page.
+            - [ ] Crafting recipe page. Mention diff. wood types and fallback to oak.
+            - [ ] List of all dried spices, incl. recipes.
+        - [ ] Spice Rack:
+            - [ ] Summary page. Mention being a spice grinder source and link to its entry, and that it has 3 models depending on how it's placed. Also briefly mention client config render distance.
+            - [ ] Crafting recipe page. Mention diff. wood types and fallback to oak.
         - [ ] Spice Grinder:
-            - [ ] Nearby spice sourcing, including list of all blocks.
+            - [ ] Summary page. Mention it can be placed, sessions are saved on the item/BE, etc. Also briefly mention client config options.
+            - [ ] Crafting recipe page.
+            - [ ] Nearby spice sourcing, including list of all supported blocks (via tag).
             - [ ] Minigame.
                 - [ ] Spice Ingredients & Draft Spice Profile Values.
                 - [ ] Board Cell Types.
                 - [ ] Board Movement & Axis Mapping.
                 - [ ] Cell Effect Ring Distribution.
                 - [ ] Cell Lock-in.
+                - Many screenshots of the minigame.
             - [ ] Diversity Saturation Bonus.
-            - [ ] Participation Saturation Bonus.
+                - Mention AppleSkin tooltip is accurate, but not HUD overlay.
+            - [ ] Participation Saturation Bonus (no effects after completing minigame).
         - [ ] Spice Mixes:
-            - [ ] List of all preset mixes.
-            - [ ] Crafting recipe page.
+            - [ ] List of all preset mixes incl. recipes.
+            - Mention any configuration of 8 is valid, including duplicates.
 - [ ] Add sound effect when finishing spice run.
     - Progressive sound effects for participation award, regular run and flawless run.
 - [ ] Auto-scale spice profile axis scale to -1..1, then -10..10 depending on whether abs(largest_value) > 1.0, then -20..20 when >10, and so on.

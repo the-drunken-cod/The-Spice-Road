@@ -1,0 +1,20 @@
+{
+    "name": "Wasabi",
+    "icon": "spice_road:wasabi",
+    "category": "spice_road:spices_epic",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Wasabi",
+            "text": "TODO: write the article for Wasabi."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "wasabi"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:wasabi"
+        }
+    ]
+}

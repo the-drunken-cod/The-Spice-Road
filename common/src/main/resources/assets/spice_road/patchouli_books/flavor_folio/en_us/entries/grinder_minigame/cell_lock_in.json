@@ -1,0 +1,22 @@
+{
+    "name": "Cell Lock-in",
+    "icon": "spice_road:spice_grinder",
+    "category": "spice_road:grinder_minigame",
+    "sortnum": 4,
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Cell Lock-in",
+            "text": "$(todo)TODO$(): Spending points to take a cell's effects."
+        },
+        {
+            "type": "patchouli:image",
+            "title": "Cell Lock-in",
+            "images": [
+                "spice_road:textures/gui/flavor_folio/grinder_board.png"
+            ],
+            "border": true,
+            "text": "$(todo)TODO$(): Screenshot of the minigame."
+        }
+    ]
+}

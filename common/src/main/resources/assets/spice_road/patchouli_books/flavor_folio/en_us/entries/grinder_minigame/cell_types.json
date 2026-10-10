@@ -1,0 +1,22 @@
+{
+    "name": "Board Cell Types",
+    "icon": "spice_road:spice_grinder",
+    "category": "spice_road:grinder_minigame",
+    "sortnum": 1,
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Board Cell Types",
+            "text": "$(todo)TODO$(): Bare cells, walls, effect cells and the hidden landmines."
+        },
+        {
+            "type": "patchouli:image",
+            "title": "Board Cell Types",
+            "images": [
+                "spice_road:textures/gui/flavor_folio/grinder_board.png"
+            ],
+            "border": true,
+            "text": "$(todo)TODO$(): Screenshot of the minigame."
+        }
+    ]
+}

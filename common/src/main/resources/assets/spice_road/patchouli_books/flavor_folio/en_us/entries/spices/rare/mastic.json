@@ -1,0 +1,20 @@
+{
+    "name": "Mastic",
+    "icon": "spice_road:mastic",
+    "category": "spice_road:spices_rare",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Mastic",
+            "text": "TODO: write the article for Mastic."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "mastic"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:mastic"
+        }
+    ]
+}

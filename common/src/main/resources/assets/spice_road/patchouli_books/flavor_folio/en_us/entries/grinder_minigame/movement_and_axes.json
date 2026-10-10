@@ -1,0 +1,22 @@
+{
+    "name": "Movement and Axes",
+    "icon": "spice_road:spice_grinder",
+    "category": "spice_road:grinder_minigame",
+    "sortnum": 2,
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Movement and Axes",
+            "text": "$(todo)TODO$(): How each of the eight directions is bound to a Flavor Axis."
+        },
+        {
+            "type": "patchouli:image",
+            "title": "Movement and Axes",
+            "images": [
+                "spice_road:textures/gui/flavor_folio/grinder_board.png"
+            ],
+            "border": true,
+            "text": "$(todo)TODO$(): Screenshot of the minigame."
+        }
+    ]
+}

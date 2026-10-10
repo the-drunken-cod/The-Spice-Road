@@ -1,0 +1,20 @@
+{
+    "name": "Ginger",
+    "icon": "spice_road:ginger",
+    "category": "spice_road:spices_uncommon",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Ginger",
+            "text": "TODO: write the article for Ginger."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "ginger"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:ginger"
+        }
+    ]
+}

@@ -1,0 +1,20 @@
+{
+    "name": "Fresh Sage",
+    "icon": "spice_road:sage",
+    "category": "spice_road:spices_common",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Fresh Sage",
+            "text": "TODO: write the article for Fresh Sage."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "sage"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:sage"
+        }
+    ]
+}

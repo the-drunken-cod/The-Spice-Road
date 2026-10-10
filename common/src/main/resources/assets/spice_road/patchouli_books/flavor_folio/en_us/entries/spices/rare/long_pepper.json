@@ -1,0 +1,20 @@
+{
+    "name": "Fresh Long Pepper",
+    "icon": "spice_road:long_pepper",
+    "category": "spice_road:spices_rare",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Fresh Long Pepper",
+            "text": "TODO: write the article for Fresh Long Pepper."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "long_pepper"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:long_pepper"
+        }
+    ]
+}

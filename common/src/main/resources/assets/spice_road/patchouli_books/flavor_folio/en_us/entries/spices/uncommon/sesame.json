@@ -1,0 +1,20 @@
+{
+    "name": "Sesame",
+    "icon": "spice_road:sesame",
+    "category": "spice_road:spices_uncommon",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Sesame",
+            "text": "TODO: write the article for Sesame."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "sesame"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:sesame"
+        }
+    ]
+}

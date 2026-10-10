@@ -1,0 +1,20 @@
+{
+    "name": "Licorice",
+    "icon": "spice_road:licorice",
+    "category": "spice_road:spices_uncommon",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Licorice",
+            "text": "TODO: write the article for Licorice."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "licorice"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:licorice"
+        }
+    ]
+}

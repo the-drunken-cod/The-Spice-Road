@@ -1,0 +1,20 @@
+{
+    "name": "Dill",
+    "icon": "spice_road:dill",
+    "category": "spice_road:spices_common",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Dill",
+            "text": "TODO: write the article for Dill."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "dill"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:dill"
+        }
+    ]
+}

@@ -27,6 +27,7 @@ import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Season;
 import com.drunkencod.spice_road.spice.SourceType;
 import com.drunkencod.spice_road.spice.Spice;
+import com.drunkencod.spice_road.tooltip.SpiceFlavorTooltips;
 import com.drunkencod.spice_road.tooltip.SpiceProfileTooltips;
 
 /**
@@ -63,8 +64,7 @@ public record SpiceOriginEntry(Spice spice) implements ViewerEntry {
     }
 
     @Override
-    public ViewerLayout layout(HolderLookup.Provider registries) {
-        int width = ViewerCategory.SPICE_ORIGIN.getWidth();
+    public ViewerLayout layout(HolderLookup.Provider registries, int width) {
         ViewerLayout.Builder layout = ViewerLayout.builder();
         Item planting = plantingItem(spice);
         if (planting != null)
@@ -93,11 +93,16 @@ public record SpiceOriginEntry(Spice spice) implements ViewerEntry {
         int x = ViewerDrawing.PANEL_BORDER;
         int y = ViewerLayout.SLOT_SIZE + 2 + ViewerDrawing.PANEL_BORDER;
         int panelWidth = width - 2 * ViewerDrawing.PANEL_BORDER;
-        layout.panel(x, y, panelWidth, lines.size() * ViewerText.LINE_HEIGHT - 1);
+        // Scaled down as one block where the widest line wouldn't fit, so narrow hosts
+        // keep the lines readable and aligned instead of shortening them
+        int widest = lines.stream().mapToInt(line -> SpiceFlavorTooltips.measureWidth(line.text())).max().orElse(0);
+        float scale = ViewerText.fitScale(widest, panelWidth);
+        int lineHeight = Math.round(ViewerText.LINE_HEIGHT * scale);
+        layout.panel(x, y, panelWidth, (int) Math.ceil((lines.size() * ViewerText.LINE_HEIGHT - 1) * scale));
         for (int i = 0; i < lines.size(); i++) {
-            int lineY = y + i * ViewerText.LINE_HEIGHT;
-            layout.text(lines.get(i).text(), x, lineY, ViewerText.PANEL_TEXT_COLOR, true, panelWidth, 1F);
-            layout.tooltip(x, lineY, panelWidth, ViewerText.LINE_HEIGHT - 1, lines.get(i).tooltip());
+            int lineY = y + i * lineHeight;
+            layout.text(lines.get(i).text(), x, lineY, ViewerText.PANEL_TEXT_COLOR, true, panelWidth, scale);
+            layout.tooltip(x, lineY, panelWidth, lineHeight - 1, lines.get(i).tooltip());
         }
         return layout.build();
     }

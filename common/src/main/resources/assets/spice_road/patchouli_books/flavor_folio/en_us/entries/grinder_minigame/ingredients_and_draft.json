@@ -1,0 +1,22 @@
+{
+    "name": "Ingredients and Draft",
+    "icon": "spice_road:spice_grinder",
+    "category": "spice_road:grinder_minigame",
+    "sortnum": 0,
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Ingredients and Draft",
+            "text": "$(todo)TODO$(): Spice ingredients and the draft Spice Profile values shown before a run starts."
+        },
+        {
+            "type": "patchouli:image",
+            "title": "Ingredients and Draft",
+            "images": [
+                "spice_road:textures/gui/flavor_folio/grinder_board.png"
+            ],
+            "border": true,
+            "text": "$(todo)TODO$(): Screenshot of the minigame."
+        }
+    ]
+}

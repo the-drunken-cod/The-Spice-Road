@@ -1,0 +1,20 @@
+{
+    "name": "Lavender",
+    "icon": "spice_road:lavender",
+    "category": "spice_road:spices_common",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Lavender",
+            "text": "TODO: write the article for Lavender."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "lavender"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:lavender"
+        }
+    ]
+}

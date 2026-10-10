@@ -100,6 +100,15 @@ public final class SpiceFindings extends SavedData {
 
     /**
      * @param player A player's UUID.
+     * @return The Spices that player has found; a copy.
+     */
+    public Set<Spice> spicesOf(UUID player) {
+        Set<Spice> spices = found.get(player);
+        return spices == null ? EnumSet.noneOf(Spice.class) : EnumSet.copyOf(spices);
+    }
+
+    /**
+     * @param player A player's UUID.
      * @return How many different Spices that player has found.
      */
     public int count(UUID player) {

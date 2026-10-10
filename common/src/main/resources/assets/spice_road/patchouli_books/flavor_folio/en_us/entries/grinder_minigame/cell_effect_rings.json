@@ -1,0 +1,22 @@
+{
+    "name": "Cell Effect Rings",
+    "icon": "spice_road:spice_grinder",
+    "category": "spice_road:grinder_minigame",
+    "sortnum": 3,
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Cell Effect Rings",
+            "text": "$(todo)TODO$(): How effect bundles are distributed over the rings of the board."
+        },
+        {
+            "type": "patchouli:image",
+            "title": "Cell Effect Rings",
+            "images": [
+                "spice_road:textures/gui/flavor_folio/grinder_board.png"
+            ],
+            "border": true,
+            "text": "$(todo)TODO$(): Screenshot of the minigame."
+        }
+    ]
+}

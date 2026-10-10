@@ -1,0 +1,20 @@
+{
+    "name": "Saffron",
+    "icon": "spice_road:saffron",
+    "category": "spice_road:spices_epic",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Saffron",
+            "text": "TODO: write the article for Saffron."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "saffron"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:saffron"
+        }
+    ]
+}

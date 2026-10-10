@@ -1,0 +1,20 @@
+{
+    "name": "Fresh Parsley",
+    "icon": "spice_road:parsley",
+    "category": "spice_road:spices_common",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Fresh Parsley",
+            "text": "TODO: write the article for Fresh Parsley."
+        },
+        {
+            "type": "spice_road:spice_info",
+            "spice": "parsley"
+        },
+        {
+            "type": "spice_road:spice_profile",
+            "item": "spice_road:parsley"
+        }
+    ]
+}
