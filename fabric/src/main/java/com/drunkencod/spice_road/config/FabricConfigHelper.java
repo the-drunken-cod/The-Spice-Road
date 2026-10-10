@@ -348,6 +348,11 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean isTooltipBarsShown() {
+        return client().tooltip.showBars;
+    }
+
+    @Override
     public boolean isTooltipAxisValueShown() {
         return client().tooltip.showAxisValues;
     }
@@ -864,6 +869,8 @@ public class FabricConfigHelper implements IConfigHelper {
         public static class TooltipDisplay {
             @ConfigEntry.Gui.Tooltip
             public boolean showBothAxisLabels = ConfigSchema.TOOLTIP_SHOW_BOTH_AXIS_LABELS.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public boolean showBars = ConfigSchema.TOOLTIP_SHOW_BARS.getDefault();
             @ConfigEntry.Gui.Tooltip
             public boolean showAxisValues = ConfigSchema.TOOLTIP_SHOW_AXIS_VALUES.getDefault();
             @ConfigEntry.Gui.Tooltip

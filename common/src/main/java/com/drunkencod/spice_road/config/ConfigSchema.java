@@ -346,6 +346,10 @@ public final class ConfigSchema {
     public static final ConfigOption<Boolean> TOOLTIP_SHOW_BOTH_AXIS_LABELS = add(
             ConfigOption.ofBoolean(TOOLTIP, "showBothAxisLabels", false));
 
+    /** Whether Flavor Axis tooltips draw progress bars and label brackets. */
+    public static final ConfigOption<Boolean> TOOLTIP_SHOW_BARS = add(
+            ConfigOption.ofBoolean(TOOLTIP, "showBars", true));
+
     /** Whether Flavor Axis tooltips show each axis' score. */
     public static final ConfigOption<Boolean> TOOLTIP_SHOW_AXIS_VALUES = add(
             ConfigOption.ofBoolean(TOOLTIP, "showAxisValues", false));

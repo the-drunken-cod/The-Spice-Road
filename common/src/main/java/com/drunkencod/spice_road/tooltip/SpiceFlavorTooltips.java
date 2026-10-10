@@ -27,6 +27,9 @@ import com.drunkencod.spice_road.spice.SpiceProfile;
  *
  * The outermost bar character is a {@link #HALF_BAR_CHAR} for odd multiples of
  * half a {@link #BAR_CHAR}, doubling the bar's resolution.
+ * <p>
+ * With bars turned off in the config, each line is only the label and, if
+ * enabled, the score.
  *
  * Padding is measured in pixels (see {@link #setTextWidthMeasurer}), so the
  * bars line up despite the proportional font and adapt to the current locale.
@@ -111,6 +114,8 @@ public class SpiceFlavorTooltips {
     public static List<Component> formatFlavorAxes(SpiceProfile profile, double barScale, boolean animated) {
         boolean bothLabels = Services.CONFIG.isTooltipBothAxisLabelsShown();
         boolean showValues = Services.CONFIG.isTooltipAxisValueShown();
+        if (!Services.CONFIG.isTooltipBarsShown())
+            return formatPlainLines(profile, barScale, animated, bothLabels, showValues);
         Padder padder = Padder.measure();
 
         int labelWidth;
@@ -140,10 +145,7 @@ public class SpiceFlavorTooltips {
         int barWidth = padder.alignedWidth(barWidths, padder::isPaddable);
 
         // Layout above is sized for the final values, so it stays put while counting up
-        double progress = animated
-                ? FlavorTooltipAnimator.progress(profile, barScale, Services.CONFIG.getTooltipAnimationDurationMs(),
-                        System.currentTimeMillis())
-                : 1D;
+        double progress = animationProgress(profile, barScale, animated);
 
         List<Component> lines = new ArrayList<>(FlavorAxis.values().length);
         for (FlavorAxis axis : FlavorAxis.values()) {
@@ -152,6 +154,49 @@ public class SpiceFlavorTooltips {
                     barScale, bothLabels, showValues, padder, labelWidth, barWidth));
         }
 
+        return lines;
+    }
+
+    /**
+     * @param profile  The Spice Profile being shown
+     * @param barScale Score magnitude at which a bar is full
+     * @param animated Whether the scores count up from zero
+     * @return How far along the count-up is, from {@code 0} to {@code 1}; always
+     *         {@code 1} if not {@code animated}
+     */
+    private static double animationProgress(SpiceProfile profile, double barScale, boolean animated) {
+        return animated
+                ? FlavorTooltipAnimator.progress(profile, barScale, Services.CONFIG.getTooltipAnimationDurationMs(),
+                        System.currentTimeMillis())
+                : 1D;
+    }
+
+    /**
+     * Formats every {@link FlavorAxis} as a bare label, without brackets or
+     * bar, followed by its score if {@code showValues} is set (e.g.
+     * {@code "Spicy: 0.5"}).
+     *
+     * @param profile    The Spice Profile to format
+     * @param barScale   Score magnitude at which a bar would be full, which
+     *                   paces the count-up
+     * @param animated   Whether the scores count up from zero
+     * @param bothLabels Whether to show both pole labels
+     * @param showValues Whether to show the scores
+     * @return One tooltip line per Flavor Axis
+     */
+    private static List<Component> formatPlainLines(SpiceProfile profile, double barScale, boolean animated,
+            boolean bothLabels, boolean showValues) {
+        double progress = animationProgress(profile, barScale, animated);
+        List<Component> lines = new ArrayList<>(FlavorAxis.values().length);
+        for (FlavorAxis axis : FlavorAxis.values()) {
+            double value = profile.get(axis);
+            boolean positive = value >= 0D;
+            MutableComponent line = Component.empty().append(axisLabel(axis, positive, bothLabels));
+            if (showValues)
+                line.append(valueSeparator()).append(" ")
+                        .append(valueNumber(axis, positive, FlavorTooltipAnimator.displayed(value, barScale, progress)));
+            lines.add(line);
+        }
         return lines;
     }
 

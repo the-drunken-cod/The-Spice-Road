@@ -436,6 +436,15 @@ public interface IConfigHelper {
     boolean isTooltipBothAxisLabelsShown();
 
     /**
+     * Client-side. Whether Flavor Axis tooltips draw a progress bar next to
+     * each label and put the label in brackets, instead of only the label (and
+     * value).
+     *
+     * @return Whether Flavor Axis progress bars and brackets are shown.
+     */
+    boolean isTooltipBarsShown();
+
+    /**
      * Client-side. Whether Flavor Axis tooltips show each axis' score,
      * multiplied by 10, after its label (e.g. {@code [Spicy: 5]}).
      *

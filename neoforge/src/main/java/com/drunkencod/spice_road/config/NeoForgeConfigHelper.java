@@ -402,6 +402,11 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean isTooltipBarsShown() {
+        return value(ConfigSchema.TOOLTIP_SHOW_BARS);
+    }
+
+    @Override
     public boolean isTooltipAxisValueShown() {
         return value(ConfigSchema.TOOLTIP_SHOW_AXIS_VALUES);
     }

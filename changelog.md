@@ -39,10 +39,10 @@
         - `admin sample_spices [<radius>] [tier|climate|spice <value>]` surveys the Spice Regions around the operator and lists how many Region Hearts each spice got, plus how many regions are spiceless or barren, for balancing worldgen. The server config has a maximum radius and a time limit under `commands`.
 - **Changes:**
     - ⚠️ **BREAKING:** The Drying Rack `spice_road:drying_rack` is replaced by one block per vanilla wood type, e.g. `spice_road:oak_drying_rack`. Existing racks in worlds disappear.
-    - Pie Purist advancement is now a child of Hang Out to Dry.
     - Spice Grinder doesn't consume spices anymore when player is in creative mode.
     - Spice Grinder GUI movement buttons have two warning colors now; yellow and red, with configurable steps-left-thresholds.
-    - The Spice Grinder GUI shows the name the Grinder was renamed to, also while it is placed.
+    - The Spice Grinder GUI shows the name the Grinder was renamed to, also while it is placed and picked back up.
+    - Added the client config option `tooltip.showBars` (on by default) to hide the progress bars and brackets of spice profile tooltips, leaving only the flavor labels (and values, if enabled).
 - **Fixes:**
     - Dried spices are now correctly used in the Spice Mix recipes.
     - `#spice/peppercorns` tag now correctly uses Dried Long Pepper.

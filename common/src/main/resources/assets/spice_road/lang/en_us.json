@@ -493,6 +493,8 @@
     "spice_road.configuration.tooltip.animationDurationMs": "Animation Duration (ms)",
     "spice_road.configuration.tooltip.showAxisValues.tooltip": "Show each Flavor Axis' value after its label (e.g. [Spicy: -0.5]).",
     "spice_road.configuration.tooltip.showAxisValues": "Show Flavor Values",
+    "spice_road.configuration.tooltip.showBars.tooltip": "Show a progress bar and brackets around each Flavor Axis label. When off, only the label (and value, if enabled) is shown.",
+    "spice_road.configuration.tooltip.showBars": "Show Flavor Bars",
     "spice_road.configuration.tooltip.showBothAxisLabels.tooltip": "Show both labels of each Flavor Axis (e.g. [Spicy / Cooling]), emphasizing the one matching the value.",
     "spice_road.configuration.tooltip.showBothAxisLabels": "Show Both Flavor Labels",
     "spice_road.configuration.tooltip.tooltip": "What this mod shows on item tooltips.",
