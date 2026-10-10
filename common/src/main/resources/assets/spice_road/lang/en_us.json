@@ -560,6 +560,7 @@
     "spice_road.tooltip.shift_hint.spice": "%s Hold %s for information",
     "spice_road.tooltip.shift_key": "Shift",
     "spice_road.tooltip.spice_mix.contents": "Contains:",
+    "spice_road.tooltip.spice_rack_usage": "Makes stored spices available to nearby grinders.",
     "spice_road.tooltip.spice_tier.common": "Common",
     "spice_road.tooltip.spice_tier.epic": "Epic",
     "spice_road.tooltip.spice_tier.line.item": "%s spice.",
