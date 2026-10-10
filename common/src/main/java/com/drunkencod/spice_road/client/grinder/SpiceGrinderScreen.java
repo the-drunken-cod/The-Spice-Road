@@ -632,7 +632,6 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         clipped.clear();
         rebuildRows();
-        renderBackground(graphics, mouseX, mouseY, partialTick);
         super.render(graphics, mouseX, mouseY, partialTick);
         for (Slot slot : menu.slots) {
             if (menu.isLocked(slot))
