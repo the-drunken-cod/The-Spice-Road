@@ -31,6 +31,12 @@ importers:
         specifier: 25.8.0
         version: 25.8.0
 
+  tools/flavor_folio_entries:
+    devDependencies:
+      '@types/node':
+        specifier: 25.8.0
+        version: 25.8.0
+
   tools/pad_csv:
     dependencies:
       '@sv443-network/coreutils':

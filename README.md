@@ -47,6 +47,8 @@ Encourages local production and specialized trade and has lots of compat for oth
 You can visit the [releases page](https://github.com/the-drunken-cod/The-Spice-Road/releases), the [TODO: Modrinth page](), or the [TODO: CurseForge page]() to download the latest version of the mod.  
 Then simply place the downloaded JAR file into your Minecraft `mods` folder and launch the game with either NeoForge or Fabric.  
   
+For an extensive in-game guide book, also install the mod [Patchouli.](https://modrinth.com/mod/patchouli) It's crafted from a regular book and any spice.  
+  
 > [!TIP]  
 > **On Fabric**, optionally install [Cloth Config API](https://modrinth.com/mod/cloth-config) and [Mod Menu](https://modrinth.com/mod/modmenu) to configure the mod in-game in Singleplayer (on servers, the config is automatically sent to the clients and the edit screen only affects Singleplayer worlds).  
 > On NeoForge, the in-game config screen is already included.
@@ -58,6 +60,8 @@ Then simply place the downloaded JAR file into your Minecraft `mods` folder and 
 <br>
 
 ## Integrations:
+- [Patchouli](https://modrinth.com/mod/patchouli):
+  - Adds the Flavor Folio, an in-game guide book with a page for every spice and articles on the mod's mechanics. Craft it from a book and any spice.
 - [Farmer's Delight](https://modrinth.com/mod/farmers-delight):
   - Recipe compatibility for the cooking pot and cutting board (ingredient spice profiles get correctly summed up and carried over to the output).
   - Food block placement (pumpkin pie, [Display Delight mod](https://modrinth.com/mod/display-delight) etc.) is prevented by default unless sneaking. Placing these foods unfortunately voids the spice data, since they are blocks and not blockentities.

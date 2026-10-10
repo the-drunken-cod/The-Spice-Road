@@ -1,0 +1,17 @@
+{
+  "name": "flavor_folio_entries",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "node index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "packageManager": "pnpm@11.4.0",
+  "devDependencies": {
+    "@types/node": "25.8.0"
+  }
+}

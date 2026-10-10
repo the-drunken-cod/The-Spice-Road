@@ -25,6 +25,9 @@ These tools are to be used in the command line and offer various shortcuts:
     - "Load folder..." uses another set of profile JSONs (e.g. a datapack) as the baseline to compare against.
     - Tiers, climates and seasons come from `dev/spice_meta.json`, which is written by datagen. Run datagen after changing a Spice's metadata or Java enum values.
     - Slider range, step and the target Potency per Tier are constants in `tools/spice_balancer/src/config.ts`.
+- **`pnpm flavor_folio_entries`**: Stamps a skeleton Flavor Folio entry (text page, Spice info page, Spice profile page) for every raw Spice in `dev/spice_meta.json` that has none yet, sorted into its Tier's category. Existing entries are never overwritten.
+    - `-L` / `--lang`: Locale folder of the book to stamp into, defaults to `en_us`.
+    - `--check`: Writes nothing and lists Spices without an entry, entries of unknown Spices and entries in the wrong Tier's category. Exits with code 1 if there is anything to report.
 
 <br>
 
