@@ -76,6 +76,9 @@ dependencies {
     // version constraint of the viewers' own loader jars) is involved.
     compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
     compileOnly "dev.emi:emi-xplat-mojmap:${emi_version}:api"
+    // Optional Patchouli, only needed to recompile the Flavor Folio's page types
+    // from common. The same Mojang-mapped jar as common.
+    compileOnly "vazkii.patchouli:Patchouli-xplat:${patchouli_version}"
 
     // Sable Companion.
     // jarJar bundles the actual shim jar into our own, so it ships and runs

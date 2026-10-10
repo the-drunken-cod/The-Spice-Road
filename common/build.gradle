@@ -29,6 +29,10 @@ dependencies {
     compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
     compileOnly "dev.emi:emi-xplat-mojmap:${emi_version}:api"
 
+    // Patchouli (optional). Its loader-neutral jar, Mojang-mapped like the viewer
+    // APIs above, so the Flavor Folio's page types live here once.
+    compileOnly "vazkii.patchouli:Patchouli-xplat:${patchouli_version}"
+
     // Sable Companion.
     // Only lets this module's own standalone compile see the API; fabric/ and
     // neoforge/ each declare their own loader-specific artifact that actually

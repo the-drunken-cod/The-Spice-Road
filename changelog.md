@@ -23,6 +23,10 @@
         - Only one player can use it at a time, and it drops itself with its run when broken or when its support is removed.
     - Added `dried_star_anise` and made holiday spice mix require it over raw Star Anise.
     - Added the advancements Nice Rack (fill a Spice Rack with full stacks) and Mix-and-Match (craft a Spice Mix), with the criteria `spice_road:spice_rack_filled` and `spice_road:spice_mix_crafted` for datapacks.
+    - Added the Flavor Folio, an in-game guide book (requires the optional mod [Patchouli](https://modrinth.com/mod/patchouli)). Craft it from a book and any spice.
+        - Has a page for every spice with its tier, climate, yield, plant and harvest, a flavor bar chart and whether you have found it yet, plus articles on the Drying Rack, Spice Rack, Spice Grinder and Spice Mixes.
+        - Resource packs can add entries or translate the book, in `assets/spice_road/patchouli_books/flavor_folio/<locale>/`.
+        - Added the Patchouli page types `spice_road:spice_info`, `spice_road:spice_profile`, `spice_road:drying_recipe`, `spice_road:mix_preset` and `spice_road:block_tag` for use in any Patchouli book.
 - **Changes:**
     - ⚠️ **BREAKING:** The Drying Rack `spice_road:drying_rack` is replaced by one block per vanilla wood type, e.g. `spice_road:oak_drying_rack`. Existing racks in worlds disappear.
     - Pie Purist advancement is now a child of Hang Out to Dry.
