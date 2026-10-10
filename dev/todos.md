@@ -208,6 +208,16 @@
 - [x] Add more advancements:
     - [x] Nice Rack: Spice Rack fully filled (64 in each slot).
     - [x] Mix-and-Match: Create any spice mix.
+- [x] Create spice balancing tool.
+    - Website that loads a set of spice profile JSONs and allows easy comparing and adjusting and exporting.
+    - List all spices and their profiles using color-coded and prefixed slider inputs.
+    - Show harvest difficulty, color code (border color) and group list items together by rarity.
+    - Show climate and growing seasons (SP,SU,AU,WI).
+    - Feature to select spice profiles (checkbox on list item) to juxtapose up to 4 spices.
+    - Feature to export all changed JSONs as a ZIP.
+    - Feature to reset an adjusted profile to the default value.
+- [x] Add all vanilla wood variants for Drying Rack.
+    - [x] Change model so it doesn't use a custom atlas anymore.
 - [ ] Patchouli documentation:
     - Spice types:
         - [ ] List of all spices:
@@ -227,17 +237,7 @@
         - [ ] Spice Mixes:
             - [ ] List of all preset mixes.
             - [ ] Crafting recipe page.
-- [ ] Create spice balancing tool.
-    - Website that loads a set of spice profile JSONs and allows easy comparing and adjusting and exporting.
-    - [ ] List all spices and their profiles using color-coded and prefixed slider inputs.
-    - [ ] Show harvest difficulty, color code (border color) and group list items together by rarity.
-    - [ ] Show climate and growing seasons (SP,SU,AU,WI).
-    - [ ] Feature to select spice profiles (checkbox on list item) to juxtapose up to 4 spices.
-    - [ ] Feature to export all changed JSONs as a ZIP.
-    - [ ] Feature to reset an adjusted profile to the default value.
 - [ ] Add sound effect when finishing spice run.
     - Progressive sound effects for participation award, regular run and flawless run.
-- [x] Add all vanilla wood variants for Drying Rack.
-    - [x] Change model so it doesn't use a custom atlas anymore.
 - [ ] Auto-scale spice profile axis scale to -1..1, then -10..10 depending on whether abs(largest_value) > 1.0, then -20..20 when >10, and so on.
     - [ ] Show a centered header above the tooltip, something like `<gray>Spice Profile <lgray>(/<max_range>)<reset>`
