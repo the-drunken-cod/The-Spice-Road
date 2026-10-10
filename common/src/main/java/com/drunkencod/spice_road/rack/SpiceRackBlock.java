@@ -90,9 +90,13 @@ public class SpiceRackBlock extends BaseEntityBlock {
             Block.box(7, 8, 7, 9, 15, 9),
             Block.box(5, 15, 2, 11, 16, 14), Block.box(3, 15, 3, 13, 16, 13), Block.box(2, 15, 5, 14, 16, 11));
     private static final VoxelShape WALL_SHAPE_NORTH = Shapes.or(
-            Block.box(0, 2, 15, 16, 14, 16),
-            Block.box(0, 2, 12, 16, 3, 15), Block.box(0, 3, 13, 1, 5, 15), Block.box(15, 3, 13, 16, 5, 15),
-            Block.box(0, 8, 12, 16, 9, 15), Block.box(0, 9, 13, 1, 11, 15), Block.box(15, 9, 13, 16, 11, 15));
+            Block.box(0, 2, 15, 16, 6, 16), Block.box(0, 8, 15, 16, 12, 16),
+            Block.box(0, 2, 12, 16, 3, 15),
+            Block.box(0, 3, 13, 1, 4, 15), Block.box(0, 4, 14, 1, 5, 15),
+            Block.box(15, 3, 13, 16, 4, 15), Block.box(15, 4, 14, 16, 5, 15),
+            Block.box(0, 8, 12, 16, 9, 15),
+            Block.box(0, 9, 13, 1, 10, 15), Block.box(0, 10, 14, 1, 11, 15),
+            Block.box(15, 9, 13, 16, 10, 15), Block.box(15, 10, 14, 16, 11, 15));
     private static final Map<Direction, VoxelShape> WALL_SHAPES = wallShapes();
 
     /**
