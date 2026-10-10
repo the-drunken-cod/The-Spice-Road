@@ -11,7 +11,6 @@ import com.drunkencod.spice_road.platform.Services;
  * defined in {@code sounds.json}.
  */
 public final class ModSounds {
-
     /** An item is hung onto a Drying Rack. */
     public static final Supplier<SoundEvent> DRYING_RACK_ADD_ITEM = Services.REGISTRY
             .registerSoundEvent("block.drying_rack.add_item");
@@ -19,6 +18,10 @@ public final class ModSounds {
     /** An item is taken from a Drying Rack. */
     public static final Supplier<SoundEvent> DRYING_RACK_REMOVE_ITEM = Services.REGISTRY
             .registerSoundEvent("block.drying_rack.remove_item");
+
+    /** An item is added to a Spice Rack. */
+    public static final Supplier<SoundEvent> SPICE_RACK_ADD_ITEM = Services.REGISTRY
+            .registerSoundEvent("block.spice_rack.add_item");
 
     private ModSounds() {
     }

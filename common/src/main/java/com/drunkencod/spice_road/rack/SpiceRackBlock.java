@@ -11,7 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
@@ -47,6 +46,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.advancement.ModCriteriaTriggers;
+import com.drunkencod.spice_road.registry.ModSounds;
 
 /**
  * The Spice Rack: stores spices and shows them off. It stands on the floor, on
@@ -220,7 +220,7 @@ public class SpiceRackBlock extends BaseEntityBlock {
         // Creative players keep what they hold.
         if (rack.insert(player.hasInfiniteMaterials() ? stack.copy() : stack) == 0)
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-        level.playSound(null, pos, SoundEvents.BUNDLE_INSERT, SoundSource.BLOCKS, 0.8F,
+        level.playSound(null, pos, ModSounds.SPICE_RACK_ADD_ITEM.get(), SoundSource.BLOCKS, 0.8F,
                 level.random.nextFloat() * 0.1F + 0.9F);
         if (player instanceof ServerPlayer serverPlayer && SpiceRackBlockEntity.isFull(rack))
             ModCriteriaTriggers.SPICE_RACK_FILLED.get().trigger(serverPlayer);

@@ -674,6 +674,7 @@
     "stat.spice_road.spices_found": "[Spice Road] Different Spices Found",
     "subtitles.spice_road.drying_rack.add_item": "Item hung up to dry",
     "subtitles.spice_road.drying_rack.remove_item": "Item taken from Drying Rack",
+    "subtitles.spice_road.spice_rack.add_item": "Item placed on Spice Rack",
     "tag.block.spice_road.aquatic_spice_growable": "Aquatic Spice Growable",
     "tag.block.spice_road.drying_racks": "Drying Racks",
     "tag.block.spice_road.heat_sources": "Drying Rack Heat Sources",
