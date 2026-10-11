@@ -348,7 +348,7 @@ public final class GrinderActions {
         return new GrinderView(GrinderView.Phase.RUNNING, session.food(), consumed, points, poles,
                 run.run.x(), run.run.y(), cells, run.run.effects(), stepsLeft, run.run.canLockIn(), false, event,
                 config.getSeasoningMaxSpicesPerKind(), config.getSeasoningMaxSpices(), available, stepCost,
-                lockInCost);
+                lockInCost, isCheating(menu));
     }
 
     private static GrinderView draftView(SpiceGrinderMenu menu, Event event, IConfigHelper config,
@@ -365,7 +365,11 @@ public final class GrinderActions {
                 points, poles, 0, 0, List.of(), List.of(),
                 java.util.Collections.nCopies(Direction.values().length, 0), false, canSeason(menu, available), event,
                 config.getSeasoningMaxSpicesPerKind(), config.getSeasoningMaxSpices(), available,
-                config.getSeasoningStepCost(), 0D);
+                config.getSeasoningStepCost(), 0D, isCheating(menu));
+    }
+
+    private static boolean isCheating(SpiceGrinderMenu menu) {
+        return GrinderCheatMode.isEnabled(menu.inventory().player.getUUID());
     }
 
     // #region Helpers

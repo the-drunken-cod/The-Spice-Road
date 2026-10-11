@@ -531,6 +531,7 @@
     "spice_road.gui.grinder.bar.points": "Points: %s",
     "spice_road.gui.grinder.bar.steps": "Steps left: %s",
     "spice_road.gui.grinder.cancel": "Cancel",
+    "spice_road.gui.grinder.cheat_mode": "Cheat Mode",
     "spice_road.gui.grinder.cell.bane": "Bane",
     "spice_road.gui.grinder.cell.boon": "Boon",
     "spice_road.gui.grinder.cell.effect_count.one": "%s effect inside",

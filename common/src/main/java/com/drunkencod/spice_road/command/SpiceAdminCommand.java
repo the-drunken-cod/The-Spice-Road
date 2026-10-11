@@ -18,6 +18,8 @@ import net.minecraft.world.item.ItemStack;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.grinder.GrinderCheatMode;
+import com.drunkencod.spice_road.grinder.GrinderView;
+import com.drunkencod.spice_road.grinder.SpiceGrinderMenu;
 import com.drunkencod.spice_road.map.SpiceMaps;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Climate;
@@ -59,7 +61,10 @@ final class SpiceAdminCommand {
     private SpiceAdminCommand() {
     }
 
-    /** @return The {@code admin} node, to be added below the {@code /spice_road} root. */
+    /**
+     * @return The {@code admin} node, to be added below the {@code /spice_road}
+     *         root.
+     */
     static LiteralArgumentBuilder<CommandSourceStack> build() {
         return Commands.literal("admin")
                 .requires(source -> source.hasPermission(2))
@@ -133,6 +138,8 @@ final class SpiceAdminCommand {
     private static int toggleCheatMode(CommandSourceStack source) throws CommandSyntaxException {
         ServerPlayer player = source.getPlayerOrException();
         boolean enabled = GrinderCheatMode.toggle(player.getUUID());
+        if (player.containerMenu instanceof SpiceGrinderMenu menu)
+            menu.syncView(GrinderView.Event.NONE);
         if (enabled)
             Constants.LOG.info("{} turned on the Spice Grinder cheat mode", player.getGameProfile().getName());
         source.sendSuccess(() -> Component.translatable(

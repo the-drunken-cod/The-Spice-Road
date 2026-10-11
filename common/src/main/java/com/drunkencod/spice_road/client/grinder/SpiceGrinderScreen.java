@@ -79,6 +79,8 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
     private static final int COLOR_TEXT = 0xFFE0E0E0;
     private static final int COLOR_DIM = 0xFF808080;
     private static final int COLOR_WARNING = 0xFFFFD040;
+    /** The color vanilla draws container titles in. */
+    private static final int COLOR_TITLE = 0xFF404040;
     private static final int MESSAGE_TICKS = 60;
     /** Pitch of the grindstone sound played when the pawn moves. */
     private static final float PITCH_MOVE = 1.4F;
@@ -671,6 +673,14 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         else
             renderDraft(graphics);
         renderStatus(graphics);
+    }
+
+    @Override
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        graphics.drawString(font, title, titleLabelX, titleLabelY, COLOR_TITLE, false);
+        if (view().cheatMode())
+            graphics.drawString(font, Component.translatable(KEY_PREFIX + "cheat_mode"), GrinderLayout.CHEAT_LABEL_X,
+                    GrinderLayout.CHEAT_LABEL_Y, COLOR_TITLE, false);
     }
 
     /**

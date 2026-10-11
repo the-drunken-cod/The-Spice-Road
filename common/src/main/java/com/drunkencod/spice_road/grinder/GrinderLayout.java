@@ -158,6 +158,13 @@ public final class GrinderLayout {
     /** Top edge of the hotbar. */
     public static final int HOTBAR_Y = 246;
 
+    // #region Cheat Mode
+
+    /** Position of the cheat mode label. */
+    public static final int CHEAT_LABEL_X = 8;
+    public static final int CHEAT_LABEL_Y = 255;
+
     private GrinderLayout() {
+        // noop
     }
 }

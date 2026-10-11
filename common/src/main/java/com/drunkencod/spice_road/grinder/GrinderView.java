@@ -46,18 +46,20 @@ import com.drunkencod.spice_road.spice.effect.SeasoningEffect;
  * @param stepCost   Points one step costs.
  * @param lockInCost Points locking in the cell the pawn stands on costs, or
  *                   {@code 0} if it isn't an effect cell.
+ * @param cheatMode  Whether the player has the {@link GrinderCheatMode} on.
  */
 public record GrinderView(Phase phase, ItemStack food, Map<GrinderSpice, Integer> spices, List<Double> points,
         List<Integer> poles, int x, int y, List<CellView> cells, List<SeasoningEffect> effects,
         List<Integer> stepsLeft, boolean canLockIn, boolean canSeason, Event event, int maxPerKind, int maxTotal,
-        Map<GrinderSpice, Integer> available, double stepCost, double lockInCost) {
+        Map<GrinderSpice, Integer> available, double stepCost, double lockInCost,
+        boolean cheatMode) {
 
     /** The view of a Grinder that hasn't been told anything yet. */
     public static final GrinderView EMPTY = new GrinderView(Phase.DRAFT, ItemStack.EMPTY, Map.of(),
             java.util.Collections.nCopies(FlavorAxis.values().length, 0D),
             java.util.Collections.nCopies(FlavorAxis.values().length, 0), 0, 0, List.of(), List.of(),
             java.util.Collections.nCopies(Direction.values().length, 0), false, false, Event.NONE, 3, 16, Map.of(), 0D,
-            0D);
+            0D, false);
 
     /** Network codec. */
     public static final StreamCodec<RegistryFriendlyByteBuf, GrinderView> STREAM_CODEC = StreamCodec.of(
@@ -111,6 +113,7 @@ public record GrinderView(Phase phase, ItemStack food, Map<GrinderSpice, Integer
         buf.writeVarInt(view.maxTotal);
         buf.writeDouble(view.stepCost);
         buf.writeDouble(view.lockInCost);
+        buf.writeBoolean(view.cheatMode);
         buf.writeVarInt(view.available.size());
         view.available.forEach((spice, count) -> {
             GrinderSpice.STREAM_CODEC.encode(buf, spice);
@@ -148,11 +151,13 @@ public record GrinderView(Phase phase, ItemStack food, Map<GrinderSpice, Integer
         int maxTotal = buf.readVarInt();
         double stepCost = buf.readDouble();
         double lockInCost = buf.readDouble();
+        boolean cheatMode = buf.readBoolean();
         Map<GrinderSpice, Integer> available = new LinkedHashMap<>();
         for (int i = buf.readVarInt(); i > 0; i--)
             available.put(GrinderSpice.STREAM_CODEC.decode(buf), buf.readVarInt());
         return new GrinderView(phase, food, spices, points, poles, x, y, cells, effects, stepsLeft, canLockIn,
-                canSeason, event, maxPerKind, maxTotal, available, stepCost, lockInCost);
+                canSeason, event, maxPerKind, maxTotal, available, stepCost, lockInCost,
+                cheatMode);
     }
 
     private static void writeCell(RegistryFriendlyByteBuf buf, CellView cell) {
