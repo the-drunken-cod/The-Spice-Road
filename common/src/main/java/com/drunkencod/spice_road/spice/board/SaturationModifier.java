@@ -6,20 +6,21 @@ import java.util.TreeMap;
 import com.drunkencod.spice_road.spice.region.SeededHash;
 
 /**
- * Bonus saturation for a seasoned food that ended up without any effects. It
- * is drawn from a configured range and scaled down for a food with less spice
- * than a full dose, and seeded by the food item and its contributors, so
- * identical foods give the identical amount and keep stacking.
+ * Saturation modifier for a seasoned food that ended up without any effects.
+ * It is drawn from a configured range, which may be negative, and scaled down
+ * for a food with less spice than a full dose, and seeded by the food item and
+ * its contributors, so identical foods give the identical amount and keep
+ * stacking.
  */
-public final class ParticipationAward {
+public final class SaturationModifier {
 
-    private ParticipationAward() {
+    private SaturationModifier() {
     }
 
     /**
      * @param itemId       The registry ID of the food item.
      * @param contributors The food's counted contributors, by registry ID.
-     * @return The seed of the award, the same for equal foods.
+     * @return The seed of the modifier, the same for equal foods.
      */
     public static long seedOf(String itemId, Map<String, Double> contributors) {
         long seed = BoardSeed.hashString(itemId);
@@ -30,14 +31,15 @@ public final class ParticipationAward {
     }
 
     /**
-     * @param seed        The award's seed, see {@link #seedOf}.
+     * @param seed        The modifier's seed, see {@link #seedOf}.
      * @param totalAmount The food's total spice amount.
-     * @param min         The least saturation at a full dose.
-     * @param max         The most saturation at a full dose.
-     * @param fullDose    The spice amount that earns the full award.
-     * @return The bonus saturation: a seeded value between {@code min} and
+     * @param min         The lower end of the range at a full dose.
+     * @param max         The upper end of the range at a full dose.
+     * @param fullDose    The spice amount that earns the full modifier.
+     * @return The saturation modifier: a seeded value between {@code min} and
      *         {@code max} (swapped if given the wrong way round), scaled by
-     *         {@code totalAmount / fullDose} and capped at the full award.
+     *         {@code totalAmount / fullDose} and capped at the full modifier.
+     *         Negative if the drawn value is.
      */
     public static double saturation(long seed, double totalAmount, double min, double max, double fullDose) {
         double low = Math.min(min, max);

@@ -8,14 +8,14 @@ import com.drunkencod.spice_road.spice.effect.SeasoningSaturation;
 /**
  * Optional AppleSkin integration, loaded through its {@code appleskin}
  * entrypoint, so it is never touched without AppleSkin installed. Adds a
- * seasoned food's bonus saturation, see {@link SeasoningSaturation}, to the
- * food values AppleSkin displays.
+ * food's saturation modifier, see {@link SeasoningSaturation}, to the food
+ * values AppleSkin displays.
  */
 public class AppleSkinCompat implements AppleSkinApi {
 
     @Override
     public void registerEvents() {
         FoodValuesEvent.EVENT.register(event -> event.modifiedFoodComponent = SeasoningSaturation
-                .withBonus(event.itemStack, event.modifiedFoodComponent));
+                .withModifier(event.itemStack, event.modifiedFoodComponent));
     }
 }

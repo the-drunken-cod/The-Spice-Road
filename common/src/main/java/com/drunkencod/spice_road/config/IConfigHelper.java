@@ -354,22 +354,34 @@ public interface IConfigHelper {
     double getSeasoningSaturationOvercap();
 
     /**
-     * @return The least bonus saturation a seasoned food without effects gives
-     *         at a full dose of spice.
+     * @return The lower end of the saturation modifier a seasoned food without
+     *         effects gets at a full dose of spice; may be negative.
      */
-    double getSeasoningParticipationMinSaturation();
+    double getSeasoningSaturationModifierMin();
 
     /**
-     * @return The most bonus saturation a seasoned food without effects gives
-     *         at a full dose of spice.
+     * @return The upper end of the saturation modifier a seasoned food without
+     *         effects gets at a full dose of spice; may be negative.
      */
-    double getSeasoningParticipationMaxSaturation();
+    double getSeasoningSaturationModifierMax();
 
     /**
-     * @return How many spices per food earn the full participation bonus;
+     * @return How many spices per food earn the full saturation modifier;
      *         fewer earn a proportional share.
      */
-    double getSeasoningParticipationFullDose();
+    double getSeasoningSaturationModifierFullDose();
+
+    /**
+     * @return Whether food that could be seasoned but isn't loses saturation
+     *         when eaten.
+     */
+    boolean getSeasoningUnseasonedEnabled();
+
+    /**
+     * @return The multiplier on the saturation of food that could be seasoned
+     *         but isn't, while the unseasoned penalty is enabled.
+     */
+    double getSeasoningUnseasonedSaturationMultiplier();
 
     /**
      * @return The bonus saturation a seasoned food made with a single kind of

@@ -3,7 +3,9 @@
 ⚠️ **Contains breaking changes.** Existing worlds will be affected!  
 
 - **Features:**
+    - Foods that could be seasoned but aren't can optionally lose saturation when eaten (off by default): their own saturation is multiplied by a configurable factor. If AppleSkin is installed, its tooltips show the penalized value.
 - **Changes:**
+    - The "participation award" is now the seasoning saturation modifier, and its range can go negative to take saturation away. Its config moved from `seasoning.participation` to `seasoning.saturationModifier`, so existing values reset to the defaults.
 - **Fixes:**
 
 <br>

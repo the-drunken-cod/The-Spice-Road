@@ -7,7 +7,7 @@ import squeek.appleskin.api.event.FoodValuesEvent;
 import com.drunkencod.spice_road.spice.effect.SeasoningSaturation;
 
 /**
- * Optional AppleSkin integration. Adds a seasoned food's bonus saturation, see
+ * Optional AppleSkin integration. Adds a food's saturation modifier, see
  * {@link SeasoningSaturation}, to the food values AppleSkin displays. Only
  * touch this class if AppleSkin is installed.
  */
@@ -22,6 +22,7 @@ public final class AppleSkinCompat {
     }
 
     private static void onFoodValues(FoodValuesEvent event) {
-        event.modifiedFoodProperties = SeasoningSaturation.withBonus(event.itemStack, event.modifiedFoodProperties);
+        event.modifiedFoodProperties = SeasoningSaturation.withModifier(event.itemStack,
+                event.modifiedFoodProperties);
     }
 }

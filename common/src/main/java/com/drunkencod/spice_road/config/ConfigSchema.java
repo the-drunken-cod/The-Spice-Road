@@ -61,8 +61,10 @@ public final class ConfigSchema {
     public static final ConfigSection SEASONING = ConfigSection.root(ConfigFile.SERVER, "seasoning");
     /** Lock-in prices on the Seasoning Board, per ring. */
     public static final ConfigSection SEASONING_LOCK_IN_COST = SEASONING.child("lockInCost");
-    /** Bonus saturation for seasoned food that ended up without effects. */
-    public static final ConfigSection SEASONING_PARTICIPATION = SEASONING.child("participation");
+    /** Saturation modifier for seasoned food that ended up without effects. */
+    public static final ConfigSection SEASONING_SATURATION_MODIFIER = SEASONING.child("saturationModifier");
+    /** Saturation penalty for food that could be seasoned but isn't. */
+    public static final ConfigSection SEASONING_UNSEASONED = SEASONING.child("unseasoned");
     /** Bonus saturation for seasoned food in relation to its spice variety. */
     public static final ConfigSection SEASONING_DIVERSITY = SEASONING.child("diversity");
     /** Spice Mixes and their crafting. */
@@ -274,17 +276,25 @@ public final class ConfigSchema {
     public static final ConfigOption<Double> SEASONING_SATURATION_OVERCAP = add(
             ConfigOption.ofDouble(SEASONING, "saturationOvercap", 10.0, 0.0, 100.0));
 
-    /** Least bonus saturation of a seasoned food without effects. */
-    public static final ConfigOption<Double> SEASONING_PARTICIPATION_MIN_SATURATION = add(
-            ConfigOption.ofDouble(SEASONING_PARTICIPATION, "minSaturation", 0.5, 0.0, 20.0));
+    /** Lower end of the saturation modifier of a seasoned food without effects. */
+    public static final ConfigOption<Double> SEASONING_SATURATION_MODIFIER_MIN = add(
+            ConfigOption.ofDouble(SEASONING_SATURATION_MODIFIER, "minSaturation", 0.5, -20.0, 20.0));
 
-    /** Most bonus saturation of a seasoned food without effects. */
-    public static final ConfigOption<Double> SEASONING_PARTICIPATION_MAX_SATURATION = add(
-            ConfigOption.ofDouble(SEASONING_PARTICIPATION, "maxSaturation", 4, 0.0, 20.0));
+    /** Upper end of the saturation modifier of a seasoned food without effects. */
+    public static final ConfigOption<Double> SEASONING_SATURATION_MODIFIER_MAX = add(
+            ConfigOption.ofDouble(SEASONING_SATURATION_MODIFIER, "maxSaturation", 4, -20.0, 20.0));
 
-    /** Spices per food that earn the full bonus saturation. */
-    public static final ConfigOption<Double> SEASONING_PARTICIPATION_FULL_DOSE = add(
-            ConfigOption.ofDouble(SEASONING_PARTICIPATION, "fullDose", 12.0, 0.1, 1000.0));
+    /** Spices per food that earn the full saturation modifier. */
+    public static final ConfigOption<Double> SEASONING_SATURATION_MODIFIER_FULL_DOSE = add(
+            ConfigOption.ofDouble(SEASONING_SATURATION_MODIFIER, "fullDose", 12.0, 0.1, 1000.0));
+
+    /** Whether food that could be seasoned but isn't loses saturation. */
+    public static final ConfigOption<Boolean> SEASONING_UNSEASONED_ENABLED = add(
+            ConfigOption.ofBoolean(SEASONING_UNSEASONED, "enabled", false));
+
+    /** Multiplier on the saturation of food that could be seasoned but isn't. */
+    public static final ConfigOption<Double> SEASONING_UNSEASONED_SATURATION_MULTIPLIER = add(
+            ConfigOption.ofDouble(SEASONING_UNSEASONED, "saturationMultiplier", 0.5, 0.0, 1.0));
 
     /** Bonus saturation of a seasoned food made with a single kind of spice. */
     public static final ConfigOption<Double> SEASONING_DIVERSITY_MIN_SATURATION = add(

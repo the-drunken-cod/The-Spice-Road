@@ -286,20 +286,32 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
-    public double getSeasoningParticipationMinSaturation() {
-        return value(ConfigSchema.SEASONING_PARTICIPATION_MIN_SATURATION,
-                server().seasoning.participation.minSaturation);
+    public double getSeasoningSaturationModifierMin() {
+        return value(ConfigSchema.SEASONING_SATURATION_MODIFIER_MIN,
+                server().seasoning.saturationModifier.minSaturation);
     }
 
     @Override
-    public double getSeasoningParticipationMaxSaturation() {
-        return value(ConfigSchema.SEASONING_PARTICIPATION_MAX_SATURATION,
-                server().seasoning.participation.maxSaturation);
+    public double getSeasoningSaturationModifierMax() {
+        return value(ConfigSchema.SEASONING_SATURATION_MODIFIER_MAX,
+                server().seasoning.saturationModifier.maxSaturation);
     }
 
     @Override
-    public double getSeasoningParticipationFullDose() {
-        return value(ConfigSchema.SEASONING_PARTICIPATION_FULL_DOSE, server().seasoning.participation.fullDose);
+    public double getSeasoningSaturationModifierFullDose() {
+        return value(ConfigSchema.SEASONING_SATURATION_MODIFIER_FULL_DOSE,
+                server().seasoning.saturationModifier.fullDose);
+    }
+
+    @Override
+    public boolean getSeasoningUnseasonedEnabled() {
+        return value(ConfigSchema.SEASONING_UNSEASONED_ENABLED, server().seasoning.unseasoned.enabled);
+    }
+
+    @Override
+    public double getSeasoningUnseasonedSaturationMultiplier() {
+        return value(ConfigSchema.SEASONING_UNSEASONED_SATURATION_MULTIPLIER,
+                server().seasoning.unseasoned.saturationMultiplier);
     }
 
     @Override
@@ -700,7 +712,9 @@ public class FabricConfigHelper implements IConfigHelper {
             @ConfigEntry.Gui.CollapsibleObject
             public LockInCost lockInCost = new LockInCost();
             @ConfigEntry.Gui.CollapsibleObject
-            public Participation participation = new Participation();
+            public SaturationModifier saturationModifier = new SaturationModifier();
+            @ConfigEntry.Gui.CollapsibleObject
+            public Unseasoned unseasoned = new Unseasoned();
             @ConfigEntry.Gui.CollapsibleObject
             public Diversity diversity = new Diversity();
 
@@ -714,14 +728,23 @@ public class FabricConfigHelper implements IConfigHelper {
                 public double ring4 = ConfigSchema.SEASONING_LOCK_IN_COST_RING_4.getDefault();
             }
 
-            /** Bonus saturation for seasoned food that ended up without effects. */
-            public static class Participation {
+            /** Saturation modifier for seasoned food that ended up without effects. */
+            public static class SaturationModifier {
                 @ConfigEntry.Gui.Tooltip
-                public double minSaturation = ConfigSchema.SEASONING_PARTICIPATION_MIN_SATURATION.getDefault();
+                public double minSaturation = ConfigSchema.SEASONING_SATURATION_MODIFIER_MIN.getDefault();
                 @ConfigEntry.Gui.Tooltip
-                public double maxSaturation = ConfigSchema.SEASONING_PARTICIPATION_MAX_SATURATION.getDefault();
+                public double maxSaturation = ConfigSchema.SEASONING_SATURATION_MODIFIER_MAX.getDefault();
                 @ConfigEntry.Gui.Tooltip
-                public double fullDose = ConfigSchema.SEASONING_PARTICIPATION_FULL_DOSE.getDefault();
+                public double fullDose = ConfigSchema.SEASONING_SATURATION_MODIFIER_FULL_DOSE.getDefault();
+            }
+
+            /** Saturation penalty for food that could be seasoned but isn't. */
+            public static class Unseasoned {
+                @ConfigEntry.Gui.Tooltip
+                public boolean enabled = ConfigSchema.SEASONING_UNSEASONED_ENABLED.getDefault();
+                @ConfigEntry.Gui.Tooltip
+                public double saturationMultiplier = ConfigSchema.SEASONING_UNSEASONED_SATURATION_MULTIPLIER
+                        .getDefault();
             }
 
             /** Bonus saturation for seasoned food in relation to its spice variety. */

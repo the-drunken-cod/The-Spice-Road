@@ -1,0 +1,13 @@
+{
+    "name": "Saturation Modifier",
+    "icon": "minecraft:bread",
+    "category": "spice_road:mechanics",
+    "sortnum": 5,
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Saturation Modifier",
+            "text": "$(todo)TODO$(): Saturation change for food that ended up with no effects after the minigame, and the optional penalty for unseasoned food."
+        }
+    ]
+}

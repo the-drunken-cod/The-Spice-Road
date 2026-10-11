@@ -342,18 +342,28 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
-    public double getSeasoningParticipationMinSaturation() {
-        return value(ConfigSchema.SEASONING_PARTICIPATION_MIN_SATURATION);
+    public double getSeasoningSaturationModifierMin() {
+        return value(ConfigSchema.SEASONING_SATURATION_MODIFIER_MIN);
     }
 
     @Override
-    public double getSeasoningParticipationMaxSaturation() {
-        return value(ConfigSchema.SEASONING_PARTICIPATION_MAX_SATURATION);
+    public double getSeasoningSaturationModifierMax() {
+        return value(ConfigSchema.SEASONING_SATURATION_MODIFIER_MAX);
     }
 
     @Override
-    public double getSeasoningParticipationFullDose() {
-        return value(ConfigSchema.SEASONING_PARTICIPATION_FULL_DOSE);
+    public double getSeasoningSaturationModifierFullDose() {
+        return value(ConfigSchema.SEASONING_SATURATION_MODIFIER_FULL_DOSE);
+    }
+
+    @Override
+    public boolean getSeasoningUnseasonedEnabled() {
+        return value(ConfigSchema.SEASONING_UNSEASONED_ENABLED);
+    }
+
+    @Override
+    public double getSeasoningUnseasonedSaturationMultiplier() {
+        return value(ConfigSchema.SEASONING_UNSEASONED_SATURATION_MULTIPLIER);
     }
 
     @Override
