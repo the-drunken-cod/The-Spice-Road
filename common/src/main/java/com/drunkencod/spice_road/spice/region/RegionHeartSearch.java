@@ -23,7 +23,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -36,6 +36,9 @@ import com.drunkencod.spice_road.block.SpiceVines;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Climate;
 import com.drunkencod.spice_road.spice.Spice;
+import com.drunkencod.spice_road.spice.dimension.SpiceDimension;
+import com.drunkencod.spice_road.spice.dimension.SpiceDimensions;
+import com.drunkencod.spice_road.spice.dimension.SurfaceStrategy;
 
 /**
  * Finds {@link RegionHeart}s by walking the Spice Region grid outward from a
@@ -43,7 +46,8 @@ import com.drunkencod.spice_road.spice.Spice;
  * since surface height and biome are estimated straight from the chunk
  * generator.
  * <p>
- * Only the Overworld has Spice Regions. Hearts in biomes tagged
+ * Only dimensions with a {@link com.drunkencod.spice_road.spice.dimension.SpiceDimension
+ * Spice Dimension} that has Spices have Spice Regions. Hearts in biomes tagged
  * {@link #NO_REGION_HEART} are barren and never returned, unless an Aquatic
  * Heart Spice lifts that for {@link #AQUATIC_REGION_HEART} biomes, and neither are
  * hearts whose Heart Spice has no worldgen plant, since no Heart Grove could
@@ -112,12 +116,12 @@ public final class RegionHeartSearch {
      *         {@code level} has no Spice Regions.
      */
     public static Optional<RegionHeart> heartAt(ServerLevel level, int gridX, int gridZ, BlockPos origin) {
-        if (!hasSpiceRegions(level))
+        SpiceRegionLayout layout = SpiceRegionLayout.of(level).orElse(null);
+        if (layout == null)
             return Optional.empty();
 
-        SpiceCell cell = SpiceRegionResolver.cellAtGrid(level.getSeed(), Services.CONFIG.getSpiceRegionSalt(),
-                Services.CONFIG.getSpiceRegionCellScale(), gridX, gridZ, origin.getX(), origin.getZ());
-        return heartOf(level, cell);
+        SpiceCell cell = layout.cellAtGrid(gridX, gridZ, origin.getX(), origin.getZ());
+        return heartOf(level, layout, cell);
     }
 
     /**
@@ -129,12 +133,12 @@ public final class RegionHeartSearch {
      *         {@code level} has no Spice Regions.
      */
     public static Optional<RegionHeart> heartAt(ServerLevel level, BlockPos pos) {
-        if (!hasSpiceRegions(level))
+        SpiceRegionLayout layout = SpiceRegionLayout.of(level).orElse(null);
+        if (layout == null)
             return Optional.empty();
 
-        SpiceCell cell = SpiceRegionResolver.resolveCell(level.getSeed(), Services.CONFIG.getSpiceRegionSalt(),
-                Services.CONFIG.getSpiceRegionCellScale(), pos.getX(), pos.getZ());
-        return heartOf(level, cell);
+        SpiceCell cell = layout.cell(pos.getX(), pos.getZ());
+        return heartOf(level, layout, cell);
     }
 
     /**
@@ -148,12 +152,11 @@ public final class RegionHeartSearch {
      */
     public static List<RegionHeart> heartsWithGroveIn(ServerLevel level, ChunkPos chunk) {
         List<RegionHeart> hearts = new ArrayList<>();
-        if (!hasSpiceRegions(level))
+        SpiceRegionLayout layout = SpiceRegionLayout.of(level).orElse(null);
+        if (layout == null)
             return hearts;
 
-        long worldSeed = level.getSeed();
-        long salt = Services.CONFIG.getSpiceRegionSalt();
-        double cellScale = Services.CONFIG.getSpiceRegionCellScale();
+        double cellScale = layout.cellScale();
         int minX = chunk.getMinBlockX();
         int minZ = chunk.getMinBlockZ();
         int maxX = chunk.getMaxBlockX();
@@ -169,8 +172,8 @@ public final class RegionHeartSearch {
 
         for (int gridX = minGridX; gridX <= maxGridX; gridX++) {
             for (int gridZ = minGridZ; gridZ <= maxGridZ; gridZ++) {
-                SpiceCell cell = SpiceRegionResolver.cellAtGrid(worldSeed, salt, cellScale, gridX, gridZ, minX, minZ);
-                Optional<RegionHeart> heart = heartOf(level, cell);
+                SpiceCell cell = layout.cellAtGrid(gridX, gridZ, minX, minZ);
+                Optional<RegionHeart> heart = heartOf(level, layout, cell);
                 if (heart.isEmpty())
                     continue;
 
@@ -217,15 +220,18 @@ public final class RegionHeartSearch {
     }
 
     /**
-     * Converts a search radius in cells into blocks, using the configured
-     * cell scale. Radii are configured in cells, so changing the region size
-     * doesn't change how many hearts are within reach.
+     * Converts a search radius in cells into blocks, using the cell scale of
+     * {@code level}'s dimension. Radii are configured in cells, so changing the
+     * region size doesn't change how many hearts are within reach.
      *
+     * @param level The level the search runs in.
      * @param cells The radius, in cells.
      * @return The radius, in blocks.
      */
-    public static int cellsToBlocks(int cells) {
-        return (int) Math.min(Integer.MAX_VALUE, Math.round(cells * Services.CONFIG.getSpiceRegionCellScale()));
+    public static int cellsToBlocks(ServerLevel level, int cells) {
+        double scale = SpiceRegionLayout.of(level).map(SpiceRegionLayout::cellScale)
+                .orElse(Services.CONFIG.getSpiceRegionCellScale());
+        return (int) Math.min(Integer.MAX_VALUE, Math.round(cells * scale));
     }
 
     /**
@@ -280,10 +286,24 @@ public final class RegionHeartSearch {
 
     /**
      * @param level The level to check.
-     * @return Whether {@code level} has Spice Regions at all.
+     * @return Whether {@code level} has Spice Regions that can resolve to a
+     *         Spice at all, i.e. its dimension has a Spice Dimension with Spices.
      */
     public static boolean hasSpiceRegions(ServerLevel level) {
-        return level.dimension() == Level.OVERWORLD;
+        return SpiceRegionLayout.of(level).isPresent();
+    }
+
+    /**
+     * Forgets every cached terrain estimate and Grove site, for when the Spice
+     * Dimensions are reloaded and the answers may no longer hold.
+     */
+    public static void clearCaches() {
+        synchronized (SAMPLE_CACHE) {
+            SAMPLE_CACHE.clear();
+        }
+        synchronized (GROVE_SITE_CACHE) {
+            GROVE_SITE_CACHE.clear();
+        }
     }
 
     /**
@@ -302,13 +322,12 @@ public final class RegionHeartSearch {
     private static <K> Map<K, RegionHeart> findNearestPerKey(ServerLevel level, BlockPos origin, int radius,
             Function<RegionHeart, @Nullable K> keyOf, int wantedKeys) {
         Map<K, RegionHeart> nearest = new HashMap<>();
-        if (!hasSpiceRegions(level) || wantedKeys <= 0)
+        SpiceRegionLayout layout = SpiceRegionLayout.of(level).orElse(null);
+        if (layout == null || wantedKeys <= 0)
             return nearest;
 
         BlockPos effectiveOrigin = SublevelPositions.projectOutOfSubLevel(level, origin);
-        long worldSeed = level.getSeed();
-        long salt = Services.CONFIG.getSpiceRegionSalt();
-        double cellScale = Services.CONFIG.getSpiceRegionCellScale();
+        double cellScale = layout.cellScale();
         int originX = effectiveOrigin.getX();
         int originZ = effectiveOrigin.getZ();
         int originGridX = (int) Math.floor(originX / cellScale);
@@ -325,14 +344,14 @@ public final class RegionHeartSearch {
                 break;
 
             for (int[] offset : ringOffsets(ring)) {
-                SpiceCell cell = SpiceRegionResolver.cellAtGrid(worldSeed, salt, cellScale,
-                        originGridX + offset[0], originGridZ + offset[1], originX, originZ);
+                SpiceCell cell = layout.cellAtGrid(originGridX + offset[0], originGridZ + offset[1], originX,
+                        originZ);
                 if (cell.distance() > radius)
                     continue;
                 if (nearest.size() >= wantedKeys && cell.distance() >= farthestOf(nearest))
                     continue;
 
-                Optional<RegionHeart> heart = heartOf(level, cell);
+                Optional<RegionHeart> heart = heartOf(level, layout, cell);
                 if (heart.isEmpty())
                     continue;
 
@@ -368,14 +387,13 @@ public final class RegionHeartSearch {
      */
     public static RegionSurvey survey(ServerLevel level, BlockPos origin, int radiusCells, long budgetNanos) {
         int side = (2 * radiusCells) + 1;
-        if (!hasSpiceRegions(level))
+        SpiceRegionLayout layout = SpiceRegionLayout.of(level).orElse(null);
+        if (layout == null)
             return new RegionSurvey(0);
 
         RegionSurvey survey = new RegionSurvey(side * side);
         BlockPos effectiveOrigin = SublevelPositions.projectOutOfSubLevel(level, origin);
-        long worldSeed = level.getSeed();
-        long salt = Services.CONFIG.getSpiceRegionSalt();
-        double cellScale = Services.CONFIG.getSpiceRegionCellScale();
+        double cellScale = layout.cellScale();
         int originX = effectiveOrigin.getX();
         int originZ = effectiveOrigin.getZ();
         int originGridX = (int) Math.floor(originX / cellScale);
@@ -387,9 +405,9 @@ public final class RegionHeartSearch {
                 if (System.nanoTime() > deadline)
                     return survey;
 
-                SpiceCell cell = SpiceRegionResolver.cellAtGrid(worldSeed, salt, cellScale,
-                        originGridX + offset[0], originGridZ + offset[1], originX, originZ);
-                HeartResolution resolution = resolveHeart(level, cell);
+                SpiceCell cell = layout.cellAtGrid(originGridX + offset[0], originGridZ + offset[1], originX,
+                        originZ);
+                HeartResolution resolution = resolveHeart(level, layout, cell);
                 RegionHeart heart = resolution.heart();
                 HeartOutcome outcome = heart != null && groveSite(level, heart).isEmpty() ? HeartOutcome.NO_GROVE_SITE
                         : resolution.outcome();
@@ -400,15 +418,15 @@ public final class RegionHeartSearch {
     }
 
     /** Resolves the heart of {@code cell}, see {@link #heartAt}. */
-    private static Optional<RegionHeart> heartOf(ServerLevel level, SpiceCell cell) {
-        return Optional.ofNullable(resolveHeart(level, cell).heart());
+    private static Optional<RegionHeart> heartOf(ServerLevel level, SpiceRegionLayout layout, SpiceCell cell) {
+        return Optional.ofNullable(resolveHeart(level, layout, cell).heart());
     }
 
     /**
      * Resolves the heart of {@code cell}, or why it has none. Doesn't look for
      * a grove site, so a returned heart may still turn out barren.
      */
-    private static HeartResolution resolveHeart(ServerLevel level, SpiceCell cell) {
+    private static HeartResolution resolveHeart(ServerLevel level, SpiceRegionLayout layout, SpiceCell cell) {
         if (SpiceRegionResolver.isSpiceless(cell))
             return new HeartResolution(HeartOutcome.SPICELESS, null);
 
@@ -420,13 +438,15 @@ public final class RegionHeartSearch {
             return new HeartResolution(HeartOutcome.BARREN_BIOME, null);
 
         BlockPos pos = new BlockPos(x, sample.surfaceY(), z);
-        Climate climate = Climate.fromBiome(sample.biome(), pos);
-        Spice spice = SpiceRegionResolver
-                .resolveSpice(cell, climate, Services.CONFIG.getSpiceRegionClusteringStrength()).orElse(null);
+        Climate climate = layout.dimension().climateOf(sample.biome(), pos).orElse(null);
+        Spice spice = SpiceRegionResolver.resolveSpice(cell, layout.dimension(), climate,
+                Services.CONFIG.getSpiceRegionClusteringStrength()).orElse(null);
         if (spice == null)
             return new HeartResolution(HeartOutcome.NO_SPICE_IN_CLIMATE, null);
         if (!hasWorldgenPlant(spice))
             return new HeartResolution(HeartOutcome.NO_WORLDGEN_PLANT, null);
+        if (spice.isAquatic() && !layout.dimension().allowsPonds())
+            return new HeartResolution(HeartOutcome.NO_PONDS, null);
         if (heartless && !spice.isAquatic())
             return new HeartResolution(HeartOutcome.BARREN_BIOME, null);
         return new HeartResolution(HeartOutcome.HEART, new RegionHeart(cell, pos, climate, spice));
@@ -452,9 +472,9 @@ public final class RegionHeartSearch {
 
     /** Scans {@link #GROVE_SEARCH_OFFSETS} around {@code heart}, see {@link #groveSite}. */
     private static Optional<BlockPos> searchGroveSite(ServerLevel level, RegionHeart heart) {
-        long worldSeed = level.getSeed();
-        long salt = Services.CONFIG.getSpiceRegionSalt();
-        double cellScale = Services.CONFIG.getSpiceRegionCellScale();
+        SpiceRegionLayout layout = SpiceRegionLayout.of(level).orElse(null);
+        if (layout == null)
+            return Optional.empty();
 
         for (int[] offset : GROVE_SEARCH_OFFSETS) {
             int x = heart.pos().getX() + offset[0];
@@ -463,7 +483,7 @@ public final class RegionHeartSearch {
             if (!sample.isDry() || !allowsHeartOf(sample.biome(), heart.spice()))
                 continue;
 
-            SpiceCell cell = SpiceRegionResolver.resolveCell(worldSeed, salt, cellScale, x, z);
+            SpiceCell cell = layout.cell(x, z);
             if (cell.gridX() != heart.cell().gridX() || cell.gridZ() != heart.cell().gridZ())
                 continue;
 
@@ -502,11 +522,25 @@ public final class RegionHeartSearch {
         }
 
         RandomState randomState = level.getChunkSource().randomState();
-        int y = generator.getBaseHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, level, randomState);
-        int floorY = generator.getBaseHeight(x, z, Heightmap.Types.OCEAN_FLOOR_WG, level, randomState);
+        SurfaceStrategy surface = SpiceDimensions.get(level).map(SpiceDimension::surface)
+                .orElse(SurfaceStrategy.TOP);
+        int y;
+        int floorY;
+        boolean hasGround = true;
+        if (surface.isScanDown()) {
+            NoiseColumn column = generator.getBaseColumn(x, z, level, randomState);
+            Optional<SurfaceStrategy.Ground> ground = SurfaceStrategy.scanDown(column::getBlock, surface.startY(),
+                    level.getMinBuildHeight());
+            hasGround = ground.isPresent();
+            y = ground.map(SurfaceStrategy.Ground::surfaceY).orElse(surface.startY());
+            floorY = ground.map(SurfaceStrategy.Ground::floorY).orElse(y);
+        } else {
+            y = generator.getBaseHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, level, randomState);
+            floorY = generator.getBaseHeight(x, z, Heightmap.Types.OCEAN_FLOOR_WG, level, randomState);
+        }
         Holder<Biome> biome = generator.getBiomeSource().getNoiseBiome(QuartPos.fromBlock(x), QuartPos.fromBlock(y),
                 QuartPos.fromBlock(z), randomState.sampler());
-        HeartSample sample = new HeartSample(y, floorY, biome);
+        HeartSample sample = new HeartSample(y, floorY, biome, hasGround);
 
         synchronized (SAMPLE_CACHE) {
             SAMPLE_CACHE.computeIfAbsent(generator, g -> newLruMap(SAMPLE_CACHE_SIZE)).put(key, sample);
@@ -553,12 +587,15 @@ public final class RegionHeartSearch {
     private record HeartResolution(HeartOutcome outcome, @Nullable RegionHeart heart) {
     }
 
-    /** Surface height (including fluids), floor height (excluding fluids) and biome at a position. */
-    private record HeartSample(int surfaceY, int floorY, Holder<Biome> biome) {
+    /**
+     * Surface height (including fluids), floor height (excluding fluids) and biome at a position.
+     * A position without ground, like void in the End, has a surface and floor of the scan's start.
+     */
+    private record HeartSample(int surfaceY, int floorY, Holder<Biome> biome, boolean hasGround) {
 
-        /** @return Whether no fluid sits on top of the ground here. */
+        /** @return Whether there is ground here and no fluid sits on top of it. */
         boolean isDry() {
-            return floorY >= surfaceY;
+            return hasGround && floorY >= surfaceY;
         }
     }
 }

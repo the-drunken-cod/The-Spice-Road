@@ -26,6 +26,9 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.material.Fluids;
 
+import com.drunkencod.spice_road.spice.dimension.SpiceDimension;
+import com.drunkencod.spice_road.spice.dimension.SpiceDimensions;
+
 /**
  * Carves a Spice Pond, shaped by a {@link SpicePondConfiguration}: a roughly
  * round pond exactly one block of water deep, level with the ground at its
@@ -81,7 +84,12 @@ public class SpicePondFeature extends Feature<SpicePondConfiguration> {
         RandomSource random = context.random();
         SpicePondConfiguration config = context.config();
 
-        BlockPos origin = level.getHeightmapPos(SurfaceHeightmaps.surface(level), context.origin());
+        if (!SpiceDimensions.get(level.getLevel()).map(SpiceDimension::allowsPonds).orElse(true))
+            return false;
+
+        BlockPos origin = SurfaceHeightmaps.surfacePos(level, context.origin());
+        if (!SurfaceHeightmaps.isGround(level, origin))
+            return false;
         BlockPos ground = origin.below();
         if (!level.getFluidState(ground).isEmpty() || needsBank(level.getBlockState(ground)))
             return false;
@@ -142,7 +150,7 @@ public class SpicePondFeature extends Feature<SpicePondConfiguration> {
             for (int dz = -reach; dz <= reach; dz++) {
                 if ((dx * dx) + (dz * dz) > reach * reach)
                     continue;
-                int groundY = level.getHeight(SurfaceHeightmaps.floor(level), origin.getX() + dx, origin.getZ() + dz)
+                int groundY = SurfaceHeightmaps.floorHeight(level, origin.getX() + dx, origin.getZ() + dz, waterY)
                         - 1;
                 if (Math.abs(groundY - waterY) > maxSlope)
                     return false;
@@ -160,7 +168,7 @@ public class SpicePondFeature extends Feature<SpicePondConfiguration> {
     @SuppressWarnings("deprecation") // blocksMotion() is what vanilla's heightmaps still use
     private static void carveWater(WorldGenLevel level, WritableArea area, RandomSource random,
             SpicePondConfiguration config, int x, int z, int waterY) {
-        int groundY = level.getHeight(SurfaceHeightmaps.floor(level), x, z) - 1;
+        int groundY = SurfaceHeightmaps.floorHeight(level, x, z, waterY) - 1;
         if (groundY > waterY + MAX_CUT_HEIGHT || groundY < waterY - MAX_FILL_DEPTH) {
             raiseBank(level, random, config, x, z, waterY);
             return;
@@ -258,7 +266,7 @@ public class SpicePondFeature extends Feature<SpicePondConfiguration> {
         if (config.shore().isEmpty())
             return;
 
-        BlockPos pos = new BlockPos(x, level.getHeight(SurfaceHeightmaps.floor(level), x, z) - 1, z);
+        BlockPos pos = new BlockPos(x, SurfaceHeightmaps.floorHeight(level, x, z, waterY) - 1, z);
         if (Math.abs(pos.getY() - waterY) > 1 || !level.getBlockState(pos).is(config.replaceable()))
             return;
         level.setBlock(pos, config.shore().get().getState(random, pos), Block.UPDATE_CLIENTS);
@@ -361,7 +369,7 @@ public class SpicePondFeature extends Feature<SpicePondConfiguration> {
                 if (area.reachFrom(column) < DECORATION_MARGIN)
                     continue;
 
-                BlockPos surface = level.getHeightmapPos(SurfaceHeightmaps.surface(level), column);
+                BlockPos surface = SurfaceHeightmaps.surfacePos(level, column);
                 decoration.feature().value().place(level, context.chunkGenerator(), random, surface);
             }
         }

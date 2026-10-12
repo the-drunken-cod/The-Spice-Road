@@ -95,8 +95,8 @@ public class SpiceMapFunction extends LootItemConditionalFunction {
 
         ServerLevel level = context.getLevel();
         BlockPos originPos = BlockPos.containing(origin);
-        int radius = RegionHeartSearch
-                .cellsToBlocks(searchRadiusCells.orElseGet(Services.CONFIG::getSpiceMapSearchRadiusCells));
+        int radius = RegionHeartSearch.cellsToBlocks(level,
+                searchRadiusCells.orElseGet(Services.CONFIG::getSpiceMapSearchRadiusCells));
         Optional<ItemStack> map = spice.isPresent()
                 ? SpiceMaps.createForSpice(level, originPos, radius, spice.get(), zoom, decoration.orElse(null))
                 : SpiceMaps.createForTier(level, originPos, radius, tier.orElseThrow(), context.getRandom(), zoom,

@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import com.drunkencod.spice_road.item.SpiceItemTags;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.ModItems;
-import com.drunkencod.spice_road.spice.region.SpiceRegionResolver;
+import com.drunkencod.spice_road.spice.region.SpiceRegionLayout;
 import com.drunkencod.spice_road.spice.region.SublevelPositions;
 
 import com.mojang.serialization.Codec;
@@ -293,7 +293,8 @@ public enum Spice implements StringRepresentable {
      * {@code IConfigHelper#getSpiceHardyHarvestDifficulty()}) can be
      * cultivated anywhere.</li>
      * <li>Otherwise, if {@code IConfigHelper#isSpiceRegionPlantingRestricted()}
-     * is enabled, the position's Spice Region must resolve to this Spice.</li>
+     * is enabled, the position's Spice Region must resolve to this Spice. In a
+     * dimension without Spices nothing resolves, so this never holds.</li>
      * <li>If the restriction is disabled, cultivation is never gated.</li>
      * </ol>
      *
@@ -311,16 +312,13 @@ public enum Spice implements StringRepresentable {
         if (!Services.CONFIG.isSpiceRegionPlantingRestricted())
             return true;
 
+        // No Spice resolves in a dimension without Spices, so nothing non-hardy grows there
+        SpiceRegionLayout layout = SpiceRegionLayout.of(level).orElse(null);
+        if (layout == null)
+            return false;
+
         BlockPos effectivePos = SublevelPositions.projectOutOfSubLevel(level, pos);
-
-        double cellScale = Services.CONFIG.getSpiceRegionCellScale();
-        double clusteringStrength = Services.CONFIG.getSpiceRegionClusteringStrength();
-        Climate climate = Climate.fromBiome(level.getBiome(effectivePos), effectivePos);
-
-        Optional<Spice> resolved = SpiceRegionResolver
-                .resolve(level.getSeed(), Services.CONFIG.getSpiceRegionSalt(), cellScale, clusteringStrength, climate,
-                        effectivePos.getX(), effectivePos.getZ())
-                .spice();
+        Optional<Spice> resolved = layout.resolveSpice(level.getBiome(effectivePos), effectivePos);
         return resolved.isPresent() && resolved.get() == this;
     }
 

@@ -16,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import com.drunkencod.spice_road.spice.Climate;
 import com.drunkencod.spice_road.spice.Spice;
 import com.drunkencod.spice_road.spice.Tier;
+import com.drunkencod.spice_road.spice.dimension.SpiceDimensions;
 
 /**
  * Command arguments for the mod's enums. They are plain words with suggestions
@@ -58,12 +59,13 @@ final class CommandArguments {
 
     /**
      * @param name The argument's name.
-     * @return An argument taking a {@link Climate} ID.
+     * @return An argument taking a {@link Climate}, as just a path for this
+     *         mod's own and as a quoted ID for the rest.
      */
     static RequiredArgumentBuilder<CommandSourceStack, String> climate(String name) {
-        return Commands.argument(name, StringArgumentType.word())
+        return Commands.argument(name, StringArgumentType.string())
                 .suggests((context, builder) -> SharedSuggestionProvider.suggest(
-                        Arrays.stream(Climate.values()).map(Climate::getId), builder));
+                        SpiceDimensions.allClimates().stream().map(Climate::getCommandName), builder));
     }
 
     /**
@@ -103,8 +105,8 @@ final class CommandArguments {
     static Climate getClimate(CommandContext<CommandSourceStack> context, String name)
             throws CommandSyntaxException {
         String id = StringArgumentType.getString(context, name);
-        Climate climate = Climate.byId(id);
-        if (climate == null)
+        Climate climate = Climate.byCommandName(id);
+        if (climate == null || !SpiceDimensions.allClimates().contains(climate))
             throw ERROR_INVALID_CLIMATE.create(id);
         return climate;
     }

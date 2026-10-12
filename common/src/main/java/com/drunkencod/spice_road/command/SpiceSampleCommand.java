@@ -5,7 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
 import java.util.function.ToIntFunction;
 
 import com.google.common.base.Stopwatch;
@@ -31,6 +31,8 @@ import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Climate;
 import com.drunkencod.spice_road.spice.Spice;
 import com.drunkencod.spice_road.spice.Tier;
+import com.drunkencod.spice_road.spice.dimension.SpiceDimension;
+import com.drunkencod.spice_road.spice.dimension.SpiceDimensions;
 import com.drunkencod.spice_road.spice.region.HeartOutcome;
 import com.drunkencod.spice_road.spice.region.RegionHeartSearch;
 import com.drunkencod.spice_road.spice.region.RegionSurvey;
@@ -55,8 +57,8 @@ final class SpiceSampleCommand {
 
     private static final String RADIUS = "radius";
 
-    private static final SimpleCommandExceptionType ERROR_OVERWORLD_ONLY = new SimpleCommandExceptionType(
-            Component.translatable("commands.spice_road.overworld_only"));
+    private static final SimpleCommandExceptionType ERROR_NO_SPICE_REGIONS = new SimpleCommandExceptionType(
+            Component.translatable("commands.spice_road.no_spice_regions"));
 
     private static final DynamicCommandExceptionType ERROR_RADIUS_TOO_LARGE = new DynamicCommandExceptionType(
             max -> Component.translatableEscape("commands.spice_road.sample_spices.radius_too_large", max));
@@ -69,11 +71,11 @@ final class SpiceSampleCommand {
         RequiredArgumentBuilder<CommandSourceStack, Integer> radius = Commands
                 .argument(RADIUS, IntegerArgumentType.integer(1))
                 .executes(context -> sample(context.getSource(), IntegerArgumentType.getInteger(context, RADIUS),
-                        spice -> true));
+                        (dimension, spice) -> true));
         withFilters(radius, context -> IntegerArgumentType.getInteger(context, RADIUS));
 
         LiteralArgumentBuilder<CommandSourceStack> node = Commands.literal("sample_spices")
-                .executes(context -> sample(context.getSource(), defaultRadius(), spice -> true))
+                .executes(context -> sample(context.getSource(), defaultRadius(), (dimension, spice) -> true))
                 .then(radius);
         withFilters(node, context -> defaultRadius());
         return node;
@@ -90,15 +92,16 @@ final class SpiceSampleCommand {
             ToIntFunction<CommandContext<CommandSourceStack>> radius) {
         parent.then(Commands.literal("tier").then(CommandArguments.tier("tier").executes(context -> {
             Tier tier = CommandArguments.getTier(context, "tier");
-            return sample(context.getSource(), radius.applyAsInt(context), spice -> spice.getTier() == tier);
+            return sample(context.getSource(), radius.applyAsInt(context), (dimension, spice) -> spice.getTier() == tier);
         })));
         parent.then(Commands.literal("climate").then(CommandArguments.climate("climate").executes(context -> {
             Climate climate = CommandArguments.getClimate(context, "climate");
-            return sample(context.getSource(), radius.applyAsInt(context), spice -> spice.getClimate() == climate);
+            return sample(context.getSource(), radius.applyAsInt(context),
+                    (dimension, spice) -> dimension.bucket(climate).contains(spice));
         })));
         parent.then(Commands.literal("spice").then(CommandArguments.spice("spice").executes(context -> {
             Spice wanted = CommandArguments.getSpice(context, "spice");
-            return sample(context.getSource(), radius.applyAsInt(context), spice -> spice == wanted);
+            return sample(context.getSource(), radius.applyAsInt(context), (dimension, spice) -> spice == wanted);
         })));
     }
 
@@ -110,12 +113,13 @@ final class SpiceSampleCommand {
      * Surveys and reports.
      *
      * @param radius Radius around the source, in cells.
-     * @param filter Which Spices to list.
+     * @param filter Which Spices to list, given the dimension's Spice Dimension.
      * @return How many Region Hearts the survey found.
      * @throws CommandSyntaxException If the radius is over the configured
-     *                                limit, or the source isn't in the Overworld.
+     *                                limit, or the source's dimension has no
+     *                                Spice Regions.
      */
-    private static int sample(CommandSourceStack source, int radius, Predicate<Spice> filter)
+    private static int sample(CommandSourceStack source, int radius, BiPredicate<SpiceDimension, Spice> filter)
             throws CommandSyntaxException {
         IConfigHelper config = Services.CONFIG;
         int maxRadius = config.getCommandSampleMaxRadiusCells();
@@ -123,7 +127,7 @@ final class SpiceSampleCommand {
             throw ERROR_RADIUS_TOO_LARGE.create(maxRadius);
         ServerLevel level = source.getLevel();
         if (!RegionHeartSearch.hasSpiceRegions(level))
-            throw ERROR_OVERWORLD_ONLY.create();
+            throw ERROR_NO_SPICE_REGIONS.create();
 
         BlockPos origin = BlockPos.containing(source.getPosition());
         Stopwatch stopwatch = Stopwatch.createStarted();
@@ -131,7 +135,8 @@ final class SpiceSampleCommand {
                 TimeUnit.MILLISECONDS.toNanos(config.getCommandSampleTimeBudgetMs()));
         long millis = stopwatch.elapsed().toMillis();
 
-        List<Spice> spices = Arrays.stream(Spice.values()).filter(filter)
+        SpiceDimension dimension = SpiceDimensions.get(level).orElseThrow();
+        List<Spice> spices = Arrays.stream(Spice.values()).filter(spice -> filter.test(dimension, spice))
                 .sorted(Comparator.comparing(Spice::getTier)
                         .thenComparing(Comparator.comparingInt(survey::heartsOf).reversed())
                         .thenComparing(Spice::getId))

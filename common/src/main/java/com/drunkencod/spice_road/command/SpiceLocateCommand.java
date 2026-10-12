@@ -25,6 +25,7 @@ import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Climate;
 import com.drunkencod.spice_road.spice.Spice;
+import com.drunkencod.spice_road.spice.dimension.SpiceDimensions;
 import com.drunkencod.spice_road.spice.region.RegionHeart;
 import com.drunkencod.spice_road.spice.region.RegionHeartSearch;
 
@@ -71,9 +72,7 @@ public final class SpiceLocateCommand {
                                 .executes(context -> locateSpice(context.getSource(),
                                         StringArgumentType.getString(context, "spice")))))
                 .then(Commands.literal("spice_climate")
-                        .then(Commands.argument("climate", StringArgumentType.word())
-                                .suggests((context, builder) -> SharedSuggestionProvider.suggest(
-                                        Arrays.stream(Climate.values()).map(Climate::getId), builder))
+                        .then(CommandArguments.climate("climate")
                                 .executes(context -> locateClimate(context.getSource(),
                                         StringArgumentType.getString(context, "climate"))))));
     }
@@ -90,12 +89,12 @@ public final class SpiceLocateCommand {
     }
 
     private static int locateClimate(CommandSourceStack source, String climateId) throws CommandSyntaxException {
-        Climate climate = Climate.byId(climateId);
-        if (climate == null)
+        Climate climate = Climate.byCommandName(climateId);
+        if (climate == null || !SpiceDimensions.allClimates().contains(climate))
             throw ERROR_INVALID_CLIMATE.create(climateId);
 
-        return locateNearest(source, heart -> heart.climate() == climate, climate.getDisplayName(),
-                "climate " + climate.getId(), ERROR_CLIMATE_NOT_FOUND,
+        return locateNearest(source, heart -> heart.climate().equals(climate), climate.getDisplayName(),
+                "climate " + climate.id(), ERROR_CLIMATE_NOT_FOUND,
                 "commands.spice_road.locate.spice_climate.success");
     }
 
@@ -123,7 +122,7 @@ public final class SpiceLocateCommand {
         BlockPos origin = BlockPos.containing(source.getPosition());
         Stopwatch stopwatch = Stopwatch.createStarted();
         Optional<RegionHeart> heart = RegionHeartSearch.findNearest(source.getLevel(), origin,
-                RegionHeartSearch.cellsToBlocks(Services.CONFIG.getSpiceMapSearchRadiusCells()), matcher);
+                RegionHeartSearch.cellsToBlocks(source.getLevel(), Services.CONFIG.getSpiceMapSearchRadiusCells()), matcher);
         stopwatch.stop();
         if (heart.isEmpty())
             throw notFoundError.create(displayName);

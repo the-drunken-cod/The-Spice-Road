@@ -120,7 +120,7 @@ public class SpiceMetaProvider implements DataProvider {
             entry.addProperty("processing", processing);
         entry.addProperty("tier", spice.getTier().getSerializedName());
         entry.addProperty("harvest_difficulty", spice.getHarvestDifficulty());
-        entry.addProperty("climate", spice.getClimate().getId());
+        entry.addProperty("climate", spice.getClimate().id().getPath());
         JsonArray seasons = new JsonArray();
         for (Season season : spice.getSeasons())
             seasons.add(season.getId());

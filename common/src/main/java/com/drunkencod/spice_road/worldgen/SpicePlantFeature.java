@@ -36,11 +36,12 @@ import com.drunkencod.spice_road.block.SpiceTree;
 import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.block.SpiceVines;
 import com.drunkencod.spice_road.block.SpiceVines.RegisteredSpiceVine;
-import com.drunkencod.spice_road.platform.Services;
-import com.drunkencod.spice_road.spice.Climate;
 import com.drunkencod.spice_road.spice.Spice;
+import com.drunkencod.spice_road.spice.dimension.SpiceDimension;
+import com.drunkencod.spice_road.spice.dimension.SpiceDimensions;
 import com.drunkencod.spice_road.spice.region.RegionHeart;
 import com.drunkencod.spice_road.spice.region.RegionHeartSearch;
+import com.drunkencod.spice_road.spice.region.SpiceRegionLayout;
 import com.drunkencod.spice_road.spice.region.SpiceRegionResolver;
 
 /**
@@ -98,8 +99,8 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
         WorldGenLevel level = context.level();
         RandomSource random = context.random();
         SpicePlantConfiguration config = context.config();
-        BlockPos originSurface = level.getHeightmapPos(SurfaceHeightmaps.surface(level), context.origin());
-        if (level.getBiome(originSurface).is(NO_SPICE_PLANTS))
+        BlockPos originSurface = SurfaceHeightmaps.surfacePos(level, context.origin());
+        if (!SurfaceHeightmaps.isGround(level, originSurface) || level.getBiome(originSurface).is(NO_SPICE_PLANTS))
             return false;
 
         Optional<Spice> heartSpice = Optional.empty();
@@ -126,7 +127,7 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
 
         boolean placedAny = false;
         for (int i = 0; i < config.tries(); i++) {
-            BlockPos surfacePos = randomSurfacePos(level, random, context.origin(), config.xzSpread());
+            BlockPos surfacePos = randomSurfacePos(level, random, originSurface, config.xzSpread());
             if (tryPlaceOne(level, random, surfacePos, originSpice.get()))
                 placedAny = true;
         }
@@ -148,6 +149,8 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
     private static Optional<Holder<ConfiguredFeature<?, ?>>> groundPond(
             FeaturePlaceContext<SpicePlantConfiguration> context, Spice spice, BlockPos originSurface) {
         SpicePlantConfiguration config = context.config();
+        if (!SpiceDimensions.get(context.level().getLevel()).map(SpiceDimension::allowsPonds).orElse(true))
+            return Optional.empty();
         if (spice.isAquatic())
             return config.aquaticPondFor(context.level().getBiome(originSurface));
 
@@ -176,7 +179,7 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
         for (int dx = -spread; dx <= spread; dx++) {
             for (int dz = -spread; dz <= spread; dz++) {
                 column.set(origin.getX() + dx, origin.getY(), origin.getZ() + dz);
-                BlockPos ground = level.getHeightmapPos(SurfaceHeightmaps.surface(level), column).below();
+                BlockPos ground = SurfaceHeightmaps.surfacePos(level, column).below();
                 if (!level.getFluidState(ground).isEmpty())
                     continue;
 
@@ -213,7 +216,7 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
         List<BlockPos> trunks = new ArrayList<>();
         for (int i = 0; i < config.tries() && trunks.size() < maxTrees; i++) {
             BlockPos surfacePos = i == 0 ? originSurface
-                    : randomSurfacePos(context.level(), context.random(), context.origin(), config.xzSpread());
+                    : randomSurfacePos(context.level(), context.random(), originSurface, config.xzSpread());
             boolean tooClose = trunks.stream()
                     .anyMatch(trunk -> horizontalDistanceSq(trunk, surfacePos) < minDistanceSq);
             if (!tooClose && tryPlaceTree(context, treeFeature, sapling, surfacePos))
@@ -303,7 +306,7 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
         for (int dx = -radius; dx <= radius; dx++) {
             for (int dz = -radius; dz <= radius; dz++) {
                 column.set(pos.getX() + dx, pos.getY(), pos.getZ() + dz);
-                BlockPos ground = level.getHeightmapPos(SurfaceHeightmaps.surface(level), column).below();
+                BlockPos ground = SurfaceHeightmaps.surfacePos(level, column).below();
                 if (!level.getFluidState(ground).isEmpty())
                     return false;
             }
@@ -380,12 +383,7 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
      *         climate found there.
      */
     private static Optional<Spice> resolveSpiceAt(WorldGenLevel level, BlockPos pos) {
-        return SpiceRegionResolver
-                .resolve(level.getSeed(), Services.CONFIG.getSpiceRegionSalt(),
-                        Services.CONFIG.getSpiceRegionCellScale(),
-                        Services.CONFIG.getSpiceRegionClusteringStrength(),
-                        Climate.fromBiome(level.getBiome(pos), pos), pos.getX(), pos.getZ())
-                .spice();
+        return SpiceRegionLayout.of(level.getLevel()).flatMap(layout -> layout.resolveSpice(level.getBiome(pos), pos));
     }
 
     /**
@@ -395,6 +393,6 @@ public class SpicePlantFeature extends Feature<SpicePlantConfiguration> {
     private static BlockPos randomSurfacePos(WorldGenLevel level, RandomSource random, BlockPos origin, int spread) {
         int dx = random.nextInt(spread * 2 + 1) - spread;
         int dz = random.nextInt(spread * 2 + 1) - spread;
-        return level.getHeightmapPos(SurfaceHeightmaps.surface(level), origin.offset(dx, 0, dz));
+        return SurfaceHeightmaps.surfacePos(level, origin.offset(dx, 0, dz));
     }
 }

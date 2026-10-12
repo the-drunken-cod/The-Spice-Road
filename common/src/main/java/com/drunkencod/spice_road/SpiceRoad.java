@@ -22,6 +22,7 @@ import com.drunkencod.spice_road.registry.ModRecipeTypes;
 import com.drunkencod.spice_road.registry.ModSounds;
 import com.drunkencod.spice_road.spice.SpiceProfileReloadListener;
 import com.drunkencod.spice_road.spice.board.BoardLayoutReloadListener;
+import com.drunkencod.spice_road.spice.dimension.SpiceDimensionReloadListener;
 import com.drunkencod.spice_road.spice.effect.SeasoningEffectApplier;
 import com.drunkencod.spice_road.spice.effect.SeasoningEffectReloadListener;
 import com.drunkencod.spice_road.stats.ModStats;
@@ -57,6 +58,8 @@ public class SpiceRoad {
         Services.REGISTRY.registerReloadListener(SeasoningEffectReloadListener.ID,
                 new SeasoningEffectReloadListener());
         Services.REGISTRY.registerReloadListener(BoardLayoutReloadListener.ID, new BoardLayoutReloadListener());
+        Services.REGISTRY.registerReloadListener(SpiceDimensionReloadListener.ID,
+                new SpiceDimensionReloadListener());
         SpiceProfileTooltips.register();
         SpicePlants.bootstrap();
         SpiceTrees.bootstrap();

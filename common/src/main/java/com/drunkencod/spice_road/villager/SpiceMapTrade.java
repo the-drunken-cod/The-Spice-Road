@@ -59,7 +59,7 @@ public class SpiceMapTrade implements VillagerTrades.ItemListing {
             return null;
 
         Optional<ItemStack> map = SpiceMaps.createForTier(level, trader.blockPosition(),
-                RegionHeartSearch.cellsToBlocks(Services.CONFIG.getSpiceMapVillagerSearchRadiusCells()), tier, random,
+                RegionHeartSearch.cellsToBlocks(level, Services.CONFIG.getSpiceMapVillagerSearchRadiusCells()), tier, random,
                 SpiceMaps.DEFAULT_ZOOM, null);
         if (map.isEmpty())
             return null;

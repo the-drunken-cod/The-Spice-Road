@@ -16,6 +16,8 @@ public enum HeartOutcome {
     BARREN_BIOME("barren_biome"),
     /** The Heart Spice has no plant, tree or Host Tree worldgen can place. */
     NO_WORLDGEN_PLANT("no_worldgen_plant"),
+    /** The Heart Spice is aquatic, and the dimension allows no ponds for it to grow in. */
+    NO_PONDS("no_ponds"),
     /** The Heart has no ground for a Heart Grove within reach. */
     NO_GROVE_SITE("no_grove_site");
 

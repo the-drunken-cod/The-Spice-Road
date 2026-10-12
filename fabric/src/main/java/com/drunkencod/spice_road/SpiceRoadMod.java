@@ -72,18 +72,18 @@ public class SpiceRoadMod implements ModInitializer {
                 // NeoForge does the equivalent via the data-driven biome_modifier JSON
                 // (neoforge/src/main/resources/data/spice_road/neoforge/biome_modifier/);
                 // Fabric has no JSON-based equivalent, so this is done in code instead.
-                BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
+                BiomeModifications.addFeature(BiomeSelectors.all(),
                                 GenerationStep.Decoration.VEGETAL_DECORATION, placedFeature("spice_plant"));
                 // Before any vegetation, so Heart Groves find bare ground instead of forest
                 // canopies.
-                BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
+                BiomeModifications.addFeature(BiomeSelectors.all(),
                                 GenerationStep.Decoration.LOCAL_MODIFICATIONS, placedFeature("spice_heart_grove"));
-                BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
+                BiomeModifications.addFeature(BiomeSelectors.all(),
                                 GenerationStep.Decoration.VEGETAL_DECORATION, placedFeature("spice_heart_satellite"));
-                BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
+                BiomeModifications.addFeature(BiomeSelectors.all(),
                                 GenerationStep.Decoration.VEGETAL_DECORATION,
                                 placedFeature("spice_heart_satellite_hilly"));
-                BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
+                BiomeModifications.addFeature(BiomeSelectors.all(),
                                 GenerationStep.Decoration.VEGETAL_DECORATION,
                                 placedFeature("spice_heart_satellite_barren"));
 

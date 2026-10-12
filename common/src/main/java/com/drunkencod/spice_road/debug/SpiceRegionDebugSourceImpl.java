@@ -12,8 +12,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
-import com.drunkencod.spice_road.platform.Services;
-import com.drunkencod.spice_road.spice.Climate;
+import com.drunkencod.spice_road.spice.dimension.SpiceDimension;
+import com.drunkencod.spice_road.spice.dimension.SpiceDimensions;
+import com.drunkencod.spice_road.spice.region.SpiceRegionLayout;
 import com.drunkencod.spice_road.spice.region.SpiceRegionResolver;
 import com.drunkencod.spice_road.spice.region.SpiceRegionResult;
 import com.drunkencod.spice_road.spice.region.SublevelPositions;
@@ -47,23 +48,23 @@ public class SpiceRegionDebugSourceImpl implements SpiceRegionDebugSource {
                     new SpiceRegionDebugInfo.Line("Spice Region", "unavailable (not singleplayer)")));
         }
 
+        SpiceDimension dimension = SpiceDimensions.get(level).orElse(null);
+        if (dimension == null) {
+            return new SpiceRegionDebugInfo(List.of(new SpiceRegionDebugInfo.Line("Spice Region",
+                    "none (no Spice Dimension for " + level.dimension().location() + ")")));
+        }
+
         BlockPos effectivePos = SublevelPositions.projectOutOfSubLevel(level, pos);
         Holder<Biome> biome = level.getBiome(effectivePos);
-        Climate climate = Climate.fromBiome(biome, effectivePos);
-
-        long salt = Services.CONFIG.getSpiceRegionSalt();
-        double cellScale = Services.CONFIG.getSpiceRegionCellScale();
-        double clusteringStrength = Services.CONFIG.getSpiceRegionClusteringStrength();
-
-        SpiceRegionResult result = SpiceRegionResolver.resolve(worldSeed, salt, cellScale, clusteringStrength, climate,
-                effectivePos.getX(), effectivePos.getZ());
+        SpiceRegionResult result = SpiceRegionLayout.of(dimension, worldSeed).resolve(biome, effectivePos);
 
         List<SpiceRegionDebugInfo.Line> lines = new ArrayList<>();
         if (!effectivePos.equals(pos)) {
             lines.add(new SpiceRegionDebugInfo.Line("Sub-level",
                     "projected to " + effectivePos.getX() + ", " + effectivePos.getY() + ", " + effectivePos.getZ()));
         }
-        lines.add(new SpiceRegionDebugInfo.Line("Climate", climate.name()));
+        lines.add(new SpiceRegionDebugInfo.Line("Climate",
+                result.climate().map(climate -> climate.id().toString()).orElse("none")));
         lines.add(new SpiceRegionDebugInfo.Line("Cell",
                 result.cell().gridX() + ", " + result.cell().gridZ() + " (seed " + result.cell().seed() + ")"));
         double dx = result.cell().centerX() - effectivePos.getX();
@@ -72,9 +73,15 @@ public class SpiceRegionDebugSourceImpl implements SpiceRegionDebugSource {
                 Math.round(result.cell().centerX()) + ", " + Math.round(result.cell().centerZ())
                         + " (" + describeOffset(dx, dz) + ")"));
         lines.add(new SpiceRegionDebugInfo.Line("Resolved Spice",
-                result.spice().map(Enum::name)
-                        .orElse(result.spiceless() ? "NONE (spiceless region)" : "NONE (empty Climate Bucket)")));
+                result.spice().map(Enum::name).orElse(noSpiceReason(result))));
         return new SpiceRegionDebugInfo(lines);
+    }
+
+    /** @return Why {@code result} resolved to no Spice. */
+    private static String noSpiceReason(SpiceRegionResult result) {
+        if (result.spiceless())
+            return "NONE (spiceless region)";
+        return result.climate().isEmpty() ? "NONE (biome has no Climate)" : "NONE (empty Climate Bucket)";
     }
 
     /**

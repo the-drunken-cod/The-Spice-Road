@@ -3,8 +3,17 @@
 ⚠️ **Contains breaking changes.** Existing worlds will be affected!  
 
 - **Features:**
+    - Spice Regions now work in every dimension, driven by datapacks. A Spice Dimension file at `data/<namespace>/spice_dimension/<dimension_path>.json` gives each Climate its Spices, and the Nether and the End ship as empty scaffolds, so they have no spices until a datapack fills their buckets.
+        - Climates are open IDs (`spice_road:nether` and `spice_road:end` join the four existing ones). `buckets` add to or remove from a Climate's Spices (a plain list adds), and `rules` give biomes a Climate by temperature, precipitation and biome or biome tag, checked in order.
+        - A biome can also be assigned a Climate with the biome tag `<namespace>:climate/<climate_path>`, which wins over the rules. Climates that a dimension doesn't list are ignored there.
+        - Other settings: `surface` (`top` or `scan_down` with `start_y`, for dimensions with a ceiling or void), `allow_ponds`, `salt_offset` and `cell_scale_multiplier`.
+        - Files of all datapacks are merged: buckets accumulate, rules of higher-priority packs go first, and `"replace": true` drops everything below it.
+    - Spice plants, groves and Region Hearts can now generate in any dimension. Added the `no_ponds` outcome to `/spice_road admin sample_spices` for aquatic Hearts in dimensions that don't allow ponds.
     - Foods that could be seasoned but aren't can optionally lose saturation when eaten (off by default): their own saturation is multiplied by a configurable factor. If AppleSkin is installed, its tooltips show the penalized value.
 - **Changes:**
+    - Which spice a Climate region resolves to is now picked differently, so the spices of existing Overworld regions are reshuffled.
+    - Spice Maps, `/locate` and the admin commands only look at the dimension they are used in. Climate arguments of commands take any Climate; Climates of other mods are written as quoted IDs.
+    - Non-hardy spices can only be planted in dimensions where some Climate Bucket has spices, unless planting restrictions are lifted in the config.
     - The "participation award" is now the seasoning saturation modifier, and its range can go negative to take saturation away. Its config moved from `seasoning.participation` to `seasoning.saturationModifier`, so existing values reset to the defaults.
 - **Fixes:**
 

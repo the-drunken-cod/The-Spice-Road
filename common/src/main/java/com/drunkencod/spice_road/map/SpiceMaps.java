@@ -99,7 +99,7 @@ public final class SpiceMaps {
      */
     public static Optional<ItemStack> createForClimate(ServerLevel level, BlockPos origin, int radius,
             Climate climate, byte zoom, @Nullable Holder<MapDecorationType> decoration) {
-        return RegionHeartSearch.findNearest(level, origin, radius, heart -> heart.climate() == climate)
+        return RegionHeartSearch.findNearest(level, origin, radius, heart -> heart.climate().equals(climate))
                 .map(heart -> create(level, heart, zoom, decoration));
     }
 

@@ -19,11 +19,12 @@ import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
 import com.drunkencod.spice_road.block.SpicePlantBlock;
-import com.drunkencod.spice_road.platform.Services;
+import com.drunkencod.spice_road.spice.dimension.SpiceDimension;
+import com.drunkencod.spice_road.spice.dimension.SpiceDimensions;
+import com.drunkencod.spice_road.spice.dimension.SurfaceStrategy;
 import com.drunkencod.spice_road.spice.region.RegionHeart;
 import com.drunkencod.spice_road.spice.region.RegionHeartSearch;
-import com.drunkencod.spice_road.spice.region.SpiceCell;
-import com.drunkencod.spice_road.spice.region.SpiceRegionResolver;
+import com.drunkencod.spice_road.spice.region.SpiceRegionLayout;
 
 /**
  * Placement modifier {@code spice_road:region_heart}: places once per
@@ -95,6 +96,8 @@ public final class RegionHeartPlacement extends PlacementModifier {
      */
     private BlockPos groveOrigin(PlacementContext context, ServerLevel level, ChunkPos chunk, RegionHeart heart,
             BlockPos site) {
+        SurfaceStrategy strategy = SpiceDimensions.get(level).map(SpiceDimension::surface)
+                .orElse(SurfaceStrategy.TOP);
         int minX = chunk.getMinBlockX() - CHUNK_MARGIN;
         int maxX = chunk.getMaxBlockX() + CHUNK_MARGIN;
         int minZ = chunk.getMinBlockZ() - CHUNK_MARGIN;
@@ -106,7 +109,7 @@ public final class RegionHeartPlacement extends PlacementModifier {
             if (x < minX || x > maxX || z < minZ || z > maxZ)
                 continue;
 
-            BlockPos surface = surfaceOf(context, x, z);
+            BlockPos surface = surfaceOf(context, strategy, x, z, site.getY());
             if (!context.getBlockState(surface.below()).is(SpicePlantBlock.SPICE_GROWABLE))
                 continue;
             if (!isInRegionOf(level, heart, x, z))
@@ -114,15 +117,24 @@ public final class RegionHeartPlacement extends PlacementModifier {
 
             return surface;
         }
-        return surfaceOf(context, site.getX(), site.getZ());
+        return surfaceOf(context, strategy, site.getX(), site.getZ(), site.getY());
     }
 
     /**
+     * @param nearY Where the ground is expected, for dimensions that scan down.
      * @return The surface position of the column at {@code (x, z)}, per the
-     *         generating world's heightmap.
+     *         generating world's heightmap, or by scanning its blocks if the
+     *         dimension's {@link SurfaceStrategy} says so. Without ground in
+     *         the latter case, the lowest position of the world.
      */
-    private static BlockPos surfaceOf(PlacementContext context, int x, int z) {
-        return new BlockPos(x, context.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z), z);
+    private static BlockPos surfaceOf(PlacementContext context, SurfaceStrategy strategy, int x, int z, int nearY) {
+        if (!strategy.isScanDown())
+            return new BlockPos(x, context.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z), z);
+
+        int y = SurfaceHeightmaps
+                .scan(strategy, context::getBlockState, x, z, nearY, context.getMinBuildHeight())
+                .map(SurfaceStrategy.Ground::surfaceY).orElse(context.getMinBuildHeight());
+        return new BlockPos(x, y, z);
     }
 
     /**
@@ -130,9 +142,9 @@ public final class RegionHeartPlacement extends PlacementModifier {
      *         to.
      */
     private static boolean isInRegionOf(ServerLevel level, RegionHeart heart, int x, int z) {
-        SpiceCell cell = SpiceRegionResolver.resolveCell(level.getSeed(), Services.CONFIG.getSpiceRegionSalt(),
-                Services.CONFIG.getSpiceRegionCellScale(), x, z);
-        return cell.gridX() == heart.cell().gridX() && cell.gridZ() == heart.cell().gridZ();
+        return SpiceRegionLayout.of(level).map(layout -> layout.cell(x, z))
+                .filter(cell -> cell.gridX() == heart.cell().gridX() && cell.gridZ() == heart.cell().gridZ())
+                .isPresent();
     }
 
     @Override

@@ -38,8 +38,8 @@ final class SpiceAdminCommand {
 
     private static final String PLAYER = "player";
 
-    private static final SimpleCommandExceptionType ERROR_OVERWORLD_ONLY = new SimpleCommandExceptionType(
-            Component.translatable("commands.spice_road.overworld_only"));
+    private static final SimpleCommandExceptionType ERROR_NO_SPICE_REGIONS = new SimpleCommandExceptionType(
+            Component.translatable("commands.spice_road.no_spice_regions"));
 
     private static final Dynamic2CommandExceptionType ERROR_MAP_NOT_FOUND = new Dynamic2CommandExceptionType(
             (query, player) -> Component.translatableEscape("commands.spice_road.give_map.not_found", query,
@@ -110,16 +110,16 @@ final class SpiceAdminCommand {
      *                not-found message.
      * @param factory Makes the map.
      * @return {@code 1}.
-     * @throws CommandSyntaxException If the player isn't in the Overworld, or
-     *                                nothing matching is in range.
+     * @throws CommandSyntaxException If the player's dimension has no Spice
+     *                                Regions, or nothing matching is in range.
      */
     private static int giveMap(CommandSourceStack source, ServerPlayer target, Component query, MapFactory factory)
             throws CommandSyntaxException {
         ServerLevel level = target.serverLevel();
         if (!RegionHeartSearch.hasSpiceRegions(level))
-            throw ERROR_OVERWORLD_ONLY.create();
+            throw ERROR_NO_SPICE_REGIONS.create();
 
-        int radius = RegionHeartSearch.cellsToBlocks(Services.CONFIG.getSpiceMapSearchRadiusCells());
+        int radius = RegionHeartSearch.cellsToBlocks(level, Services.CONFIG.getSpiceMapSearchRadiusCells());
         ItemStack map = factory.create(level, target.blockPosition(), radius)
                 .orElseThrow(() -> ERROR_MAP_NOT_FOUND.create(query, target.getDisplayName()));
         Component mapName = map.getDisplayName();

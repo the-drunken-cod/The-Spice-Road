@@ -17,6 +17,7 @@ import com.drunkencod.spice_road.datagen.DryingRecipeProvider;
 import com.drunkencod.spice_road.datagen.FlavorFolioRecipeProvider;
 import com.drunkencod.spice_road.datagen.ImmersiveEngineeringClocheRecipeProvider;
 import com.drunkencod.spice_road.datagen.MixPresetProvider;
+import com.drunkencod.spice_road.datagen.SpiceDimensionProvider;
 import com.drunkencod.spice_road.datagen.SpiceMixModelProvider;
 import com.drunkencod.spice_road.datagen.SpiceGrinderBlockProvider;
 import com.drunkencod.spice_road.datagen.SpiceMetaProvider;
@@ -178,6 +179,9 @@ public class SpiceRoadMod {
         event.getGenerator().addProvider(
                 event.includeServer(),
                 new MixPresetProvider(event.getGenerator().getPackOutput()));
+        event.getGenerator().addProvider(
+                event.includeServer(),
+                new SpiceDimensionProvider(event.getGenerator().getPackOutput()));
         event.getGenerator().addProvider(
                 event.includeClient(),
                 new SpiceMixModelProvider(event.getGenerator().getPackOutput()));

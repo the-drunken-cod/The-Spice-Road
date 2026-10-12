@@ -1,5 +1,7 @@
 package com.drunkencod.spice_road.spice.region;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * Small deterministic hashing/pseudo-random helpers that turn a world seed
  * plus integer coordinates into stable pseudo-random values, without
@@ -44,6 +46,22 @@ public final class SeededHash {
         h = mix64(h ^ (a * GOLDEN_GAMMA));
         h = mix64(h ^ (b * GOLDEN_GAMMA));
         return h;
+    }
+
+    /**
+     * Hashes a string to a stable 64-bit value, the same on every run and
+     * platform (FNV-1a over its UTF-8 bytes).
+     *
+     * @param text The string to hash.
+     * @return A 64-bit hash of {@code text}.
+     */
+    public static long hashString(String text) {
+        long hash = 0xCBF29CE484222325L;
+        for (byte b : text.getBytes(StandardCharsets.UTF_8)) {
+            hash ^= b & 0xFF;
+            hash *= 0x100000001B3L;
+        }
+        return hash;
     }
 
     /**

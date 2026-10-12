@@ -1,45 +1,62 @@
 package com.drunkencod.spice_road.spice;
 
+import java.util.List;
+
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
+import com.mojang.serialization.Codec;
+
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 
+import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.spice.region.SeededHash;
+
 /**
- * A biome's climate, derived from its temperature/humidity, but overridable
- * per-biome via datapack tags. All Spices sharing a Climate value form that
- * Climate's Climate Bucket.
+ * A label a biome can have, deciding which Climate Bucket its Spices come
+ * from. Open and datapack-extensible: a Climate is just an ID, and the Climate
+ * Buckets themselves (which Spices a Climate holds) are per dimension, see
+ * {@link com.drunkencod.spice_road.spice.dimension.SpiceDimension}.
+ * <p>
+ * A Climate {@code mypack:foo} is forced onto biomes through the biome tag
+ * {@code mypack:climate/foo} ({@link #biomeTag()}).
+ *
+ * @param id The Climate's ID, e.g. {@code spice_road:arid}.
  */
-public enum Climate {
+public record Climate(ResourceLocation id) {
 
-    // temp > 0.8, precip > 0:
-    TROPICAL("tropical"),
-    // temp <= 0.7, precip > 0:
-    TEMPERATE("temperate"),
-    // temp >= 0.15, precip = 0:
-    ARID("arid"),
-    // temp < 0.15, precip >= 0:
-    COLD("cold");
+    /** Tag path prefix of a Climate's {@link #biomeTag() biome tag}. */
+    private static final String TAG_PREFIX = "climate/";
 
-    private final String id;
+    /** Codec of a Climate's ID. */
+    public static final Codec<Climate> CODEC = ResourceLocation.CODEC.xmap(Climate::new, Climate::id);
 
-    Climate(String id) {
-        this.id = id;
-    }
+    public static final Climate TROPICAL = builtIn("tropical");
+    public static final Climate TEMPERATE = builtIn("temperate");
+    public static final Climate ARID = builtIn("arid");
+    public static final Climate COLD = builtIn("cold");
+    /** The Nether's only built-in Climate. */
+    public static final Climate NETHER = builtIn("nether");
+    /** The End's only built-in Climate. */
+    public static final Climate END = builtIn("end");
 
-    /** @return This Climate's ID, e.g. {@code "tropical"}. */
-    public String getId() {
-        return id;
+    /** The Climates this mod ships, in a fixed order. */
+    public static final List<Climate> BUILT_IN = List.of(TROPICAL, TEMPERATE, ARID, COLD, NETHER, END);
+
+    private static Climate builtIn(String path) {
+        return new Climate(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, path));
     }
 
     /**
-     * @return The translation key of this Climate's plain name (e.g.
-     *         {@code "Tropical"}).
+     * @return The translation key of this Climate's plain name, e.g.
+     *         {@code "climate.spice_road.tropical"}. A path's slashes become
+     *         dots.
      */
     public String getTranslationKey() {
-        return "climate.spice_road." + id;
+        return "climate." + id.getNamespace() + "." + id.getPath().replace('/', '.');
     }
 
     /**
@@ -50,48 +67,42 @@ public enum Climate {
         return Component.translatable(getTranslationKey());
     }
 
-    // #region static
-
     /**
-     * Derives a {@link Climate} from a biome's temperature/precipitation.
-     * <p>
-     * Heuristic, not a precise scientific mapping - cold biomes are simply
-     * ones below the snow-line temperature threshold; among the rest, "no
-     * precipitation" (deserts, badlands, etc.) reads as {@link #ARID} and
-     * everything else splits on temperature into {@link #TEMPERATE} /
-     * {@link #TROPICAL}.
-     * <p>
-     * Datapack tag overrides (e.g. {@code spice_road:biome/climate/arid})
-     * are not implemented here yet. Callers that need the override should check
-     * those tags first and only fall back to this method if none apply.
-     *
-     * @param biome The biome to derive climate from.
-     * @param pos   The position within that biome (precipitation can vary
-     *              with height, e.g. snow at altitude).
-     * @return The derived {@link Climate}.
+     * @return The biome tag that forces biomes into this Climate: this
+     *         Climate's ID with {@code climate/} in front of its path.
      */
-    public static Climate fromBiome(Holder<Biome> biome, BlockPos pos) {
-        Biome value = biome.value();
-        float temperature = value.getBaseTemperature();
-
-        if (temperature < 0.15F)
-            return COLD;
-        if (value.getPrecipitationAt(pos) == Biome.Precipitation.NONE)
-            return ARID;
-        return temperature <= 0.8F ? TEMPERATE : TROPICAL;
+    public TagKey<Biome> biomeTag() {
+        return TagKey.create(Registries.BIOME, id.withPath(TAG_PREFIX + id.getPath()));
     }
 
     /**
-     * Looks up a Climate by its {@link #getId() ID}.
-     *
-     * @param id The Climate's ID, e.g. {@code "tropical"}.
-     * @return The matching Climate, or {@code null} if there is none.
+     * @return A stable 64-bit key derived from this Climate's ID, used to seed
+     *         its Spice picks. Doesn't depend on registration or load order.
      */
-    public static @Nullable Climate byId(String id) {
-        for (Climate climate : values()) {
-            if (climate.id.equals(id))
-                return climate;
-        }
-        return null;
+    public long seedKey() {
+        return SeededHash.hashString(id.toString());
+    }
+
+    /**
+     * @return This Climate as typed in a command: just the path for this mod's
+     *         own Climates, otherwise the full ID in quotes, since a colon
+     *         can't be typed in a plain word.
+     */
+    public String getCommandName() {
+        return id.getNamespace().equals(Constants.MOD_ID) ? id.getPath() : "\"" + id + "\"";
+    }
+
+    /**
+     * Looks up a Climate by what a command holds.
+     *
+     * @param name A path of this mod's namespace (e.g. {@code "tropical"}), or
+     *             a full ID (e.g. {@code "mypack:infernal"}).
+     * @return The Climate, or {@code null} if {@code name} isn't a valid ID.
+     *         Whether any dimension knows it is not checked.
+     */
+    public static @Nullable Climate byCommandName(String name) {
+        ResourceLocation id = name.indexOf(':') >= 0 ? ResourceLocation.tryParse(name)
+                : ResourceLocation.tryBuild(Constants.MOD_ID, name);
+        return id == null ? null : new Climate(id);
     }
 }
