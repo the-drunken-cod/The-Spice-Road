@@ -273,3 +273,5 @@
         - [ ] Salt: 
         - [ ] Sugar: 
         - [ ] MSG: 
+- [ ] Help tooltip in Spice Grinder GUI (`[?]` in top right) that explains the minigame in short and refers to the Flavor Folio for more info.
+- [ ] Make item slots in custom Patchouli pages work with the "hold Ctrl to navigate to the item page" feature.
