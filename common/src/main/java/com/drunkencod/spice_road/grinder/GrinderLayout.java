@@ -158,6 +158,15 @@ public final class GrinderLayout {
     /** Top edge of the hotbar. */
     public static final int HOTBAR_Y = 246;
 
+    // #region Help label
+
+    /** Right edge of the help label, which sits in the title row. */
+    public static final int HELP_RIGHT_X = IMAGE_WIDTH - 8;
+    /** Top edge of the help label. */
+    public static final int HELP_Y = 5;
+    /** Widest the help tooltip's text may be before it wraps. */
+    public static final int HELP_TOOLTIP_WIDTH = 220;
+
     // #region Cheat Mode
 
     /** Position of the cheat mode label. */
