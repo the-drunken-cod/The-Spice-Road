@@ -5,6 +5,12 @@
     "sortnum": 0,
     "pages": [
         {
+            "type": "patchouli:spotlight",
+            "item": "tag:spice_road:drying_racks",
+            "title": "Drying Rack",
+            "text": "$(todo)TODO$(): summary."
+        },
+        {
             "type": "patchouli:text",
             "title": "Drying Rack",
             "text": "$(todo)TODO$(): Summary: two sides with input, output and secondary output; heat sources and hot biomes speed it up; redstone pauses it; hoppers work; comparators read progress."
