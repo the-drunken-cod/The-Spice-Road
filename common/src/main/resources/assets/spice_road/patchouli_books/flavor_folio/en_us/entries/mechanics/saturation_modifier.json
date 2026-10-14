@@ -7,7 +7,7 @@
         {
             "type": "patchouli:text",
             "title": "Saturation Modifier",
-            "text": "$(todo)TODO$(): Saturation change for food that ended up with no effects after the minigame, and the optional penalty for unseasoned food."
+            "text": "Depending on how the mod is configured, foods that are unseasoned may receive a saturation penalty. Similarly, seasoned foods will grant extra saturation, depending on how many different kinds of spices were used. When a seasoned food ends up with no effects, it ends up with a \"participation award\" saturation boost. If the mod AppleSkin is installed, the tooltip will show the adjusted saturation (but not the hunger bar overlay)."
         }
     ]
 }

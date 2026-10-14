@@ -8,17 +8,12 @@
             "type": "patchouli:spotlight",
             "item": "tag:spice_road:spice_racks",
             "title": "Spice Rack",
-            "text": "$(todo)TODO$(): summary."
-        },
-        {
-            "type": "patchouli:text",
-            "title": "Spice Rack",
-            "text": "$(todo)TODO$(): Summary: 8 slots in two tiers; a source for the $(l:mechanics/spice_grinder)Spice Grinder$(/l); three models for floor, wall and ceiling; the $(cfg)spiceRack.itemRenderDistance$() client config option."
+            "text": "Holds up to 8 stacks of spices and displays them in the world in a nice looking way. Depending on whether it was placed against the ceiling, floor or a wall, it will have one of three models. The rendering distance can be changed in the client config."
         },
         {
             "type": "patchouli:crafting",
             "recipe": "spice_road:spice_rack",
-            "text": "$(todo)TODO$(): Mention the different wood types and the fallback to oak for modded slabs."
+            "text": "Craft it from any of the 11 base wood types. Modded wood types result in Oak."
         }
     ]
 }

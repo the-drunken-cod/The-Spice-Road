@@ -5,13 +5,15 @@
     "sortnum": 2,
     "pages": [
         {
-            "type": "patchouli:text",
+            "type": "patchouli:spotlight",
+            "item": "spice_road:spice_grinder",
             "title": "Spice Grinder",
-            "text": "$(todo)TODO$(): Summary: combines spices and seasons food; can be placed with Shift + Right-click; a run in progress is saved on the item or block; the $(cfg)grinder.inputBufferMs$() client config option."
+            "text": "This nifty mortar and pestle is used to crush and blend spices and directly apply them to foods. It can be used in item form or placed down when sneaking. Any in-progress runs are saved on the item or block."
         },
         {
             "type": "patchouli:crafting",
-            "recipe": "spice_road:crafting/spice_grinder"
+            "recipe": "spice_road:crafting/spice_grinder",
+            "text": "Hard, volcanic rock is required to crush spices without chipping and seasoning food with pebbles."
         },
         {
             "type": "patchouli:image",
@@ -20,7 +22,7 @@
                 "spice_road:textures/gui/flavor_folio/grinder_board.png"
             ],
             "border": true,
-            "text": "$(todo)TODO$(): Replace this placeholder with a screenshot. `patchouli:image` takes up to several images and flips between them."
+            "text": "Figure: Navigating the game board to apply effects to foods."
         }
     ]
 }

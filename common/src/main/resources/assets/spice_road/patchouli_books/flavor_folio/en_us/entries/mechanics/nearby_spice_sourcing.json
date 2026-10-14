@@ -5,15 +5,15 @@
     "sortnum": 3,
     "pages": [
         {
-            "type": "patchouli:text",
+            "type": "patchouli:spotlight",
+            "item": "tag:spice_road:spice_storage",
             "title": "Nearby Spices",
-            "text": "$(todo)TODO$(): The Grinder takes spices from your inventory first, then from storage within the $(cfg)seasoning.storageRadius$() config option, nearest first. All or nothing."
+            "text": "The Spice Grinder can source spices from different nearby containers. By default, only the Spice Rack will be available, but many blocks from other mods are also supported, as long as they have the block tag $(cfg)#spice_road:spice_storage$()."
         },
         {
             "type": "spice_road:block_tag",
             "title": "Supported Storage",
-            "tag": "spice_road:spice_storage",
-            "text": "Lists whatever the block tag $(cfg)#spice_road:spice_storage$() contains."
+            "tag": "spice_road:spice_storage"
         }
     ]
 }

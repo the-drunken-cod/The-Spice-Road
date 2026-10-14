@@ -5,9 +5,15 @@
     "sortnum": 6,
     "pages": [
         {
-            "type": "patchouli:text",
+            "type": "patchouli:spotlight",
+            "item": "spice_road:spice_mix",
             "title": "Spice Mixes",
-            "text": "$(todo)TODO$(): A jar of up to 8 spices. Any configuration is valid, including duplicates; named presets are fixed proportions."
+            "text": "Adding up to 8 spices together in a jar is a good way of creating preset spice mixes that can apply more flavoring at once. Any configuration of spices is allowed, including duplicates. For some specific proportions of spices, the mix will gain a custom name and texture."
+        },
+        {
+            "type": "patchouli:crafting",
+            "recipe": "spice_road:crafting/jar",
+            "text": "Starting with an empty jar, combine it with 1-8 spices in a crafting grid."
         },
         {
             "type": "spice_road:mix_preset",

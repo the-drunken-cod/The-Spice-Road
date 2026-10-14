@@ -2,13 +2,13 @@
     "type": "minecraft:crafting_shaped",
     "category": "building",
     "pattern": [
-        " B ",
-        "B B",
-        "BBB"
+        " V ",
+        "V V",
+        "VVV"
     ],
     "key": {
-        "B": {
-            "item": "minecraft:basalt"
+        "V": {
+            "tag": "spice_road:volcanic_rocks"
         }
     },
     "result": {

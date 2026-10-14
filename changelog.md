@@ -11,6 +11,7 @@
     - Spice plants, groves and Region Hearts can now generate in any dimension. Added the `no_ponds` outcome to `/spice_road admin sample_spices` for aquatic Hearts in dimensions that don't allow ponds.
     - Foods that could be seasoned but aren't can optionally lose saturation when eaten (off by default): their own saturation is multiplied by a configurable factor. If AppleSkin is installed, its tooltips show the penalized value.
     - GUIs now have a `[?]` label in the top right corner that explains them in a few sentences. These labels can be toggled off in the client config.
+    - Added custom textures for the Flavor Folio item, GUI background and page filler sprite.
 - **Changes:**
     - Which spice a Climate region resolves to is now picked differently, so the spices of existing Overworld regions are reshuffled.
     - Spice Maps, `/locate` and the admin commands only look at the dimension they are used in. Climate arguments of commands take any Climate; Climates of other mods are written as quoted IDs.

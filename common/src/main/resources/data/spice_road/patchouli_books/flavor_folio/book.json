@@ -1,10 +1,13 @@
 {
     "name": "spice_road.guide.name",
+    "subtitle": "spice_road.guide.subtitle",
     "landing_text": "spice_road.guide.landing",
-    "version": 1,
+    "version": 0,
     "use_resource_pack": true,
     "advancements_tab": "spice_road:root",
     "creative_tab": "spice_road:spice_road_0_generic",
+    "book_texture": "spice_road:textures/gui/flavor_folio/book.png",
+    "filler_texture": "spice_road:textures/gui/flavor_folio/page_filler.png",
     "model": "spice_road:flavor_folio",
     "macros": {
         "$(tier_common)": "$(#555555)",
