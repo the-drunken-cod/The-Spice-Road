@@ -29,7 +29,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -42,7 +41,7 @@ import net.minecraft.world.item.Item;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.client.GuiBackground;
-import com.drunkencod.spice_road.compat.patchouli.FlavorFolio;
+import com.drunkencod.spice_road.client.GuiHelpLabel;
 import com.drunkencod.spice_road.grinder.GrinderActions;
 import com.drunkencod.spice_road.grinder.GrinderIntentPayload;
 import com.drunkencod.spice_road.grinder.GrinderLayout;
@@ -647,6 +646,8 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
                     leftPos + GrinderLayout.FOOD_SLOT_X + 16, topPos + GrinderLayout.FOOD_SLOT_Y + 16, 0x99000000);
         renderTooltips(graphics, mouseX, mouseY);
         renderTooltip(graphics, mouseX, mouseY);
+        GuiHelpLabel.render(graphics, font, leftPos + GrinderLayout.HELP_RIGHT_X, topPos + GrinderLayout.HELP_Y, mouseX,
+                mouseY, Component.translatable(KEY_PREFIX + "help.tooltip"));
     }
 
     @Override
@@ -680,53 +681,9 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         graphics.drawString(font, title, titleLabelX, titleLabelY, COLOR_TITLE, false);
-        graphics.drawString(font, helpLabel(), helpX() - leftPos, GrinderLayout.HELP_Y, COLOR_TITLE, false);
         if (view().cheatMode())
             graphics.drawString(font, Component.translatable(KEY_PREFIX + "cheat_mode"), GrinderLayout.CHEAT_LABEL_X,
                     GrinderLayout.CHEAT_LABEL_Y, COLOR_TITLE, false);
-    }
-
-    /**
-     * @return The label that explains the minigame when hovered.
-     */
-    private static Component helpLabel() {
-        return Component.literal("[?]");
-    }
-
-    /**
-     * @return The left edge of the help label on screen, right-aligned to
-     *         {@link GrinderLayout#HELP_RIGHT_X}.
-     */
-    private int helpX() {
-        return leftPos + GrinderLayout.HELP_RIGHT_X - font.width(helpLabel());
-    }
-
-    /**
-     * @return Whether the mouse is over the help label.
-     */
-    private boolean hoversHelp(int mouseX, int mouseY) {
-        int x = helpX();
-        int y = topPos + GrinderLayout.HELP_Y;
-        return mouseX >= x && mouseX < x + font.width(helpLabel()) && mouseY >= y && mouseY < y + font.lineHeight;
-    }
-
-    /**
-     * @return The wrapped tooltip of the help label: how the minigame works, a
-     *         pointer to the Flavor Folio, and a notice if Patchouli, which the
-     *         Folio needs, isn't installed.
-     */
-    private List<FormattedCharSequence> helpTooltip() {
-        Component folio = Component.translatable("spice_road.guide.name").withStyle(ChatFormatting.GOLD);
-        int width = GrinderLayout.HELP_TOOLTIP_WIDTH;
-        List<FormattedCharSequence> lines = new ArrayList<>(
-                font.split(Component.translatable(KEY_PREFIX + "help.tooltip"), width));
-        lines.add(FormattedCharSequence.EMPTY);
-        lines.addAll(font.split(Component.translatable(KEY_PREFIX + "help.folio", folio)
-                .withStyle(ChatFormatting.GRAY), width));
-        if (!Services.PLATFORM.isModLoaded(FlavorFolio.PATCHOULI_MOD_ID))
-            lines.addAll(font.split(Component.translatable(KEY_PREFIX + "help.no_patchouli", folio)
-                    .withStyle(ChatFormatting.RED), width));
-        return lines;
     }
 
     /**
@@ -978,10 +935,6 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
             List<Component> lines = TooltipUtil.withExpanded(hints,
                     () -> getTooltipFromItem(Minecraft.getInstance(), stack));
             graphics.renderTooltip(font, lines, stack.getTooltipImage(), mouseX, mouseY);
-            return;
-        }
-        if (hoversHelp(mouseX, mouseY)) {
-            graphics.renderTooltip(font, helpTooltip(), mouseX, mouseY);
             return;
         }
         for (Clipped text : clipped) {

@@ -335,6 +335,11 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean isShowHelpLabels() {
+        return client().gui.showHelpLabels;
+    }
+
+    @Override
     public int getGrinderInputBufferMs() {
         return client().grinder.inputBufferMs;
     }
@@ -874,6 +879,8 @@ public class FabricConfigHelper implements IConfigHelper {
         public static class Gui {
             @ConfigEntry.Gui.Tooltip
             public boolean darkMode = ConfigSchema.DARK_MODE.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public boolean showHelpLabels = ConfigSchema.SHOW_HELP_LABELS.getDefault();
         }
 
         /** Spice Grinder GUI behavior. */

@@ -350,6 +350,10 @@ public final class ConfigSchema {
     /** Whether to render GUI backgrounds in dark mode, if supported. */
     public static final ConfigOption<Boolean> DARK_MODE = add(ConfigOption.ofBoolean(GUI, "darkMode", false));
 
+    /** Whether GUIs show the {@code [?]} label that explains them on hover. */
+    public static final ConfigOption<Boolean> SHOW_HELP_LABELS = add(
+            ConfigOption.ofBoolean(GUI, "showHelpLabels", true));
+
     // #region Tooltip
 
     /** Whether Flavor Axis tooltips show both pole labels of each axis. */

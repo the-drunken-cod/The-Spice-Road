@@ -387,6 +387,11 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean isShowHelpLabels() {
+        return value(ConfigSchema.SHOW_HELP_LABELS);
+    }
+
+    @Override
     public int getGrinderInputBufferMs() {
         return value(ConfigSchema.GRINDER_INPUT_BUFFER_MS);
     }

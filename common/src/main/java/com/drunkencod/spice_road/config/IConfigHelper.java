@@ -407,6 +407,14 @@ public interface IConfigHelper {
     boolean isDarkMode();
 
     /**
+     * Client-side. Whether GUIs show the {@code [?]} label that explains them on
+     * hover.
+     *
+     * @return Whether the help labels are shown.
+     */
+    boolean isShowHelpLabels();
+
+    /**
      * Client-side. How long the Spice Grinder GUI waits after a movement key
      * for a second one, so two keys pressed almost together make a diagonal step.
      *

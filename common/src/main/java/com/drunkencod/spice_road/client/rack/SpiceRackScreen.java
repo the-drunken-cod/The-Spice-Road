@@ -6,7 +6,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 
+import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.client.GuiBackground;
+import com.drunkencod.spice_road.client.GuiHelpLabel;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.rack.SpiceRackMenu;
 
@@ -20,6 +22,8 @@ public class SpiceRackScreen extends AbstractContainerScreen<SpiceRackMenu> {
     private static final int COLOR_LABEL_DARK = 0xFFE0E0E0;
     private static final int COLOR_SLOT_BORDER = 0xFF555555;
     private static final int COLOR_SLOT = 0xFF8B8B8B;
+    /** Gap between the help label and the GUI's right edge. */
+    private static final int HELP_MARGIN = 8;
 
     /**
      * @param menu      The rack's menu.
@@ -37,6 +41,8 @@ public class SpiceRackScreen extends AbstractContainerScreen<SpiceRackMenu> {
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.render(graphics, mouseX, mouseY, partialTick);
         renderTooltip(graphics, mouseX, mouseY);
+        GuiHelpLabel.render(graphics, font, leftPos + imageWidth - HELP_MARGIN, topPos + titleLabelY, mouseX, mouseY,
+                Component.translatable(Constants.MOD_ID + ".gui.rack.help.tooltip"));
     }
 
     @Override

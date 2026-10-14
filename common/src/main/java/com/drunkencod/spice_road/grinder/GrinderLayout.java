@@ -164,8 +164,6 @@ public final class GrinderLayout {
     public static final int HELP_RIGHT_X = IMAGE_WIDTH - 8;
     /** Top edge of the help label. */
     public static final int HELP_Y = 5;
-    /** Widest the help tooltip's text may be before it wraps. */
-    public static final int HELP_TOOLTIP_WIDTH = 220;
 
     // #region Cheat Mode
 
