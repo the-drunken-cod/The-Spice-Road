@@ -91,6 +91,18 @@ public class SpiceItemTags {
      */
     public static final TagKey<Item> SPICE_RACK_STORABLE = create("spice_rack_storable");
 
+    /** Every Spice Rack item, of every wood. Mirrors the block tag of the same name. */
+    public static final TagKey<Item> SPICE_RACKS = create("spice_racks");
+
+    /** Every Drying Rack item, of every wood. Mirrors the block tag of the same name. */
+    public static final TagKey<Item> DRYING_RACKS = create("drying_racks");
+
+    /**
+     * Items of the blocks in the {@code spice_storage} block tag. Includes
+     * {@link #SPICE_RACKS}; other mods' storage items are added by datapacks.
+     */
+    public static final TagKey<Item> SPICE_STORAGE = create("spice_storage");
+
     private SpiceItemTags() {
     }
 

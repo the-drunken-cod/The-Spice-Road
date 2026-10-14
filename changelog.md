@@ -16,6 +16,7 @@
     - Spice Maps, `/locate` and the admin commands only look at the dimension they are used in. Climate arguments of commands take any Climate; Climates of other mods are written as quoted IDs.
     - Non-hardy spices can only be planted in dimensions where some Climate Bucket has spices, unless planting restrictions are lifted in the config.
     - The "participation award" is now the seasoning saturation modifier, and its range can go negative to take saturation away. Its config moved from `seasoning.participation` to `seasoning.saturationModifier`, so existing values reset to the defaults.
+    - The `#spice_road:spice_racks`, `#spice_road:drying_racks` and `#spice_road:spice_storage` tags now also exist as item tags.
 - **Fixes:**
 
 <br>

@@ -19,6 +19,7 @@ import com.drunkencod.spice_road.block.SpiceTree;
 import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.block.SpiceVines;
 import com.drunkencod.spice_road.item.SpiceItemTags;
+import com.drunkencod.spice_road.registry.ModBlocks;
 import com.drunkencod.spice_road.registry.ModItems;
 import com.drunkencod.spice_road.spice.ProcessedSpice;
 import com.drunkencod.spice_road.spice.Spice;
@@ -37,6 +38,8 @@ import com.drunkencod.spice_road.spice.Tier;
  * its Processed Spices, which Mix Presets use to take either.</li>
  * <li>{@link SpiceItemTags#SPICE_PLANT_SEEDS} and the Spice Tree log, leaves
  * and sapling tags, plus {@code c:stripped_logs}.</li>
+ * <li>{@link SpiceItemTags#SPICE_RACKS} and {@link SpiceItemTags#DRYING_RACKS},
+ * and {@link SpiceItemTags#SPICE_STORAGE} including the Spice Racks.</li>
  * <li>The (initially empty) {@link SpiceItemTags#RETAINS_FLAVOR},
  * {@link SpiceItemTags#UNSEASONABLE} and
  * {@link SpiceItemTags#SPICE_RACK_STORABLE} tags so they exist for datapacks to
@@ -86,6 +89,14 @@ public class SpiceItemTagProvider extends RawTagProvider<Item> {
         futures.add(save(cachedOutput, ResourceLocation.fromNamespaceAndPath("c", "stripped_logs"),
                 entries(SpiceTrees.getRegistered().values().stream()
                         .map(tree -> tree.getStrippedLog().get().asItem()))));
+
+        // #region racks
+        futures.add(save(cachedOutput, SpiceItemTags.SPICE_RACKS,
+                entries(ModBlocks.SPICE_RACKS.values().stream().map(rack -> rack.get().asItem()))));
+        futures.add(save(cachedOutput, SpiceItemTags.DRYING_RACKS,
+                entries(ModBlocks.DRYING_RACKS.values().stream().map(rack -> rack.get().asItem()))));
+        futures.add(save(cachedOutput, SpiceItemTags.SPICE_STORAGE, List.of(
+                TagValue.tag(SpiceItemTags.SPICE_RACKS))));
 
         // #region flavor
         futures.add(save(cachedOutput, SpiceItemTags.RETAINS_FLAVOR, List.of(
