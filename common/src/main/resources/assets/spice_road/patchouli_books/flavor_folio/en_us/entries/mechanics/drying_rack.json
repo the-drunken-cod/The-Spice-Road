@@ -8,6 +8,7 @@
             "type": "patchouli:spotlight",
             "item": "tag:spice_road:drying_racks",
             "title": "Drying Rack",
+            "link_recipe": true,
             "text": "A simple contraption that is used to process raw spices into dried spices, to bleach dyes into lighter colors, and more."
         },
         {

@@ -8,7 +8,8 @@
             "type": "patchouli:spotlight",
             "item": "tag:spice_road:spice_racks",
             "title": "Spice Rack",
-            "text": "Holds up to 8 stacks of spices and displays them in the world in a nice looking way. Depending on whether it was placed against the ceiling, floor or a wall, it will have one of three models. The rendering distance can be changed in the client config."
+            "link_recipe": true,
+            "text": "Holds up to 8 stacks of spices, displays them in the world in a neat looking way, and makes them available to nearby $(l:mechanics/spice_grinder)Spice Grinders$(). Depending on whether it was placed against the ceiling, floor or a wall, it will have one of three models. The rendering distance can be changed in the client config."
         },
         {
             "type": "patchouli:crafting",

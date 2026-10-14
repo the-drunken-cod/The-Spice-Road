@@ -588,7 +588,7 @@
     "spice_road.gui.grinder.spice_hint.remove": "[%s] to remove it again.",
     "spice_road.gui.help.folio": "Refer to the %s guide book for more information.",
     "spice_road.gui.help.no_patchouli": "Patchouli isn't installed, so the %s is unavailable.",
-    "spice_road.gui.rack.help.tooltip": "Stores up to 8 stacks of spices and spice mixes. Hoppers and pipes can fill and empty it from any side, and a comparator reads how full it is. Spice Grinders nearby take spices from it.",
+    "spice_road.gui.rack.help.tooltip": "Fancy storage for spices and spice mixes. Hoppers and pipes can fill and empty it from any side, and a comparator reads how full it is. Spice Grinders nearby take spices from it.",
     "spice_road.guide.found": "Found",
     "spice_road.guide.landing": "$(#5a3a1a)$(o)A well-thumbed compendium of spices: where they grow, how to harvest them and what to do with them in the kitchen.$()",
     "spice_road.guide.name": "Flavor Folio",

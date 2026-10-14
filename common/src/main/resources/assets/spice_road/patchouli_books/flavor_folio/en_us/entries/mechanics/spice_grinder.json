@@ -13,7 +13,7 @@
         {
             "type": "patchouli:crafting",
             "recipe": "spice_road:crafting/spice_grinder",
-            "text": "Hard, volcanic rock is required to crush spices without chipping and seasoning food with pebbles."
+            "text": "Hard, volcanic rock is required to crush spices without chipping and ending up seasoning food with pebbles."
         },
         {
             "type": "patchouli:image",
