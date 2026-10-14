@@ -6,6 +6,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import com.drunkencod.spice_road.compat.viewer.SpiceProfileEntry;
@@ -34,6 +35,14 @@ public class SpiceProfilePage extends ViewerEntryPage {
         SpiceProfile profile = SpiceProfileRegistry.getAll().get(resolved);
         return profile == null ? List.of()
                 : layoutAll(List.of(new SpiceProfileEntry.OfItem(resolved, profile)), width);
+    }
+
+    @Override
+    protected List<ItemStack> relevantStacks(Level level) {
+        ResourceLocation id = item == null ? null : ResourceLocation.tryParse(item);
+        Item resolved = id == null ? null : BuiltInRegistries.ITEM.get(id);
+        return resolved == null || SpiceProfileRegistry.getAll().get(resolved) == null ? List.of()
+                : List.of(resolved.getDefaultInstance());
     }
 
     @Override

@@ -43,10 +43,12 @@ All take the optional fields `title` (replaces the default title; `""` hides it)
 | `spice_road:spice_info` | `spice` (e.g. `"cinnamon"`) | Planting item, raw item, tier, climate, growth, yield, plant, harvest, seasons, plus "Found" / "Not found yet" for the reader |
 | `spice_road:spice_profile` | `item` (e.g. `"spice_road:cinnamon"`) | The Effective Profile as bars per Flavor Axis. Any item with a Default Profile works, including datapack-added ones |
 | `spice_road:drying_recipe` | `recipe`, optional `recipe2` (e.g. `"spice_road:drying/dried_clove"`) | Input, results with chances, and drying time with and without heat. Two fit one page |
-| `spice_road:mix_preset` | `preset` (e.g. `"spice_road:pumpkin_spice"`) | The preset's spices in proportion, its jar and its Effective Profile |
+| `spice_road:mix_preset` | `preset` (e.g. `"spice_road:pumpkin_spice"`) | An empty jar, the preset's spices in proportion, the jar they make and its Effective Profile |
 | `spice_road:block_tag` | `tag` (e.g. `"spice_road:spice_storage"`) | The items of all blocks in a block tag as a grid, up to 6 rows |
 
 A page whose id doesn't resolve shows a red "Unknown ..." line instead of failing.
+
+Item slots behave like those of Patchouli's own pages: the tooltip shows the "(Shift for recipe)" hint if another page of the book is the one for that item, and Shift-click goes there. `spice_info` (the raw item) and `spice_profile` (its `item`) are the page of their item, which also makes the Patchouli lookup key work on it from anywhere. Patchouli keeps one page per item, so the other types don't claim items.
 
 ```json
 { "type": "spice_road:spice_info", "spice": "cinnamon", "text": "Optional note below the facts." }

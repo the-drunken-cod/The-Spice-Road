@@ -275,5 +275,7 @@
         - [ ] MSG: 
 - [x] Help tooltip in Spice Grinder GUI (`[?]` in top right) that explains the minigame in short and refers to the Flavor Folio for more info.
 - Patchouli:
-    - [ ] Make item slots in custom Patchouli pages work with the "hold Ctrl to navigate to the item page" feature.
-    - [ ] Make spice_road:mix_preset show an empty jar as the first ingredient.
+    - [x] Make item slots in custom Patchouli pages work with the "hold Ctrl to navigate to the item page" feature (compile-verified on both loaders, not tested in game yet).
+    - [x] Make spice_road:mix_preset show an empty jar as the first ingredient (same).
+- Spice Grinder GUI:
+    - [ ] Make every 5th notch of the spice profile progress bars taller (2/3 of bar height), and every other notch 1/3 of the bar height.

@@ -54,6 +54,7 @@
         - Made advancements grant experience points relative to the difficulty.
     - Added the (unfinished) Flavor Folio, an in-game guide book (requires the optional mod [Patchouli](https://modrinth.com/mod/patchouli)). Craft it from a book and any spice.
         - Has a page for every spice with its tier, climate, yield, plant and harvest, a flavor bar chart and whether you have found it yet, plus articles on the Drying Rack, Spice Rack, Spice Grinder and Spice Mixes.
+        - Item slots on the spice pages and in Spice Mix Presets work like Patchouli's own: Shift-click an item that has a page in the book to jump to it. Spice items can also be looked up from the inventory with the Patchouli lookup key.
         - Resource packs can add entries or translate the book, in `assets/spice_road/patchouli_books/flavor_folio/<locale>/`.
         - Added the Patchouli page types `spice_road:spice_info`, `spice_road:spice_profile`, `spice_road:drying_recipe`, `spice_road:mix_preset` and `spice_road:block_tag` for use in any Patchouli book.
     - Added the `/spice_road` command:

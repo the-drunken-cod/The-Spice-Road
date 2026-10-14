@@ -14,8 +14,8 @@ import com.drunkencod.spice_road.mix.SpiceMixes;
 
 /**
  * Page type {@code spice_road:mix_preset}: a Mix Preset's spices in their
- * proportions, the jar they make and its Effective Profile, as in the Spice
- * Profile viewer category.
+ * proportions after the empty jar they go into, the jar they make and its
+ * Effective Profile, as in the Spice Profile viewer category.
  * <p>
  * JSON: {@code "preset": "<preset id>"}, e.g. {@code "spice_road:pumpkin_spice"}.
  * Datapack-added presets work too.
@@ -31,7 +31,7 @@ public class MixPresetPage extends ViewerEntryPage {
         if (found == null)
             return List.of();
         return SpiceMixes.ofPreset(id, found)
-                .map(jar -> layoutAll(List.of(new SpiceProfileEntry.OfPreset(id, found, jar)), width))
+                .map(jar -> layoutAll(List.of(new SpiceProfileEntry.OfPreset(id, found, jar, true)), width))
                 .orElse(List.of());
     }
 

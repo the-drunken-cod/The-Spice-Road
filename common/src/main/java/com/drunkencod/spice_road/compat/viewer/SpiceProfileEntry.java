@@ -17,6 +17,7 @@ import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.mix.MixPreset;
 import com.drunkencod.spice_road.mix.PresetSlot;
 import com.drunkencod.spice_road.mix.SpiceMixes;
+import com.drunkencod.spice_road.registry.ModItems;
 import com.drunkencod.spice_road.spice.SpiceProfile;
 import com.drunkencod.spice_road.spice.SpiceProfiles;
 import com.drunkencod.spice_road.tooltip.SpiceFlavorTooltips;
@@ -96,8 +97,19 @@ public sealed interface SpiceProfileEntry extends ViewerEntry {
      * @param presetId The preset's ID.
      * @param preset   The preset.
      * @param jar      The Spice Mix of one batch.
+     * @param withJar  Whether to show the empty jar the spices go into as the first ingredient.
      */
-    record OfPreset(ResourceLocation presetId, MixPreset preset, ItemStack jar) implements SpiceProfileEntry {
+    record OfPreset(ResourceLocation presetId, MixPreset preset, ItemStack jar, boolean withJar)
+            implements SpiceProfileEntry {
+
+        /**
+         * @param presetId The preset's ID.
+         * @param preset   The preset.
+         * @param jar      The Spice Mix of one batch.
+         */
+        public OfPreset(ResourceLocation presetId, MixPreset preset, ItemStack jar) {
+            this(presetId, preset, jar, false);
+        }
 
         @Override
         public ResourceLocation id() {
@@ -110,20 +122,25 @@ public sealed interface SpiceProfileEntry extends ViewerEntry {
             ViewerLayout.Builder layout = ViewerLayout.builder();
             List<PresetSlot> slots = preset.slots();
             int perRow = slotsPerRow(width);
-            int shown = Math.min(slots.size(), perRow * MAX_ROWS);
+            int offset = withJar ? 1 : 0;
+            int shown = Math.min(slots.size(), perRow * MAX_ROWS - offset);
+            if (withJar)
+                layout.slot(ViewerLayout.Role.INPUT, 0, 0, List.of(ModItems.JAR.get().getDefaultInstance()),
+                        List.of());
             for (int i = 0; i < shown; i++) {
                 PresetSlot slot = slots.get(i);
+                int cell = i + offset;
                 List<ItemStack> stacks = slot.members().stream().map(item -> new ItemStack(item, slot.count()))
                         .toList();
                 List<Component> tooltip = slot.source().right().isPresent()
                         ? List.of(ViewerText.translatable("spice_profile.any_of_tag").withStyle(ChatFormatting.GRAY))
                         : List.of();
-                layout.slot(ViewerLayout.Role.INPUT, (i % perRow) * ViewerLayout.SLOT_SIZE,
-                        (i / perRow) * ViewerLayout.SLOT_SIZE, stacks, tooltip);
+                layout.slot(ViewerLayout.Role.INPUT, (cell % perRow) * ViewerLayout.SLOT_SIZE,
+                        (cell / perRow) * ViewerLayout.SLOT_SIZE, stacks, tooltip);
             }
             layout.slot(ViewerLayout.Role.OUTPUT, width - ViewerLayout.SLOT_SIZE, 0, List.of(jar), List.of());
 
-            int rows = Math.max(1, (shown + perRow - 1) / perRow);
+            int rows = Math.max(1, (shown + offset + perRow - 1) / perRow);
             Component name = Component.translatable(SpiceMixes.presetTranslationKey(presetId))
                     .withStyle(ChatFormatting.YELLOW);
             List<Component> axes = SpiceProfiles.getEffectiveMix(jar)

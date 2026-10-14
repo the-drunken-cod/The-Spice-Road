@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import com.drunkencod.spice_road.compat.viewer.SpiceOriginEntry;
@@ -30,6 +31,13 @@ public class SpiceInfoPage extends ViewerEntryPage {
     protected List<ViewerLayout> layouts(Level level, int width) {
         resolved = spice == null ? null : Spice.byId(spice);
         return resolved == null ? List.of() : layoutAll(List.of(new SpiceOriginEntry(resolved)), width);
+    }
+
+    @Override
+    protected List<ItemStack> relevantStacks(Level level) {
+        Spice found = spice == null ? null : Spice.byId(spice);
+        Item raw = found == null ? null : ModItems.byId(found.getId());
+        return raw == null ? List.of() : List.of(raw.getDefaultInstance());
     }
 
     @Override

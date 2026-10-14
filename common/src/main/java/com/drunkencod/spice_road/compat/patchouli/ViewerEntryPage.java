@@ -4,15 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.level.Level;
 
+import vazkii.patchouli.client.book.BookContentsBuilder;
+import vazkii.patchouli.client.book.BookEntry;
 import vazkii.patchouli.client.book.gui.GuiBook;
 import vazkii.patchouli.client.book.gui.GuiBookEntry;
 import vazkii.patchouli.client.book.page.abstr.PageWithText;
 
+import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.compat.viewer.ViewerDrawing;
 import com.drunkencod.spice_road.compat.viewer.ViewerEntry;
 import com.drunkencod.spice_road.compat.viewer.ViewerLayout;
@@ -48,6 +52,7 @@ public abstract class ViewerEntryPage extends PageWithText {
     private transient List<Placed> placed = List.of();
     private transient List<Component> footer = List.of();
     private transient Component missing = Component.empty();
+    private transient ItemStack hoveredStack = ItemStack.EMPTY;
     private transient int titleBottom;
     private transient int footerY;
     private transient int contentBottom;
@@ -73,6 +78,19 @@ public abstract class ViewerEntryPage extends PageWithText {
     protected abstract Component missingText();
 
     /**
+     * Items this page is the one to read about: holding the lookup key over
+     * them anywhere in the game, or Shift-clicking them in another page of the
+     * book, leads here. Patchouli keeps one page per item, so a page should
+     * only name items that no other page of the book covers.
+     *
+     * @param level The client's level.
+     * @return The items, empty for none.
+     */
+    protected List<ItemStack> relevantStacks(Level level) {
+        return List.of();
+    }
+
+    /**
      * @param entries Viewer entries.
      * @param width   Width to lay them out for.
      * @return Their layouts, in order.
@@ -89,6 +107,18 @@ public abstract class ViewerEntryPage extends PageWithText {
     /** @return Lines shown below the layouts, one per row. */
     protected List<Component> footer() {
         return List.of();
+    }
+
+    @Override
+    public void build(Level level, BookEntry entry, BookContentsBuilder builder, int pageNum) {
+        super.build(level, entry, builder, pageNum);
+        try {
+            for (ItemStack stack : relevantStacks(level))
+                entry.addRelevantStack(builder, stack, pageNum);
+        } catch (RuntimeException e) {
+            // A broken lookup link must never take the whole book down with it
+            Constants.LOG.error("Could not register the lookup items of a {} page", getClass().getSimpleName(), e);
+        }
     }
 
     @Override
@@ -128,25 +158,31 @@ public abstract class ViewerEntryPage extends PageWithText {
             graphics.drawString(fontRenderer, missing, 0, titleBottom, MISSING_COLOR, false);
 
         List<Component> hovered = new ArrayList<>();
+        hoveredStack = ItemStack.EMPTY;
         for (Placed entry : placed)
             drawEntry(graphics, entry, mouseX, mouseY, hovered);
         for (int i = 0; i < footer.size(); i++)
             graphics.drawString(fontRenderer, footer.get(i), 0, footerY + i * ViewerText.LINE_HEIGHT, FOOTER_COLOR,
                     false);
 
-        if (!hovered.isEmpty())
+        if (!hoveredStack.isEmpty())
+            parent.setTooltipStack(hoveredStack);
+        else if (!hovered.isEmpty())
             parent.setTooltip(hovered);
         super.render(graphics, mouseX, mouseY, pticks);
     }
 
     /**
      * Draws one layout and collects the tooltip of whatever is under the mouse.
+     * A hovered item slot is handed to Patchouli as an item tooltip rather than
+     * as plain lines, so it gets the book's own lookup hint, Shift-click to the
+     * item's page and the recipe viewer keybinds.
      *
      * @param graphics The page's graphics.
      * @param entry    The layout and its position.
      * @param mouseX   Mouse X, relative to the page.
      * @param mouseY   Mouse Y, relative to the page.
-     * @param hovered  Receives the lines of the hovered part's tooltip, if any.
+     * @param hovered  Receives the lines of the hovered non-slot part's tooltip, if any.
      */
     private void drawEntry(GuiGraphics graphics, Placed entry, int mouseX, int mouseY, List<Component> hovered) {
         ViewerLayout layout = entry.layout();
@@ -163,13 +199,30 @@ public abstract class ViewerEntryPage extends PageWithText {
             ItemStack stack = slot.stacks().get((parent.ticksInBook / 20) % slot.stacks().size());
             graphics.renderItem(stack, slot.x() + 1, slotY + 1);
             graphics.renderItemDecorations(fontRenderer, stack, slot.x() + 1, slotY + 1);
-            if (parent.isMouseInRelativeRange(mouseX, mouseY, slot.x() + 1, slotY + 1, 16, 16)) {
-                hovered.clear();
-                hovered.addAll(Screen.getTooltipFromItem(mc, stack));
-                hovered.addAll(slot.tooltip());
-            }
+            if (parent.isMouseInRelativeRange(mouseX, mouseY, slot.x() + 1, slotY + 1, 16, 16))
+                hoveredStack = withNotes(stack, slot.tooltip());
         }
-        if (hovered.isEmpty())
+        if (hoveredStack.isEmpty() && hovered.isEmpty())
             hovered.addAll(ViewerDrawing.tooltipAt(layout, mouseX, mouseY - entry.y()));
+    }
+
+    /**
+     * Patchouli's item tooltips can't take extra lines, so they ride along as
+     * the stack's lore. Its lookup only compares the item, so they don't get
+     * in its way.
+     *
+     * @param stack The hovered stack.
+     * @param notes The slot's extra tooltip lines.
+     * @return {@code stack}, or a copy of it with {@code notes} added to its lore.
+     */
+    private static ItemStack withNotes(ItemStack stack, List<Component> notes) {
+        if (notes.isEmpty())
+            return stack;
+        ItemStack copy = stack.copy();
+        ItemLore lore = copy.getOrDefault(DataComponents.LORE, ItemLore.EMPTY);
+        for (Component note : notes)
+            lore = lore.withLineAdded(note.copy().withStyle(style -> style.withItalic(false)));
+        copy.set(DataComponents.LORE, lore);
+        return copy;
     }
 }
