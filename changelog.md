@@ -26,7 +26,7 @@
     - GUIs now have a `[?]` label in the top right corner that explains them in a few sentences. These labels can be toggled off in the client config.
     - Added placeholder textures for the Flavor Folio item, GUI background and page filler sprite.
 - **Changes:**
-    - **BREAKING:** The "participation award" is now the seasoning saturation modifier, and its range can go negative to take saturation away. Its config moved from `seasoning.participation` to `seasoning.saturationModifier`, so existing values reset to the defaults.
+    - ⚠️ **BREAKING:** The "participation award" is now the seasoning saturation modifier, and its range can go negative to take saturation away. Its config moved from `seasoning.participation` to `seasoning.saturationModifier`, so existing values reset to the defaults.
     - Which spice a Climate region resolves to is now picked differently, so the spices of existing Overworld regions are reshuffled.
     - Spice Maps, `/locate` and the admin commands only look at the dimension they are used in. Climate arguments of commands take any Climate; Climates of other mods are written as quoted IDs.
     - Non-hardy spices can only be planted in dimensions where some Climate Bucket has spices, unless planting restrictions are lifted in the config.
