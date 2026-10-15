@@ -10,22 +10,27 @@
         - Files of all datapacks are merged: buckets accumulate, rules of higher-priority packs go first, and `"replace": true` drops everything below it.
     - Spice plants, groves and Region Hearts can now generate in any dimension. Added the `no_ponds` outcome to `/spice_road admin sample_spices` for aquatic Hearts in dimensions that don't allow ponds.
     - Foods that could be seasoned but aren't can optionally lose saturation when eaten (off by default): their own saturation is multiplied by a configurable factor. If AppleSkin is installed, its tooltips show the penalized value.
-    - GUIs now have a `[?]` label in the top right corner that explains them in a few sentences. These labels can be toggled off in the client config.
-    - Added custom textures for the Flavor Folio item, GUI background and page filler sprite.
-- **Changes:**
-    - Which spice a Climate region resolves to is now picked differently, so the spices of existing Overworld regions are reshuffled.
-    - Spice Maps, `/locate` and the admin commands only look at the dimension they are used in. Climate arguments of commands take any Climate; Climates of other mods are written as quoted IDs.
-    - Non-hardy spices can only be planted in dimensions where some Climate Bucket has spices, unless planting restrictions are lifted in the config.
-    - The "participation award" is now the seasoning saturation modifier, and its range can go negative to take saturation away. Its config moved from `seasoning.participation` to `seasoning.saturationModifier`, so existing values reset to the defaults.
-    - The `#spice_road:spice_racks`, `#spice_road:drying_racks` and `#spice_road:spice_storage` tags now also exist as item tags.
-    - The notches of the Spice Grinder GUI flavor bars are now shorter, except for every 5th one, which is longer, for easier counting.
-    - Updated the Flavor Folio:
-        - Wrote some rudimentary entries to get the most important points across.
-        - Item slots on the spice pages and in Spice Mix Presets work like Patchouli's own: Shift-click an item that has a page in the book to jump to it. Spice items can also be looked up from the inventory with the Patchouli lookup key.
     - Added new subcommands to `/spice_road reset`:
         - `/spice_road reset stats`: reset all collected statistics values to zero.
         - `/spice_road reset everything`: combination of all reset commands.
+    - GUIs now have a `[?]` label in the top right corner that explains them in a few sentences. These labels can be toggled off in the client config.
+    - Added custom textures for the Flavor Folio item, GUI background and page filler sprite.
+- **Changes:**
+    - **BREAKING:** The "participation award" is now the seasoning saturation modifier, and its range can go negative to take saturation away. Its config moved from `seasoning.participation` to `seasoning.saturationModifier`, so existing values reset to the defaults.
+    - Which spice a Climate region resolves to is now picked differently, so the spices of existing Overworld regions are reshuffled.
+    - Spice Maps, `/locate` and the admin commands only look at the dimension they are used in. Climate arguments of commands take any Climate; Climates of other mods are written as quoted IDs.
+    - Non-hardy spices can only be planted in dimensions where some Climate Bucket has spices, unless planting restrictions are lifted in the config.
+    - The `#spice_road:spice_racks`, `#spice_road:drying_racks` and `#spice_road:spice_storage` tags now also exist as item tags.
+    - Updated the Flavor Folio:
+        - Wrote some rudimentary entries to get the most important points across. Added default book textures, to be exchanged for custom textures shortly.
+        - Item slots on the spice pages and in Spice Mix Presets work like Patchouli's own: Shift-click an item that has a page in the book to jump to it. Spice items can also be looked up from the inventory with the Patchouli lookup key.
+    - The notches of the Spice Grinder GUI flavor bars are now shorter, except for every 5th one, which is longer, for easier counting.
 - **Fixes:**
+    - GUI backdrops are no longer dimmed two times.
+    - Patchouli spice profile pages now correctly show the processed spice when available.
+    - Improved alignment for the spice profile tooltip, in different client config constellations.
+    - Filling and emptying order for spice rack slots is now 1->8 instead of 4->1, 8->5.
+    - JEI and EMI now show every spice rack and drying rack wood type's recipe (11 each).
 
 <br>
 
