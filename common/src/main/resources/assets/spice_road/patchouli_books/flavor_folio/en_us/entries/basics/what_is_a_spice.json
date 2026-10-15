@@ -18,7 +18,7 @@
             "type": "patchouli:spotlight",
             "item": "tag:spice_road:spices",
             "title": "Spice Items",
-            "text": "Spices are plentiful when $(l:exploration/spice_regions)exploring the overworld$(), but spice plants can only be found naturally in their designated $(l:exploration/spice_regions)regions.$()"
+            "text": "Spices are plentiful when $(l:exploration/spice_maps)exploring the overworld$(), but spice plants can only be found naturally in their designated $(l:exploration/spice_regions)regions.$()"
         },
         {
             "type": "patchouli:text",

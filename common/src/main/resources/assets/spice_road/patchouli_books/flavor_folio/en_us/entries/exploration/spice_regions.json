@@ -17,7 +17,7 @@
         {
             "type": "patchouli:text",
             "title": "Dimensions",
-            "text": "Although The Spice Road only ships with spices in the overworld, the Nether and End are already set up for generating $(l:exploration/spice_regions)spice regions.$() Refer to the developer documentation on how to modify the spice regions in different dimensions."
+            "text": "Although The Spice Road only ships with spices in the overworld, the Nether and End are already set up for generating spice regions. Refer to the developer documentation on how to modify the spice regions in different dimensions."
         }
     ]
 }
