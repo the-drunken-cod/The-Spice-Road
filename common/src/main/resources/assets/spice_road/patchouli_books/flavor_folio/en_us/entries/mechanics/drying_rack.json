@@ -14,7 +14,7 @@
         {
             "type": "patchouli:crafting",
             "recipe": "spice_road:crafting/drying_rack",
-            "text": "Craft it from any of the 11 base wood types. Modded wood types result in Oak."
+            "text": "Craft it from any of the 11 base wood types. Modded wood types result in an Oak Drying Rack."
         },
         {
             "type": "spice_road:drying_recipe",

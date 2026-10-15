@@ -7,7 +7,7 @@
         {
             "type": "patchouli:text",
             "title": "Introduction",
-            "text": "Spices are mostly harvested from a plant. For some spices that may be a crop or a bush, for others they might grow as trees (bark or fruiting leaves)."
+            "text": "Spices are mostly harvested from a plant. For some spices that may be a crop or a bush, for others they might grow as trees (bark or fruiting leaves). Some fresh spices might need to be $(l:mechanics/drying_rack)dried$() before they can be used to season foods."
         },
         {
             "type": "patchouli:text",

@@ -9,12 +9,12 @@
             "item": "tag:spice_road:spice_racks",
             "title": "Spice Rack",
             "link_recipe": true,
-            "text": "Holds up to 8 stacks of spices, displays them in the world in a neat looking way, and makes them available to nearby $(l:mechanics/spice_grinder)Spice Grinders$(). Depending on whether it was placed against the ceiling, floor or a wall, it will have one of three models. The rendering distance can be changed in the client config."
+            "text": "Holds up to 8 stacks of $(l:basics/what_is_a_spice)Spices$() or $(l:mechanics/spice_mixes)Spice Mixes$(), displays them in the world in a neat looking way, and makes them available to nearby $(l:mechanics/spice_grinder)Spice Grinders$(). Depending on whether it was placed against the ceiling, floor or a wall, it will have one of three models. The rendering distance can be changed in the client config."
         },
         {
             "type": "patchouli:crafting",
             "recipe": "spice_road:spice_rack",
-            "text": "Craft it from any of the 11 base wood types. Modded wood types result in Oak."
+            "text": "Craft it from any of the 11 base wood types. Modded wood types result in an Oak Spice Rack."
         }
     ]
 }

@@ -23,6 +23,19 @@
             ],
             "border": true,
             "text": "Figure: Navigating the game board to apply effects to foods."
+        },
+        {
+            "type": "patchouli:relations",
+            "title": "Next Steps",
+            "entries": [
+                "spice_road:grinder_minigame/ingredients_and_draft",
+                "spice_road:grinder_minigame/board_cell_types",
+                "spice_road:grinder_minigame/movement_and_axes",
+                "spice_road:grinder_minigame/cell_effect_rings",
+                "spice_road:grinder_minigame/cell_lock_in",
+                "spice_road:mechanics/nearby_spice_sourcing",
+                "spice_road:mechanics/spice_mixes"
+            ]
         }
     ]
 }
