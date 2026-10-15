@@ -91,7 +91,7 @@ Item slots behave like those of Patchouli's own pages: the tooltip shows the "(S
 | `$(list)` | Bullet |
 
 Macros from `book.json`, usable anywhere in text. Close them with `$()`:
-`$(tier_common)`, `$(tier_uncommon)`, `$(tier_rare)`, `$(tier_epic)` (tier colors readable on parchment), `$(code)` (tags, config option names, etc.), `$(todo)` (the red TODO marker).
+`$(tier:common)`, `$(tier:uncommon)`, `$(tier:rare)`, `$(tier:epic)` (tier colors readable on parchment), `$(code)` (tags, config option names, etc.), `$(todo)` (the red TODO marker).
 
 ## Templates
 

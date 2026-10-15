@@ -3,9 +3,10 @@
 ## `0.1.0-alpha.6`
 <!-- ⚠️ **Contains breaking changes.** Existing worlds will be affected!   -->
 
-<!-- - **Features:** -->
-<!-- - **Changes:** -->
-<!-- - **Fixes:** -->
+- **Features:**
+- **Changes:**
+    - Improved layouts of the custom Patchouli page types and JEI/EMI categories.
+- **Fixes:**
 
 <br>
 
