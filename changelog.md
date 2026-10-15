@@ -1,4 +1,14 @@
 # `0.1.0`
+
+## `0.1.0-alpha.6`
+<!-- ⚠️ **Contains breaking changes.** Existing worlds will be affected!   -->
+
+<!-- - **Features:** -->
+<!-- - **Changes:** -->
+<!-- - **Fixes:** -->
+
+<br>
+
 ## `0.1.0-alpha.5`
 ⚠️ **Contains breaking changes.** Existing worlds will be affected!  
 
@@ -14,7 +24,7 @@
         - `/spice_road reset stats`: reset all collected statistics values to zero.
         - `/spice_road reset everything`: combination of all reset commands.
     - GUIs now have a `[?]` label in the top right corner that explains them in a few sentences. These labels can be toggled off in the client config.
-    - Added custom textures for the Flavor Folio item, GUI background and page filler sprite.
+    - Added placeholder textures for the Flavor Folio item, GUI background and page filler sprite.
 - **Changes:**
     - **BREAKING:** The "participation award" is now the seasoning saturation modifier, and its range can go negative to take saturation away. Its config moved from `seasoning.participation` to `seasoning.saturationModifier`, so existing values reset to the defaults.
     - Which spice a Climate region resolves to is now picked differently, so the spices of existing Overworld regions are reshuffled.
@@ -34,7 +44,6 @@
 
 <br>
 
-# `0.1.0`
 ## `0.1.0-alpha.4`
 ⚠️ **Contains breaking changes.** Existing worlds will be affected!  
 - **Features:**
