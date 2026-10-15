@@ -4,11 +4,11 @@
 Adds spices to Minecraft that enhance existing foods with a new buff mechanic and all-new effects, applied via a roguelite minigame.  
 Encourages local production and specialized trade and has lots of compat for other mods.  
   
-![TODO: Banner](./.github/assets/banner.png)
+![TODO: Banner & Link to Showcase](./.github/assets/banner.png)
 
 —  
 
-<sup>Available via <a href="https://github.com/the-drunken-cod/The-Spice-Road/releases">GitHub</a>, <a href="https://modrinth.com/mod/the-spice-road">TODO: Modrinth</a> & <a href="https://www.curseforge.com/minecraft/mc-mods/the-spice-road">TODO: CurseForge</a></sup>
+<sup>Available on <a href="https://github.com/the-drunken-cod/The-Spice-Road/releases">GitHub</a>, <a href="https://modrinth.com/mod/the-spice-road">TODO: Modrinth</a> & <a href="https://www.curseforge.com/minecraft/mc-mods/the-spice-road">TODO: CurseForge</a></sup>
 
 ---
 
@@ -35,11 +35,13 @@ Encourages local production and specialized trade and has lots of compat for oth
     - Maps can be **traded for or found as loot** to help find certain spices. Epic tier spices can only be found via maps found in treasure loot by default.
 - **New mechanic that allows spices to be mixed and matched and applied to existing foods** of any mod to **imbue them with beneficial custom effects.** Players can also create their own Spice Mixes and specialize in cultivating the rarest spice plants.
     - **Roguelite minigame** inspired by real cooking and spice application processes. Here spice works like a currency that can be spent to nudge food effects into one or multiple of 16 effect directions. Effects are largely reproducible and knowledge to plan better routes is unlocked over time, but every run is still unique.
-- **Incredibly modpack-, datapack- and server admin friendly.**
+- **Incredibly modpack-, datapack- and server friendly.**
   - Allows for tons of configuration for any play style and player base.
-  - Spice Profiles can easily be added to items by datapack makers, Spice Mixes with a custom name and texture may also be added, and any mod's food item is supported out of the box. [Refer to the documentation](./docs/README.md) for more info.  
-  Note: some mods' crafting stations might erase Spice Profiles. In that case, please [open an issue](https://github.com/the-drunken-cod/The-Spice-Road/issues) so we can add compatibility.
-  - Commands for finding (`/locate spice`) and utilities for shuffling Spice Regions and Spice Grinder boards, for reasons of rebalancing or setting up specific scenarios.
+  - Spice Profiles, Mixes and worldgen dimensions can easily be added by datapack makers. [Refer to the documentation](./docs/README.md) for more info.
+  - Any mod's consumable food item can be seasoned to add compounding effects.  
+    Note: some mods' crafting stations might erase Spice Profiles. In that case, please [open an issue](https://github.com/the-drunken-cod/The-Spice-Road/issues) so we can work on adding compatibility.
+  - Has commands for finding (`/locate spice`) and utilities for shuffling Spice Regions and Spice Grinder boards (salt values in server config), for reasons of rebalancing or setting up specific scenarios.
+  - Players can reset different stats, if allowed by the config.
 
 <br>
 
@@ -94,6 +96,7 @@ For an extensive in-game guide book, also install the mod [Patchouli.](https://m
   - Added a base registry helper for Neo and Fabric.
   - Added base datagen services for Neo and Fabric.
 - [Blockbench](https://blockbench.net/) for creating models.
+- [Paint.NET](https://paint.net/) and [Aseprite](https://www.aseprite.org/) for creating textures.
 
 <br>
 
@@ -108,7 +111,8 @@ For an extensive in-game guide book, also install the mod [Patchouli.](https://m
 
 ## Disclaimers:
 - **We use Generative AI** when coding to make tedious work easier and bridge knowledge gaps for this hobby project.  
-  That being said, **every generated line of code is reviewed**, and **all assets and detail work remain fully human-made.**  
-  [Our full GenAI usage policy can be read here.](https://github.com/the-drunken-cod#genai-usage)
+  That being said, **generated code is *rigorously reviewed*, and all assets and detail work will remain *fully human-made.***  
+  [Our full GenAI usage policy and guidelines can be read here.](https://github.com/the-drunken-cod#genai-usage)
 - NOT AN OFFICIAL MINECRAFT PRODUCT. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT.  
-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+- THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+- IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
