@@ -282,3 +282,6 @@
 - [x] Add new commands (compile-verified on both loaders, not tested in game yet):
     - `/spice_road reset stats` - Sets every mod stat back to 0.
     - `/spice_road reset everything` - Combination of all the other commands.
+- [ ] Patchouli:
+    - [ ] Harvest / picking tools
+    - [ ] Link to dev docs

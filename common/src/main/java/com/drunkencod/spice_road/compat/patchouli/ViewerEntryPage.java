@@ -35,17 +35,6 @@ import com.drunkencod.spice_road.compat.viewer.ViewerText;
  */
 public abstract class ViewerEntryPage extends PageWithText {
 
-    /** Height of the title row, including the separator below it. */
-    private static final int TITLE_HEIGHT = 16;
-
-    /** Space between the entries, and between the entries and the text. */
-    private static final int GAP = 6;
-
-    private static final int SLOT_FRAME_COLOR = 0x66000000;
-    private static final int SLOT_FILL_COLOR = 0x22000000;
-    private static final int FOOTER_COLOR = 0x404040;
-    private static final int MISSING_COLOR = 0xAA0000;
-
     private String title;
 
     private transient Component titleText = Component.empty();
@@ -126,19 +115,20 @@ public abstract class ViewerEntryPage extends PageWithText {
         Level level = parent.getMinecraft().level;
         List<ViewerLayout> layouts = level == null ? List.of() : layouts(level, GuiBook.PAGE_WIDTH);
         titleText = title != null && !title.isEmpty() ? i18nText(title) : defaultTitle();
-        titleBottom = titleText.getString().isEmpty() ? 0 : TITLE_HEIGHT;
+        titleBottom = titleText.getString().isEmpty() ? 0 : FlavorFolioLayout.TITLE_HEIGHT;
 
         int y = titleBottom;
         List<Placed> laidOut = new ArrayList<>();
         for (ViewerLayout layout : layouts) {
             laidOut.add(new Placed(layout, y));
-            y += layout.height() + GAP;
+            y += layout.height() + FlavorFolioLayout.GAP;
         }
         placed = laidOut;
         missing = laidOut.isEmpty() ? missingText() : Component.empty();
         footer = laidOut.isEmpty() ? List.of() : footer();
-        footerY = y - GAP + 2;
-        contentBottom = laidOut.isEmpty() ? y + ViewerText.LINE_HEIGHT : footerY + footer.size() * ViewerText.LINE_HEIGHT + GAP;
+        footerY = y - FlavorFolioLayout.GAP + FlavorFolioLayout.FOOTER_GAP;
+        contentBottom = laidOut.isEmpty() ? y + ViewerText.LINE_HEIGHT
+                : footerY + footer.size() * ViewerText.LINE_HEIGHT + FlavorFolioLayout.GAP;
         super.onDisplayed(parent, left, top);
     }
 
@@ -150,20 +140,20 @@ public abstract class ViewerEntryPage extends PageWithText {
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float pticks) {
         if (titleBottom > 0) {
-            parent.drawCenteredStringNoShadow(graphics, titleText.getVisualOrderText(), GuiBook.PAGE_WIDTH / 2, 0,
-                    book.headerColor);
-            GuiBook.drawSeparator(graphics, book, 0, 10);
+            parent.drawCenteredStringNoShadow(graphics, titleText.getVisualOrderText(), GuiBook.PAGE_WIDTH / 2,
+                    FlavorFolioLayout.TITLE_Y, book.headerColor);
+            GuiBook.drawSeparator(graphics, book, 0, FlavorFolioLayout.TITLE_SEPARATOR_Y);
         }
         if (!missing.getString().isEmpty())
-            graphics.drawString(fontRenderer, missing, 0, titleBottom, MISSING_COLOR, false);
+            graphics.drawString(fontRenderer, missing, 0, titleBottom, FlavorFolioLayout.MISSING_COLOR, false);
 
         List<Component> hovered = new ArrayList<>();
         hoveredStack = ItemStack.EMPTY;
         for (Placed entry : placed)
             drawEntry(graphics, entry, mouseX, mouseY, hovered);
         for (int i = 0; i < footer.size(); i++)
-            graphics.drawString(fontRenderer, footer.get(i), 0, footerY + i * ViewerText.LINE_HEIGHT, FOOTER_COLOR,
-                    false);
+            graphics.drawString(fontRenderer, footer.get(i), 0, footerY + i * ViewerText.LINE_HEIGHT,
+                    FlavorFolioLayout.FOOTER_COLOR, false);
 
         if (!hoveredStack.isEmpty())
             parent.setTooltipStack(hoveredStack);
@@ -194,12 +184,15 @@ public abstract class ViewerEntryPage extends PageWithText {
         for (ViewerLayout.Slot slot : layout.slots()) {
             int slotY = entry.y() + slot.y();
             graphics.fill(slot.x(), slotY, slot.x() + ViewerLayout.SLOT_SIZE, slotY + ViewerLayout.SLOT_SIZE,
-                    SLOT_FILL_COLOR);
-            graphics.renderOutline(slot.x(), slotY, ViewerLayout.SLOT_SIZE, ViewerLayout.SLOT_SIZE, SLOT_FRAME_COLOR);
+                    FlavorFolioLayout.SLOT_FILL_COLOR);
+            graphics.renderOutline(slot.x(), slotY, ViewerLayout.SLOT_SIZE, ViewerLayout.SLOT_SIZE,
+                    FlavorFolioLayout.SLOT_FRAME_COLOR);
             ItemStack stack = slot.stacks().get((parent.ticksInBook / 20) % slot.stacks().size());
-            graphics.renderItem(stack, slot.x() + 1, slotY + 1);
-            graphics.renderItemDecorations(fontRenderer, stack, slot.x() + 1, slotY + 1);
-            if (parent.isMouseInRelativeRange(mouseX, mouseY, slot.x() + 1, slotY + 1, 16, 16))
+            int itemX = slot.x() + ViewerLayout.SLOT_ITEM_INSET;
+            int itemY = slotY + ViewerLayout.SLOT_ITEM_INSET;
+            graphics.renderItem(stack, itemX, itemY);
+            graphics.renderItemDecorations(fontRenderer, stack, itemX, itemY);
+            if (parent.isMouseInRelativeRange(mouseX, mouseY, itemX, itemY, 16, 16))
                 hoveredStack = withNotes(stack, slot.tooltip());
         }
         if (hoveredStack.isEmpty() && hovered.isEmpty())

@@ -12,7 +12,7 @@
         {
             "type": "patchouli:text",
             "title": "Tiers",
-            "text": "Spices fall into one of four tiers; $(#8C7A5B)Common$(), $(#C9A227)Uncommon$(), $(#3FA7B5)Rare$() and $(#9B4FC9)Epic$().$(br)By default, $(#8C7A5B)Common$() and $(#C9A227)Uncommon$() crops count as hardy."
+            "text": "Spices fall into one of four tiers; $(tier:common)Common$(), $(tier:uncommon)Uncommon$(), $(tier:rare)Rare$() and $(tier:epic)Epic$().$(br)By default, $(tier:common)Common$() and $(tier:uncommon)Uncommon$() crops count as hardy."
         },
         {
             "type": "patchouli:spotlight",

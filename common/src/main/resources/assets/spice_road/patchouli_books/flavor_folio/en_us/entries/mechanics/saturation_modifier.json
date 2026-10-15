@@ -7,7 +7,7 @@
         {
             "type": "patchouli:text",
             "title": "Saturation Modifier",
-            "text": "Depending on how the mod is configured, foods that are unseasoned may receive a saturation penalty. Similarly, seasoned foods will grant extra saturation, depending on the diversity of the used spices. When a seasoned food ends up with no effects, it ends up with a \"participation award\" saturation boost."
+            "text": "Depending on how the mod is configured, foods that are unseasoned may receive a saturation penalty. Similarly, seasoned foods will grant extra saturation, depending on the diversity of the used spices. When a seasoned food ends up with no effects, it ends up with a \"participation award\" saturation boost, relative to the variety of used spices."
         },
         {
             "type": "patchouli:text",

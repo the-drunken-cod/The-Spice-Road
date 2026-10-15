@@ -8,7 +8,7 @@
             "type": "patchouli:spotlight",
             "item": "tag:spice_road:spice_storage",
             "title": "Nearby Spices",
-            "text": "The Spice Grinder can source spices from different nearby containers. By default, only the $(l:mechanics/spice_rack)Spice Rack$() will count, but many blocks from other mods are also supported, as long as they have the block tag $(cfg)#spice_road:spice_storage$() and a standard inventory implementation."
+            "text": "The Spice Grinder can source spices from different nearby containers. By default, only the $(l:mechanics/spice_rack)Spice Rack$() will count, but many blocks from other mods are also supported, as long as they have the block tag $(code)#spice_road:spice_storage$() and a standard inventory implementation."
         },
         {
             "type": "spice_road:block_tag",

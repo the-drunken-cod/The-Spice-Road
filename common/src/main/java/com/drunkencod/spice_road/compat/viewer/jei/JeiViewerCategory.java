@@ -79,7 +79,8 @@ final class JeiViewerCategory<T extends ViewerEntry> implements IRecipeCategory<
             RecipeIngredientRole role = slot.role() == ViewerLayout.Role.INPUT ? RecipeIngredientRole.INPUT
                     : RecipeIngredientRole.OUTPUT;
             // JEI positions the item, not the slot border around it
-            IRecipeSlotBuilder jeiSlot = builder.addSlot(role, slot.x() + 1, slot.y() + 1)
+            IRecipeSlotBuilder jeiSlot = builder
+                    .addSlot(role, slot.x() + ViewerLayout.SLOT_ITEM_INSET, slot.y() + ViewerLayout.SLOT_ITEM_INSET)
                     .setStandardSlotBackground()
                     .addItemStacks(slot.stacks());
             List<Component> lines = slot.tooltip();

@@ -17,6 +17,8 @@ import net.minecraft.world.item.crafting.RecipeManager;
 
 import com.drunkencod.spice_road.block.SpiceBlockTags;
 import com.drunkencod.spice_road.drying.DryingRackBlock;
+import com.drunkencod.spice_road.compat.viewer.layout.DryingLayout;
+import com.drunkencod.spice_road.compat.viewer.layout.ViewerSprites;
 import com.drunkencod.spice_road.drying.DryingRecipe;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.ModRecipeTypes;
@@ -31,20 +33,8 @@ import com.drunkencod.spice_road.tooltip.SpiceFlavorTooltips;
  */
 public record DryingEntry(RecipeHolder<DryingRecipe> recipe) implements ViewerEntry {
 
-    /** GUI sprite of the arrow between input and results. */
-    private static final ResourceLocation ARROW = ResourceLocation.withDefaultNamespace("container/furnace/burn_progress");
-
-    /** GUI sprite marking the heated drying time. */
-    private static final ResourceLocation FLAME = ResourceLocation.withDefaultNamespace("container/furnace/lit_progress");
-
     /** Ticks per second the drying time is shown against. */
     private static final double TICKS_PER_SECOND = 20D;
-
-    private static final int RESULT_X = 54;
-    private static final int SECONDARY_X = RESULT_X + ViewerLayout.SLOT_SIZE + 4;
-    private static final int SLOT_Y = 4;
-    private static final int TIME_Y = 34;
-    private static final int HEATED_Y = TIME_Y + 14;
 
     /**
      * @param recipes The client's recipe manager.
@@ -71,25 +61,33 @@ public record DryingEntry(RecipeHolder<DryingRecipe> recipe) implements ViewerEn
     public ViewerLayout layout(HolderLookup.Provider registries, int width) {
         DryingRecipe drying = recipe.value();
         ViewerLayout.Builder layout = ViewerLayout.builder()
-                .slot(ViewerLayout.Role.INPUT, 0, SLOT_Y, List.of(drying.getIngredient().getItems()), List.of())
-                .sprite(ARROW, 24, SLOT_Y + 1, 24, 16);
-        addResult(layout, drying.getResult(), RESULT_X, List.of());
-        drying.getSecondaryResult().ifPresent(secondary -> addResult(layout, secondary, SECONDARY_X,
+                .slot(ViewerLayout.Role.INPUT, DryingLayout.INPUT_X, DryingLayout.SLOT_Y,
+                        List.of(drying.getIngredient().getItems()), List.of())
+                .sprite(ViewerSprites.DRYING_ARROW, DryingLayout.ARROW_X, DryingLayout.ARROW_Y,
+                        DryingLayout.ARROW_WIDTH, DryingLayout.ARROW_HEIGHT);
+        addResult(layout, drying.getResult(), DryingLayout.RESULT_X, List.of());
+        drying.getSecondaryResult().ifPresent(secondary -> addResult(layout, secondary, DryingLayout.SECONDARY_X,
                 List.of(ViewerText.translatable("drying.secondary").withStyle(ChatFormatting.GRAY))));
 
         double speed = Services.CONFIG.getDryingRackSpeedMultiplier();
         double seconds = drying.getDryingTime() / TICKS_PER_SECOND / speed;
         Component time = ViewerText.translatable("drying.time", ViewerText.duration(seconds));
-        layout.text(time, 0, TIME_Y, ViewerText.DARK_TEXT_COLOR, false, width, 1F);
-        layout.tooltip(0, TIME_Y, Math.min(SpiceFlavorTooltips.measureWidth(time), width),
-                ViewerText.LINE_HEIGHT - 1, List.of(ViewerText.translatable("drying.time.tooltip")));
+        layout.text(time, DryingLayout.TIME_X, DryingLayout.TIME_Y, ViewerText.DARK_TEXT_COLOR, false,
+                width - DryingLayout.TIME_X, 1F);
+        layout.tooltip(DryingLayout.TIME_X, DryingLayout.TIME_Y,
+                Math.min(SpiceFlavorTooltips.measureWidth(time), width - DryingLayout.TIME_X),
+                DryingLayout.TIME_TOOLTIP_HEIGHT, List.of(ViewerText.translatable("drying.time.tooltip")));
 
         double heatedSeconds = seconds / Services.CONFIG.getDryingRackHeatedSpeedMultiplier();
         Component heated = ViewerText.translatable("drying.heated", ViewerText.duration(heatedSeconds));
-        layout.sprite(FLAME, 0, HEATED_Y - 3, 14, 14);
-        layout.text(heated, 17, HEATED_Y, ViewerText.DARK_TEXT_COLOR, false, width - 17, 1F);
-        layout.tooltip(0, HEATED_Y - 3, Math.min(17 + SpiceFlavorTooltips.measureWidth(heated), width), 14,
-                heatTooltip(registries));
+        layout.sprite(ViewerSprites.DRYING_FLAME, DryingLayout.FLAME_X, DryingLayout.FLAME_Y,
+                DryingLayout.FLAME_WIDTH, DryingLayout.FLAME_HEIGHT);
+        layout.text(heated, DryingLayout.HEATED_TEXT_X, DryingLayout.HEATED_Y, ViewerText.DARK_TEXT_COLOR, false,
+                width - DryingLayout.HEATED_TEXT_X, 1F);
+        layout.tooltip(DryingLayout.FLAME_X, DryingLayout.FLAME_Y,
+                Math.min(DryingLayout.HEATED_TEXT_X + SpiceFlavorTooltips.measureWidth(heated),
+                        width - DryingLayout.FLAME_X),
+                DryingLayout.FLAME_HEIGHT, heatTooltip(registries));
         return layout.build();
     }
 
@@ -109,10 +107,10 @@ public record DryingEntry(RecipeHolder<DryingRecipe> recipe) implements ViewerEn
             lines.add(ViewerText.translatable("drying.chance", percent).withStyle(ChatFormatting.GRAY));
             Component text = Component.literal(percent);
             int width = SpiceFlavorTooltips.measureWidth(text);
-            layout.text(text, x + (ViewerLayout.SLOT_SIZE - width) / 2, SLOT_Y + ViewerLayout.SLOT_SIZE + 2,
+            layout.text(text, x + (ViewerLayout.SLOT_SIZE - width) / 2, DryingLayout.CHANCE_Y,
                     ViewerText.DARK_TEXT_COLOR, false);
         }
-        layout.slot(ViewerLayout.Role.OUTPUT, x, SLOT_Y, List.of(output.stack().copy()), lines);
+        layout.slot(ViewerLayout.Role.OUTPUT, x, DryingLayout.SLOT_Y, List.of(output.stack().copy()), lines);
     }
 
     /**

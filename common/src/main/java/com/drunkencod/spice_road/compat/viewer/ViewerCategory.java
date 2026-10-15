@@ -8,6 +8,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.compat.viewer.layout.DryingLayout;
+import com.drunkencod.spice_road.compat.viewer.layout.SpiceOriginLayout;
+import com.drunkencod.spice_road.compat.viewer.layout.SpiceProfileLayout;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.rack.SpiceRackWood;
 import com.drunkencod.spice_road.registry.ModBlocks;
@@ -24,11 +27,11 @@ import com.drunkencod.spice_road.spice.Spice;
 public enum ViewerCategory {
 
     /** A Spice Item or Mix Preset and its Effective Profile. */
-    SPICE_PROFILE("spice_profile", "spiceProfile", 160, 135),
+    SPICE_PROFILE("spice_profile", "spiceProfile", SpiceProfileLayout.WIDTH, SpiceProfileLayout.HEIGHT),
     /** A Spice's growth and rarity facts. */
-    SPICE_ORIGIN("spice_origin", "spiceOrigin", 160, 97),
+    SPICE_ORIGIN("spice_origin", "spiceOrigin", SpiceOriginLayout.WIDTH, SpiceOriginLayout.HEIGHT),
     /** A drying recipe of the Drying Rack. */
-    DRYING("drying", "drying", 120, 60);
+    DRYING("drying", "drying", DryingLayout.WIDTH, DryingLayout.HEIGHT);
 
     private final String path;
     private final String configKey;

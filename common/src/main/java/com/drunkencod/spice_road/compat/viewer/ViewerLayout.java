@@ -30,6 +30,12 @@ public record ViewerLayout(List<Slot> slots, List<Panel> panels, List<Sprite> sp
     /** Edge length of an item slot, including its border. */
     public static final int SLOT_SIZE = 18;
 
+    /** Offset of an item from the top-left corner of its slot's border. */
+    public static final int SLOT_ITEM_INSET = 1;
+
+    public static final int BLOCK_TAG_PAGE_SLOT_X = 4;
+    public static final int BLOCK_TAG_PAGE_SLOT_Y = 0;
+
     /** How an entry's slot relates to it, which decides how lookups find it. */
     public enum Role {
         /** Shown when looking up the uses of its stacks. */
@@ -65,7 +71,8 @@ public record ViewerLayout(List<Slot> slots, List<Panel> panels, List<Sprite> sp
     /**
      * A sprite of the GUI atlas.
      *
-     * @param id     The sprite's ID, e.g. {@code minecraft:container/furnace/lit_progress}.
+     * @param id     The sprite's ID, e.g.
+     *               {@code minecraft:container/furnace/lit_progress}.
      * @param x      Left edge.
      * @param y      Top edge.
      * @param width  Width.

@@ -21,15 +21,14 @@ import com.drunkencod.spice_road.compat.viewer.ViewerText;
  * Page type {@code spice_road:block_tag}: the items of every block in a block
  * tag as a grid of slots, so a list of supported blocks stays in step with
  * the datapack that defines it. Blocks without an item are left out, and so
- * is whatever doesn't fit in {@link #MAX_ROWS} rows, which a trailing line
+ * is whatever doesn't fit in {@link FlavorFolioLayout#BLOCK_TAG_MAX_ROWS} rows,
+ * which a trailing line
  * counts.
  * <p>
- * JSON: {@code "tag": "<block tag id>"}, e.g. {@code "spice_road:spice_storage"}.
+ * JSON: {@code "tag": "<block tag id>"}, e.g.
+ * {@code "spice_road:spice_storage"}.
  */
 public class BlockTagPage extends ViewerEntryPage {
-
-    /** Most rows of slots shown. */
-    private static final int MAX_ROWS = 6;
 
     private String tag;
 
@@ -46,15 +45,18 @@ public class BlockTagPage extends ViewerEntryPage {
             return List.of();
 
         int columns = Math.max(1, width / ViewerLayout.SLOT_SIZE);
-        int shown = Math.min(stacks.size(), columns * MAX_ROWS);
+        int shown = Math.min(stacks.size(), columns * FlavorFolioLayout.BLOCK_TAG_MAX_ROWS);
         ViewerLayout.Builder layout = ViewerLayout.builder();
         for (int i = 0; i < shown; i++)
-            layout.slot(ViewerLayout.Role.INPUT, (i % columns) * ViewerLayout.SLOT_SIZE,
-                    (i / columns) * ViewerLayout.SLOT_SIZE, List.of(stacks.get(i)), List.of());
+            layout.slot(ViewerLayout.Role.INPUT,
+                    (i % columns) * ViewerLayout.SLOT_SIZE + ViewerLayout.BLOCK_TAG_PAGE_SLOT_X,
+                    (i / columns) * ViewerLayout.SLOT_SIZE + ViewerLayout.BLOCK_TAG_PAGE_SLOT_Y, List.of(stacks.get(i)),
+                    List.of());
         if (shown < stacks.size()) {
             int rows = (shown + columns - 1) / columns;
             layout.text(ViewerText.translatable("and_more", stacks.size() - shown), 0,
-                    rows * ViewerLayout.SLOT_SIZE + 2, ViewerText.DARK_TEXT_COLOR, false);
+                    rows * ViewerLayout.SLOT_SIZE + FlavorFolioLayout.BLOCK_TAG_MORE_GAP,
+                    ViewerText.DARK_TEXT_COLOR, false);
         }
         return List.of(layout.build());
     }

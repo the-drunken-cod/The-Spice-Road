@@ -7,12 +7,12 @@
         {
             "type": "patchouli:text",
             "title": "Movement and Axes",
-            "text": "Each of the 8 $(l:basics/spice_profiles)spice profile$() compound values will be mapped to the 8 movement directions. In essence, to move diagonally up-right, some of the Heat/Cooling axis has to be spent. Even if one of the axes' values is used up, getting to a target cell is still possible in a roundabout way."
+            "text": "Each of the 8 $(l:basics/spice_profiles)spice profile$() compound values will be mapped to the 8 movement directions. In essence, to move diagonally up-left, some of the $(axis:heat)Heat$() / $(axis:cooling)Cooling$() axis has to be spent. Even if one of the axes is used up, getting to a target cell in that direction is still possible in a roundabout way."
         },
         {
             "type": "patchouli:text",
             "title": "Keyboard Movement",
-            "text": "If you don't want to click the movement buttons, you can instead use the keys $(k:key_key.forward), $(k:key_key.left), $(k:key_key.back) and $(k:key_key.right) to move around. Pressing two adjacent ones within a configurable timeout (100ms by default), you can also move diagonally. Pressing $(k:key_key.jump) locks in cells, and Escape and Enter can be used to close the GUI or confirm seasonings."
+            "text": "If you don't want to click the movement buttons, you can instead use the keys $(code)$(k:key.forward)$(), $(code)$(k:key.left)$(), $(code)$(k:key.back)$() and $(code)$(k:key.right)$() to move around. Pressing two adjacent ones within a configurable timeout ($(code)100ms$() by default), you can also move diagonally. Pressing $(code)$(k:key.jump)$() locks in cells, and $(code)Escape$() and $(code)Enter$() can be used to close the GUI or confirm seasonings."
         }
     ]
 }

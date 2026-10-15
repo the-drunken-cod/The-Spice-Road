@@ -17,6 +17,16 @@
             "text": "Craft it from any of the 11 base wood types. Modded wood types result in an Oak Drying Rack."
         },
         {
+            "type": "patchouli:text",
+            "title": "Heated Drying",
+            "text": "Drying Racks can be heated by placing them in a biome that is always hot (like in the Nether), or next to a heat source (any block with the tag $(code)#spice_road:heat_sources$()). This will make their processing times quite a bit faster, 33% by default."
+        },
+        {
+            "type": "spice_road:block_tag",
+            "title": "Heat Sources",
+            "tag": "spice_road:heat_sources"
+        },
+        {
             "type": "spice_road:drying_recipe",
             "title": "Dried Spices (1/3)",
             "recipe": "spice_road:drying/dried_clove",

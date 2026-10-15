@@ -23,6 +23,8 @@ import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.SpiceTree;
 import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.block.SpiceVines;
+import com.drunkencod.spice_road.compat.viewer.layout.SpiceOriginLayout;
+import com.drunkencod.spice_road.compat.viewer.layout.ViewerSprites;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.ModItems;
 import com.drunkencod.spice_road.spice.Season;
@@ -40,10 +42,6 @@ import com.drunkencod.spice_road.tooltip.SpiceProfileTooltips;
  * @param spice The Spice.
  */
 public record SpiceOriginEntry(Spice spice) implements ViewerEntry {
-
-    /** GUI sprite of the arrow between the planting and the raw item. */
-    private static final ResourceLocation ARROW = ResourceLocation
-            .withDefaultNamespace("container/furnace/burn_progress");
 
     /**
      * @return One entry per Spice that has a raw item, in enum order.
@@ -70,15 +68,19 @@ public record SpiceOriginEntry(Spice spice) implements ViewerEntry {
         ViewerLayout.Builder layout = ViewerLayout.builder();
         Item planting = plantingItem(spice);
         if (planting != null)
-            layout.slot(ViewerLayout.Role.INPUT, 0, 0, List.of(planting.getDefaultInstance()), List.of());
-        layout.sprite(ARROW, 22, 1, 24, 16);
-        layout.slot(ViewerLayout.Role.OUTPUT, 50, 0,
+            layout.slot(ViewerLayout.Role.INPUT, SpiceOriginLayout.PLANTING_X, SpiceOriginLayout.HEADER_Y,
+                    List.of(planting.getDefaultInstance()), List.of());
+        layout.sprite(ViewerSprites.ORIGIN_ARROW, SpiceOriginLayout.ARROW_X, SpiceOriginLayout.ARROW_Y,
+                SpiceOriginLayout.ARROW_WIDTH, SpiceOriginLayout.ARROW_HEIGHT);
+        layout.slot(ViewerLayout.Role.OUTPUT, SpiceOriginLayout.RAW_X, SpiceOriginLayout.HEADER_Y,
                 List.of(Objects.requireNonNull(ModItems.byId(spice.getId())).getDefaultInstance()), List.of());
         if (spice.requiresHarvestTool()) {
             List<ItemStack> tools = BuiltInRegistries.ITEM.getTag(spice.getHarvestToolTag())
                     .map(tag -> tag.stream().map(Holder::value).map(Item::getDefaultInstance).toList())
                     .orElse(List.of());
-            layout.slot(ViewerLayout.Role.INPUT, width - ViewerLayout.SLOT_SIZE, 0, tools,
+            layout.slot(ViewerLayout.Role.INPUT,
+                    width - ViewerLayout.SLOT_SIZE - SpiceOriginLayout.TOOL_RIGHT_INSET, SpiceOriginLayout.HEADER_Y,
+                    tools,
                     List.of(ViewerText.translatable("spice_origin.tool.slot").withStyle(ChatFormatting.GRAY)));
         }
 
@@ -92,9 +94,9 @@ public record SpiceOriginEntry(Spice spice) implements ViewerEntry {
         lines.add(harvestLine());
         lines.add(seasonsLine());
 
-        int x = ViewerDrawing.PANEL_BORDER;
-        int y = ViewerLayout.SLOT_SIZE + 2 + ViewerDrawing.PANEL_BORDER;
-        int panelWidth = width - 2 * ViewerDrawing.PANEL_BORDER;
+        int x = SpiceOriginLayout.PANEL_X;
+        int y = SpiceOriginLayout.PANEL_Y;
+        int panelWidth = width - 2 * SpiceOriginLayout.PANEL_X;
         // Scaled down as one block where the widest line wouldn't fit, so narrow hosts
         // keep the lines readable and aligned instead of shortening them
         int widest = lines.stream().mapToInt(line -> SpiceFlavorTooltips.measureWidth(line.text())).max().orElse(0);

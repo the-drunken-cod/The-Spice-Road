@@ -14,6 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.compat.viewer.layout.SpiceProfileLayout;
 import com.drunkencod.spice_road.mix.MixPreset;
 import com.drunkencod.spice_road.mix.PresetSlot;
 import com.drunkencod.spice_road.mix.SpiceMixes;
@@ -27,20 +28,6 @@ import com.drunkencod.spice_road.tooltip.SpiceFlavorTooltips;
  * Preset, and the Effective Profile it brings into the Spice Grinder.
  */
 public sealed interface SpiceProfileEntry extends ViewerEntry {
-
-    /** Score magnitude at which a flavor bar is full, as on item tooltips. */
-    double BAR_SCALE = 1D;
-
-    /** Most header rows a preset's slots take; {@link ViewerCategory} is sized for them. */
-    int MAX_ROWS = 2;
-
-    /**
-     * @param width Width the entry is laid out for.
-     * @return How many preset slots fit in one header row, leaving room for the jar.
-     */
-    static int slotsPerRow(int width) {
-        return Math.max(1, (width - 2 * ViewerLayout.SLOT_SIZE + 4) / ViewerLayout.SLOT_SIZE);
-    }
 
     @Override
     default ViewerCategory category() {
@@ -80,13 +67,14 @@ public sealed interface SpiceProfileEntry extends ViewerEntry {
         @Override
         public ViewerLayout layout(HolderLookup.Provider registries, int width) {
             ItemStack stack = item.getDefaultInstance();
-            int nameX = ViewerLayout.SLOT_SIZE + 4;
             ViewerLayout.Builder layout = ViewerLayout.builder()
                     .slot(ViewerLayout.Role.INPUT, 0, 0, List.of(stack), List.of())
-                    .text(stack.getHoverName(), nameX, 5, ViewerText.DARK_TEXT_COLOR, false, width - nameX, 1F);
+                    .text(stack.getHoverName(), SpiceProfileLayout.ITEM_NAME_X, SpiceProfileLayout.ITEM_NAME_Y,
+                            ViewerText.DARK_TEXT_COLOR, false, width - SpiceProfileLayout.ITEM_NAME_X, 1F);
 
             return addPanel(layout, width, ViewerLayout.SLOT_SIZE, Optional.empty(),
-                    SpiceFlavorTooltips.formatFlavorAxes(SpiceProfiles.effective(profile), BAR_SCALE, false),
+                    SpiceFlavorTooltips.formatFlavorAxes(SpiceProfiles.effective(profile),
+                            SpiceProfileLayout.BAR_SCALE, false),
                     List.of());
         }
     }
@@ -121,9 +109,9 @@ public sealed interface SpiceProfileEntry extends ViewerEntry {
         public ViewerLayout layout(HolderLookup.Provider registries, int width) {
             ViewerLayout.Builder layout = ViewerLayout.builder();
             List<PresetSlot> slots = preset.slots();
-            int perRow = slotsPerRow(width);
+            int perRow = SpiceProfileLayout.slotsPerRow(width);
             int offset = withJar ? 1 : 0;
-            int shown = Math.min(slots.size(), perRow * MAX_ROWS - offset);
+            int shown = Math.min(slots.size(), perRow * SpiceProfileLayout.HEADER_MAX_ROWS - offset);
             if (withJar)
                 layout.slot(ViewerLayout.Role.INPUT, 0, 0, List.of(ModItems.JAR.get().getDefaultInstance()),
                         List.of());
@@ -144,7 +132,8 @@ public sealed interface SpiceProfileEntry extends ViewerEntry {
             Component name = Component.translatable(SpiceMixes.presetTranslationKey(presetId))
                     .withStyle(ChatFormatting.YELLOW);
             List<Component> axes = SpiceProfiles.getEffectiveMix(jar)
-                    .map(effective -> SpiceFlavorTooltips.formatFlavorAxes(effective, BAR_SCALE, false))
+                    .map(effective -> SpiceFlavorTooltips.formatFlavorAxes(effective, SpiceProfileLayout.BAR_SCALE,
+                            false))
                     .orElse(List.of());
             return addPanel(layout, width, rows * ViewerLayout.SLOT_SIZE, Optional.of(name), axes,
                     List.of(ViewerText.translatable("spice_profile.averaged")));
@@ -167,9 +156,9 @@ public sealed interface SpiceProfileEntry extends ViewerEntry {
      */
     private static ViewerLayout addPanel(ViewerLayout.Builder layout, int entryWidth, int headerHeight,
             Optional<Component> title, List<Component> axes, List<Component> titleTooltip) {
-        int x = ViewerDrawing.PANEL_BORDER;
-        int y = headerHeight + 2 + ViewerDrawing.PANEL_BORDER;
-        int width = entryWidth - 2 * ViewerDrawing.PANEL_BORDER;
+        int x = SpiceProfileLayout.PANEL_X;
+        int y = SpiceProfileLayout.panelY(headerHeight);
+        int width = entryWidth - 2 * SpiceProfileLayout.PANEL_X;
 
         int lineY = y;
         if (title.isPresent()) {
