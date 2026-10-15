@@ -1,6 +1,7 @@
 package com.drunkencod.spice_road.stats;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
@@ -53,6 +54,11 @@ public final class ModStats {
                 return;
             award(event.entity(), SEASONED_FOODS_EATEN);
         });
+    }
+
+    /** @return Every stat of the mod, in registration order. */
+    public static List<ResourceLocation> all() {
+        return Collections.unmodifiableList(IDS);
     }
 
     /**

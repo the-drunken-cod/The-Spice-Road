@@ -24,10 +24,10 @@ import com.drunkencod.spice_road.stats.SpiceFindings;
 import com.drunkencod.spice_road.stats.SpiceFindingsSync;
 
 /**
- * {@code /spice_road reset found_spices} and {@code /spice_road reset unlocked_cells}:
- * wipe a player's progress, together with the statistic counting it. Anyone may
- * reset themselves (unless the server config turns that off); naming another
- * player takes operator permission.
+ * {@code /spice_road reset found_spices}, {@code unlocked_cells}, {@code stats}
+ * and {@code everything}: wipe a player's progress, together with the
+ * statistics counting it. Anyone may reset themselves (unless the server config
+ * turns that off); naming another player takes operator permission.
  * <p>
  * Every reset is two-step: the bare command only says what would be erased
  * and offers a clickable confirmation, which runs the same command with a
@@ -38,7 +38,7 @@ final class SpiceResetCommand {
     private static final String CONFIRM = "confirm";
     private static final String PLAYER = "player";
 
-    private static final Reset FOUND_SPICES = new Reset("found_spices", ModStats.SPICES_FOUND,
+    private static final Reset FOUND_SPICES = Reset.of("found_spices", List.of(ModStats.SPICES_FOUND),
             player -> SpiceFindings.of(player.server).count(player.getUUID()),
             player -> {
                 int removed = SpiceFindings.of(player.server).clear(player.getUUID());
@@ -46,7 +46,7 @@ final class SpiceResetCommand {
                 return removed;
             });
 
-    private static final Reset UNLOCKED_CELLS = new Reset("unlocked_cells", ModStats.CELLS_UNLOCKED,
+    private static final Reset UNLOCKED_CELLS = Reset.of("unlocked_cells", List.of(ModStats.CELLS_UNLOCKED),
             player -> CellDiscoveries.of(player.server).count(player.getUUID()),
             player -> {
                 int removed = CellDiscoveries.of(player.server).clear(player.getUUID());
@@ -55,16 +55,35 @@ final class SpiceResetCommand {
                 return removed;
             });
 
+    /** Zeroes every statistic; the count and the "removed" number are how many were above zero. */
+    private static final Reset STATS = Reset.of("stats", ModStats.all(),
+            player -> (int) ModStats.all().stream().filter(stat -> ModStats.get(player, stat) != 0).count(),
+            player -> (int) ModStats.all().stream().filter(stat -> ModStats.get(player, stat) != 0).count());
+
+    private static final Reset EVERYTHING = new Reset("everything", ModStats.all(), null, null,
+            List.of(FOUND_SPICES, UNLOCKED_CELLS, STATS));
+
     /**
      * One kind of progress that can be reset.
      *
      * @param name  The literal that selects it.
-     * @param stat  The statistic counting it, zeroed along with it.
-     * @param count How much of it a player has, for the preview.
-     * @param clear Forgets it all and returns how much that was.
+     * @param stats The statistics zeroed along with it.
+     * @param count How much of it a player has, for the preview. {@code null} for a combination.
+     * @param clear Forgets it all and returns how much that was. {@code null} for a combination.
+     * @param parts The resets a combination is made of; empty for a single one.
      */
-    private record Reset(String name, ResourceLocation stat, ToIntFunction<ServerPlayer> count,
-            ToIntFunction<ServerPlayer> clear) {
+    private record Reset(String name, List<ResourceLocation> stats, ToIntFunction<ServerPlayer> count,
+            ToIntFunction<ServerPlayer> clear, List<Reset> parts) {
+
+        static Reset of(String name, List<ResourceLocation> stats, ToIntFunction<ServerPlayer> count,
+                ToIntFunction<ServerPlayer> clear) {
+            return new Reset(name, stats, count, clear, List.of());
+        }
+
+        /** @return The single resets this one consists of, which is itself unless it is a combination. */
+        List<Reset> leaves() {
+            return parts.isEmpty() ? List.of(this) : parts;
+        }
 
         String key(String suffix) {
             return "commands.spice_road.reset." + name + "." + suffix;
@@ -78,7 +97,7 @@ final class SpiceResetCommand {
     static LiteralArgumentBuilder<CommandSourceStack> build() {
         LiteralArgumentBuilder<CommandSourceStack> reset = Commands.literal("reset")
                 .requires(source -> source.hasPermission(2) || Services.CONFIG.isCommandPlayerResetAllowed());
-        for (Reset kind : List.of(FOUND_SPICES, UNLOCKED_CELLS)) {
+        for (Reset kind : List.of(FOUND_SPICES, UNLOCKED_CELLS, STATS, EVERYTHING)) {
             reset.then(Commands.literal(kind.name())
                     .executes(context -> run(context.getSource(), kind, context.getSource().getPlayerOrException(),
                             false))
@@ -97,15 +116,24 @@ final class SpiceResetCommand {
     }
 
     /**
-     * Previews or carries out a reset.
+     * Previews or carries out a reset. The messages of {@code kind} get the amount of every
+     * single reset it consists of, followed by the player's name.
      *
      * @param confirmed Whether to carry it out, instead of only describing it.
-     * @return How much was forgotten; {@code 0} for a preview.
+     * @return How much was forgotten in total; {@code 0} for a preview.
      */
     private static int run(CommandSourceStack source, Reset kind, ServerPlayer target, boolean confirmed) {
         Component name = target.getDisplayName();
-        int count = kind.count().applyAsInt(target);
-        if (count == 0 && ModStats.get(target, kind.stat()) == 0) {
+        List<Reset> leaves = kind.leaves();
+        Object[] counts = new Object[leaves.size() + 1];
+        counts[leaves.size()] = name;
+        boolean nothing = kind.stats().stream().allMatch(stat -> ModStats.get(target, stat) == 0);
+        for (int i = 0; i < leaves.size(); i++) {
+            int count = leaves.get(i).count().applyAsInt(target);
+            counts[i] = count;
+            nothing &= count == 0;
+        }
+        if (nothing) {
             source.sendSuccess(() -> Component.translatable(kind.key("nothing"), name), false);
             return 0;
         }
@@ -118,14 +146,22 @@ final class SpiceResetCommand {
                             .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
                             .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                                     Component.translatable("commands.spice_road.reset.confirm.tooltip"))));
-            source.sendSuccess(() -> Component.translatable(kind.key("preview"), count, name).append(" ")
+            source.sendSuccess(() -> Component.translatable(kind.key("preview"), counts).append(" ")
                     .append(button), false);
             return 0;
         }
 
-        int removed = kind.clear().applyAsInt(target);
-        ModStats.reset(target, kind.stat());
-        source.sendSuccess(() -> Component.translatable(kind.key("success"), removed, name), true);
-        return removed;
+        Object[] removed = new Object[counts.length];
+        removed[leaves.size()] = name;
+        int total = 0;
+        for (int i = 0; i < leaves.size(); i++) {
+            int amount = leaves.get(i).clear().applyAsInt(target);
+            removed[i] = amount;
+            total += amount;
+        }
+        for (ResourceLocation stat : kind.stats())
+            ModStats.reset(target, stat);
+        source.sendSuccess(() -> Component.translatable(kind.key("success"), removed), true);
+        return total;
     }
 }

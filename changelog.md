@@ -20,7 +20,11 @@
     - The `#spice_road:spice_racks`, `#spice_road:drying_racks` and `#spice_road:spice_storage` tags now also exist as item tags.
     - The notches of the Spice Grinder GUI flavor bars are now shorter, except for every 5th one, which is longer, for easier counting.
     - Updated the Flavor Folio:
+        - Wrote some rudimentary entries to get the most important points across.
         - Item slots on the spice pages and in Spice Mix Presets work like Patchouli's own: Shift-click an item that has a page in the book to jump to it. Spice items can also be looked up from the inventory with the Patchouli lookup key.
+    - Added new subcommands to `/spice_road reset`:
+        - `/spice_road reset stats`: reset all collected statistics values to zero.
+        - `/spice_road reset everything`: combination of all reset commands.
 - **Fixes:**
 
 <br>
