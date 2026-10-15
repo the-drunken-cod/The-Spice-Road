@@ -2,11 +2,22 @@
     "name": "Spice Regions",
     "icon": "minecraft:map",
     "category": "spice_road:exploration",
+    "sortnum": 0,
     "pages": [
         {
             "type": "patchouli:text",
             "title": "Spice Regions",
-            "text": "$(todo)TODO$(): Region Hearts, Heart Groves, Spice Maps, `/locate spice` and the cartographer trades."
+            "text": "Throughout the overworld, spice plants will grow in designated regions, which are distinct from what is known as biomes. The distribution of these regions is dictated by the rarity of each spice, as well as how the mod is configured. Generally, epic spices may be a thousand blocks between, while common spices will commonly border each other."
+        },
+        {
+            "type": "patchouli:text",
+            "title": "Spice Groves",
+            "text": "At each spice region's center, a grove is created. If the ground is suitable, it will solely consist of the spice plants. If not, a small pond and patch of dirt-like blocks will generate. Around these groves, smaller satellite groves may also generate."
+        },
+        {
+            "type": "patchouli:text",
+            "title": "Dimensions",
+            "text": "Although The Spice Road only ships with spices in the overworld, the Nether and End are already set up for generating $(l:exploration/spice_regions)spice regions.$() Refer to the developer documentation on how to modify the spice regions in different dimensions."
         }
     ]
 }

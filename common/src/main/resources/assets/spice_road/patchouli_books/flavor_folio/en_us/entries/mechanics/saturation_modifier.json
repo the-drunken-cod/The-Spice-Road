@@ -1,13 +1,18 @@
 {
     "name": "Saturation Modifier",
-    "icon": "minecraft:bread",
+    "icon": "minecraft:golden_apple",
     "category": "spice_road:mechanics",
     "sortnum": 5,
     "pages": [
         {
             "type": "patchouli:text",
             "title": "Saturation Modifier",
-            "text": "Depending on how the mod is configured, foods that are unseasoned may receive a saturation penalty. Similarly, seasoned foods will grant extra saturation, depending on the diversity of the used spices. When a seasoned food ends up with no effects, it ends up with a \"participation award\" saturation boost. If the mod AppleSkin is installed, the tooltip will show the adjusted saturation (but not the hunger bar overlay)."
+            "text": "Depending on how the mod is configured, foods that are unseasoned may receive a saturation penalty. Similarly, seasoned foods will grant extra saturation, depending on the diversity of the used spices. When a seasoned food ends up with no effects, it ends up with a \"participation award\" saturation boost."
+        },
+        {
+            "type": "patchouli:text",
+            "title": "Saturation Modifier",
+            "text": "If the mod $(l:https://modrinth.com/mod/appleskin)AppleSkin$() is installed, its tooltip will show the corrected saturation value. The HUD overlay over the hunger bar shows the unmodified value though."
         }
     ]
 }

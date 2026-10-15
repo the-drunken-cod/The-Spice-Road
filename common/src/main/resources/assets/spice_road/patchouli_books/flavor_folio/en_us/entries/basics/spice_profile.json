@@ -1,0 +1,33 @@
+{
+    "name": "Spice Profile",
+    "icon": "spice_road:habanero",
+    "category": "spice_road:basics",
+    "sortnum": 1,
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Spice Profile",
+            "text": "Each $(l:basics/what_is_a_spice)spice item$() is ranked on 8 double-precision bipolar axes, which can each be negative or positive. So in essence each spice ends up with 8 of 16 total dominant flavor values, which combine to form the spice profile. In the $(l:mechanics/spice_grinder)Spice Grinder$(), these values are then consumed to apply effects."
+        },
+        {
+            "type": "patchouli:image",
+            "title": "Spice Profile",
+            "images": [
+                "spice_road:textures/gui/flavor_folio/spice_profile.png"
+            ],
+            "border": true,
+            "text": "$(todo)TODO$(): Screenshot of a spice profile."
+        },
+        {
+            "type": "patchouli:relations",
+            "title": "Next Steps",
+            "entries": [
+                "spice_road:exploration/spice_regions",
+                "spice_road:mechanics/spice_grinder",
+                "spice_road:mechanics/drying_rack",
+                "spice_road:mechanics/spice_rack",
+                "spice_road:mechanics/spice_mixes"
+            ]
+        }
+    ]
+}
