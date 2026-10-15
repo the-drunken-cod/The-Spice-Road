@@ -18,6 +18,7 @@
     - Non-hardy spices can only be planted in dimensions where some Climate Bucket has spices, unless planting restrictions are lifted in the config.
     - The "participation award" is now the seasoning saturation modifier, and its range can go negative to take saturation away. Its config moved from `seasoning.participation` to `seasoning.saturationModifier`, so existing values reset to the defaults.
     - The `#spice_road:spice_racks`, `#spice_road:drying_racks` and `#spice_road:spice_storage` tags now also exist as item tags.
+    - The notches of the Spice Grinder GUI flavor bars are now shorter, except for every 5th one, which is longer, for easier counting.
     - Updated the Flavor Folio:
         - Item slots on the spice pages and in Spice Mix Presets work like Patchouli's own: Shift-click an item that has a page in the book to jump to it. Spice items can also be looked up from the inventory with the Patchouli lookup key.
 - **Fixes:**

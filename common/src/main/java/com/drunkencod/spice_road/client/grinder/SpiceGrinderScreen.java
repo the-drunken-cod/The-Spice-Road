@@ -849,7 +849,8 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
 
     /**
      * Draws a black notch at the bottom of a points bar at the end of every step
-     * the bar could show. Left out if they would sit closer than
+     * the bar could show. Every 5th notch is 2/3 of the bar height and the others
+     * 1/3, to make counting easier. Left out if they would sit closer than
      * {@value GrinderLayout#POINTS_NOTCH_MIN_SPACING} px.
      *
      * @param width    Width of the bar, in px.
@@ -861,10 +862,12 @@ public class SpiceGrinderScreen extends AbstractContainerScreen<SpiceGrinderMenu
         double spacing = width * stepCost / scale;
         if (stepCost <= 0D || spacing < GrinderLayout.POINTS_NOTCH_MIN_SPACING)
             return;
-        int notchTop = bottom - (bottom - top) / 2;
+        int height = bottom - top;
+        int shortTop = bottom - Math.max(1, Math.round(height / 3F));
+        int tallTop = bottom - Math.max(1, Math.round(height * 2F / 3F));
         for (int step = 1; step * spacing < width; step++) {
             int notchX = x + (int) (step * spacing) - 1;
-            graphics.fill(notchX, notchTop, notchX + 1, bottom, 0xFF000000);
+            graphics.fill(notchX, step % 5 == 0 ? tallTop : shortTop, notchX + 1, bottom, 0xFF000000);
         }
     }
 
