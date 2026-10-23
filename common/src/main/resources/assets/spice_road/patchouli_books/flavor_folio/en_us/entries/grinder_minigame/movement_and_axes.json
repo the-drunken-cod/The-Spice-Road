@@ -7,7 +7,7 @@
         {
             "type": "patchouli:text",
             "title": "Movement and Axes",
-            "text": "Each of the 8 $(l:basics/spice_profiles)spice profile$() compound values will be mapped to the 8 movement directions. In essence, to move diagonally up-left, some of the $(axis:heat)Heat$() / $(axis:cooling)Cooling$() axis has to be spent. Even if one of the axes is used up, getting to a target cell in that direction is still possible in a roundabout way."
+            "text": "Each of the 8 $(l:basics/spice_profiles)spice profile$() compound values will be mapped to the 8 movement directions. For example, to move diagonally up-left, some of the $(axis:heat)Heat$() / $(axis:cooling)Cooling$() axis has to be spent. Even if one of the axes is used up, getting to a target cell in that direction is still possible in a roundabout way."
         },
         {
             "type": "patchouli:text",
