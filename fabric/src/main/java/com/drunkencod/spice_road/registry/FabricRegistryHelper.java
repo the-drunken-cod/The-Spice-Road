@@ -1,11 +1,18 @@
 package com.drunkencod.spice_road.registry;
 
 import java.util.Collection;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
+import org.jetbrains.annotations.Nullable;
+
+import com.google.common.collect.ImmutableSet;
+
+import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.advancements.CriterionTrigger;
@@ -23,6 +30,8 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.ai.village.poi.PoiType;
+import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
@@ -182,6 +191,28 @@ public class FabricRegistryHelper implements IRegistryHelper {
     public ResourceLocation registerCustomStat(String id) {
         ResourceLocation location = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id);
         return Registry.register(BuiltInRegistries.CUSTOM_STAT, location, location);
+    }
+
+    @Override
+    public ResourceKey<PoiType> registerPoiType(String id, Collection<? extends Supplier<? extends Block>> blocks,
+            int maxTickets, int validRange) {
+        ResourceLocation location = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id);
+        // Also records the type's block states, which vanilla keeps private.
+        Set<BlockState> states = blocks.stream()
+                .flatMap(block -> block.get().getStateDefinition().getPossibleStates().stream())
+                .collect(Collectors.toUnmodifiableSet());
+        PointOfInterestHelper.register(location, maxTickets, validRange, states);
+        return ResourceKey.create(Registries.POINT_OF_INTEREST_TYPE, location);
+    }
+
+    @Override
+    public Supplier<VillagerProfession> registerVillagerProfession(String id, ResourceKey<PoiType> jobSite,
+            @Nullable SoundEvent workSound) {
+        VillagerProfession profession = Registry.register(BuiltInRegistries.VILLAGER_PROFESSION,
+                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id),
+                new VillagerProfession(id, holder -> holder.is(jobSite), holder -> holder.is(jobSite),
+                        ImmutableSet.of(), ImmutableSet.of(), workSound));
+        return () -> profession;
     }
 
     @Override

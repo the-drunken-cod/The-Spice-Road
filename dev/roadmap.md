@@ -54,10 +54,10 @@ Warning: may contain outdated information, and is only to be used as a guideline
     - Note: trades were also already a part of Mycomancy, so they can be used as a baseline (no datagenning tho).
     - [ ] Add Spice Trader villager type.
         - Datagen the trades from the enums.
-        - [ ] Sells common spices and some uncommon ones. Sells 1-2 of the cheapest spice mixes.
-        - [ ] Buys all tiers of spices and some spice mixes.
+        - [x] Sells common spices and some uncommon ones. Sells 1-2 of salad, mediterranean or mexican spice mixes (cheapest ones).
+        - [x] Buys all tiers of spice ingredients, spices, processed spices and preset spice mixes (random distribution - 2:1 spice ingredients to spice mixes).
         - [ ] Custom house .nbt structures that jigsaw onto the vanilla village road segments.
-            - [ ] Multiple variants for different biome types (plains, taiga, desert, snow).
+            - [ ] Multiple variants for different biome types (desert, snowy, taiga, savanna, plains).
     - [x] Make cartographer sell Spice Maps (Journeyman common, Expert uncommon, Master rare); epic Spice Maps are chest loot only (see `dev/todos.md`).
 9. [ ] **Documentation**
     - [ ] Create user wiki.

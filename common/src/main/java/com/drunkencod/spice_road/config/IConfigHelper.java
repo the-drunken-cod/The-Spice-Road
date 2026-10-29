@@ -120,6 +120,37 @@ public interface IConfigHelper {
     double getSpiceMapPriceMultiplier(Tier tier);
 
     /**
+     * Whether Spice Trader houses are added to the village house pools when a
+     * server starts.
+     *
+     * @return Whether the houses are added.
+     */
+    boolean isSpiceTraderVillageHousesEnabled();
+
+    /**
+     * Multiplier on the emerald value of every loose spice and Mix Preset the
+     * Spice Trader deals in, both what it pays and what it charges. Read
+     * whenever an offer is generated.
+     *
+     * @return The configured multiplier.
+     */
+    double getSpiceTraderPriceMultiplier();
+
+    /**
+     * @param tier A {@link Tier}.
+     * @return How many loose spices of that Tier the Spice Trader pays one
+     *         emerald for, before the price multiplier.
+     */
+    double getSpiceTraderBuyRate(Tier tier);
+
+    /**
+     * @param tier A {@link Tier}.
+     * @return How many loose spices of that Tier one emerald buys from the
+     *         Spice Trader, before the price multiplier.
+     */
+    double getSpiceTraderSellRate(Tier tier);
+
+    /**
      * Whether Spice Maps can generate as chest loot. Read whenever loot is
      * rolled, so toggling it needs no {@code /reload}.
      *

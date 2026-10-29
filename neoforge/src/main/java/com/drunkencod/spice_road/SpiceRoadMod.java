@@ -1,5 +1,6 @@
 package com.drunkencod.spice_road;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.drunkencod.spice_road.client.NeoForgeConfigScreenHandler;
@@ -23,6 +24,7 @@ import com.drunkencod.spice_road.datagen.SpiceGrinderBlockProvider;
 import com.drunkencod.spice_road.datagen.SpiceMetaProvider;
 import com.drunkencod.spice_road.datagen.SpiceRackAssetProvider;
 import com.drunkencod.spice_road.datagen.SpiceRackDataProvider;
+import com.drunkencod.spice_road.datagen.SpiceTraderProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeBlockStateProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeItemModelProvider;
 import com.drunkencod.spice_road.datagen.NeoForgeSpiceDataMapProvider;
@@ -38,6 +40,7 @@ import com.drunkencod.spice_road.loot.LootInjections;
 import com.drunkencod.spice_road.mix.MixPresetSync;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.ModBlockEntities;
+import com.drunkencod.spice_road.registry.ModVillagers;
 import com.drunkencod.spice_road.registry.NeoForgeConditions;
 import com.drunkencod.spice_road.registry.NeoForgeCreativeTabHelper;
 import com.drunkencod.spice_road.registry.NeoForgeRegistryHelper;
@@ -52,6 +55,8 @@ import com.drunkencod.spice_road.spice.effect.SeasoningEffectSync;
 import com.drunkencod.spice_road.stats.SpiceFindingsSync;
 import com.drunkencod.spice_road.stats.FoundSpiceTracker;
 import com.drunkencod.spice_road.villager.SpiceMapTrade;
+import com.drunkencod.spice_road.villager.trader.SpiceTraderListing;
+import com.drunkencod.spice_road.worldgen.village.VillageHouseInjection;
 
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -66,6 +71,7 @@ import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.VillagerTrades;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
@@ -198,6 +204,9 @@ public class SpiceRoadMod {
                 event.includeServer(),
                 new SpiceRackDataProvider(event.getGenerator().getPackOutput()));
         event.getGenerator().addProvider(
+                event.includeServer(),
+                new SpiceTraderProvider(event.getGenerator().getPackOutput()));
+        event.getGenerator().addProvider(
                 event.includeClient() || event.includeServer(),
                 new SpiceGrinderBlockProvider(event.getGenerator().getPackOutput()));
         event.getGenerator().addProvider(
@@ -252,9 +261,13 @@ public class SpiceRoadMod {
                 (rack, side) -> side == null ? new InvWrapper(rack) : new SidedInvWrapper(rack, side));
     }
 
-    /** Remembers the world seed for Automatic Seasoning, which can't reach a level from a recipe. */
+    /**
+     * Remembers the world seed for Automatic Seasoning, which can't reach a level from a recipe, and
+     * adds the Spice Trader houses to the village pools.
+     */
     private static void onServerAboutToStart(ServerAboutToStartEvent event) {
         SeasoningWorld.set(event.getServer().getWorldData().worldGenOptions().seed());
+        VillageHouseInjection.inject(event.getServer());
     }
 
     private static void onServerStopped(ServerStoppedEvent event) {
@@ -273,8 +286,22 @@ public class SpiceRoadMod {
         SpiceRoadCommand.register(event.getDispatcher());
     }
 
-    /** Adds the Spice Map listings to the cartographer's level pools. */
+    /**
+     * Adds the Spice Map listings to the cartographer's level pools, and gives
+     * the Spice Trader its two slots per level.
+     */
     private static void onVillagerTrades(VillagerTradesEvent event) {
+        if (event.getType() == ModVillagers.SPICE_TRADER.get()) {
+            for (int level = 1; level <= 5; level++) {
+                List<VillagerTrades.ItemListing> pool = event.getTrades().get(level);
+                if (pool == null) {
+                    pool = new ArrayList<>();
+                    event.getTrades().put(level, pool);
+                }
+                pool.addAll(SpiceTraderListing.forLevel(level));
+            }
+            return;
+        }
         if (event.getType() != VillagerProfession.CARTOGRAPHER)
             return;
 

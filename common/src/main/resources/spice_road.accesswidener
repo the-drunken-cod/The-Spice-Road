@@ -8,3 +8,6 @@ accessible method net/minecraft/world/level/levelgen/feature/treedecorators/Tree
 # Fabric counterpart of the MenuType entries in META-INF/accesstransformer.cfg (see ModMenus).
 accessible class net/minecraft/world/inventory/MenuType$MenuSupplier
 accessible method net/minecraft/world/inventory/MenuType <init> (Lnet/minecraft/world/inventory/MenuType$MenuSupplier;Lnet/minecraft/world/flag/FeatureFlagSet;)V
+
+# Fabric counterpart of the StructureTemplatePool entry in META-INF/accesstransformer.cfg (see VillageHouseInjection).
+accessible field net/minecraft/world/level/levelgen/structure/pools/StructureTemplatePool templates Lit/unimi/dsi/fastutil/objects/ObjectArrayList;

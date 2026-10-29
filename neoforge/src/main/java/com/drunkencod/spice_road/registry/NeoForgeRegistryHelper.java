@@ -5,6 +5,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import org.jetbrains.annotations.Nullable;
+
+import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.core.BlockPos;
@@ -12,10 +17,13 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.ai.village.poi.PoiType;
+import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
@@ -98,6 +106,12 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
 
     private final DeferredRegister<SoundEvent> soundEvents = DeferredRegister.create(Registries.SOUND_EVENT,
             Constants.MOD_ID);
+
+    private final DeferredRegister<PoiType> poiTypes = DeferredRegister.create(Registries.POINT_OF_INTEREST_TYPE,
+            Constants.MOD_ID);
+
+    private final DeferredRegister<VillagerProfession> villagerProfessions = DeferredRegister
+            .create(Registries.VILLAGER_PROFESSION, Constants.MOD_ID);
 
     private final List<PreparableReloadListener> pendingReloadListeners = new ArrayList<>();
 
@@ -198,6 +212,27 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
     }
 
     @Override
+    public ResourceKey<PoiType> registerPoiType(String id, Collection<? extends Supplier<? extends Block>> blocks,
+            int maxTickets, int validRange) {
+        // NeoForge records the block states of modded types by itself.
+        poiTypes.register(id, () -> new PoiType(
+                blocks.stream()
+                        .flatMap(block -> block.get().getStateDefinition().getPossibleStates().stream())
+                        .collect(Collectors.toUnmodifiableSet()),
+                maxTickets, validRange));
+        return ResourceKey.create(Registries.POINT_OF_INTEREST_TYPE,
+                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id));
+    }
+
+    @Override
+    public Supplier<VillagerProfession> registerVillagerProfession(String id, ResourceKey<PoiType> jobSite,
+            @Nullable SoundEvent workSound) {
+        return villagerProfessions.register(id,
+                () -> new VillagerProfession(id, holder -> holder.is(jobSite), holder -> holder.is(jobSite),
+                        ImmutableSet.of(), ImmutableSet.of(), workSound));
+    }
+
+    @Override
     public void registerReloadListener(ResourceLocation id, PreparableReloadListener listener) {
         pendingReloadListeners.add(listener);
     }
@@ -243,6 +278,8 @@ public class NeoForgeRegistryHelper implements IRegistryHelper {
         recipeTypes.register(eventBus);
         blockEntityTypes.register(eventBus);
         soundEvents.register(eventBus);
+        poiTypes.register(eventBus);
+        villagerProfessions.register(eventBus);
         // AddReloadListenerEvent is a game event, not a mod-bus event.
         NeoForge.EVENT_BUS.addListener(this::onAddReloadListeners);
     }

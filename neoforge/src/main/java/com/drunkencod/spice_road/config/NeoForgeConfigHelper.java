@@ -203,6 +203,26 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean isSpiceTraderVillageHousesEnabled() {
+        return value(ConfigSchema.SPICE_TRADER_VILLAGE_HOUSES);
+    }
+
+    @Override
+    public double getSpiceTraderPriceMultiplier() {
+        return value(ConfigSchema.SPICE_TRADER_PRICE_MULTIPLIER);
+    }
+
+    @Override
+    public double getSpiceTraderBuyRate(Tier tier) {
+        return value(ConfigSchema.SPICE_TRADER_BUY_RATE.get(tier));
+    }
+
+    @Override
+    public double getSpiceTraderSellRate(Tier tier) {
+        return value(ConfigSchema.SPICE_TRADER_SELL_RATE.get(tier));
+    }
+
+    @Override
     public boolean isSpiceMapLootEnabled() {
         return value(ConfigSchema.SPICE_MAP_LOOT_ENABLED);
     }

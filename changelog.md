@@ -4,6 +4,10 @@
 <!-- ⚠️ **Contains breaking changes.** Existing worlds will be affected!   -->
 
 - **Features:**
+    - Added the Spice Trader villager, whose workstation is any Spice Rack. They trade loose spices and Spice Mix presets for emeralds and vice versa (common and uncommon tiers only). Trades are sampled from the village's climate bucket(s).
+        - Each villager level has one buy offer and one sell offer, rolled from a datapack catalog at `data/<namespace>/spice_trade/*.json`. Prices come from per-tier rates in the server config (`spiceTrader`).
+        - Spice Trader houses are added to vanilla plains, desert, savanna, snowy and taiga villages when a server starts, from `data/<namespace>/village_house/*.json`, with a generation chance similar to cartographers. They can be turned off in the config.
+    - Spice Racks can now be pre-stocked from a loot table and a loot seed, like chests. The loot is rolled when the rack first loads into a world (or when the container is opened or world is reloaded, for racks placed via command). The Spice Racks that generate inside villager houses will use the loot table for that specific village's climate (for example `data/spice_road/loot_table/racks/village/plains.json`).
 - **Changes:**
     - Improved layouts of the custom Patchouli page types and JEI/EMI categories.
 - **Fixes:**

@@ -19,8 +19,9 @@ import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
+import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import com.drunkencod.spice_road.Constants;
@@ -39,8 +40,18 @@ import com.drunkencod.spice_road.registry.ModBlockEntities;
  * <p>
  * Its items are saved under {@code Items} like any container's, which is how
  * the Spice Grinder reads spice storage.
+ * <p>
+ * Like a chest, a rack can carry a loot table and a loot seed
+ * ({@code LootTable} and {@code LootTableSeed} in its NBT), which is how
+ * generated structures stock it. Unlike a chest it doesn't wait to be opened:
+ * a table that was already there when the rack was added to a loaded world
+ * (generated with its structure, or read from a saved chunk) is rolled on the
+ * rack's first server tick, as a rack shows its items and offers them to the
+ * Grinder without anyone opening it. A table set on a rack that is already in
+ * the world, by a command say, stays pending until the chunk next loads or
+ * the rack is opened, broken or emptied, so a structure block can save it.
  */
-public class SpiceRackBlockEntity extends BaseContainerBlockEntity implements WorldlyContainer {
+public class SpiceRackBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
 
     /** Slots per tier, which is also how many items fit in one row or ring. */
     public static final int TIER_SIZE = 4;
@@ -63,6 +74,12 @@ public class SpiceRackBlockEntity extends BaseContainerBlockEntity implements Wo
             .map(i -> (TIERS - 1 - i / TIER_SIZE) * TIER_SIZE + i % TIER_SIZE).toArray();
 
     private NonNullList<ItemStack> items = NonNullList.withSize(SLOT_COUNT, ItemStack.EMPTY);
+
+    /**
+     * Whether a loot table was present when the rack joined a level, so its
+     * first server tick rolls it. Not saved.
+     */
+    private boolean rollOnTick;
 
     /**
      * @param pos   The rack's position.
@@ -105,6 +122,7 @@ public class SpiceRackBlockEntity extends BaseContainerBlockEntity implements Wo
     public int insert(ItemStack stack) {
         if (!accepts(stack))
             return 0;
+        unpackLootTable(null);
         int before = stack.getCount();
         for (int slot : FILL_ORDER) {
             if (stack.isEmpty())
@@ -128,6 +146,30 @@ public class SpiceRackBlockEntity extends BaseContainerBlockEntity implements Wo
         if (inserted > 0)
             setChanged();
         return inserted;
+    }
+
+    // #region loot
+
+    @Override
+    public void setLevel(Level level) {
+        super.setLevel(level);
+        rollOnTick = !level.isClientSide && getLootTable() != null;
+    }
+
+    /**
+     * Rolls the rack's loot table if it was waiting from before the rack joined
+     * its level. See {@link SpiceRackBlockEntity}.
+     *
+     * @param level The rack's level.
+     * @param pos   The rack's position.
+     * @param state The rack's block state.
+     * @param rack  The rack.
+     */
+    public static void serverTick(Level level, BlockPos pos, BlockState state, SpiceRackBlockEntity rack) {
+        if (!rack.rollOnTick)
+            return;
+        rack.rollOnTick = false;
+        rack.unpackLootTable(null);
     }
 
     // #region container
@@ -196,14 +238,16 @@ public class SpiceRackBlockEntity extends BaseContainerBlockEntity implements Wo
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
-        ContainerHelper.saveAllItems(tag, items, registries);
+        if (!trySaveLootTable(tag))
+            ContainerHelper.saveAllItems(tag, items, registries);
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         items = NonNullList.withSize(SLOT_COUNT, ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(tag, items, registries);
+        if (!tryLoadLootTable(tag))
+            ContainerHelper.loadAllItems(tag, items, registries);
     }
 
     @Override

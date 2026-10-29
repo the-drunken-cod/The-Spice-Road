@@ -39,6 +39,12 @@ public final class ConfigSchema {
     public static final ConfigSection SPICE_MAP_TRADES = SPICE_MAP.child("trades");
     /** Per-tier price scaling of Spice Map offers. */
     public static final ConfigSection SPICE_MAP_TRADE_PRICES = SPICE_MAP_TRADES.child("priceMultiplier");
+    /** The Spice Trader villager and its houses. */
+    public static final ConfigSection SPICE_TRADER = ConfigSection.root(ConfigFile.SERVER, "spiceTrader");
+    /** How many loose spices of each Tier the Spice Trader pays one emerald for. */
+    public static final ConfigSection SPICE_TRADER_BUY_RATES = SPICE_TRADER.child("buyRate");
+    /** How many loose spices of each Tier one emerald buys from the Spice Trader. */
+    public static final ConfigSection SPICE_TRADER_SELL_RATES = SPICE_TRADER.child("sellRate");
     /** Where and whether players may plant Spices. */
     public static final ConfigSection CULTIVATION = ConfigSection.root(ConfigFile.SERVER, "cultivation");
     /** Per-tier growth pacing of planted Spices. */
@@ -144,6 +150,30 @@ public final class ConfigSchema {
     /** Spice Map price multiplier per {@link Tier}. */
     public static final Map<Tier, ConfigOption<Double>> SPICE_MAP_PRICE_MULTIPLIER = perTier(SPICE_MAP_TRADE_PRICES,
             1.0, 1.33, 1.67, 2.0, 1.0, 2.0);
+
+    // #region Spice Trader
+
+    /**
+     * Whether Spice Trader houses are added to the vanilla village house pools
+     * when a server starts.
+     */
+    public static final ConfigOption<Boolean> SPICE_TRADER_VILLAGE_HOUSES = add(
+            ConfigOption.ofBoolean(SPICE_TRADER, "villageHouses", true).restart(ConfigOption.Restart.WORLD));
+
+    /**
+     * Multiplier on the emerald value of every loose spice and Mix Preset the
+     * Spice Trader deals in, both what it pays and what it charges.
+     */
+    public static final ConfigOption<Double> SPICE_TRADER_PRICE_MULTIPLIER = add(
+            ConfigOption.ofDouble(SPICE_TRADER, "priceMultiplier", 1.0, 0.05, 20.0));
+
+    /** Loose spices of a {@link Tier} the Spice Trader pays one emerald for. */
+    public static final Map<Tier, ConfigOption<Double>> SPICE_TRADER_BUY_RATE = perTier(SPICE_TRADER_BUY_RATES,
+            16.0, 10.0, 6.0, 3.0, 0.05, 64.0);
+
+    /** Loose spices of a {@link Tier} one emerald buys from the Spice Trader. */
+    public static final Map<Tier, ConfigOption<Double>> SPICE_TRADER_SELL_RATE = perTier(SPICE_TRADER_SELL_RATES,
+            4.0, 2.0, 1.0, 0.5, 0.05, 64.0);
 
     // #region Cultivation
 

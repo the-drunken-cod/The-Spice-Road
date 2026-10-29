@@ -4,14 +4,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.ai.village.poi.PoiType;
+import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
@@ -287,4 +292,38 @@ public interface IRegistryHelper {
      *         always use this one rather than building an equal one.
      */
     ResourceLocation registerCustomStat(String id);
+
+    /**
+     * Register a {@link PoiType} (a villager workstation's point of interest)
+     * under the mod's namespace, matching every block state of the given blocks.
+     * Frozen as early as {@link #registerFeature}, with the same consequences.
+     *
+     * @param id         Registry path (e.g. {@code "my_workstation"})
+     * @param blocks     The blocks whose every state counts as the workstation;
+     *                   on Fabric these are read immediately, so they must
+     *                   already be registered
+     * @param maxTickets How many villagers may claim one such block
+     * @param validRange How many blocks away a claimed block counts as reachable
+     * @return The key of the registered type, which a profession names as its
+     *         job site.
+     */
+    ResourceKey<PoiType> registerPoiType(String id, Collection<? extends Supplier<? extends Block>> blocks,
+            int maxTickets, int validRange);
+
+    /**
+     * Register a {@link VillagerProfession} under the mod's namespace, whose
+     * texture is read from
+     * {@code assets/<namespace>/textures/entity/villager/profession/<id>.png} (and
+     * {@code .../zombie_villager/profession/<id>.png}). Frozen as early as
+     * {@link #registerFeature}, with the same consequences.
+     *
+     * @param id        Registry path (e.g. {@code "my_trader"})
+     * @param jobSite   The {@link PoiType} that is both what the profession holds
+     *                  and the only one it can acquire
+     * @param workSound The sound its villagers play at their workstation, if any
+     * @return A supplier of the registered profession, only usable once
+     *         registration has run.
+     */
+    Supplier<VillagerProfession> registerVillagerProfession(String id, ResourceKey<PoiType> jobSite,
+            @Nullable SoundEvent workSound);
 }

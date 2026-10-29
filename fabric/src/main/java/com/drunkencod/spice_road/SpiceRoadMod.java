@@ -1,5 +1,7 @@
 package com.drunkencod.spice_road;
 
+import java.util.List;
+
 import com.drunkencod.spice_road.block.SpiceTrees;
 import com.drunkencod.spice_road.command.SpiceLocateCommand;
 import com.drunkencod.spice_road.command.SpiceRoadCommand;
@@ -13,6 +15,7 @@ import com.drunkencod.spice_road.loot.LootInjections;
 import com.drunkencod.spice_road.mix.MixPresetSync;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.FabricCreativeTabHelper;
+import com.drunkencod.spice_road.registry.ModVillagers;
 import com.drunkencod.spice_road.spice.SpiceProfileRegistry;
 import com.drunkencod.spice_road.spice.SpiceProfileSync;
 import com.drunkencod.spice_road.spice.board.SeasoningWorld;
@@ -20,6 +23,8 @@ import com.drunkencod.spice_road.spice.effect.SeasoningEffectSync;
 import com.drunkencod.spice_road.stats.FoundSpiceTracker;
 import com.drunkencod.spice_road.stats.SpiceFindingsSync;
 import com.drunkencod.spice_road.villager.SpiceMapTrade;
+import com.drunkencod.spice_road.villager.trader.SpiceTraderListing;
+import com.drunkencod.spice_road.worldgen.village.VillageHouseInjection;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
@@ -38,6 +43,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
@@ -108,6 +114,11 @@ public class SpiceRoadMod implements ModInitializer {
                 SpiceMapTrade.TIER_BY_LEVEL.forEach((level, tier) -> TradeOfferHelper.registerVillagerOffers(
                                 VillagerProfession.CARTOGRAPHER, level,
                                 factories -> factories.add(new SpiceMapTrade(tier))));
+                for (int level = 1; level <= 5; level++) {
+                        List<VillagerTrades.ItemListing> slots = SpiceTraderListing.forLevel(level);
+                        TradeOfferHelper.registerVillagerOffers(ModVillagers.SPICE_TRADER.get(), level,
+                                        factories -> factories.addAll(slots));
+                }
                 LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> LootInjections
                                 .poolFor(key.location()).ifPresent(tableBuilder::pool));
         }
@@ -147,11 +158,14 @@ public class SpiceRoadMod implements ModInitializer {
 
         /**
          * Remembers the world seed for Automatic Seasoning, which can't reach a
-         * level from a recipe. NeoForge does the same through its own events.
+         * level from a recipe, and adds the Spice Trader houses to the village
+         * pools. NeoForge does the same through its own events.
          */
         private static void registerSeasoningWorld() {
-                ServerLifecycleEvents.SERVER_STARTING.register(
-                                server -> SeasoningWorld.set(server.getWorldData().worldGenOptions().seed()));
+                ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+                        SeasoningWorld.set(server.getWorldData().worldGenOptions().seed());
+                        VillageHouseInjection.inject(server);
+                });
                 ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
                         SeasoningWorld.clear();
                         GrinderCheatMode.clear();

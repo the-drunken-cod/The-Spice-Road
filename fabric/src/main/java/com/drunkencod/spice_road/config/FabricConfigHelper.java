@@ -144,6 +144,26 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean isSpiceTraderVillageHousesEnabled() {
+        return value(ConfigSchema.SPICE_TRADER_VILLAGE_HOUSES, server().spiceTrader.villageHouses);
+    }
+
+    @Override
+    public double getSpiceTraderPriceMultiplier() {
+        return value(ConfigSchema.SPICE_TRADER_PRICE_MULTIPLIER, server().spiceTrader.priceMultiplier);
+    }
+
+    @Override
+    public double getSpiceTraderBuyRate(Tier tier) {
+        return value(ConfigSchema.SPICE_TRADER_BUY_RATE.get(tier), server().spiceTrader.buyRate.of(tier));
+    }
+
+    @Override
+    public double getSpiceTraderSellRate(Tier tier) {
+        return value(ConfigSchema.SPICE_TRADER_SELL_RATE.get(tier), server().spiceTrader.sellRate.of(tier));
+    }
+
+    @Override
     public boolean isSpiceMapLootEnabled() {
         return value(ConfigSchema.SPICE_MAP_LOOT_ENABLED, server().spiceMap.lootEnabled);
     }
@@ -571,6 +591,8 @@ public class FabricConfigHelper implements IConfigHelper {
         @ConfigEntry.Gui.CollapsibleObject
         public SpiceMap spiceMap = new SpiceMap();
         @ConfigEntry.Gui.CollapsibleObject
+        public SpiceTrader spiceTrader = new SpiceTrader();
+        @ConfigEntry.Gui.CollapsibleObject
         public Cultivation cultivation = new Cultivation();
         @ConfigEntry.Gui.CollapsibleObject
         public Plant plant = new Plant();
@@ -635,6 +657,19 @@ public class FabricConfigHelper implements IConfigHelper {
             public int basePrice = ConfigSchema.SPICE_MAP_BASE_PRICE.getDefault();
             @ConfigEntry.Gui.CollapsibleObject
             public PerTier priceMultiplier = PerTier.of(ConfigSchema.SPICE_MAP_PRICE_MULTIPLIER);
+        }
+
+        /** The Spice Trader villager and its houses. */
+        public static class SpiceTrader {
+            @ConfigEntry.Gui.Tooltip
+            @ConfigEntry.Gui.RequiresRestart
+            public boolean villageHouses = ConfigSchema.SPICE_TRADER_VILLAGE_HOUSES.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public double priceMultiplier = ConfigSchema.SPICE_TRADER_PRICE_MULTIPLIER.getDefault();
+            @ConfigEntry.Gui.CollapsibleObject
+            public PerTier buyRate = PerTier.of(ConfigSchema.SPICE_TRADER_BUY_RATE);
+            @ConfigEntry.Gui.CollapsibleObject
+            public PerTier sellRate = PerTier.of(ConfigSchema.SPICE_TRADER_SELL_RATE);
         }
 
         /** Where Spices may be planted, and how quickly they grow. */
