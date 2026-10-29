@@ -22,6 +22,20 @@ Encourages local production and specialized trade and has lots of compat for oth
 >   
 > **This mod is still in its alpha stage.** Please do try it out for playtesting and feedback purposes, but check back later if you're after a more stable and modpack-friendly experience.
 
+> [!NOTE]  
+>   
+> **GenAI Usage Notice:**
+> | **What:** | **GenAI used:** |
+> | :-- | :-- |
+> | Abstract Java Code | ✅ yes |
+> | Detail Work | ❌ no |
+> | Textures | ❌ no |
+> | Models | ❌ no |
+> | Sounds | ❌ no |
+> 
+> [View our full GenAI usage policy here.](https://github.com/the-drunken-cod#genai-usage)
+
+
 <br>
 
 ## Features:
