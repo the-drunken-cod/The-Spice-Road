@@ -24,6 +24,7 @@ import com.drunkencod.spice_road.stats.FoundSpiceTracker;
 import com.drunkencod.spice_road.stats.SpiceFindingsSync;
 import com.drunkencod.spice_road.villager.SpiceMapTrade;
 import com.drunkencod.spice_road.villager.trader.SpiceTraderListing;
+import com.drunkencod.spice_road.villager.trader.WanderingTraderListing;
 import com.drunkencod.spice_road.worldgen.village.VillageHouseInjection;
 
 import net.fabricmc.api.ModInitializer;
@@ -103,7 +104,8 @@ public class SpiceRoadMod implements ModInitializer {
 
         /**
          * Registers {@code /locate spice}/{@code spice_climate}, the
-         * cartographer's Spice Map trades, and the loot table injections.
+         * cartographer's Spice Map trades, the wandering trader's Spice offers,
+         * and the loot table injections.
          * NeoForge does the same through its own events.
          */
         private static void registerSpiceMaps() {
@@ -119,6 +121,8 @@ public class SpiceRoadMod implements ModInitializer {
                         TradeOfferHelper.registerVillagerOffers(ModVillagers.SPICE_TRADER.get(), level,
                                         factories -> factories.addAll(slots));
                 }
+                TradeOfferHelper.registerWanderingTraderOffers(1,
+                                factories -> factories.addAll(WanderingTraderListing.all()));
                 LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> LootInjections
                                 .poolFor(key.location()).ifPresent(tableBuilder::pool));
         }

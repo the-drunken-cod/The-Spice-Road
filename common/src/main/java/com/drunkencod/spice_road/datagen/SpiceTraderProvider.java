@@ -25,11 +25,15 @@ import com.drunkencod.spice_road.villager.trader.SpiceTradeDirection;
 import com.drunkencod.spice_road.villager.trader.SpiceTradeEntry;
 import com.drunkencod.spice_road.villager.trader.SpiceTradeReloadListener;
 import com.drunkencod.spice_road.villager.trader.SpiceTradeSource;
+import com.drunkencod.spice_road.villager.trader.WanderingTrade;
+import com.drunkencod.spice_road.villager.trader.WanderingTradePool;
+import com.drunkencod.spice_road.villager.trader.WanderingTradeReloadListener;
 import com.drunkencod.spice_road.worldgen.village.VillageBiome;
 import com.drunkencod.spice_road.worldgen.village.VillageHouseInjection;
 
 /**
- * Writes the Spice Trader's data: its trade catalog, the loot tables that stock
+ * Writes the Spice Trader's data: its trade catalog, the wandering trader's
+ * Spice offers, the loot tables that stock
  * the Spice Racks of its village houses, and the village house files that add
  * those houses to the vanilla template pools. Raw JSON, so it runs unchanged on
  * both loaders. The trade catalog is built and written through the real codec,
@@ -48,6 +52,12 @@ public class SpiceTraderProvider implements DataProvider {
 
     /** Uses before an offer locks, by villager level. */
     private static final int[] USES_BY_LEVEL = { 16, 12, 10, 8, 8 };
+
+    /** Uses before one of the wandering trader's Spice offers locks. */
+    private static final int WANDERING_USES = 4;
+
+    /** Villager XP each of the wandering trader's Spice offers gives. */
+    private static final int WANDERING_XP = 1;
 
     /**
      * Mix Presets cheap enough to be sold at the Apprentice level, by their
@@ -68,6 +78,7 @@ public class SpiceTraderProvider implements DataProvider {
 
     private final PackOutput.PathProvider poiTagPathProvider;
     private final PackOutput.PathProvider tradePathProvider;
+    private final PackOutput.PathProvider wanderingPathProvider;
     private final PackOutput.PathProvider lootPathProvider;
     private final PackOutput.PathProvider housePathProvider;
 
@@ -77,6 +88,8 @@ public class SpiceTraderProvider implements DataProvider {
                 "tags/point_of_interest_type");
         this.tradePathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK,
                 SpiceTradeReloadListener.DIRECTORY);
+        this.wanderingPathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK,
+                WanderingTradeReloadListener.DIRECTORY);
         this.lootPathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "loot_table");
         this.housePathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK,
                 VillageHouseInjection.DIRECTORY);
@@ -92,6 +105,14 @@ public class SpiceTraderProvider implements DataProvider {
             ResourceLocation id = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID,
                     trade.direction().getSerializedName() + "_" + trade.level());
             writes.add(DataProvider.saveStable(cachedOutput, json, tradePathProvider.json(id)));
+        }
+        // #region wandering trades
+        for (WanderingTrade trade : wanderingTrades()) {
+            JsonElement json = WanderingTrade.CODEC.encodeStart(JsonOps.INSTANCE, trade).getOrThrow(
+                    error -> new IllegalStateException("Invalid wandering trader trades: " + error));
+            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID,
+                    trade.pool().getSerializedName());
+            writes.add(DataProvider.saveStable(cachedOutput, json, wanderingPathProvider.json(id)));
         }
         // #region workstation tags
         for (String tag : POI_TAGS) {
@@ -135,6 +156,22 @@ public class SpiceTraderProvider implements DataProvider {
         trades.add(new SpiceTrade(5, SpiceTradeDirection.SELL, List.of(
                 entry(4, 2, common), entry(4, 2, uncommon), entry(4, 1, cheapPresets))));
         return trades;
+    }
+
+    /**
+     * @return One file per wandering trader offer: the common and uncommon
+     *         Planting Items, and the cheap Mix Presets the Spice Trader sells.
+     */
+    private static List<WanderingTrade> wanderingTrades() {
+        return List.of(
+                new WanderingTrade(WanderingTradePool.PLANTING_ITEMS, List.of(wanderingEntry(
+                        new SpiceTradeSource.PlantingItems(List.of(Tier.COMMON, Tier.UNCOMMON))))),
+                new WanderingTrade(WanderingTradePool.MIXES, List.of(wanderingEntry(
+                        new SpiceTradeSource.Presets(CHEAP_PRESETS, Tier.EPIC)))));
+    }
+
+    private static SpiceTradeEntry wanderingEntry(SpiceTradeSource source) {
+        return new SpiceTradeEntry(1, source, WANDERING_USES, WANDERING_XP);
     }
 
     /** @return A tag file adding the Spice Trader's workstation to a vanilla tag. */

@@ -164,6 +164,43 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean isWanderingTraderEnabled() {
+        return value(ConfigSchema.WANDERING_TRADER_ENABLED, server().wanderingTrader.enabled);
+    }
+
+    @Override
+    public double getWanderingTraderPlantingItemChance() {
+        return value(ConfigSchema.WANDERING_TRADER_PLANTING_ITEM_CHANCE, server().wanderingTrader.plantingItemChance);
+    }
+
+    @Override
+    public double getWanderingTraderMixChance() {
+        return value(ConfigSchema.WANDERING_TRADER_MIX_CHANCE, server().wanderingTrader.mixChance);
+    }
+
+    @Override
+    public double getWanderingTraderMixPriceMultiplier() {
+        return value(ConfigSchema.WANDERING_TRADER_MIX_PRICE_MULTIPLIER,
+                server().wanderingTrader.mixPriceMultiplier);
+    }
+
+    @Override
+    public double getWanderingTraderPlantingItemPrice(Tier tier) {
+        return value(ConfigSchema.WANDERING_TRADER_PLANTING_ITEM_PRICE.get(tier),
+                server().wanderingTrader.plantingItemPrice.of(tier));
+    }
+
+    @Override
+    public int getWanderingTraderPlantingItemEntries() {
+        return common().wanderingTraderPool.plantingItemEntries;
+    }
+
+    @Override
+    public int getWanderingTraderMixEntries() {
+        return common().wanderingTraderPool.mixEntries;
+    }
+
+    @Override
     public boolean isSpiceMapLootEnabled() {
         return value(ConfigSchema.SPICE_MAP_LOOT_ENABLED, server().spiceMap.lootEnabled);
     }
@@ -593,6 +630,8 @@ public class FabricConfigHelper implements IConfigHelper {
         @ConfigEntry.Gui.CollapsibleObject
         public SpiceTrader spiceTrader = new SpiceTrader();
         @ConfigEntry.Gui.CollapsibleObject
+        public WanderingTrader wanderingTrader = new WanderingTrader();
+        @ConfigEntry.Gui.CollapsibleObject
         public Cultivation cultivation = new Cultivation();
         @ConfigEntry.Gui.CollapsibleObject
         public Plant plant = new Plant();
@@ -670,6 +709,20 @@ public class FabricConfigHelper implements IConfigHelper {
             public PerTier buyRate = PerTier.of(ConfigSchema.SPICE_TRADER_BUY_RATE);
             @ConfigEntry.Gui.CollapsibleObject
             public PerTier sellRate = PerTier.of(ConfigSchema.SPICE_TRADER_SELL_RATE);
+        }
+
+        /** The Spice offers of the vanilla wandering trader. */
+        public static class WanderingTrader {
+            @ConfigEntry.Gui.Tooltip
+            public boolean enabled = ConfigSchema.WANDERING_TRADER_ENABLED.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public double plantingItemChance = ConfigSchema.WANDERING_TRADER_PLANTING_ITEM_CHANCE.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public double mixChance = ConfigSchema.WANDERING_TRADER_MIX_CHANCE.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public double mixPriceMultiplier = ConfigSchema.WANDERING_TRADER_MIX_PRICE_MULTIPLIER.getDefault();
+            @ConfigEntry.Gui.CollapsibleObject
+            public PerTier plantingItemPrice = PerTier.of(ConfigSchema.WANDERING_TRADER_PLANTING_ITEM_PRICE);
         }
 
         /** Where Spices may be planted, and how quickly they grow. */
@@ -845,10 +898,22 @@ public class FabricConfigHelper implements IConfigHelper {
 
         @ConfigEntry.Gui.CollapsibleObject
         public CompatRecipes compatRecipes = new CompatRecipes();
+        @ConfigEntry.Gui.CollapsibleObject
+        public WanderingTraderPool wanderingTraderPool = new WanderingTraderPool();
 
         @Override
         public void validatePostLoad() {
             clampToSchema(this, ConfigFile.COMMON);
+        }
+
+        /** How many entries the wandering trader's Spice offers add to its offer pool. */
+        public static class WanderingTraderPool {
+            @ConfigEntry.Gui.Tooltip
+            @ConfigEntry.Gui.RequiresRestart
+            public int plantingItemEntries = ConfigSchema.WANDERING_TRADER_PLANTING_ITEM_ENTRIES.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            @ConfigEntry.Gui.RequiresRestart
+            public int mixEntries = ConfigSchema.WANDERING_TRADER_MIX_ENTRIES.getDefault();
         }
 
         /** Which optional mods get recipes loaded, one field per mod ID. */

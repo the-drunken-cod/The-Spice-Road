@@ -56,6 +56,7 @@ import com.drunkencod.spice_road.stats.SpiceFindingsSync;
 import com.drunkencod.spice_road.stats.FoundSpiceTracker;
 import com.drunkencod.spice_road.villager.SpiceMapTrade;
 import com.drunkencod.spice_road.villager.trader.SpiceTraderListing;
+import com.drunkencod.spice_road.villager.trader.WanderingTraderListing;
 import com.drunkencod.spice_road.worldgen.village.VillageHouseInjection;
 
 import net.neoforged.bus.api.IEventBus;
@@ -82,6 +83,7 @@ import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
+import net.neoforged.neoforge.event.village.WandererTradesEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
@@ -123,6 +125,7 @@ public class SpiceRoadMod {
         NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onDatapackSync);
         NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onRegisterCommands);
         NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onVillagerTrades);
+        NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onWandererTrades);
         NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onLootTableLoad);
         NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onServerTick);
 
@@ -307,6 +310,14 @@ public class SpiceRoadMod {
 
         SpiceMapTrade.TIER_BY_LEVEL
                 .forEach((level, tier) -> event.getTrades().get(level.intValue()).add(new SpiceMapTrade(tier)));
+    }
+
+    /**
+     * Adds the wandering trader's optional Spice offers to its generic offer
+     * pool.
+     */
+    private static void onWandererTrades(WandererTradesEvent event) {
+        event.getGenericTrades().addAll(WanderingTraderListing.all());
     }
 
     /** Appends the matching inject table, if any, to each loaded loot table. */

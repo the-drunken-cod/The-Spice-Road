@@ -23,6 +23,7 @@ import com.drunkencod.spice_road.registry.ModSounds;
 import com.drunkencod.spice_road.registry.ModVillagers;
 import com.drunkencod.spice_road.spice.SpiceProfileReloadListener;
 import com.drunkencod.spice_road.villager.trader.SpiceTradeReloadListener;
+import com.drunkencod.spice_road.villager.trader.WanderingTradeReloadListener;
 import com.drunkencod.spice_road.spice.board.BoardLayoutReloadListener;
 import com.drunkencod.spice_road.spice.dimension.SpiceDimensionReloadListener;
 import com.drunkencod.spice_road.spice.effect.SeasoningEffectApplier;
@@ -59,6 +60,8 @@ public class SpiceRoad {
         Services.REGISTRY.registerReloadListener(SpiceProfileReloadListener.ID, new SpiceProfileReloadListener());
         Services.REGISTRY.registerReloadListener(MixPresetReloadListener.ID, new MixPresetReloadListener());
         Services.REGISTRY.registerReloadListener(SpiceTradeReloadListener.ID, new SpiceTradeReloadListener());
+        Services.REGISTRY.registerReloadListener(WanderingTradeReloadListener.ID,
+                new WanderingTradeReloadListener());
         Services.REGISTRY.registerReloadListener(SeasoningEffectReloadListener.ID,
                 new SeasoningEffectReloadListener());
         Services.REGISTRY.registerReloadListener(BoardLayoutReloadListener.ID, new BoardLayoutReloadListener());

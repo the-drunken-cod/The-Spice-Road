@@ -223,6 +223,41 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public boolean isWanderingTraderEnabled() {
+        return value(ConfigSchema.WANDERING_TRADER_ENABLED);
+    }
+
+    @Override
+    public double getWanderingTraderPlantingItemChance() {
+        return value(ConfigSchema.WANDERING_TRADER_PLANTING_ITEM_CHANCE);
+    }
+
+    @Override
+    public double getWanderingTraderMixChance() {
+        return value(ConfigSchema.WANDERING_TRADER_MIX_CHANCE);
+    }
+
+    @Override
+    public double getWanderingTraderMixPriceMultiplier() {
+        return value(ConfigSchema.WANDERING_TRADER_MIX_PRICE_MULTIPLIER);
+    }
+
+    @Override
+    public double getWanderingTraderPlantingItemPrice(Tier tier) {
+        return value(ConfigSchema.WANDERING_TRADER_PLANTING_ITEM_PRICE.get(tier));
+    }
+
+    @Override
+    public int getWanderingTraderPlantingItemEntries() {
+        return value(ConfigSchema.WANDERING_TRADER_PLANTING_ITEM_ENTRIES);
+    }
+
+    @Override
+    public int getWanderingTraderMixEntries() {
+        return value(ConfigSchema.WANDERING_TRADER_MIX_ENTRIES);
+    }
+
+    @Override
     public boolean isSpiceMapLootEnabled() {
         return value(ConfigSchema.SPICE_MAP_LOOT_ENABLED);
     }

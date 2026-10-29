@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
@@ -15,6 +17,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import com.drunkencod.spice_road.Constants;
+import com.drunkencod.spice_road.block.SpiceTree;
+import com.drunkencod.spice_road.block.SpiceTrees;
+import com.drunkencod.spice_road.block.SpiceVines;
+import com.drunkencod.spice_road.block.SpiceVines.RegisteredSpiceVine;
 import com.drunkencod.spice_road.mix.MixPreset;
 import com.drunkencod.spice_road.mix.MixPresetRegistry;
 import com.drunkencod.spice_road.mix.SpiceMix;
@@ -36,12 +42,20 @@ public sealed interface SpiceTradeSource {
     /** ID of the {@link Presets} source type. */
     ResourceLocation PRESETS_TYPE = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "presets");
 
+    /** ID of the {@link PlantingItems} source type. */
+    ResourceLocation PLANTING_ITEMS_TYPE = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "planting_items");
+
     /** Persistent (JSON) codec, selecting the source by its {@code type}. */
     Codec<SpiceTradeSource> CODEC = ResourceLocation.CODEC
             .validate(type -> SPICES_TYPE.equals(type) || PRESETS_TYPE.equals(type)
-                    ? DataResult.success(type)
-                    : DataResult.error(() -> "Unknown trade source type " + type))
-            .dispatch(SpiceTradeSource::type, type -> SPICES_TYPE.equals(type) ? Spices.CODEC : Presets.CODEC);
+                    || PLANTING_ITEMS_TYPE.equals(type)
+                            ? DataResult.success(type)
+                            : DataResult.error(() -> "Unknown trade source type " + type))
+            .dispatch(SpiceTradeSource::type, type -> {
+                if (SPICES_TYPE.equals(type))
+                    return Spices.CODEC;
+                return PRESETS_TYPE.equals(type) ? Presets.CODEC : PlantingItems.CODEC;
+            });
 
     /** @return The ID of this source's type. */
     ResourceLocation type();
@@ -134,6 +148,49 @@ public sealed interface SpiceTradeSource {
                 goods.add(new TradeGood(stack.get(), value, false));
             }
             return goods;
+        }
+    }
+
+    /**
+     * Planting Items: the seeds or cuttings, the sapling and the vine segment
+     * of every Spice of the listed Tiers that has them. Only ever sold: it
+     * holds nothing in the {@link SpiceTradeDirection#BUY} direction.
+     *
+     * @param tiers Which {@link Tier}s qualify.
+     */
+    record PlantingItems(List<Tier> tiers) implements SpiceTradeSource {
+
+        /** Persistent (JSON) codec. */
+        public static final MapCodec<PlantingItems> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
+                .group(Tier.CODEC.listOf().fieldOf("tiers").forGetter(PlantingItems::tiers))
+                .apply(instance, PlantingItems::new));
+
+        @Override
+        public ResourceLocation type() {
+            return PLANTING_ITEMS_TYPE;
+        }
+
+        @Override
+        public List<TradeGood> goods(SpiceTradeDirection direction) {
+            List<TradeGood> goods = new ArrayList<>();
+            if (direction != SpiceTradeDirection.SELL)
+                return goods;
+            for (Spice spice : Spice.values()) {
+                Tier tier = spice.getTier();
+                if (!tiers.contains(tier))
+                    continue;
+                SpiceTree tree = SpiceTrees.getRegistered().get(spice);
+                RegisteredSpiceVine vine = SpiceVines.getRegistered().get(spice);
+                add(goods, Spice.getSeedsById(spice.getId()), tier);
+                add(goods, tree != null ? tree.getSaplingItem().get() : null, tier);
+                add(goods, vine != null ? vine.vineItem().get() : null, tier);
+            }
+            return goods;
+        }
+
+        private static void add(List<TradeGood> goods, @Nullable Item item, Tier tier) {
+            if (item != null)
+                goods.add(new TradeGood(new ItemStack(item), SpiceTradePricing.plantingItemValue(tier), false));
         }
     }
 }

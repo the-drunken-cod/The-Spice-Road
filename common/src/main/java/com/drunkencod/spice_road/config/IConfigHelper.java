@@ -151,6 +151,57 @@ public interface IConfigHelper {
     double getSpiceTraderSellRate(Tier tier);
 
     /**
+     * Whether the wandering trader may offer Planting Items and Spice Mixes.
+     * Read whenever an offer is generated.
+     *
+     * @return Whether the offers are enabled.
+     */
+    boolean isWanderingTraderEnabled();
+
+    /**
+     * @return The chance, from {@code 0.0} to {@code 1.0}, that the wandering
+     *         trader's Planting Item offer is made when it is drawn.
+     */
+    double getWanderingTraderPlantingItemChance();
+
+    /**
+     * @return The chance, from {@code 0.0} to {@code 1.0}, that the wandering
+     *         trader's Spice Mix offer is made when it is drawn.
+     */
+    double getWanderingTraderMixChance();
+
+    /**
+     * @return The multiplier on the Spice Trader's price of a Spice Mix, for
+     *         the wandering trader's Spice Mix offer.
+     */
+    double getWanderingTraderMixPriceMultiplier();
+
+    /**
+     * @param tier A {@link Tier}.
+     * @return How many emeralds one Planting Item of that Tier costs at the
+     *         wandering trader, before rounding to whole emeralds.
+     */
+    double getWanderingTraderPlantingItemPrice(Tier tier);
+
+    /**
+     * How many entries the wandering trader's Planting Item offer adds to its
+     * offer pool. Read when trades are registered, so a change needs a
+     * restart (Fabric) or a datapack reload (NeoForge).
+     *
+     * @return The number of entries, {@code 0} or more.
+     */
+    int getWanderingTraderPlantingItemEntries();
+
+    /**
+     * How many entries the wandering trader's Spice Mix offer adds to its
+     * offer pool. Read when trades are registered, like
+     * {@link #getWanderingTraderPlantingItemEntries()}.
+     *
+     * @return The number of entries, {@code 0} or more.
+     */
+    int getWanderingTraderMixEntries();
+
+    /**
      * Whether Spice Maps can generate as chest loot. Read whenever loot is
      * rolled, so toggling it needs no {@code /reload}.
      *

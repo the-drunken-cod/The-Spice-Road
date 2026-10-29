@@ -1,7 +1,7 @@
 package com.drunkencod.spice_road.villager.trader;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.UnaryOperator;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -42,28 +42,7 @@ public class SpiceTraderListing implements VillagerTrades.ItemListing {
 
     @Override
     public @Nullable MerchantOffer getOffer(Entity trader, RandomSource random) {
-        List<SpiceTradeEntry> entries = new ArrayList<>();
-        List<List<TradeGood>> goods = new ArrayList<>();
-        int totalWeight = 0;
-        for (SpiceTradeEntry entry : SpiceTradeCatalog.entriesFor(level, direction)) {
-            List<TradeGood> available = entry.source().goods(direction);
-            if (available.isEmpty())
-                continue;
-            entries.add(entry);
-            goods.add(available);
-            totalWeight += entry.weight();
-        }
-        if (entries.isEmpty())
-            return null;
-        int roll = random.nextInt(totalWeight);
-        for (int i = 0; i < entries.size(); i++) {
-            roll -= entries.get(i).weight();
-            if (roll < 0) {
-                List<TradeGood> pool = goods.get(i);
-                return SpiceTradePricing.offerFor(pool.get(random.nextInt(pool.size())), direction,
-                        entries.get(i).uses(), entries.get(i).xp());
-            }
-        }
-        return null;
+        return SpiceTradeRoller.roll(SpiceTradeCatalog.entriesFor(level, direction), direction, random,
+                UnaryOperator.identity(), good -> true);
     }
 }

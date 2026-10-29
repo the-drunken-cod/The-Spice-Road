@@ -43,6 +43,16 @@ public final class SpiceTradePricing {
     }
 
     /**
+     * @param tier A {@link Tier}.
+     * @return What one Planting Item of that Tier costs at the wandering
+     *         trader, in emeralds: the configured price, which is not affected
+     *         by the Spice Trader's rates.
+     */
+    public static double plantingItemValue(Tier tier) {
+        return Services.CONFIG.getWanderingTraderPlantingItemPrice(tier);
+    }
+
+    /**
      * @param item An item.
      * @return The {@link Tier} whose item tag holds it, or {@code null} if no
      *         Tier does.

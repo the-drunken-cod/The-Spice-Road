@@ -43,8 +43,21 @@ public final class ConfigSchema {
     public static final ConfigSection SPICE_TRADER = ConfigSection.root(ConfigFile.SERVER, "spiceTrader");
     /** How many loose spices of each Tier the Spice Trader pays one emerald for. */
     public static final ConfigSection SPICE_TRADER_BUY_RATES = SPICE_TRADER.child("buyRate");
-    /** How many loose spices of each Tier one emerald buys from the Spice Trader. */
+    /**
+     * How many loose spices of each Tier one emerald buys from the Spice Trader.
+     */
     public static final ConfigSection SPICE_TRADER_SELL_RATES = SPICE_TRADER.child("sellRate");
+    /** The Spice offers of the vanilla wandering trader. */
+    public static final ConfigSection WANDERING_TRADER = ConfigSection.root(ConfigFile.SERVER, "wanderingTrader");
+    /** Emerald price of one Planting Item at the wandering trader, per Tier. */
+    public static final ConfigSection WANDERING_TRADER_PLANTING_ITEM_PRICES = WANDERING_TRADER
+            .child("plantingItemPrice");
+    /**
+     * How many entries the wandering trader's Spice offers add to its offer
+     * pool. Read when trades are registered, so it lives in the common file.
+     */
+    public static final ConfigSection WANDERING_TRADER_POOL = ConfigSection.root(ConfigFile.COMMON,
+            "wanderingTraderPool");
     /** Where and whether players may plant Spices. */
     public static final ConfigSection CULTIVATION = ConfigSection.root(ConfigFile.SERVER, "cultivation");
     /** Per-tier growth pacing of planted Spices. */
@@ -95,7 +108,7 @@ public final class ConfigSchema {
     /** The mod's commands. */
     public static final ConfigSection COMMANDS = ConfigSection.root(ConfigFile.SERVER, "commands");
     /** Behavior around other mods' placeable food items. */
-    public static final ConfigSection COMPAT =ConfigSection.root(ConfigFile.SERVER, "compat");
+    public static final ConfigSection COMPAT = ConfigSection.root(ConfigFile.SERVER, "compat");
     /** Which optional mods get recipes loaded. */
     public static final ConfigSection COMPAT_RECIPES = ConfigSection.root(ConfigFile.COMMON, "compatRecipes");
 
@@ -174,6 +187,56 @@ public final class ConfigSchema {
     /** Loose spices of a {@link Tier} one emerald buys from the Spice Trader. */
     public static final Map<Tier, ConfigOption<Double>> SPICE_TRADER_SELL_RATE = perTier(SPICE_TRADER_SELL_RATES,
             4.0, 2.0, 1.0, 0.5, 0.05, 64.0);
+
+    // #region Wandering Trader
+
+    /** Whether the wandering trader may offer Planting Items and Spice Mixes. */
+    public static final ConfigOption<Boolean> WANDERING_TRADER_ENABLED = add(
+            ConfigOption.ofBoolean(WANDERING_TRADER, "enabled", true));
+
+    /**
+     * Chance that the Planting Item offer is made when vanilla draws it among
+     * the wandering trader's offers.
+     */
+    public static final ConfigOption<Double> WANDERING_TRADER_PLANTING_ITEM_CHANCE = add(
+            ConfigOption.ofDouble(WANDERING_TRADER, "plantingItemChance", 1.0, 0.0, 1.0));
+
+    /**
+     * Chance that the Spice Mix offer is made when vanilla draws it among the
+     * wandering trader's offers.
+     */
+    public static final ConfigOption<Double> WANDERING_TRADER_MIX_CHANCE = add(
+            ConfigOption.ofDouble(WANDERING_TRADER, "mixChance", 1.0, 0.0, 1.0));
+
+    /**
+     * Multiplier on the Spice Trader's price of a Spice Mix, for the wandering
+     * trader's Spice Mix offer.
+     */
+    public static final ConfigOption<Double> WANDERING_TRADER_MIX_PRICE_MULTIPLIER = add(
+            ConfigOption.ofDouble(WANDERING_TRADER, "mixPriceMultiplier", 1.0, 0.05, 20.0));
+
+    /**
+     * Emeralds one Planting Item of a {@link Tier} costs at the wandering trader.
+     */
+    public static final Map<Tier, ConfigOption<Double>> WANDERING_TRADER_PLANTING_ITEM_PRICE = perTier(
+            WANDERING_TRADER_PLANTING_ITEM_PRICES, 3.0, 5.0, 10.0, 20.0, 1.0, 64.0);
+
+    /**
+     * How many entries the wandering trader's Planting Item offer adds to its
+     * offer pool; more entries make it more likely to be drawn. {@code 0}
+     * adds none.
+     */
+    public static final ConfigOption<Integer> WANDERING_TRADER_PLANTING_ITEM_ENTRIES = add(
+            ConfigOption.ofInt(WANDERING_TRADER_POOL, "plantingItemEntries", 1, 0, 64)
+                    .restart(ConfigOption.Restart.GAME));
+
+    /**
+     * How many entries the wandering trader's Spice Mix offer adds to its
+     * offer pool; more entries make it more likely to be drawn. {@code 0} adds
+     * none.
+     */
+    public static final ConfigOption<Integer> WANDERING_TRADER_MIX_ENTRIES = add(
+            ConfigOption.ofInt(WANDERING_TRADER_POOL, "mixEntries", 2, 0, 64).restart(ConfigOption.Restart.GAME));
 
     // #region Cultivation
 
@@ -371,7 +434,10 @@ public final class ConfigSchema {
     public static final ConfigOption<Boolean> SPICE_RACK_RENDER_ITEMS = add(
             ConfigOption.ofBoolean(SPICE_RACK, "renderItems", true));
 
-    /** How close, in blocks, the camera has to be for a Spice Rack to draw its items. */
+    /**
+     * How close, in blocks, the camera has to be for a Spice Rack to draw its
+     * items.
+     */
     public static final ConfigOption<Integer> SPICE_RACK_ITEM_RENDER_DISTANCE = add(
             ConfigOption.ofInt(SPICE_RACK, "itemRenderDistance", 24, 1, 128));
 
@@ -450,11 +516,16 @@ public final class ConfigSchema {
     public static final ConfigOption<Boolean> COMMANDS_ALLOW_PLAYER_RESET = add(
             ConfigOption.ofBoolean(COMMANDS, "allowPlayerReset", true));
 
-    /** Largest radius, in cells, {@code /spice_road admin sample_spices} accepts. */
+    /**
+     * Largest radius, in cells, {@code /spice_road admin sample_spices} accepts.
+     */
     public static final ConfigOption<Integer> COMMANDS_SAMPLE_MAX_RADIUS_CELLS = add(
             ConfigOption.ofInt(COMMANDS, "sampleMaxRadiusCells", 60, 1, 1000));
 
-    /** Time, in milliseconds, after which {@code sample_spices} stops and reports what it has. */
+    /**
+     * Time, in milliseconds, after which {@code sample_spices} stops and reports
+     * what it has.
+     */
     public static final ConfigOption<Integer> COMMANDS_SAMPLE_TIME_BUDGET_MS = add(
             ConfigOption.ofInt(COMMANDS, "sampleTimeBudgetMs", 5000, 100, 30_000));
 

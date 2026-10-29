@@ -5,6 +5,7 @@
 - [Prices](#prices)
 - [Village Houses](#village-houses)
 - [Stocked Spice Racks](#stocked-spice-racks)
+- [Wandering Trader](#wandering-trader)
 
 <br>
 
@@ -35,6 +36,7 @@ Offers are loaded from `data/<namespace>/spice_trade/<name>.json`. The name does
     - `source` (required): One of:
         - `spice_road:spices`: Loose spices. `tiers` (required) lists the Tiers (`common`, `uncommon`, `rare`, `epic`) that qualify; `processed` (optional, default `true`) includes Processed Spices, which count as the Tier of the spice they are made from.
         - `spice_road:presets`: Spice Mix presets, each as its standard batch (the first member of every tag in its proportions). `ids` (optional) limits the presets to those IDs, and `max_tier` (optional, default `epic`) leaves out presets with a rarer spice in them. A preset counts as the Tier of its rarest spice.
+        - `spice_road:planting_items`: The planting items of every spice of the listed `tiers` (required): its seeds or cuttings, its sapling and its vine segment, whichever it has. They are only ever sold, never bought, and cost what the `wanderingTrader.plantingItemPrice` config says for their Tier (see [Wandering Trader](#wandering-trader)).
 
 Only this mod's own spices are ever traded, never other mods' Spice Items, and never custom mixes. When the trader **buys** a preset, it only accepts that standard batch: a mix of the same preset made from other tag members is refused.
 
@@ -80,6 +82,28 @@ A Spice Rack can carry a loot table, like a chest, with an optional loot seed (a
 - Set it in a structure by saving the rack with `LootTable` (and optionally `LootTableSeed`) in its block entity data, and nothing in its items.
 - A table set on a rack that is already in a loaded world, e.g. `/setblock ~ ~ ~ spice_road:oak_spice_rack[face=floor,facing=north]{LootTable:"spice_road:racks/village/plains"}`, stays pending until the chunk next loads, or until someone opens, breaks or empties the rack. When saving a structure, save it before either happens.
 - The racks of the shipped village houses use `spice_road:racks/village/<plains|desert|savanna|snowy|taiga>`: a few common and uncommon spices from the Climates of that village style, with a small chance of a Processed Spice.
+
+<br>
+
+## Wandering Trader
+The vanilla wandering trader has two optional offers of its own, each added to its generic offer pool, from which vanilla draws about 5 of ~30 offers. When vanilla draws one, it is only made if `wanderingTrader.enabled` is on and its chance comes up; a miss is simply replaced by another draw. So the real chance per trader is its chance times vanilla's draw, and it drops as other mods add generic offers. Offers only change for traders that haven't generated theirs yet.  
+To make an offer more likely to be drawn, raise how many entries it adds to the pool: `wanderingTraderPool.plantingItemEntries` and `wanderingTraderPool.mixEntries` (default 1 each; 0 removes the offer). They sit in the common config file, because they are read when trades are registered, so a change needs a restart (on NeoForge, a datapack reload is enough). Each entry rolls the chance on its own, so several entries can each make an offer, but a trader never offers the same good twice.
+- `planting_items`: One planting item, at the price of its Tier (`wanderingTrader.plantingItemPrice.<tier>`, in whole emeralds). It is made with the chance `wanderingTrader.plantingItemChance`.
+- `mixes`: One Spice Mix preset as its standard batch, priced like the Spice Trader's (`spiceTrader.sellRate`, `spiceTrader.priceMultiplier`) times `wanderingTrader.mixPriceMultiplier`. It is made with the chance `wanderingTrader.mixChance`.
+
+What each offer picks from is loaded from `data/<namespace>/wandering_trade/<name>.json`. Files for the same pool are merged. Example (`data/spice_road/wandering_trade/planting_items.json`):
+```json
+{
+  "pool": "planting_items",
+  "entries": [
+    { "source": { "type": "spice_road:planting_items", "tiers": ["common", "uncommon"] }, "uses": 4, "xp": 1 }
+  ]
+}
+```
+- `pool` (required): `planting_items` or `mixes`.
+- `entries` (required): The weighted choices, in the same format as in the [Trade Catalog](#trade-catalog). The wandering trader only sells, so the entries are always sold, never bought.
+
+By default, planting items are those of common and uncommon spices, and mixes are the cheap presets (salad, mediterranean and mexican) the Spice Trader sells.
 
 <br><br><br><br>
 
