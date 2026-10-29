@@ -73,10 +73,13 @@ public class ModItems {
      * @param output The tab's item output.
      */
     public static void populateGenericTab(CreativeModeTab.Output output) {
+        // spice grinder
         output.accept(SPICE_GRINDER.get().getDefaultInstance());
-        output.accept(JAR.get().getDefaultInstance());
+        // blockentities
         ModBlocks.DRYING_RACK_ITEMS.values().forEach(rack -> output.accept(rack.get().getDefaultInstance()));
         ModBlocks.SPICE_RACK_ITEMS.values().forEach(rack -> output.accept(rack.get().getDefaultInstance()));
+        // spice mixes
+        output.accept(JAR.get().getDefaultInstance());
         MixPresetRegistry.getAll().forEach((id, preset) -> SpiceMixes.ofPreset(id, preset)
                 .ifPresent(stack -> output.accept(stack)));
     }

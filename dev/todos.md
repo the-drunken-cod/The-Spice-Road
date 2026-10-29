@@ -53,11 +53,6 @@
 - [ ] Advancements:
     - [x] Everything Bagel: achieve max seasoning buffs (positive or negative axes) on bread and eat it.
     - [x] Pumpkin Purist: season a pumpkin pie with cinnamon, nutmeg, ginger and cloves.
-    - [ ] (Unnamed): apply a common-rare spice to food.
-    - [ ] (Unnamed): apply an epic spice to food.
-    - [ ] (Unnamed): find a common-rare spice map.
-    - [ ] (Unnamed): find an epic spice map.
-    - [ ] (Unnamed): use a spice map.
 - [x] Spice item names don't have rarity colors (while map item names already do).
 - [x] Merge "<tier> spice" and "Spice ingredient. Press [shift] ..." tooltips into one line.
 - [x] Vine blocks should also only have a location-seeded chance to increase in age.
@@ -81,13 +76,8 @@
 - [x] Drying Rack (6 slots: input, output and secondary output per side; `spice_road:drying` recipes; heated by `#spice_road:heat_sources` / `#spice_road:drying_always_heated`; automation through a `WorldlyContainer`; vanilla block entity renderer instead of Geckolib).
     - [x] Datagenned drying recipes for the 5 dried spices, time scaled by tier (1.0 / 1.5 / 2.0 / 3.0 x 1200 ticks).
     - [x] `items_dried` stat and `spice_road:item_dried` trigger (Hang Out to Dry advancement).
-    - [ ] Tune the item offsets in `DryingRackRenderer` against the model in-game (hanging input, outputs lying on the shelf, secondary stacked above the primary).
-    - [ ] Test hoppers (left/right/top/front/back/bottom), a comparator and a redstone signal pausing it in-game on both loaders.
 - [x] Spice Rack (8 slots in 2 tiers; floor, wall and ceiling models; one block per vanilla wood; plain `Container` so every face is open to automation; GUI; comparator; custom name; client config `spiceRack.renderItems` / `itemRenderDistance`; storable item tag `spice_road:spice_rack_storable`).
     - [x] Datagenned blockstates, models, recipes (6 slabs around a wooden rod) and loot tables for all 11 woods.
-    - [ ] Tune the item offsets and scales in `SpiceRackRenderer` against the three models in-game (shelf rows, the standing rings and the hanging ones).
-    - [ ] Test hoppers, a comparator, quick-inserting by right-click and the Spice Grinder taking from a rack in-game on both loaders.
-    - [ ] Replace the placeholder pole texture (`iron_bars`) and fix the bare texture names in the hand-made `models/block/spice_rack/*.json`.
 - [x] Rework assets like textures and models to be separated into folders per spice (e.g. `textures/block/cinnamon/stripped_cinnamon_log.png`)
 - [x] Prevent other spices from spawning when a spice grove borders two different buckets, so groves only yield a single spice plant.
 - [x] Rework seed loot, so there's only a chance to drop 1 seeds (or cutting for rhizomes) item when harvesting spices, decreases by tier. Excludes trees and vines.
@@ -250,10 +240,6 @@
         - [ ] Spice Mixes:
             - [ ] List of all preset mixes incl. recipes.
             - Mention any configuration of 8 is valid, including duplicates.
-- [ ] Add sound effect when finishing spice run.
-    - Progressive sound effects for saturation modifier, regular run and flawless run.
-- [ ] Auto-scale spice profile axis scale to -1..1, then -10..10 depending on whether abs(largest_value) > 1.0, then -20..20 when >10, and so on.
-    - [ ] Show a centered header above the tooltip, something like `<gray>Spice Profile <lgray>(/<max_range>)<reset>`
 - [x] Add commands (compile-verified on both loaders, not tested in game yet):
     - regular player:
         - [x] `/spice_road reset found_spices [<Player>]` (`<Player>` needs operator permission). Zeroes the `spices_found` stat too; any raw Spice still in the inventory is found again by the next scan.
@@ -266,6 +252,28 @@
             - Searched from the target's position with the configured Spice Map search radius, like `/locate spice`.
         - [x] `/spice_road admin sample_spices [<radius>] [tier|climate|spice <value>]` - real-world scan of the Spice Regions within `radius` cells (default: the Spice Map search radius) of the operator. Reports what became of the cells (spiceless, barren, Hearts) and, per Spice, its Heart count, share of all Hearts and regions per Heart; the filter only narrows the rows. Top 15 rows in chat, everything in the server log. Server config `commands.sampleMaxRadiusCells` (60) and `commands.sampleTimeBudgetMs` (5000); a walk that runs out of time reports what it has.
         - [x] `/spice_road admin toggle_cheat_mode` - the running operator's Spice Grinder treats every Spice Item as in stock (9999) and takes nothing, until the server stops. Spice Mixes still have to be held.
+- [x] Help tooltip in Spice Grinder GUI (`[?]` in top right) that explains the minigame in short and refers to the Flavor Folio for more info.
+- Patchouli:
+    - [x] Make item slots in custom Patchouli pages work with the "hold Ctrl to navigate to the item page" feature (compile-verified on both loaders, not tested in game yet).
+    - [x] Make spice_road:mix_preset show an empty jar as the first ingredient (same).
+- Spice Grinder GUI:
+    - [x] Make every 5th notch of the spice profile progress bars taller (2/3 of bar height), and every other notch 1/3 of the bar height.
+    - [ ] Harvest / picking tools
+    - [ ] Link to dev docs
+- [x] Add new commands (compile-verified on both loaders, not tested in game yet):
+    - `/spice_road reset stats` - Sets every mod stat back to 0.
+    - `/spice_road reset everything` - Combination of all the other commands.
+
+
+
+### Down the line
+- [ ] Custom Sounds
+    - [ ] Add sound effect when finishing spice run.
+        - Progressive sound effects for saturation modifier, regular run and flawless run.
+    - [ ] Board movement sounds
+    - [ ] Cell lock-in sounds (mine, boon, bane)
+- [ ] Auto-scale spice profile axis scale to -1..1, then -10..10 depending on whether abs(largest_value) > 1.0, then -20..20 when >10, and so on.
+    - [ ] Show a centered header above the tooltip, something like `<gray>Spice Profile <lgray>(/<max_range>)<reset>`
 - [ ] Grinder minigame improvements:
     - [ ] Special garnish item effects:
         - [ ] Truffle: when used, removes negative effects.
@@ -273,15 +281,3 @@
         - [ ] Salt: 
         - [ ] Sugar: 
         - [ ] MSG: 
-- [x] Help tooltip in Spice Grinder GUI (`[?]` in top right) that explains the minigame in short and refers to the Flavor Folio for more info.
-- Patchouli:
-    - [x] Make item slots in custom Patchouli pages work with the "hold Ctrl to navigate to the item page" feature (compile-verified on both loaders, not tested in game yet).
-    - [x] Make spice_road:mix_preset show an empty jar as the first ingredient (same).
-- Spice Grinder GUI:
-    - [x] Make every 5th notch of the spice profile progress bars taller (2/3 of bar height), and every other notch 1/3 of the bar height.
-- [x] Add new commands (compile-verified on both loaders, not tested in game yet):
-    - `/spice_road reset stats` - Sets every mod stat back to 0.
-    - `/spice_road reset everything` - Combination of all the other commands.
-- [ ] Patchouli:
-    - [ ] Harvest / picking tools
-    - [ ] Link to dev docs

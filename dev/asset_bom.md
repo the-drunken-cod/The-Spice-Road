@@ -5,9 +5,10 @@ Assets that are placeholders or still missing, to be made by hand. Placeholders 
 ## Flavor Folio
 
 | Path (under `common/src/main/resources/assets/spice_road/`) | Size | Status | Used for |
-|---|---|---|---|
+| :-- | :-- | :-- | :-- |
 | `textures/item/flavor_folio.png` | 16x16 | Placeholder ("FF" on brown) | The book item, via `models/item/flavor_folio.json` |
 | `textures/gui/flavor_folio/book.png` | 512x256 | Optional, not created | Custom book GUI. Until it exists the book uses Patchouli's brown one. Set `"book_texture": "spice_road:textures/gui/flavor_folio/book.png"` in `data/spice_road/patchouli_books/flavor_folio/book.json` once it does |
+| 
 
 ## Flavor Folio articles
 
