@@ -274,6 +274,13 @@
     - [ ] Cell lock-in sounds (mine, boon, bane)
 - [ ] Auto-scale spice profile axis scale to -1..1, then -10..10 depending on whether abs(largest_value) > 1.0, then -20..20 when >10, and so on.
     - [ ] Show a centered header above the tooltip, something like `<gray>Spice Profile <lgray>(/<max_range>)<reset>`
+- [ ] Random Effects
+    - [ ] Soap Coriander/Cilantro Gene
+        - 15% chance (configurable) for a player to have it; UUID based so it is attached to the player account.
+        - Makes Coriander/Cilantro have an extra tooltip stating "It tastes like soap." - nothing else.
+    - [ ] Eating a raw spice with spice profile values >= 1.0 (configurable) applies a bit of damage (configurable & togglable).
+    - [ ] Eating a raw spice with a hot spice profile value >= 1.0 (configurable) has a 5% (configurable) chance of setting fire to the player for a few seconds.
+    - [ ] Eating a raw spice with a cooling spice profile value >= 1.0 (configurable) has a 5% (configurable) chance of spawning a snow layer on the player.
 - [ ] Grinder minigame improvements:
     - [ ] Special garnish item effects:
         - [ ] Truffle: when used, removes negative effects.

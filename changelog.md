@@ -1,7 +1,7 @@
 # `0.1.0`
 
 ## `0.1.0-alpha.6`
-<!-- ⚠️ **Contains breaking changes.** Existing worlds will be affected!   -->
+⚠️ **Contains changes that affect world generation.** Existing chunks will not receive some of these features!  
 
 - **Features:**
     - Added the Spice Trader villager, whose workstation is any Spice Rack. They trade loose spices and Spice Mix presets for emeralds and vice versa (common and uncommon tiers only). Trades are sampled from the village's climate bucket(s).
