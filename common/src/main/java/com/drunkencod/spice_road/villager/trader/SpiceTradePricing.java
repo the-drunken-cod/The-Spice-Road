@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -58,8 +60,9 @@ public final class SpiceTradePricing {
      *         Tier does.
      */
     public static @Nullable Tier tierOf(Item item) {
+        Holder<Item> holder = BuiltInRegistries.ITEM.wrapAsHolder(item);
         for (Tier tier : Tier.values()) {
-            if (item.builtInRegistryHolder().is(tier.getItemTag()))
+            if (holder.is(tier.getItemTag()))
                 return tier;
         }
         return null;
