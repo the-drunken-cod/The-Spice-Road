@@ -12,6 +12,7 @@
 - **Changes:**
     - Improved layouts of the custom Patchouli page types and JEI/EMI categories.
 - **Fixes:**
+    - NeoForge and Fabric loader versions are now more lenient and allow older patch versions than the project's default.
 
 <br>
 

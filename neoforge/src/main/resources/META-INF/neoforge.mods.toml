@@ -1,88 +1,102 @@
 modLoader = "javafml" #mandatory
 loaderVersion = "${neoforge_loader_version_range}" #mandatory
 license = "${license}" # Review your options at https://choosealicense.com/.
-#issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/" #optional
+issueTrackerURL="https://github.com/the-drunken-cod/The-Spice-Road/issues" #optional
+
 [[mods]] #mandatory
-modId = "${mod_id}" #mandatory
-version = "${version}" #mandatory
-displayName = "${mod_name}" #mandatory
-#updateJSONURL="https://change.me.example.invalid/updates.json" #optional (see https://docs.neoforged.net/docs/misc/updatechecker/)
-#displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional (displayed in the mod UI)
-logoFile="${mod_id}.png" #optional
-credits="${credits}" #optional
-authors = "${mod_author}" #optional
-description = '''${description}''' #mandatory (Supports multiline text)
+    modId = "${mod_id}" #mandatory
+    version = "${version}" #mandatory
+    displayName = "${mod_name}" #mandatory
+    #updateJSONURL="https://change.me.example.invalid/updates.json" #optional (see https://docs.neoforged.net/docs/misc/updatechecker/)
+    #displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional (displayed in the mod UI)
+    logoFile="${mod_id}.png" #optional
+    credits="${credits}" #optional
+    authors = "${mod_author}" #optional
+    description = '''${description}''' #mandatory (Supports multiline text)
+
 [[mixins]]
-config = "${mod_id}.mixins.json"
+    config = "${mod_id}.mixins.json"
+
 [[mixins]]
-config = "${mod_id}.neoforge.mixins.json"
+    config = "${mod_id}.neoforge.mixins.json"
+
 [[mixins]]
-config = "${mod_id}.compat.mixins.json"
+    config = "${mod_id}.compat.mixins.json"
+
 [[dependencies.${mod_id}]] #optional
-modId = "neoforge" #mandatory
-type="required" #mandatory (Can be one of "required", "optional", "incompatible" or "discouraged")
-versionRange = "[${neoforge_version},)" #mandatory
-ordering = "NONE" # The order that this dependency should load in relation to your mod, required to be either 'BEFORE' or 'AFTER' if the dependency is not mandatory
-side = "BOTH" # Side this dependency is applied on - 'BOTH', 'CLIENT' or 'SERVER'
+    modId = "neoforge" #mandatory
+    type="required" #mandatory (Can be one of "required", "optional", "incompatible" or "discouraged")
+    versionRange = "${neoforge_version_range}" #mandatory
+    ordering = "NONE" # The order that this dependency should load in relation to your mod, required to be either 'BEFORE' or 'AFTER' if the dependency is not mandatory
+    side = "BOTH" # Side this dependency is applied on - 'BOTH', 'CLIENT' or 'SERVER'
+
 [[dependencies.${mod_id}]]
-modId = "minecraft"
-type="required" #mandatory (Can be one of "required", "optional", "incompatible" or "discouraged")
-versionRange = "${minecraft_version_range}"
-ordering = "NONE"
-side = "BOTH"
+    modId = "minecraft"
+    type="required" #mandatory (Can be one of "required", "optional", "incompatible" or "discouraged")
+    versionRange = "${minecraft_version_range}"
+    ordering = "NONE"
+    side = "BOTH"
+
 # Optional compat: carries spice flavor through these mods' recipes
 [[dependencies.${mod_id}]]
-modId = "farmersdelight"
-type = "optional"
-versionRange = "[${farmers_delight_min_version},)"
-ordering = "NONE"
-side = "BOTH"
+    modId = "farmersdelight"
+    type = "optional"
+    versionRange = "[${farmers_delight_min_version},)"
+    ordering = "NONE"
+    side = "BOTH"
+
 [[dependencies.${mod_id}]]
-modId = "cookingforblockheads"
-type = "optional"
-versionRange = "[${cooking_for_blockheads_min_version},)"
-ordering = "NONE"
-side = "BOTH"
+    modId = "cookingforblockheads"
+    type = "optional"
+    versionRange = "[${cooking_for_blockheads_min_version},)"
+    ordering = "NONE"
+    side = "BOTH"
+
 # Optional compat: lets hardy Spices grow in these mods' pots and cloches
 [[dependencies.${mod_id}]]
-modId = "botanypots"
-type = "optional"
-versionRange = "[0,)"
-ordering = "NONE"
-side = "BOTH"
+    modId = "botanypots"
+    type = "optional"
+    versionRange = "[0,)"
+    ordering = "NONE"
+    side = "BOTH"
+
 [[dependencies.${mod_id}]]
-modId = "immersiveengineering"
-type = "optional"
-versionRange = "[0,)"
-ordering = "NONE"
-side = "BOTH"
+    modId = "immersiveengineering"
+    type = "optional"
+    versionRange = "[0,)"
+    ordering = "NONE"
+    side = "BOTH"
+
 # Optional compat: shows a seasoned food's bonus saturation in its tooltip
 [[dependencies.${mod_id}]]
-modId = "appleskin"
-type = "optional"
-versionRange = "[${appleskin_min_version},)"
-ordering = "NONE"
-side = "CLIENT"
+    modId = "appleskin"
+    type = "optional"
+    versionRange = "[${appleskin_min_version},)"
+    ordering = "NONE"
+    side = "CLIENT"
+
 # Optional compat: the mod's own Recipe Viewer categories
 [[dependencies.${mod_id}]]
-modId = "jei"
-type = "optional"
-versionRange = "[${jei_min_version},)"
-ordering = "NONE"
-side = "CLIENT"
+    modId = "jei"
+    type = "optional"
+    versionRange = "[${jei_min_version},)"
+    ordering = "NONE"
+    side = "CLIENT"
+
 [[dependencies.${mod_id}]]
-modId = "emi"
-type = "optional"
-versionRange = "[0,)"
-ordering = "NONE"
-side = "CLIENT"
+    modId = "emi"
+    type = "optional"
+    versionRange = "[0,)"
+    ordering = "NONE"
+    side = "CLIENT"
+
 # Optional compat: the Flavor Folio guide book, its recipe and its page types
 [[dependencies.${mod_id}]]
-modId = "patchouli"
-type = "optional"
-versionRange = "[0,)"
-ordering = "NONE"
-side = "BOTH"
+    modId = "patchouli"
+    type = "optional"
+    versionRange = "[0,)"
+    ordering = "NONE"
+    side = "BOTH"
 
 # Features are specific properties of the game environment, that you may want to declare you require. This example declares
 # that your mod requires GL version 3.2 or higher. Other features will be added. They are side aware so declaring this won't
