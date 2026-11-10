@@ -256,6 +256,7 @@
 - Patchouli:
     - [x] Make item slots in custom Patchouli pages work with the "hold Ctrl to navigate to the item page" feature (compile-verified on both loaders, not tested in game yet).
     - [x] Make spice_road:mix_preset show an empty jar as the first ingredient (same).
+    - [ ] Shift-click support for all spice plant blocks to navigate to the spice page (for crops, bushes, logs, leaves, saplings).
 - Spice Grinder GUI:
     - [x] Make every 5th notch of the spice profile progress bars taller (2/3 of bar height), and every other notch 1/3 of the bar height.
     - [ ] Harvest / picking tools
@@ -263,7 +264,44 @@
 - [x] Add new commands (compile-verified on both loaders, not tested in game yet):
     - `/spice_road reset stats` - Sets every mod stat back to 0.
     - `/spice_road reset everything` - Combination of all the other commands.
-
+- [ ] Balancing:
+    - [ ] Make spice leaves grow way slower by default (~8x).
+    - [ ] Make sapling drop chance configurable on the enum entry. Thin trees like cinnamon need a higher sapling drop chance.
+- [ ] Fixes:
+    - [ ] Plants like Dill don't yield seeds when harvested in a different region. Might be related to issue below?
+    - [ ] Spice Grinder GUI doesn't open on right click (neither in item nor block form):  
+      ```
+      [10Nov2026 17:56:28.536] [Server thread/ERROR] [net.minecraft.network.protocol.game.ServerPacketListener/]: Failed to handle packet net.minecraft.network.protocol.game.ServerboundUseItemPacket@7aa03ce, suppressing error
+      java.lang.IllegalStateException: Cannot get config value before config is loaded.
+      at MC-BOOTSTRAP/com.google.common@32.1.2-jre/com.google.common.base.Preconditions.checkState(Preconditions.java:512) ~[guava-32.1.2-jre.jar%2382!/:?]
+      at TRANSFORMER/neoforge@21.1.265/net.neoforged.neoforge.common.ModConfigSpec$ConfigValue.getRaw(ModConfigSpec.java:1235) ~[neoforge-21.1.265-universal.jar%23424!/:?]
+      at TRANSFORMER/neoforge@21.1.265/net.neoforged.neoforge.common.ModConfigSpec$ConfigValue.get(ModConfigSpec.java:1222) ~[neoforge-21.1.265-universal.jar%23424!/:?]
+      at TRANSFORMER/spice_road@0.1.0-alpha.5/com.drunkencod.spice_road.config.NeoForgeConfigHelper.value(NeoForgeConfigHelper.java:150) ~[spice_road-neoforge-1.21.1-0.1.0-alpha  5.jar%23681!/:0.1.0-alpha.5]
+      at TRANSFORMER/spice_road@0.1.0-alpha.5/com.drunkencod.spice_road.config.NeoForgeConfigHelper.isDarkMode(NeoForgeConfigHelper.java:386) ~[spice_road-neoforge-1.21.1-0.1  0-alpha.5.jar%23681!/:0.1.0-alpha.5]
+      at TRANSFORMER/spice_road@0.1.0-alpha.5/com.drunkencod.spice_road.grinder.SpiceGrinderMenu.title(SpiceGrinderMenu.java:146) ~[spice_road-neoforge-1.21.1-0.1.0-alpha.5  jar%23681!/:0.1.0-alpha.5]
+      at TRANSFORMER/spice_road@0.1.0-alpha.5/com.drunkencod.spice_road.grinder.SpiceGrinderMenu.open(SpiceGrinderMenu.java:132) ~[spice_road-neoforge-1.21.1-0.1.0-alpha.5  jar%23681!/:0.1.0-alpha.5]
+      at TRANSFORMER/spice_road@0.1.0-alpha.5/com.drunkencod.spice_road.grinder.SpiceGrinderItem.use(SpiceGrinderItem.java:76) ~[spice_road-neoforge-1.21.1-0.1.0-alpha.5  jar%23681!/:0.1.0-alpha.5]
+      at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.item.ItemStack.use(ItemStack.java:391) ~[server-1.21.1-20240808.144430-srg.jar%23423!/:?]
+      at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.level.ServerPlayerGameMode.useItem(ServerPlayerGameMode.java:313) ~[server-1.21.1-20240808.144430-srg.jar%23423!/:?]
+      at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.network.ServerGamePacketListenerImpl.handleUseItem(ServerGamePacketListenerImpl.java:1172) ~[server-1.21.1-20240808  144430-srg.jar%23423!/:?]
+      at TRANSFORMER/minecraft@1.21.1/net.minecraft.network.protocol.game.ServerboundUseItemPacket.handle(ServerboundUseItemPacket.java:45) ~[server-1.21.1-20240808.144430-srg  jar%23423!/:?]
+      at TRANSFORMER/minecraft@1.21.1/net.minecraft.network.protocol.game.ServerboundUseItemPacket.handle(ServerboundUseItemPacket.java:9) ~[server-1.21.1-20240808.144430-srg  jar%23423!/:?]
+      at TRANSFORMER/minecraft@1.21.1/net.minecraft.network.protocol.PacketUtils.lambda$ensureRunningOnSameThread$0(PacketUtils.java:27) [server-1.21.1-20240808.144430-srg  jar%23423!/:?]
+      at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.TickTask.run(TickTask.java:18) [server-1.21.1-20240808.144430-srg.jar%23423!/:?]
+      at TRANSFORMER/minecraft@1.21.1/net.minecraft.util.thread.BlockableEventLoop.doRunTask(BlockableEventLoop.java:148) [server-1.21.1-20240808.144430-srg.jar%23423!/:?]
+      at TRANSFORMER/minecraft@1.21.1/net.minecraft.util.thread.ReentrantBlockableEventLoop.doRunTask(ReentrantBlockableEventLoop.java:23) [server-1.21.1-20240808.144430-srg  jar%23423!/:?]
+      at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.doRunTask(MinecraftServer.java:872) [server-1.21.1-20240808.144430-srg.jar%23423!/:?]
+      at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.doRunTask(MinecraftServer.java:170) [server-1.21.1-20240808.144430-srg.jar%23423!/:?]
+      at TRANSFORMER/minecraft@1.21.1/net.minecraft.util.thread.BlockableEventLoop.pollTask(BlockableEventLoop.java:122) [server-1.21.1-20240808.144430-srg.jar%23423!/:?]
+      at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.pollTaskInternal(MinecraftServer.java:855) [server-1.21.1-20240808.144430-srg.jar%23423!/:?]
+      at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.pollTask(MinecraftServer.java:849) [server-1.21.1-20240808.144430-srg.jar%23423!/:?]
+      at TRANSFORMER/minecraft@1.21.1/net.minecraft.util.thread.BlockableEventLoop.managedBlock(BlockableEventLoop.java:132) [server-1.21.1-20240808.144430-srg.jar%23423!/:?]
+      at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.managedBlock(MinecraftServer.java:821) [server-1.21.1-20240808.144430-srg.jar%23423!/:?]
+      at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.waitUntilNextTick(MinecraftServer.java:826) [server-1.21.1-20240808.144430-srg.jar%23423!/:?]
+      at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.runServer(MinecraftServer.java:712) [server-1.21.1-20240808.144430-srg.jar%23423!/:?]
+      at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.lambda$spin$2(MinecraftServer.java:267) [server-1.21.1-20240808.144430-srg.jar%23423!/:?]
+      at java.base/java.lang.Thread.run(Thread.java:1474) [?:?]
+      ```
 
 
 ### Down the line
