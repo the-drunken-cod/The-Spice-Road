@@ -25,6 +25,26 @@ public final class SpiceTreeLootTables {
     }
 
     /**
+     * Vanilla's {@code NORMAL_LEAVES_SAPLING_CHANCES} are the oak chance
+     * {@value Spice#DEFAULT_SAPLING_DROP_CHANCE} times these factors per
+     * Fortune level.
+     */
+    private static final float[] FORTUNE_FACTORS = { 1.0F, 1.25F, 5.0F / 3.0F, 2.0F };
+
+    /**
+     * @param spice The Spice of the tree whose leaves are being built.
+     * @return The sapling drop chances per Fortune level, scaling the Spice's
+     *         {@link Spice#getSaplingDropChance() base chance} like vanilla does
+     *         for oak leaves, capped at {@code 1.0}.
+     */
+    public static float[] saplingChances(Spice spice) {
+        float[] chances = new float[FORTUNE_FACTORS.length];
+        for (int level = 0; level < chances.length; level++)
+            chances[level] = Math.min(1.0F, spice.getSaplingDropChance() * FORTUNE_FACTORS[level]);
+        return chances;
+    }
+
+    /**
      * Adds a pool to {@code leavesDrops} that drops the tree's Spice when ripe
      * {@link FruitingSpiceLeavesBlock} leaves are broken, as far as
      * {@link SpiceBreakHarvest} allows. Plain (non-fruiting) leaves are

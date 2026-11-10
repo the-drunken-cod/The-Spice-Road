@@ -47,7 +47,8 @@ public enum Spice implements StringRepresentable {
             Season.SUMMER),
     CASSIA("cassia", SourceType.TREE, HarvestAction.STRIP, Climate.TROPICAL, 4, false, false, 2, false,
             Season.SPRING, Season.SUMMER),
-    CINNAMON("cinnamon", SourceType.TREE, HarvestAction.STRIP, Climate.TROPICAL, 5, false, false, 1, false,
+    // thin tree with little foliage, so its leaves drop saplings more often
+    CINNAMON("cinnamon", SourceType.TREE, HarvestAction.STRIP, Climate.TROPICAL, 5, false, false, 1, false, 0.15F,
             Season.SPRING, Season.SUMMER),
     CLOVE("clove", SourceType.TREE, HarvestAction.SHEAR, Climate.TROPICAL, 5, true, false, 1, false,
             Season.SUMMER, Season.AUTUMN),
@@ -131,6 +132,9 @@ public enum Spice implements StringRepresentable {
     WATER_PEPPER("water_pepper", SourceType.RHIZOME, HarvestAction.BREAK, Climate.TEMPERATE, 3, false, false, 2, true,
             Season.SPRING, Season.SUMMER, Season.AUTUMN);
 
+    /** Sapling drop chance of a leaf block without Fortune, matching vanilla oak leaves. */
+    public static final float DEFAULT_SAPLING_DROP_CHANCE = 0.05F;
+
     /**
      * Codec reading and writing a {@link Spice} by its {@link #getId() ID}, e.g.
      * {@code "cinnamon"}.
@@ -147,9 +151,17 @@ public enum Spice implements StringRepresentable {
     private final int dropAmount;
     private final boolean aquatic;
     private final Set<Season> seasons;
+    private final float saplingDropChance;
 
     Spice(String id, SourceType src, HarvestAction act, Climate climate, int rarity,
             boolean reqTool, boolean handPick, int drops, boolean aquatic, Season... seasons) {
+        this(id, src, act, climate, rarity, reqTool, handPick, drops, aquatic, DEFAULT_SAPLING_DROP_CHANCE, seasons);
+    }
+
+    Spice(String id, SourceType src, HarvestAction act, Climate climate, int rarity,
+            boolean reqTool, boolean handPick, int drops, boolean aquatic, float saplingDropChance,
+            Season... seasons) {
+        this.saplingDropChance = saplingDropChance;
         this.id = id;
         this.sourceType = src;
         this.harvestAction = act;
@@ -237,6 +249,15 @@ public enum Spice implements StringRepresentable {
      */
     public int getDropAmount() {
         return dropAmount;
+    }
+
+    /**
+     * @return The chance, from {@code 0.0} to {@code 1.0}, that a decaying or
+     *         broken leaf block of this Spice's tree drops its sapling without
+     *         Fortune. Only meaningful for {@link SourceType#TREE} Spices.
+     */
+    public float getSaplingDropChance() {
+        return saplingDropChance;
     }
 
     /**

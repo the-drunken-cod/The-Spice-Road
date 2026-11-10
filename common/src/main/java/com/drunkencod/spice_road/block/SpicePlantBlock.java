@@ -361,7 +361,8 @@ public abstract class SpicePlantBlock extends CropBlock {
      * as the break loot table's), then resets the plant to age {@code 0} so
      * it regrows instead of breaking. Like the break loot table, it also
      * drops one seed with the {@link Tier#getSeedDropChance() seed drop
-     * chance} of the Spice's tier, wherever it was harvested. Both the yield
+     * chance} of the Spice's tier, or always where the Spice Region doesn't
+     * support the Spice, so the harvest isn't empty. Both the yield
      * and that chance are scaled by the player's {@link HarvestLuck}. The break
      * loot
      * table of a Hand-Pick Spice only drops the seed, so this is the only way
@@ -377,11 +378,13 @@ public abstract class SpicePlantBlock extends CropBlock {
 
         ModStats.award(player, ModStats.HAND_PICKED_HARVESTS);
         int yield = SpiceHarvesting.rollPlantYield(spice, level.getRandom(), player);
-        if (yield > 0 && spice.canBeCultivatedAt(serverLevel, pos))
+        boolean supported = spice.canBeCultivatedAt(serverLevel, pos);
+        if (yield > 0 && supported)
             popResourceFromFace(level, pos, hitResult.getDirection(),
                     new ItemStack(ModItems.byId(spice.getId()), yield));
 
-        if (level.getRandom().nextFloat() < HarvestLuck.seedChance(spice.getTier().getSeedDropChance(), player))
+        if (!supported
+                || level.getRandom().nextFloat() < HarvestLuck.seedChance(spice.getTier().getSeedDropChance(), player))
             popResourceFromFace(level, pos, hitResult.getDirection(), new ItemStack(seedItem.get()));
 
         level.playSound(null, pos, sound, SoundSource.BLOCKS, 1.0F, 0.8F + level.getRandom().nextFloat() * 0.4F);

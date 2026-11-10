@@ -50,9 +50,10 @@ public class FruitingSpiceLeavesBlock extends LeavesBlock {
 
     /**
      * On average, one in this many random ticks advances a fruiting stage at a 1.0
-     * growth speed.
+     * growth speed. Deliberately slow, so a tree's fruit is a slow harvest rather
+     * than a farm.
      */
-    private static final int BASE_GROWTH_TICKS_PER_STAGE = 5;
+    private static final int BASE_GROWTH_TICKS_PER_STAGE = 40;
 
     private final SpiceTree tree;
 

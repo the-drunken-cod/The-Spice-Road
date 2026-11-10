@@ -41,7 +41,7 @@ public class FabricSpiceLootProvider extends FabricBlockLootTableProvider {
             dropSelf(tree.getSapling().get());
             add(tree.getLeaves().get(), SpiceTreeLootTables.withRipeLeavesHarvest(tree,
                     createLeavesDrops(tree.getLeaves().get(), tree.getSapling().get(),
-                            NORMAL_LEAVES_SAPLING_CHANCES)));
+                            SpiceTreeLootTables.saplingChances(tree.getSpice()))));
         });
 
         SpiceVines.getRegistered().values().forEach(vine -> add(vine.block().get(),

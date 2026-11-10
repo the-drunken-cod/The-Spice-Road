@@ -32,7 +32,8 @@ public final class SpicePlantLootTables {
          * drops its seed item. A mature one drops it only with the
          * {@link Tier#getSeedDropChance() seed drop chance} of the Spice's
          * tier when the break also yields the Spice, and always when it
-         * doesn't (e.g. broken without the required harvest tool), so such a
+         * doesn't (e.g. broken without the required harvest tool, or where
+         * the Spice Region doesn't support the Spice), so such a
          * break never leaves the player empty-handed. The raw Spice product
          * additionally drops at {@code maxAge} where the Spice Region
          * supports it, as far as {@link SpiceBreakHarvest} allows the Spice
@@ -69,13 +70,20 @@ public final class SpicePlantLootTables {
                                 .when(isMature.invert())
                                 .add(LootItem.lootTableItem(seedItem));
                 LootTable.Builder table = LootTable.lootTable().withPool(immatureSeedPool);
-                if (SpiceBreakHarvest.canYieldSpice(spice))
+                if (SpiceBreakHarvest.canYieldSpice(spice)) {
                         table.withPool(SpiceBreakHarvest.gate(spice, LootPool.lootPool()
                                         .setRolls(ConstantValue.exactly(1.0F))
                                         .when(isMature)
+                                        .when(SpiceRegionSupportedCondition.spiceRegionSupported())
                                         .when(HarvestSeedChanceCondition
                                                         .harvestSeedChance(spice.getTier().getSeedDropChance()))
                                         .add(LootItem.lootTableItem(seedItem))));
+                        table.withPool(SpiceBreakHarvest.gate(spice, LootPool.lootPool()
+                                        .setRolls(ConstantValue.exactly(1.0F))
+                                        .when(isMature)
+                                        .when(SpiceRegionSupportedCondition.spiceRegionSupported().invert())
+                                        .add(LootItem.lootTableItem(seedItem))));
+                }
 
                 if (!SpiceBreakHarvest.yieldsUnconditionally(spice))
                         table.withPool(SpiceBreakHarvest.gateNot(spice, LootPool.lootPool()

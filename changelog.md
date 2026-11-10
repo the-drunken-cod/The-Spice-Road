@@ -11,8 +11,12 @@
     - Spice Racks can now be pre-stocked from a loot table and a loot seed, like chests. The loot is rolled when the rack first loads into a world (or when the container is opened or world is reloaded, for racks placed via command). The Spice Racks that generate inside villager houses will use the loot table for that specific village's climate (for example `data/spice_road/loot_table/racks/village/plains.json`).
 - **Changes:**
     - Improved layouts of the custom Patchouli page types and JEI/EMI categories.
+    - Fruiting spice leaves now grow about 8 times slower by default.
+    - Cinnamon leaves drop saplings 3 times as often, since the tree is thin.
 - **Fixes:**
     - NeoForge and Fabric loader versions are now more lenient and allow older patch versions than the project's default.
+    - The Spice Grinder GUI now opens again, in item and block form. Its title color follows the client's dark mode setting, which the server wasn't able to read.
+    - Harvesting or breaking a mature plant where its Spice Region doesn't support the Spice now always drops the seed, instead of leaving the player empty-handed.
 
 <br>
 
