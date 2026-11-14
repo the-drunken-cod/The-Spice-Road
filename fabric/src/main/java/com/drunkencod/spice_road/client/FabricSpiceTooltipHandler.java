@@ -21,7 +21,7 @@ public final class FabricSpiceTooltipHandler {
 
     /** Registers the tooltip callback. Must be called once during client init. */
     public static void register() {
-        SpiceFlavorTooltips.setTextWidthMeasurer(text -> Minecraft.getInstance().font.width(text));
+        SpiceFlavorTooltips.setTextWidthMeasurer(text -> Minecraft.getInstance().font.getSplitter().stringWidth(text));
         ItemTooltipCallback.EVENT
                 .register((stack, context, flag, lines) -> TooltipUtil.append(stack, lines, Screen.hasShiftDown()));
     }

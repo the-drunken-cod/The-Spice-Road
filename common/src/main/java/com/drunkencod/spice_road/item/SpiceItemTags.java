@@ -50,18 +50,11 @@ public class SpiceItemTags {
     public static final TagKey<Item> SPICE_TREE_SAPLINGS = create("spice_tree_saplings");
 
     /**
-     * Tools that count as a "cutting tool" for harvest-tool-requirement checks
-     * (e.g. axe-stripping a tree spice, or a bush spice that requires a tool to
-     * harvest without damaging the player).
+     * Tools that harvest a mature Spice Plant without a Hand-Pick Requirement
+     * when right-clicked on it, at the cost of one durability point, without
+     * destroying the plant. No harvest requires one; it's a shortcut.
      */
     public static final TagKey<Item> CUTTING_TOOLS = create("cutting_tools");
-
-    /**
-     * Tools that satisfy the Harvest Tool Requirement of a Spice harvested by
-     * picking (e.g. plucking vanilla pods or saffron stigmas). Includes
-     * {@link #CUTTING_TOOLS} by default.
-     */
-    public static final TagKey<Item> PICKING_TOOLS = create("picking_tools");
 
     /**
      * Non-edible items that keep the flavor of their ingredients when crafted

@@ -4,7 +4,6 @@ import java.util.function.Supplier;
 
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 
-import com.drunkencod.spice_road.loot.ConnectedPlayerCondition;
 import com.drunkencod.spice_road.loot.HarvestSeedChanceCondition;
 import com.drunkencod.spice_road.loot.SpiceMapLootEnabledCondition;
 import com.drunkencod.spice_road.loot.SpiceRegionSupportedCondition;
@@ -19,11 +18,6 @@ public final class ModLootConditions {
     public static final Supplier<LootItemConditionType> SPICE_REGION_SUPPORTED = Services.REGISTRY
             .registerLootConditionType("spice_region_supported",
                     () -> new LootItemConditionType(SpiceRegionSupportedCondition.CODEC));
-
-    /** {@code spice_road:connected_player} - see {@link ConnectedPlayerCondition}. */
-    public static final Supplier<LootItemConditionType> CONNECTED_PLAYER = Services.REGISTRY
-            .registerLootConditionType("connected_player",
-                    () -> new LootItemConditionType(ConnectedPlayerCondition.CODEC));
 
     /** {@code spice_road:spice_map_loot_enabled} - see {@link SpiceMapLootEnabledCondition}. */
     public static final Supplier<LootItemConditionType> SPICE_MAP_LOOT_ENABLED = Services.REGISTRY

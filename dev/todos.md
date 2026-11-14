@@ -37,8 +37,7 @@
     - `spice_road:leaf_vines` tree decorator, hanging vines off a Host Tree's leaves like vanilla jungle trees do (`vanilla_host_tree`, `long_pepper_host_tree`).
     - `vanilla_host_tree`: small jungle tree, cocoa kept, vanilla trunk/leave vine decorators dropped, vines at 0.45 per log side.
 - [x] Breaking a mature Spice with its harvest tool in the main hand drops the Spice and costs the tool a durability point, instead of only the seed.
-    - Gated per Source Type by `SpiceBreakHarvest`: `minecraft:match_tool` on the harvest tool tag, plus a `spice_road:connected_player` condition for Hand-Pick Spices so automation still can't farm them by breaking. Pistons drop seeds only either way.
-    - A Spice with a Hand-Pick but no Harvest Tool Requirement still never drops from breaking.
+    - Superseded: harvest tool requirements were removed again, see "Recent Playthrough Issues".
 - [x] `/locate spice_climate <climate>` merged into vanilla `/locate` alongside `/locate spice <spice>`, finds the nearest Region Heart of any Spice matching a Climate.
 - [x] Add Sable sublevel coordinate resolution (using https://github.com/ryanhcode/sable-companion) to use the correct overworld region. This is so airship bases and things like that can partake in the region system.
     - Sable Companion is bundled directly (jarJar/include) on both loaders, not probed for via `isModLoaded` - it's a safe-by-default shim, so this is a no-op without Sable installed.
@@ -270,9 +269,12 @@
         - `Spice.getSaplingDropChance()`, default `0.05` (vanilla oak), cinnamon `0.15`. Fortune levels scale like vanilla (see `SpiceTreeLootTables#saplingChances`). Other thin trees can be tuned by adding the value to their enum entry.
 - [ ] Fixes:
     - [ ] Plants like Dill don't yield seeds when harvested in a different region. Might be related to issue below?
-        - Not reproduced: the loot table and `SpicePlantBlock#harvest` don't tie seeds to the region, and Dill is hardy (grows everywhere at the default config). The only region-dependent gap found was non-hardy Spices yielding neither Spice nor (50%) seed where they're unsupported; seeds are now guaranteed there. Needs an in-game check with Dill.
-    - [x] Spice Grinder GUI doesn't open on right click (neither in item nor block form) - the server read the client-only dark mode config for the title; the screen colors it now:  
-- [ ] Cutting basil plant with shears drops nothing.
+    - [x] Spice Grinder GUI doesn't open on right click (neither in item nor block form)
+- [x] Recent Playthroughh Issues:
+    - [x] Cutting basil plant with shears drops nothing.
+    - [x] Remove harvesting tool requirements completely, only leave hand-picking requirement.
+    - [x] Expand hand-picking requirement to all epic tier plants.
+        - Derived from `Tier.EPIC` instead of a per-Spice flag.
 
 ### Down the line
 - [ ] Tag Fixes

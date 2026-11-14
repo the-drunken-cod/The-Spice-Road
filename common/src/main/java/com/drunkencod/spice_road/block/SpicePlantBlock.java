@@ -2,8 +2,6 @@ package com.drunkencod.spice_road.block;
 
 import java.util.function.Supplier;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -29,7 +27,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.FarmBlock;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
@@ -312,23 +309,18 @@ public abstract class SpicePlantBlock extends CropBlock {
     // #region interaction harvest
 
     /**
-     * Mature Spices with a Hand-Pick and a Harvest Tool Requirement are
-     * harvested by right-clicking with an item from their harvest tool tag,
-     * which takes durability damage. A mature Spice without a Hand-Pick
-     * Requirement may instead be cut this way with any
-     * {@link SpiceItemTags#CUTTING_TOOLS} item - a durability-costing
-     * shortcut to the drop breaking it would already yield, without
-     * destroying the plant. Either way, a definitive result is returned so
-     * this takes precedence over any other mod's generic right-click-harvest
-     * behaviour.
+     * A mature Spice without a Hand-Pick Requirement may be cut by
+     * right-clicking with any {@link SpiceItemTags#CUTTING_TOOLS} item - a
+     * durability-costing shortcut to the drop breaking it would already yield,
+     * without destroying the plant. A definitive result is returned so this
+     * takes precedence over any other mod's generic right-click-harvest
+     * behaviour. Hand-Pick Spices are never cut, but picked, see
+     * {@link #useWithoutItem}.
      */
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
             Player player, InteractionHand hand, BlockHitResult hitResult) {
-        boolean handPick = isHandPickable(state) && spice.requiresHarvestTool()
-                && SpiceHarvesting.isHarvestTool(spice, stack) && SpiceHarvesting.mayHarvest(spice, player);
-        boolean cut = !spice.requiresHandPick() && isMaxAge(state) && stack.is(SpiceItemTags.CUTTING_TOOLS);
-        if (!handPick && !cut)
+        if (spice.requiresHandPick() || !isMaxAge(state) || !stack.is(SpiceItemTags.CUTTING_TOOLS))
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
         harvest(state, level, pos, player, hitResult, SoundEvents.SHEEP_SHEAR);
@@ -338,13 +330,13 @@ public abstract class SpicePlantBlock extends CropBlock {
     }
 
     /**
-     * Mature Spices with a Hand-Pick but no Harvest Tool Requirement are
-     * harvested by right-clicking with an empty hand.
+     * Mature Hand-Pick Spices are harvested by right-clicking, with or without
+     * an item in hand.
      */
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
             BlockHitResult hitResult) {
-        if (!isHandPickable(state) || spice.requiresHarvestTool() || !SpiceHarvesting.mayHarvest(spice, player))
+        if (!isHandPickable(state) || !SpiceHarvesting.mayHarvest(spice, player))
             return InteractionResult.PASS;
 
         harvest(state, level, pos, player, hitResult, SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES);
@@ -364,10 +356,9 @@ public abstract class SpicePlantBlock extends CropBlock {
      * chance} of the Spice's tier, or always where the Spice Region doesn't
      * support the Spice, so the harvest isn't empty. Both the yield
      * and that chance are scaled by the player's {@link HarvestLuck}. The break
-     * loot
-     * table of a Hand-Pick Spice only drops the seed, so this is the only way
-     * to obtain its Spice; for every other Spice, it's a shortcut that spares
-     * the plant instead of breaking it.
+     * loot table of a Hand-Pick Spice only drops the seed, so this is the only
+     * way to obtain its Spice; for every other Spice, it's a shortcut that
+     * spares the plant instead of breaking it.
      *
      * @param sound The harvest sound, played at the plant's position.
      */
@@ -392,28 +383,6 @@ public abstract class SpicePlantBlock extends CropBlock {
         BlockState harvestedState = state.setValue(getAgeProperty(), 0);
         level.setBlock(pos, harvestedState, Block.UPDATE_CLIENTS);
         level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, harvestedState));
-    }
-
-    // #region break-harvest
-
-    /**
-     * Charges the harvest tool a mature Spice Plant was broken with, so that
-     * breaking it is equivalent to harvesting it by interaction (see
-     * {@link SpiceHarvesting#hurtHarvestTool}). Which of the two the break
-     * itself drops is decided by the loot table, see
-     * {@code SpiceBreakHarvest}.
-     * <p>
-     * Deliberately not {@code playerWillDestroy}: that runs before the tool
-     * the loot table is rolled against is captured, so breaking the tool on
-     * its last durability point would lose the Spice.
-     */
-    @Override
-    public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state,
-            @Nullable BlockEntity blockEntity, ItemStack tool) {
-        super.playerDestroy(level, player, pos, state, blockEntity, tool);
-
-        if (isMaxAge(state))
-            SpiceHarvesting.hurtHarvestTool(spice, level, player, tool);
     }
 
     // #region misc

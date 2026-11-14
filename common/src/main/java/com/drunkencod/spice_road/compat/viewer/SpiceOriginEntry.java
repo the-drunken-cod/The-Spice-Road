@@ -9,15 +9,11 @@ import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.SpiceTree;
@@ -74,15 +70,6 @@ public record SpiceOriginEntry(Spice spice) implements ViewerEntry {
                 SpiceOriginLayout.ARROW_WIDTH, SpiceOriginLayout.ARROW_HEIGHT);
         layout.slot(ViewerLayout.Role.OUTPUT, SpiceOriginLayout.RAW_X, SpiceOriginLayout.HEADER_Y,
                 List.of(Objects.requireNonNull(ModItems.byId(spice.getId())).getDefaultInstance()), List.of());
-        if (spice.requiresHarvestTool()) {
-            List<ItemStack> tools = BuiltInRegistries.ITEM.getTag(spice.getHarvestToolTag())
-                    .map(tag -> tag.stream().map(Holder::value).map(Item::getDefaultInstance).toList())
-                    .orElse(List.of());
-            layout.slot(ViewerLayout.Role.INPUT,
-                    width - ViewerLayout.SLOT_SIZE - SpiceOriginLayout.TOOL_RIGHT_INSET, SpiceOriginLayout.HEADER_Y,
-                    tools,
-                    List.of(ViewerText.translatable("spice_origin.tool.slot").withStyle(ChatFormatting.GRAY)));
-        }
 
         List<Line> lines = new ArrayList<>();
         lines.add(tierLine());
@@ -164,8 +151,6 @@ public record SpiceOriginEntry(Spice spice) implements ViewerEntry {
         MutableComponent action = ViewerText.translatable(
                 "harvest_action." + spice.getHarvestAction().name().toLowerCase(Locale.ROOT));
         List<Component> tooltip = new ArrayList<>();
-        if (spice.requiresHarvestTool())
-            tooltip.add(ViewerText.translatable("spice_origin.tool.tooltip"));
         if (spice.requiresHandPick()) {
             action = ViewerText.translatable("spice_origin.harvest.hand_pick", action);
             tooltip.add(ViewerText.translatable("spice_origin.harvest.hand_pick.tooltip"));

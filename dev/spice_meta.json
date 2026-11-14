@@ -102,7 +102,7 @@
       "source_type": "tree",
       "harvest_action": "strip",
       "aquatic": false,
-      "hand_pick": false
+      "hand_pick": true
     },
     {
       "item": "spice_road:clove",
@@ -115,9 +115,9 @@
         "autumn"
       ],
       "source_type": "tree",
-      "harvest_action": "shear",
+      "harvest_action": "pick",
       "aquatic": false,
-      "hand_pick": false
+      "hand_pick": true
     },
     {
       "item": "spice_road:curry",
@@ -130,7 +130,7 @@
         "summer"
       ],
       "source_type": "tree",
-      "harvest_action": "shear",
+      "harvest_action": "pick",
       "aquatic": false,
       "hand_pick": false
     },
@@ -159,9 +159,9 @@
         "autumn"
       ],
       "source_type": "tree",
-      "harvest_action": "shear",
+      "harvest_action": "pick",
       "aquatic": false,
-      "hand_pick": false
+      "hand_pick": true
     },
     {
       "item": "spice_road:star_anise",
@@ -700,9 +700,9 @@
         "autumn"
       ],
       "source_type": "tree",
-      "harvest_action": "shear",
+      "harvest_action": "pick",
       "aquatic": false,
-      "hand_pick": false
+      "hand_pick": true
     },
     {
       "item": "spice_road:dried_long_pepper",
@@ -749,9 +749,9 @@
         "autumn"
       ],
       "source_type": "tree",
-      "harvest_action": "shear",
+      "harvest_action": "pick",
       "aquatic": false,
-      "hand_pick": false
+      "hand_pick": true
     },
     {
       "item": "spice_road:dried_star_anise",

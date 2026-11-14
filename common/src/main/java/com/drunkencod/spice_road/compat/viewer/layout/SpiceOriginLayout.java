@@ -33,11 +33,6 @@ public final class SpiceOriginLayout {
     public static final int ARROW_HEIGHT = 16;
     /** Left edge of the raw item's slot. */
     public static final int RAW_X = 50;
-    /**
-     * Gap between the harvest tool's slot and the right edge of the entry; the
-     * slot is right-aligned.
-     */
-    public static final int TOOL_RIGHT_INSET = 0;
 
     // #region Info panel
 

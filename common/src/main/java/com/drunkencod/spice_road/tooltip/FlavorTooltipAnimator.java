@@ -18,9 +18,10 @@ final class FlavorTooltipAnimator {
 
     /**
      * Time without a request after which an animation counts as over, in
-     * milliseconds.
+     * milliseconds. Generous enough that a heavy modpack running at a low frame
+     * rate doesn't restart the animation every frame.
      */
-    static final long GAP_MS = 100L;
+    static final long GAP_MS = 400L;
 
     /** Number of steps a bar's full scale is divided into. */
     static final int STEPS_PER_SCALE = 10;

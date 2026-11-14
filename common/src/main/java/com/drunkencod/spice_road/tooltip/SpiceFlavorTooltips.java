@@ -8,7 +8,7 @@ import net.minecraft.network.chat.MutableComponent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntPredicate;
-import java.util.function.ToIntFunction;
+import java.util.function.ToDoubleFunction;
 
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.FlavorAxis;
@@ -59,31 +59,40 @@ public class SpiceFlavorTooltips {
     public static final int BRACKET_COLOR = 0x777777;
 
     /**
-     * Measures the rendered width of a text. Defaults to its character count,
-     * which falls back to plain character padding.
+     * Fixed-point resolution of the layout math, in units per pixel. Fonts with
+     * fractional glyph advances would otherwise accumulate rounding errors per
+     * measured piece of text.
      */
-    private static ToIntFunction<FormattedText> textWidth = text -> text.getString().length();
+    private static final int UNITS_PER_PIXEL = 16;
+
+    /**
+     * Measures the exact rendered width of a text. Defaults to its character
+     * count, which falls back to plain character padding.
+     */
+    private static ToDoubleFunction<FormattedText> textWidth = text -> text.getString().length();
 
     private SpiceFlavorTooltips() {
     }
 
     /**
      * Sets the function used to measure rendered text widths, typically the
-     * client font's {@code width} method. Must be called from client init.
+     * client font's {@code getSplitter().stringWidth} method. Must be called
+     * from client init.
      *
-     * @param measurer Returns the rendered width of a text, in pixels
+     * @param measurer Returns the exact, unrounded rendered width of a text, in
+     *                 pixels
      */
-    public static void setTextWidthMeasurer(ToIntFunction<FormattedText> measurer) {
+    public static void setTextWidthMeasurer(ToDoubleFunction<FormattedText> measurer) {
         textWidth = measurer;
     }
 
     /**
      * @param text The text to measure.
-     * @return {@code text}'s rendered width in pixels, per the measurer set via
-     *         {@link #setTextWidthMeasurer}.
+     * @return {@code text}'s rendered width in whole pixels, rounded up, per the
+     *         measurer set via {@link #setTextWidthMeasurer}.
      */
     public static int measureWidth(FormattedText text) {
-        return width(text);
+        return (int) Math.ceil(textWidth.applyAsDouble(text));
     }
 
     /**
@@ -213,7 +222,7 @@ public class SpiceFlavorTooltips {
         List<Integer> rowWidths = new ArrayList<>();
         for (FlavorAxis axis : FlavorAxis.values())
             rowWidths.add(valueRowWidth(axis, profile.get(axis) >= 0D, profile.get(axis), bothLabels));
-        int minGap = Math.max(1, padder.space() - 1);
+        int minGap = Math.max(1, padder.space() - UNITS_PER_PIXEL);
         return padder.alignedWidth(rowWidths, px -> px >= minGap && padder.isPaddable(px));
     }
 
@@ -342,13 +351,19 @@ public class SpiceFlavorTooltips {
                 .withColor(axis.getColor(positive));
     }
 
+    /**
+     * @param text The text to measure.
+     * @return {@code text}'s rendered width, in {@link #UNITS_PER_PIXEL}ths of a
+     *         pixel
+     */
     private static int width(FormattedText text) {
-        return textWidth.applyAsInt(text);
+        return (int) Math.round(textWidth.applyAsDouble(text) * UNITS_PER_PIXEL);
     }
 
     /**
      * Builds invisible padding of exact pixel widths from regular and bold
-     * spaces, since bold glyphs are wider and give a second step size.
+     * spaces, since bold glyphs are wider and give a second step size. All
+     * widths are in {@link SpiceFlavorTooltips#UNITS_PER_PIXEL}ths of a pixel.
      *
      * @param space     Width of a regular space
      * @param boldSpace Width of a bold space
@@ -369,7 +384,8 @@ public class SpiceFlavorTooltips {
         int alignedWidth(List<Integer> widths, IntPredicate fits) {
             int max = widths.stream().mapToInt(Integer::intValue).max().orElse(0);
             // Any padding beyond this is always expressible as a sum of both step sizes
-            int limit = max + this.space * this.boldSpace;
+            int step = gcd(this.space, this.boldSpace);
+            int limit = step == 0 ? max : max + this.space / step * this.boldSpace;
             for (int candidate = max; candidate <= limit; candidate++) {
                 int target = candidate;
                 if (widths.stream().allMatch(w -> fits.test(target - w)))
@@ -414,11 +430,34 @@ public class SpiceFlavorTooltips {
         int boldSpaceCount(int px) {
             if (px < 0 || this.space <= 0 || this.boldSpace <= 0)
                 return -1;
-            for (int bold = 0; bold * this.boldSpace <= px; bold++) {
+            // The remainders repeat after at most `space` bold spaces
+            for (int bold = 0; bold < this.space && bold * this.boldSpace <= px; bold++) {
                 if ((px - bold * this.boldSpace) % this.space == 0)
                     return bold;
             }
             return -1;
+        }
+
+        /**
+         * @return How many bold spaces leave the least padding unfilled when
+         *         completed with regular spaces, preferring fewer on a tie
+         */
+        private int closestBoldSpaceCount(int px) {
+            int best = 0;
+            int bestRest = Integer.MAX_VALUE;
+            for (int bold = 0; bold < this.space && bold * this.boldSpace <= px; bold++) {
+                int rest = (px - bold * this.boldSpace) % this.space;
+                if (rest < bestRest) {
+                    best = bold;
+                    bestRest = rest;
+                }
+            }
+            return best;
+        }
+
+        /** @return The greatest common divisor of {@code a} and {@code b}. */
+        private static int gcd(int a, int b) {
+            return b == 0 ? a : gcd(b, a % b);
         }
 
         /**
@@ -428,7 +467,8 @@ public class SpiceFlavorTooltips {
         Component build(int px) {
             if (px <= 0 || this.space <= 0)
                 return Component.empty();
-            int bold = Math.max(this.boldSpaceCount(px), 0);
+            int exactBold = this.boldSpaceCount(px);
+            int bold = exactBold >= 0 ? exactBold : this.boldSpace > 0 ? this.closestBoldSpaceCount(px) : 0;
             int regular = (px - bold * this.boldSpace) / this.space;
             return Component.empty()
                     .append(" ".repeat(regular))

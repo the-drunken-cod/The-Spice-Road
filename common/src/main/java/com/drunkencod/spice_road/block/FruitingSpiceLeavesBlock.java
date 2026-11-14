@@ -1,7 +1,5 @@
 package com.drunkencod.spice_road.block;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -9,16 +7,12 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LeavesBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -28,7 +22,6 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.platform.Services;
-import com.drunkencod.spice_road.spice.HarvestAction;
 import com.drunkencod.spice_road.spice.Spice;
 import com.drunkencod.spice_road.stats.ModStats;
 import com.drunkencod.spice_road.spice.region.SeededHash;
@@ -143,50 +136,15 @@ public class FruitingSpiceLeavesBlock extends LeavesBlock {
 
     // #region harvest
 
-    /**
-     * Spices with a Harvest Tool Requirement (which {@link HarvestAction#SHEAR}
-     * always implies) are harvested with an item from their harvest tool tag,
-     * which takes durability damage.
-     */
-    @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
-            Player player, InteractionHand hand, BlockHitResult hitResult) {
-        Spice spice = tree.getSpice();
-        if (!isRipe(state) || !spice.requiresHarvestTool() || !SpiceHarvesting.isHarvestTool(spice, stack)
-                || !SpiceHarvesting.mayHarvest(spice, player))
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-
-        harvest(state, level, pos, player, hitResult.getDirection(), SoundEvents.GROWING_PLANT_CROP);
-        if (!level.isClientSide())
-            stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
-        return ItemInteractionResult.sidedSuccess(level.isClientSide());
-    }
-
-    /** Spices without a Harvest Tool Requirement are picked by hand. */
+    /** Ripe leaves are picked by right-clicking, with or without an item in hand. */
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
             BlockHitResult hitResult) {
-        if (!isRipe(state) || tree.getSpice().requiresHarvestTool()
-                || !SpiceHarvesting.mayHarvest(tree.getSpice(), player))
+        if (!isRipe(state) || !SpiceHarvesting.mayHarvest(tree.getSpice(), player))
             return InteractionResult.PASS;
 
         harvest(state, level, pos, player, hitResult.getDirection(), SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES);
         return InteractionResult.sidedSuccess(level.isClientSide());
-    }
-
-    /**
-     * Charges the harvest tool ripe leaves were broken with, so that breaking
-     * them is equivalent to harvesting them by interaction - see
-     * {@link SpiceHarvesting#hurtHarvestTool} and
-     * {@code SpiceBreakHarvest}.
-     */
-    @Override
-    public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state,
-            @Nullable BlockEntity blockEntity, ItemStack tool) {
-        super.playerDestroy(level, player, pos, state, blockEntity, tool);
-
-        if (isRipe(state))
-            SpiceHarvesting.hurtHarvestTool(tree.getSpice(), level, player, tool);
     }
 
     /**

@@ -3,8 +3,6 @@ package com.drunkencod.spice_road.block;
 import java.util.List;
 import java.util.function.Supplier;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -12,10 +10,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -25,7 +20,6 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.VineBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -182,46 +176,15 @@ public class SpiceVineBlock extends VineBlock implements BonemealableBlock {
 
     // #region harvest
 
-    /**
-     * Spices with a Harvest Tool Requirement are harvested with an item from
-     * their harvest tool tag, which takes durability damage.
-     */
-    @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
-            Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if (!isRipe(state) || !spice.requiresHarvestTool() || !SpiceHarvesting.isHarvestTool(spice, stack)
-                || !SpiceHarvesting.mayHarvest(spice, player))
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-
-        harvest(state, level, pos, player, hitResult, SoundEvents.GROWING_PLANT_CROP);
-        if (!level.isClientSide())
-            stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
-        return ItemInteractionResult.sidedSuccess(level.isClientSide());
-    }
-
-    /** Spices without a Harvest Tool Requirement are picked by hand. */
+    /** Ripe segments are picked by right-clicking, with or without an item in hand. */
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
             BlockHitResult hitResult) {
-        if (!isRipe(state) || spice.requiresHarvestTool() || !SpiceHarvesting.mayHarvest(spice, player))
+        if (!isRipe(state) || !SpiceHarvesting.mayHarvest(spice, player))
             return InteractionResult.PASS;
 
         harvest(state, level, pos, player, hitResult, SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES);
         return InteractionResult.sidedSuccess(level.isClientSide());
-    }
-
-    /**
-     * Charges the harvest tool a ripe segment was broken with, so that breaking
-     * it is equivalent to harvesting it by interaction - see
-     * {@link SpiceHarvesting#hurtHarvestTool} and {@code SpiceBreakHarvest}.
-     */
-    @Override
-    public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state,
-            @Nullable BlockEntity blockEntity, ItemStack tool) {
-        super.playerDestroy(level, player, pos, state, blockEntity, tool);
-
-        if (isRipe(state))
-            SpiceHarvesting.hurtHarvestTool(spice, level, player, tool);
     }
 
     /** Drops the Spice from the clicked face and resets the segment to stage {@code 0}. */

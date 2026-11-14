@@ -46,12 +46,9 @@ public final class SpiceTreeLootTables {
 
     /**
      * Adds a pool to {@code leavesDrops} that drops the tree's Spice when ripe
-     * {@link FruitingSpiceLeavesBlock} leaves are broken, as far as
-     * {@link SpiceBreakHarvest} allows. Plain (non-fruiting) leaves are
-     * returned unchanged.
-     * <p>
-     * Note that leaves of a Spice with a Harvest Tool Requirement therefore
-     * stop yielding it when they decay, since decay involves no tool.
+     * {@link FruitingSpiceLeavesBlock} leaves are broken or decay, unless the
+     * Spice has a Hand-Pick Requirement, in which case it can only be picked.
+     * Plain (non-fruiting) leaves are returned unchanged.
      * <p>
      * The count is scaled live by the tree harvest yield multiplier and
      * Harvest Luck, see {@link HarvestYieldFunction}.
@@ -65,7 +62,7 @@ public final class SpiceTreeLootTables {
     public static LootTable.Builder withRipeLeavesHarvest(SpiceTree tree, LootTable.Builder leavesDrops) {
         LeavesBlock leaves = tree.getLeaves().get();
         Spice spice = tree.getSpice();
-        if (!(leaves instanceof FruitingSpiceLeavesBlock) || !SpiceBreakHarvest.canYieldSpice(spice))
+        if (!(leaves instanceof FruitingSpiceLeavesBlock) || spice.requiresHandPick())
             return leavesDrops;
 
         LootPool.Builder productPool = LootPool.lootPool()
@@ -77,6 +74,6 @@ public final class SpiceTreeLootTables {
                         .apply(HarvestYieldFunction.harvestYield(spice.getDropAmount(),
                                 HarvestYieldFunction.Source.TREE)));
 
-        return leavesDrops.withPool(SpiceBreakHarvest.gate(spice, productPool));
+        return leavesDrops.withPool(productPool);
     }
 }

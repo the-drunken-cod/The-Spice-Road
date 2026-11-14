@@ -5,7 +5,6 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
-import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.SpicePlantBlock;
 import com.drunkencod.spice_road.block.SpicePlants;
 import com.drunkencod.spice_road.block.SpiceTrees;
@@ -77,7 +76,7 @@ public class NeoForgeSpiceLootProvider extends LootTableProvider {
             this.add(block, SpicePlantLootTables.create(
                     block,
                     block.getAgeProperty(),
-                    Constants.SPICE_PLANT_GROWTH_STAGES,
+                    block.getMaxAge(),
                     plant.seedItem().get(),
                     plant.productItem().get(),
                     spice));

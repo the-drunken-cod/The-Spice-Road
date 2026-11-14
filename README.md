@@ -90,7 +90,7 @@ For an extensive in-game guide book, also install the mod [Patchouli.](https://m
 - [AppleSkin](https://modrinth.com/mod/appleskin):
     - Saturation boost correctly shows up in the tooltip (but not in the hunger bar above the hotbar until consumed).
 - [Create](https://modrinth.com/mod/create):
-  - Spices can be harvested via Mechanical Harvesters and Deployers, unless they require hand-picking (like Vanilla and Saffron).
+  - Spices can be harvested via Mechanical Harvesters and Deployers, unless they require hand-picking (all epic spices, like Vanilla and Saffron).
 - [Sable](https://modrinth.com/mod/sable) / [Create Aeronautics](https://modrinth.com/mod/create-aeronautics):
   - Sublevels sample the spice region from the correct overworld coordinates, meaning crops on mobile bases correctly react to the current spice region.
   - Accurately scaled block weights.

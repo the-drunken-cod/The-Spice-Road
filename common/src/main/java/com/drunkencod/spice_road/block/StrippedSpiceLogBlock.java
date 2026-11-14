@@ -49,7 +49,8 @@ public class StrippedSpiceLogBlock extends RotatedPillarBlock {
 
     /**
      * Drops the tree's Spice when this block replaces its unstripped log,
-     * unless a creative-mode player stripped it. The Spice pops out of the
+     * unless a creative-mode player stripped it, or the Spice has a Hand-Pick
+     * Requirement and no connected player did. The Spice pops out of the
      * clicked face if the strip came from an item use (axe, Create Deployer,
      * etc.), otherwise out of a random open face.
      */
@@ -68,6 +69,9 @@ public class StrippedSpiceLogBlock extends RotatedPillarBlock {
 
         Player user = use != null ? use.getPlayer() : null;
         if (user != null && user.isCreative())
+            return;
+
+        if (tree.getSpice().requiresHandPick() && !SpiceHarvesting.isConnectedPlayer(user))
             return;
 
         ItemStack bark = tree.rollHarvest(level.getRandom(), user);

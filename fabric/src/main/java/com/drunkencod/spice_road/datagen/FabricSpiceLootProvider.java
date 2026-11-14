@@ -2,7 +2,6 @@ package com.drunkencod.spice_road.datagen;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.block.SpicePlantBlock;
 import com.drunkencod.spice_road.block.SpicePlants;
 import com.drunkencod.spice_road.block.SpiceTrees;
@@ -58,7 +57,7 @@ public class FabricSpiceLootProvider extends FabricBlockLootTableProvider {
         this.add(block, SpicePlantLootTables.create(
                 block,
                 block.getAgeProperty(),
-                Constants.SPICE_PLANT_GROWTH_STAGES,
+                block.getMaxAge(),
                 plant.seedItem().get(),
                 plant.productItem().get(),
                 spice));

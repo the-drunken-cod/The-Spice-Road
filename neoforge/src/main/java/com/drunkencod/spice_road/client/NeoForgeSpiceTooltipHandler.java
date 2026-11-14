@@ -21,7 +21,7 @@ public final class NeoForgeSpiceTooltipHandler {
 
     /** Registers the tooltip listener. Must be called once during client setup. */
     public static void register() {
-        SpiceFlavorTooltips.setTextWidthMeasurer(text -> Minecraft.getInstance().font.width(text));
+        SpiceFlavorTooltips.setTextWidthMeasurer(text -> Minecraft.getInstance().font.getSplitter().stringWidth(text));
         NeoForge.EVENT_BUS.addListener(NeoForgeSpiceTooltipHandler::onItemTooltip);
     }
 

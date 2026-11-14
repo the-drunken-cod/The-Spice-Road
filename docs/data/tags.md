@@ -11,8 +11,7 @@ The following datapack taglists are created and managed by The Spice Road and ma
 | `spice_road:spices/processed` | Contains all processed spices, like dried ones. |
 | `spice_road:retains_flavor` | Any item with this tag is a "flavor carrier", meaning that it can have an accumulated spice profile without being a food item itself (for example includes storage blocks like dried kelp). |
 | `spice_road:unseasonable` | Any item with this tag cannot be seasoned. Includes things like suspicious stew by default, as it uses a funky custom crafting recipe type. |
-| `spice_road:cutting_tools` | Any item that can be used on spice crops or leaves that require a cutting tool. Contains shears, swords and modded knives by default. |
-| `spice_road:picking_tools` | Any item that can be used to pick spices that require a tool, like vanilla and saffron. Contains `#spice_road:cutting_tools` by default. |
+| `spice_road:cutting_tools` | Any item that can cut a ripe spice crop without destroying it when right-clicked on it, at the cost of one durability point. Hand-pick spices (the epic tier) can't be cut, only picked. No harvest requires one. Contains shears, swords and modded knives by default. |
 | `spice_road:spice_plant_seeds` | Contains all spice crop seed items. |
 | `spice_road:spice_tree_leaves` | Contains all spice tree leaves block items. |
 | `spice_road:spice_tree_logs` | Contains all spice tree log block items. |

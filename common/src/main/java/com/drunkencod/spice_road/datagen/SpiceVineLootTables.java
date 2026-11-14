@@ -25,10 +25,10 @@ public final class SpiceVineLootTables {
 
     /**
      * Adds a pool to {@code shearsDrops} that drops the vine's Spice when a
-     * ripe segment is broken, as far as {@link SpiceBreakHarvest} allows. This
-     * pool is independent of the base shears drop of the vine block itself, so
-     * breaking a ripe segment with a harvest tool that isn't shears yields the
-     * Spice but no replantable vine.
+     * ripe segment is broken, unless the Spice has a Hand-Pick Requirement, in
+     * which case it can only be picked. This pool is independent of the base
+     * shears drop of the vine block itself, so breaking a ripe segment with
+     * anything but shears yields the Spice but no replantable vine.
      * <p>
      * The count is scaled live by the plant harvest yield multiplier and
      * Harvest Luck, see {@link HarvestYieldFunction}.
@@ -42,7 +42,7 @@ public final class SpiceVineLootTables {
     public static LootTable.Builder withRipeVineHarvest(SpiceVines.RegisteredSpiceVine vine,
             LootTable.Builder shearsDrops) {
         Spice spice = vine.spice();
-        if (!SpiceBreakHarvest.canYieldSpice(spice))
+        if (spice.requiresHandPick())
             return shearsDrops;
 
         LootPool.Builder productPool = LootPool.lootPool()
@@ -54,6 +54,6 @@ public final class SpiceVineLootTables {
                         .apply(HarvestYieldFunction.harvestYield(spice.getDropAmount(),
                                 HarvestYieldFunction.Source.PLANT)));
 
-        return shearsDrops.withPool(SpiceBreakHarvest.gate(spice, productPool));
+        return shearsDrops.withPool(productPool);
     }
 }

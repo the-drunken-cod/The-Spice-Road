@@ -17,8 +17,9 @@ import com.drunkencod.spice_road.spice.Spice;
 import com.drunkencod.spice_road.spice.Tier;
 
 /**
- * Shared loot table shape for every {@code FLOWER_PATCH}/{@code CROP}/
- * {@code RHIZOME} Spice Plant block. Datagenned per {@link com.drunkencod.spice_road.spice.Spice}
+ * Shared loot table shape for every {@code BUSH}/{@code FLOWER_PATCH}/
+ * {@code CROP}/{@code RHIZOME} Spice Plant block. Datagenned per
+ * {@link com.drunkencod.spice_road.spice.Spice}
  * enum member by the per-loader loot providers
  * ({@code NeoForgeSpiceLootProvider} / {@code FabricSpiceLootProvider}).
  */
@@ -32,17 +33,17 @@ public final class SpicePlantLootTables {
          * drops its seed item. A mature one drops it only with the
          * {@link Tier#getSeedDropChance() seed drop chance} of the Spice's
          * tier when the break also yields the Spice, and always when it
-         * doesn't (e.g. broken without the required harvest tool, or where
-         * the Spice Region doesn't support the Spice), so such a
-         * break never leaves the player empty-handed. The raw Spice product
-         * additionally drops at {@code maxAge} where the Spice Region
-         * supports it, as far as {@link SpiceBreakHarvest} allows the Spice
-         * to be obtained by breaking at all.
+         * doesn't (e.g. where the Spice Region doesn't support the Spice, or
+         * for a Hand-Pick Spice), so such a break never leaves the player
+         * empty-handed. The raw Spice product additionally drops at
+         * {@code maxAge} where the Spice Region supports it, unless the Spice
+         * has a Hand-Pick Requirement and can only be obtained by picking it.
          *
          * @param block        The Spice Plant block this loot table is for.
          * @param ageProperty  The block's growth-stage property (its
          *                     {@link net.minecraft.world.level.block.CropBlock#getAgeProperty()}).
-         * @param maxAge       The block's configured final growth stage (its
+         * @param maxAge       The block's configured final growth stage, which
+         *                     differs between Source Types (its
          *                     {@link net.minecraft.world.level.block.CropBlock#getMaxAge()}).
          * @param seedItem     Seed item, dropped always before {@code maxAge}
          *                     and at it, by chance only if the break also
@@ -70,32 +71,26 @@ public final class SpicePlantLootTables {
                                 .when(isMature.invert())
                                 .add(LootItem.lootTableItem(seedItem));
                 LootTable.Builder table = LootTable.lootTable().withPool(immatureSeedPool);
-                if (SpiceBreakHarvest.canYieldSpice(spice)) {
-                        table.withPool(SpiceBreakHarvest.gate(spice, LootPool.lootPool()
+                if (spice.requiresHandPick())
+                        return table.withPool(LootPool.lootPool()
                                         .setRolls(ConstantValue.exactly(1.0F))
                                         .when(isMature)
-                                        .when(SpiceRegionSupportedCondition.spiceRegionSupported())
-                                        .when(HarvestSeedChanceCondition
-                                                        .harvestSeedChance(spice.getTier().getSeedDropChance()))
-                                        .add(LootItem.lootTableItem(seedItem))));
-                        table.withPool(SpiceBreakHarvest.gate(spice, LootPool.lootPool()
-                                        .setRolls(ConstantValue.exactly(1.0F))
-                                        .when(isMature)
-                                        .when(SpiceRegionSupportedCondition.spiceRegionSupported().invert())
-                                        .add(LootItem.lootTableItem(seedItem))));
-                }
+                                        .add(LootItem.lootTableItem(seedItem)));
 
-                if (!SpiceBreakHarvest.yieldsUnconditionally(spice))
-                        table.withPool(SpiceBreakHarvest.gateNot(spice, LootPool.lootPool()
-                                        .setRolls(ConstantValue.exactly(1.0F))
-                                        .when(isMature)
-                                        .add(LootItem.lootTableItem(seedItem))));
-
-                if (!SpiceBreakHarvest.canYieldSpice(spice))
-                        return table;
-
-                return table.withPool(SpiceBreakHarvest.gate(spice,
-                                matureHarvestPool(block, ageProperty, maxAge, productItem, spice.getDropAmount())));
+                return table
+                                .withPool(LootPool.lootPool()
+                                                .setRolls(ConstantValue.exactly(1.0F))
+                                                .when(isMature)
+                                                .when(SpiceRegionSupportedCondition.spiceRegionSupported())
+                                                .when(HarvestSeedChanceCondition
+                                                                .harvestSeedChance(spice.getTier().getSeedDropChance()))
+                                                .add(LootItem.lootTableItem(seedItem)))
+                                .withPool(LootPool.lootPool()
+                                                .setRolls(ConstantValue.exactly(1.0F))
+                                                .when(isMature)
+                                                .when(SpiceRegionSupportedCondition.spiceRegionSupported().invert())
+                                                .add(LootItem.lootTableItem(seedItem)))
+                                .withPool(matureHarvestPool(isMature, productItem, spice.getDropAmount()));
         }
 
         /**
@@ -104,13 +99,11 @@ public final class SpicePlantLootTables {
          *         {@code baseAmount} by the harvest yield multiplier and Harvest
          *         Luck.
          */
-        private static LootPool.Builder matureHarvestPool(Block block, IntegerProperty ageProperty, int maxAge,
+        private static LootPool.Builder matureHarvestPool(LootItemBlockStatePropertyCondition.Builder isMature,
                         ItemLike item, int baseAmount) {
                 return LootPool.lootPool()
                                 .setRolls(ConstantValue.exactly(1.0F))
-                                .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
-                                                .setProperties(StatePropertiesPredicate.Builder.properties()
-                                                                .hasProperty(ageProperty, maxAge)))
+                                .when(isMature)
                                 .when(SpiceRegionSupportedCondition.spiceRegionSupported())
                                 .add(LootItem.lootTableItem(item)
                                                 .apply(HarvestYieldFunction.harvestYield(baseAmount,

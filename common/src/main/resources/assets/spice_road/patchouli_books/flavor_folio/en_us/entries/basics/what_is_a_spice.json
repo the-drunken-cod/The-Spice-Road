@@ -23,7 +23,7 @@
         {
             "type": "patchouli:text",
             "title": "Agriculture",
-            "text": "Once found, hardy plants can be grown anywhere, while the others will need to be grown where they were found. Some of the highest tier spices like $(l:spices/epic/saffron)Saffron$() and $(l:spices/epic/vanilla)Vanilla$() prevent any automation from harvesting them, instead requiring a player to hand-pick them."
+            "text": "Once found, hardy plants can be grown anywhere, while the others will need to be grown where they were found. The highest tier spices, like $(l:spices/epic/saffron)Saffron$() and $(l:spices/epic/vanilla)Vanilla$(), prevent any automation from harvesting them, instead requiring a player to hand-pick them."
         },
         {
             "type": "patchouli:relations",
