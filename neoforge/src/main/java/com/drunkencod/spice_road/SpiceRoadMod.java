@@ -40,7 +40,9 @@ import com.drunkencod.spice_road.loot.LootInjections;
 import com.drunkencod.spice_road.mix.MixPresetSync;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.ModBlockEntities;
+import com.drunkencod.spice_road.registry.ModItems;
 import com.drunkencod.spice_road.registry.ModVillagers;
+import com.drunkencod.spice_road.soil.SoilAnalyzerItem;
 import com.drunkencod.spice_road.registry.NeoForgeConditions;
 import com.drunkencod.spice_road.registry.NeoForgeCreativeTabHelper;
 import com.drunkencod.spice_road.registry.NeoForgeRegistryHelper;
@@ -70,11 +72,13 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
+import net.neoforged.neoforge.event.ModifyDefaultComponentsEvent;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
@@ -119,6 +123,7 @@ public class SpiceRoadMod {
         eventBus.addListener(this::onClientSetup);
         eventBus.addListener(SpiceRoadMod::onRegisterPayloadHandlers);
         eventBus.addListener(SpiceRoadMod::onRegisterCapabilities);
+        eventBus.addListener(SpiceRoadMod::onModifyDefaultComponents);
         NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onTagsUpdated);
         NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onServerAboutToStart);
         NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onServerStopped);
@@ -130,6 +135,19 @@ public class SpiceRoadMod {
         NeoForge.EVENT_BUS.addListener(SpiceRoadMod::onServerTick);
 
         SpiceRoad.init();
+    }
+
+    /**
+     * Gives the Soil Analyzer its configured durability, which has to wait for
+     * this event: the common config isn't loaded yet when items are
+     * registered. Fabric does the same through
+     * {@code DefaultItemComponentEvents.MODIFY}.
+     */
+    private static void onModifyDefaultComponents(ModifyDefaultComponentsEvent event) {
+        int durability = SoilAnalyzerItem.configuredDurability();
+        if (durability > 0)
+            event.modify(ModItems.SOIL_ANALYZER.get(),
+                    builder -> builder.set(DataComponents.MAX_DAMAGE, durability).set(DataComponents.DAMAGE, 0));
     }
 
     /** Fabric does the same through {@code ServerTickEvents.END_SERVER_TICK}. */

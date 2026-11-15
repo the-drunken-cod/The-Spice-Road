@@ -25,6 +25,10 @@ public final class ModCriteriaTriggers {
     public static final Supplier<SpiceMixCraftedTrigger> SPICE_MIX_CRAFTED = Services.REGISTRY
             .registerCriterionTrigger("spice_mix_crafted", SpiceMixCraftedTrigger::new);
 
+    /** {@code spice_road:soil_analyzed} - see {@link SoilAnalyzedTrigger}. */
+    public static final Supplier<SoilAnalyzedTrigger> SOIL_ANALYZED = Services.REGISTRY
+            .registerCriterionTrigger("soil_analyzed", SoilAnalyzedTrigger::new);
+
     /** {@code spice_road:all_spices_found} - see {@link AllSpicesFoundTrigger}. */
     public static final Supplier<AllSpicesFoundTrigger> ALL_SPICES_FOUND = Services.REGISTRY
             .registerCriterionTrigger("all_spices_found", AllSpicesFoundTrigger::new);

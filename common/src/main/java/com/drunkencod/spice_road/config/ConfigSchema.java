@@ -107,6 +107,15 @@ public final class ConfigSchema {
     public static final ConfigSection STATS = ConfigSection.root(ConfigFile.SERVER, "stats");
     /** The mod's commands. */
     public static final ConfigSection COMMANDS = ConfigSection.root(ConfigFile.SERVER, "commands");
+    /** How the Soil Analyzer takes and reports Soil Samples. */
+    public static final ConfigSection SOIL_ANALYZER = ConfigSection.root(ConfigFile.SERVER, "soilAnalyzer");
+    /**
+     * Whether the Soil Analyzer exists and how durable it is. Read when
+     * datapacks load and when item components are set up, so it lives in the
+     * common file.
+     */
+    public static final ConfigSection SOIL_ANALYZER_ITEM = ConfigSection.root(ConfigFile.COMMON,
+            "soilAnalyzerItem");
     /** Behavior around other mods' placeable food items. */
     public static final ConfigSection COMPAT = ConfigSection.root(ConfigFile.SERVER, "compat");
     /** Which optional mods get recipes loaded. */
@@ -528,6 +537,40 @@ public final class ConfigSchema {
      */
     public static final ConfigOption<Integer> COMMANDS_SAMPLE_TIME_BUDGET_MS = add(
             ConfigOption.ofInt(COMMANDS, "sampleTimeBudgetMs", 5000, 100, 30_000));
+
+    // #region Soil Analyzer
+
+    /** Seconds a player holds the Soil Analyzer on a block to take one sample. */
+    public static final ConfigOption<Double> SOIL_ANALYZER_SAMPLE_SECONDS = add(
+            ConfigOption.ofDouble(SOIL_ANALYZER, "sampleSeconds", 5.0, 0.5, 120.0));
+
+    /** How many Soil Samples complete an analysis. */
+    public static final ConfigOption<Integer> SOIL_ANALYZER_SAMPLES_REQUIRED = add(
+            ConfigOption.ofInt(SOIL_ANALYZER, "samplesRequired", 3, 1, 8));
+
+    /** Blocks every new Soil Sample must keep from the earlier ones. */
+    public static final ConfigOption<Integer> SOIL_ANALYZER_MIN_SAMPLE_DISTANCE = add(
+            ConfigOption.ofInt(SOIL_ANALYZER, "minSampleDistance", 4, 0, 256));
+
+    /** Blocks all Soil Samples of one analysis must stay within of the first. */
+    public static final ConfigOption<Integer> SOIL_ANALYZER_MAX_SAMPLE_SPAN = add(
+            ConfigOption.ofInt(SOIL_ANALYZER, "maxSampleSpan", 64, 1, 1024));
+
+    /**
+     * Index of the highest {@link Tier} the Soil Analyzer can identify, in
+     * ordinal order (0 common, 1 uncommon, 2 rare, 3 epic).
+     */
+    public static final ConfigOption<Integer> SOIL_ANALYZER_MAX_IDENTIFIABLE_TIER = add(
+            ConfigOption.ofInt(SOIL_ANALYZER, "maxIdentifiableTier", Tier.EPIC.ordinal(), 0, Tier.EPIC.ordinal()));
+
+    /** Whether the Soil Analyzer works and its recipe loads. */
+    public static final ConfigOption<Boolean> SOIL_ANALYZER_ENABLED = add(
+            ConfigOption.ofBoolean(SOIL_ANALYZER_ITEM, "enabled", true));
+
+    /** Soil Samples one Soil Analyzer survives; {@code 0} makes it unbreakable. */
+    public static final ConfigOption<Integer> SOIL_ANALYZER_DURABILITY = add(
+            ConfigOption.ofInt(SOIL_ANALYZER_ITEM, "durability", 95, 0, 4096)
+                    .restart(ConfigOption.Restart.GAME));
 
     // #region Compat
 

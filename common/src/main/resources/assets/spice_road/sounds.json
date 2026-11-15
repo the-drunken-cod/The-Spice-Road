@@ -25,5 +25,14 @@
             }
         ],
         "subtitle": "subtitles.spice_road.spice_rack.add_item"
+    },
+    "item.soil_analyzer.finish_sampling": {
+        "sounds": [
+            {
+                "name": "minecraft:block.amethyst_block.resonate",
+                "type": "event"
+            }
+        ],
+        "subtitle": "subtitles.spice_road.soil_analyzer.finish_sampling"
     }
 }

@@ -50,6 +50,7 @@ public class SpiceRoad {
         ModMobEffects.register();
         ModMenus.register();
         ModItems.registerGrinder();
+        ModItems.registerSoilAnalyzer();
         ModItems.registerSpiceMixes();
         ModBlocks.register();
         ModBlockEntities.register();

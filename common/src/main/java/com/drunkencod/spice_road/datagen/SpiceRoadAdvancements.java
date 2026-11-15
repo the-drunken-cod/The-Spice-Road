@@ -21,6 +21,7 @@ import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.advancement.AllSpicesFoundTrigger;
 import com.drunkencod.spice_road.advancement.FoodEatenTrigger;
 import com.drunkencod.spice_road.advancement.ItemDriedTrigger;
+import com.drunkencod.spice_road.advancement.SoilAnalyzedTrigger;
 import com.drunkencod.spice_road.advancement.SpiceMixCraftedTrigger;
 import com.drunkencod.spice_road.advancement.SpiceRackFilledTrigger;
 import com.drunkencod.spice_road.rack.SpiceRackWood;
@@ -32,7 +33,7 @@ import com.drunkencod.spice_road.spice.Spice;
  * Datagens the {@code spice_road} advancement tab: a hidden, auto-granted
  * root (own tab, so future advancements don't crowd a vanilla one) plus
  * Everything Bagel, Hang Out to Dry, Pie Purist (a child of Hang Out to Dry),
- * Nice Rack and Mix-and-Match. Plain vanilla {@code AdvancementProvider}, so
+ * Nice Rack, Mix-and-Match and Soil Science. Plain vanilla {@code AdvancementProvider}, so
  * this runs unchanged on both loaders.
  */
 public class SpiceRoadAdvancements implements AdvancementSubProvider {
@@ -112,6 +113,17 @@ public class SpiceRoadAdvancements implements AdvancementSubProvider {
                         SpiceMixCraftedTrigger.TriggerInstance.spiceMixCrafted(Optional.empty()))
                 .build(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "mix_and_match"));
         saver.accept(mixAndMatch);
+
+        AdvancementHolder soilScience = Advancement.Builder.advancement()
+                .parent(root)
+                .rewards(AdvancementRewards.Builder.experience(50))
+                .display(ModItems.SOIL_ANALYZER.get(),
+                        Component.translatable("advancements.spice_road.soil_science.title"),
+                        Component.translatable("advancements.spice_road.soil_science.description"),
+                        null, AdvancementType.TASK, true, true, false)
+                .addCriterion("soil_analyzed", SoilAnalyzedTrigger.TriggerInstance.soilAnalyzed())
+                .build(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "soil_science"));
+        saver.accept(soilScience);
 
         AdvancementHolder pumpkinPurist = Advancement.Builder.advancement()
                 .parent(spiceGrinder)

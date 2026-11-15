@@ -276,6 +276,32 @@
     - [x] Expand hand-picking requirement to all epic tier plants.
         - Derived from `Tier.EPIC` instead of a per-Spice flag.
 - [x] Add spice seeds and leaves to compostables.
+- [x] Soil Analyzer item:
+    - Hold right-click on a `#minecraft:dirt` block to take a Soil Sample. Takes a few seconds per block (configurable, default 10); releasing early or looking away cancels without consuming.
+        - The block is removed as if the player broke it (protection mods can veto), drops nothing, and the click is refused up front (nothing consumed) if the block above would pop off (plants etc.).
+        - While a block is being consumed, show a progress bar above the toolbar like "[████::::] Analyzing (50%)"
+        - After a block is consumed, show a message above the toolbar like "Collected 1/3 soil samples"
+    - Sample set lives in a data component on the item (dimension + up to 3 positions, stored as resolved overworld coordinates so Sable sublevels work) until completed. Sneak + right-click on air or a non-dirt block clears it with a message.
+        - Each new sample must be >= N blocks (configurable, default 8) from every earlier sample, and all samples must stay within M blocks (configurable, default 64) of the first. Violations (or a sample in another dimension) are refused with a message, consuming nothing.
+    - After 3 samples (configurable), the analysis is the Spice resolved at the centroid X/Z of the samples with the local climate (biome from the surface there), not the Heart Spice.
+    - Chat message by outcome:
+        - Found Spice: `${tier_color}[Wasabi]${reset}` (no suffix); hovering the name shows the flavor tooltip.
+        - Unfound Spice: "Unknown spice" only (no tier, no hint).
+        - Spiceless Region, no Climate, or a dimension without a Spice Dimension: separate "No spice grows here" message.
+    - Config `soilAnalyzer.maxIdentifiableTier` (int 0-3 as the `Tier` ordinal, default 3 = EPIC = off, as there is no enum config type): Spices of a higher Tier always read "Unknown spice", even if found.
+    - Creative: one sample is enough and it is instant (no hold time); the spacing and span rules still apply against any existing samples. The Spice is always named, even if not found or above the max identifiable Tier. No block is removed and no durability is drained.
+    - Config toggle `soilAnalyzerItem.enabled` in the `common` config (recipe via the `spice_road:feature_enabled` load condition, applies on `/reload`; using the item does nothing when off).
+    - Configurable durability `soilAnalyzerItem.durability` in the `common` config (0 = unbreakable, default 0), applied as default components (`ModifyDefaultComponentsEvent` / `DefaultItemComponentEvents.MODIFY`) since the common config isn't loaded at item registration on NeoForge (restart required, noted on the option). Each consumed block drains 1 durability. The common config isn't synced, so a dedicated server's client needs the same value to show the durability bar.
+    - Stat `soil_samples_taken` (every sample taken, creative included) and the Soil Science advancement (`spice_road:soil_analyzed` trigger, fires for any non-empty region, found or not).
+    - Recipe:  
+      "GBG"  
+      "CMC"  
+      " R "  
+      G: Gold Ingot  
+      B: Brewing Stand  
+      C: Copper Ingot  
+      M: Comparator  
+      R: Lightning Rod
 
 ### Down the line
 - [ ] Custom Sounds

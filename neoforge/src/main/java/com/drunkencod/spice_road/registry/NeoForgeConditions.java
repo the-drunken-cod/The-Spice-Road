@@ -10,6 +10,8 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.compat.CompatRecipeMod;
 import com.drunkencod.spice_road.compat.NeoForgeCompatRecipesCondition;
+import com.drunkencod.spice_road.config.ModFeature;
+import com.drunkencod.spice_road.config.NeoForgeFeatureCondition;
 
 /**
  * Registers the mod's NeoForge load conditions. Fabric registers its own in
@@ -22,6 +24,7 @@ public final class NeoForgeConditions {
 
     static {
         CONDITIONS.register(CompatRecipeMod.CONDITION_ID, () -> NeoForgeCompatRecipesCondition.CODEC);
+        CONDITIONS.register(ModFeature.CONDITION_ID, () -> NeoForgeFeatureCondition.CODEC);
     }
 
     private NeoForgeConditions() {

@@ -491,6 +491,41 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public double getSoilAnalyzerSampleSeconds() {
+        return value(ConfigSchema.SOIL_ANALYZER_SAMPLE_SECONDS, server().soilAnalyzer.sampleSeconds);
+    }
+
+    @Override
+    public int getSoilAnalyzerSamplesRequired() {
+        return value(ConfigSchema.SOIL_ANALYZER_SAMPLES_REQUIRED, server().soilAnalyzer.samplesRequired);
+    }
+
+    @Override
+    public int getSoilAnalyzerMinSampleDistance() {
+        return value(ConfigSchema.SOIL_ANALYZER_MIN_SAMPLE_DISTANCE, server().soilAnalyzer.minSampleDistance);
+    }
+
+    @Override
+    public int getSoilAnalyzerMaxSampleSpan() {
+        return value(ConfigSchema.SOIL_ANALYZER_MAX_SAMPLE_SPAN, server().soilAnalyzer.maxSampleSpan);
+    }
+
+    @Override
+    public int getSoilAnalyzerMaxIdentifiableTier() {
+        return value(ConfigSchema.SOIL_ANALYZER_MAX_IDENTIFIABLE_TIER, server().soilAnalyzer.maxIdentifiableTier);
+    }
+
+    @Override
+    public boolean isSoilAnalyzerEnabled() {
+        return common().soilAnalyzerItem.enabled;
+    }
+
+    @Override
+    public int getSoilAnalyzerDurability() {
+        return common().soilAnalyzerItem.durability;
+    }
+
+    @Override
     public int getSpiceMixCapacity() {
         return value(ConfigSchema.SPICE_MIX_CAPACITY, server().spiceMix.capacity);
     }
@@ -653,6 +688,8 @@ public class FabricConfigHelper implements IConfigHelper {
         public Stats stats = new Stats();
         @ConfigEntry.Gui.CollapsibleObject
         public Commands commands = new Commands();
+        @ConfigEntry.Gui.CollapsibleObject
+        public SoilAnalyzer soilAnalyzer = new SoilAnalyzer();
         @ConfigEntry.Gui.CollapsibleObject
         public Compat compat = new Compat();
 
@@ -883,6 +920,20 @@ public class FabricConfigHelper implements IConfigHelper {
             public int sampleTimeBudgetMs = ConfigSchema.COMMANDS_SAMPLE_TIME_BUDGET_MS.getDefault();
         }
 
+        /** How the Soil Analyzer takes and reports Soil Samples. */
+        public static class SoilAnalyzer {
+            @ConfigEntry.Gui.Tooltip
+            public double sampleSeconds = ConfigSchema.SOIL_ANALYZER_SAMPLE_SECONDS.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public int samplesRequired = ConfigSchema.SOIL_ANALYZER_SAMPLES_REQUIRED.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public int minSampleDistance = ConfigSchema.SOIL_ANALYZER_MIN_SAMPLE_DISTANCE.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public int maxSampleSpan = ConfigSchema.SOIL_ANALYZER_MAX_SAMPLE_SPAN.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public int maxIdentifiableTier = ConfigSchema.SOIL_ANALYZER_MAX_IDENTIFIABLE_TIER.getDefault();
+        }
+
         /** Behavior around other mods' placeable food items. */
         public static class Compat {
             @ConfigEntry.Gui.Tooltip
@@ -900,10 +951,21 @@ public class FabricConfigHelper implements IConfigHelper {
         public CompatRecipes compatRecipes = new CompatRecipes();
         @ConfigEntry.Gui.CollapsibleObject
         public WanderingTraderPool wanderingTraderPool = new WanderingTraderPool();
+        @ConfigEntry.Gui.CollapsibleObject
+        public SoilAnalyzerItem soilAnalyzerItem = new SoilAnalyzerItem();
 
         @Override
         public void validatePostLoad() {
             clampToSchema(this, ConfigFile.COMMON);
+        }
+
+        /** Whether the Soil Analyzer exists and how durable it is. */
+        public static class SoilAnalyzerItem {
+            @ConfigEntry.Gui.Tooltip
+            public boolean enabled = ConfigSchema.SOIL_ANALYZER_ENABLED.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            @ConfigEntry.Gui.RequiresRestart
+            public int durability = ConfigSchema.SOIL_ANALYZER_DURABILITY.getDefault();
         }
 
         /** How many entries the wandering trader's Spice offers add to its offer pool. */

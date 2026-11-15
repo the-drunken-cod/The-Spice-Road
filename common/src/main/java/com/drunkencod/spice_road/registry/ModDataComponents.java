@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import com.drunkencod.spice_road.grinder.SeasoningSession;
 import com.drunkencod.spice_road.mix.SpiceMix;
 import com.drunkencod.spice_road.platform.Services;
+import com.drunkencod.spice_road.soil.SoilSamples;
 import com.drunkencod.spice_road.spice.Seasoning;
 
 /**
@@ -52,6 +53,18 @@ public final class ModDataComponents {
                     () -> DataComponentType.<SpiceMix>builder()
                             .persistent(SpiceMix.CODEC)
                             .networkSynchronized(SpiceMix.STREAM_CODEC)
+                            .build());
+
+    /**
+     * The Soil Samples a Soil Analyzer holds so far - see {@link SoilSamples}.
+     * Persistent (saved to NBT) and network synchronized, so the client can run
+     * the same spacing checks as the server.
+     */
+    public static final Supplier<DataComponentType<SoilSamples>> SOIL_SAMPLES = Services.REGISTRY
+            .registerDataComponentType("soil_samples",
+                    () -> DataComponentType.<SoilSamples>builder()
+                            .persistent(SoilSamples.CODEC)
+                            .networkSynchronized(SoilSamples.STREAM_CODEC)
                             .build());
 
     private ModDataComponents() {

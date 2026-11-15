@@ -634,6 +634,52 @@ public interface IConfigHelper {
     int getCommandSampleTimeBudgetMs();
 
     /**
+     * @return Seconds a player holds the Soil Analyzer on a block to take one
+     *         Soil Sample.
+     */
+    double getSoilAnalyzerSampleSeconds();
+
+    /**
+     * @return How many Soil Samples complete an analysis.
+     */
+    int getSoilAnalyzerSamplesRequired();
+
+    /**
+     * @return Blocks every new Soil Sample must keep from the earlier ones.
+     */
+    int getSoilAnalyzerMinSampleDistance();
+
+    /**
+     * @return Blocks all Soil Samples of one analysis must stay within of the
+     *         first.
+     */
+    int getSoilAnalyzerMaxSampleSpan();
+
+    /**
+     * @return The ordinal of the highest Tier the Soil Analyzer can identify;
+     *         Spices above it always read as unknown.
+     */
+    int getSoilAnalyzerMaxIdentifiableTier();
+
+    /**
+     * Part of the common config, so it's readable before any world exists, but
+     * only consulted when datapacks load (the recipe) and while the item is
+     * used.
+     *
+     * @return Whether the Soil Analyzer works and its recipe loads.
+     */
+    boolean isSoilAnalyzerEnabled();
+
+    /**
+     * Part of the common config. Read once when item components are set up,
+     * so changing it needs a restart.
+     *
+     * @return Soil Samples one Soil Analyzer survives, or {@code 0} if it is
+     *         unbreakable.
+     */
+    int getSoilAnalyzerDurability();
+
+    /**
      * @return The most spices of all kinds one Spice Mix holds.
      */
     int getSpiceMixCapacity();

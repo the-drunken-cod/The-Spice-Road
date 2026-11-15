@@ -1,6 +1,7 @@
 # Asset BOM
 
-Assets that are placeholders or still missing, to be made by hand. Placeholders come from `pnpm create_placeholder_texture`.
+Assets that are placeholders or still missing, to be made by hand.  
+Placeholders come from the script in `tools/create_placeholder_texture/`.
 
 ## Flavor Folio
 
@@ -8,15 +9,6 @@ Assets that are placeholders or still missing, to be made by hand. Placeholders 
 | :-- | :-- | :-- | :-- |
 | `textures/item/flavor_folio.png` | 16x16 | Placeholder | The book item. |
 | `textures/gui/flavor_folio/book.png` | 512x256 | Placeholder | Custom book GUI. |
-| 
-
-## Spice Trader
-
-Everything else (profession, workstation, trades, village house pool entries, rack loot tables, lang strings) is in code or datagenned. Only these files are missing.
-
-| Path | Size | Status | Used for |
-| :-- | :-- | :-- | :-- |
-| A work sound | n/a | Optional | The villager uses vanilla's mason work sound. A custom one needs a sound event registered and passed to `ModVillagers` |
 
 ## Flavor Folio articles
 

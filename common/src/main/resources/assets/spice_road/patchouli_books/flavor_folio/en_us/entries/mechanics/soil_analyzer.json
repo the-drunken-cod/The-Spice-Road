@@ -1,0 +1,20 @@
+{
+    "name": "Soil Analyzer",
+    "icon": "spice_road:soil_analyzer",
+    "category": "spice_road:mechanics",
+    "sortnum": 3,
+    "pages": [
+        {
+            "type": "patchouli:spotlight",
+            "item": "spice_road:soil_analyzer",
+            "title": "Soil Analyzer",
+            "link_recipe": true,
+            "text": "This device dissolves soil samples in a chemical solution to determine which spice is fertile nearby. It'll usually require multiple samples of blocks tagged $(code)#minecraft:dirt$() that are spaced a few blocks apart to get an accurate average reading."
+        },
+        {
+            "type": "patchouli:crafting",
+            "recipe": "spice_road:crafting/soil_analyzer",
+            "text": "Chemistry on a Stick."
+        }
+    ]
+}

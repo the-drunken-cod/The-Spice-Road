@@ -23,6 +23,10 @@ public final class ModSounds {
     public static final Supplier<SoundEvent> SPICE_RACK_ADD_ITEM = Services.REGISTRY
             .registerSoundEvent("block.spice_rack.add_item");
 
+    /** The Soil Analyzer finishes taking a sample. */
+    public static final Supplier<SoundEvent> SOIL_ANALYZER_FINISH_SAMPLING = Services.REGISTRY
+            .registerSoundEvent("item.soil_analyzer.finish_sampling");
+
     private ModSounds() {
     }
 

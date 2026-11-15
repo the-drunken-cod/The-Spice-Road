@@ -2,7 +2,7 @@
     "name": "Spice Mixes",
     "icon": "spice_road:spice_mix",
     "category": "spice_road:mechanics",
-    "sortnum": 6,
+    "sortnum": 7,
     "pages": [
         {
             "type": "patchouli:spotlight",

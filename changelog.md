@@ -1,5 +1,19 @@
 # `0.1.0`
 
+## `0.1.0-alpha.8`
+
+- **Features:**
+    - Added the Soil Analyzer, which tells what spice grows in a spot. Hold right-click on a block of the `#minecraft:dirt` tag for a few seconds to take a Soil Sample, which removes the block and drops nothing. After 3 samples (each spread out from the others, but all within range of the first), it reports the Spice of the Spice Region at their center. Sneak + right-click on air or another block clears the samples.
+        - Spices you haven't found yet read "Unknown spice", and regions without one read "No spice grows here".
+        - In creative mode, a single instant sample is enough, and the Spice is always named, even if you haven't found it or it is above the highest Tier the analyzer can identify.
+        - Protection mods can veto the block removal, and a sample is refused if the block above would pop off.
+        - Configurable in the server config (`soilAnalyzer`): hold time, samples required, minimum spacing, maximum span, and the highest Tier it can identify. The common config (`soilAnalyzerItem`) can turn the item and its recipe off (recipe applies on `/reload`) and give it durability (restart required).
+        - Added the "Soil Samples Taken" statistic (`spice_road:soil_samples_taken`), counting every sample
+        - Added the "Soil Science" advancement for getting a reading in a region where a Spice grows, even an unknown one. This uses the new `spice_road:soil_analyzed` criterion for datapacks.
+        - Recipes can be gated on the new `spice_road:feature_enabled` load condition (`neoforge:conditions` / `fabric:load_conditions`).
+
+<br>
+
 ## `0.1.0-alpha.7`
 ⚠️ **Contains changes that affect block interactions.** Any existing automated farms with epic tier spice plants will stop working!  
 

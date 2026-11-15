@@ -1,0 +1,42 @@
+{
+    "neoforge:conditions": [
+        {
+            "type": "spice_road:feature_enabled",
+            "feature": "soil_analyzer"
+        }
+    ],
+    "fabric:load_conditions": [
+        {
+            "condition": "spice_road:feature_enabled",
+            "feature": "soil_analyzer"
+        }
+    ],
+    "type": "minecraft:crafting_shaped",
+    "category": "misc",
+    "pattern": [
+        "GBG",
+        "CMC",
+        " R "
+    ],
+    "key": {
+        "G": {
+            "item": "minecraft:gold_ingot"
+        },
+        "B": {
+            "item": "minecraft:brewing_stand"
+        },
+        "C": {
+            "item": "minecraft:copper_ingot"
+        },
+        "M": {
+            "item": "minecraft:comparator"
+        },
+        "R": {
+            "item": "minecraft:lightning_rod"
+        }
+    },
+    "result": {
+        "id": "spice_road:soil_analyzer",
+        "count": 1
+    }
+}

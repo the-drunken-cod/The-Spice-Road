@@ -532,6 +532,41 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public double getSoilAnalyzerSampleSeconds() {
+        return value(ConfigSchema.SOIL_ANALYZER_SAMPLE_SECONDS);
+    }
+
+    @Override
+    public int getSoilAnalyzerSamplesRequired() {
+        return value(ConfigSchema.SOIL_ANALYZER_SAMPLES_REQUIRED);
+    }
+
+    @Override
+    public int getSoilAnalyzerMinSampleDistance() {
+        return value(ConfigSchema.SOIL_ANALYZER_MIN_SAMPLE_DISTANCE);
+    }
+
+    @Override
+    public int getSoilAnalyzerMaxSampleSpan() {
+        return value(ConfigSchema.SOIL_ANALYZER_MAX_SAMPLE_SPAN);
+    }
+
+    @Override
+    public int getSoilAnalyzerMaxIdentifiableTier() {
+        return value(ConfigSchema.SOIL_ANALYZER_MAX_IDENTIFIABLE_TIER);
+    }
+
+    @Override
+    public boolean isSoilAnalyzerEnabled() {
+        return value(ConfigSchema.SOIL_ANALYZER_ENABLED);
+    }
+
+    @Override
+    public int getSoilAnalyzerDurability() {
+        return value(ConfigSchema.SOIL_ANALYZER_DURABILITY);
+    }
+
+    @Override
     public int getSpiceMixCapacity() {
         return value(ConfigSchema.SPICE_MIX_CAPACITY);
     }

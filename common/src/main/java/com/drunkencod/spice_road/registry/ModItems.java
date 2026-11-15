@@ -20,6 +20,7 @@ import com.drunkencod.spice_road.mix.MixPresetRegistry;
 import com.drunkencod.spice_road.mix.SpiceMixItem;
 import com.drunkencod.spice_road.mix.SpiceMixes;
 import com.drunkencod.spice_road.platform.Services;
+import com.drunkencod.spice_road.soil.SoilAnalyzerItem;
 import com.drunkencod.spice_road.spice.ProcessedSpice;
 import com.drunkencod.spice_road.spice.Spice;
 
@@ -36,6 +37,9 @@ public class ModItems {
     /** The Spice Grinder, which opens the seasoning GUI. */
     public static Supplier<SpiceGrinderItem> SPICE_GRINDER;
 
+    /** The Soil Analyzer, which tells what Spice grows in the soil around it. */
+    public static Supplier<SoilAnalyzerItem> SOIL_ANALYZER;
+
     /** The empty jar, the base of every Spice Mix. */
     public static Supplier<Item> JAR;
 
@@ -51,6 +55,18 @@ public class ModItems {
                 () -> new SpiceGrinderItem(ModBlocks.SPICE_GRINDER.get()));
         ItemModelHelper.addFlatItem("spice_grinder", ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID,
                 "item/spice_grinder"));
+    }
+
+    /**
+     * Registers the Soil Analyzer, with a flat item model. Its durability is
+     * not set here but through {@link SoilAnalyzerItem#configuredDurability}, since
+     * the common config isn't loaded yet when items are registered on NeoForge.
+     * Must be called during mod initialization (see {@code SpiceRoad#init()}).
+     */
+    public static void registerSoilAnalyzer() {
+        SOIL_ANALYZER = Services.REGISTRY.registerItem("soil_analyzer", SoilAnalyzerItem::new);
+        ItemModelHelper.addFlatItem("soil_analyzer", ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID,
+                "item/soil_analyzer"));
     }
 
     /**
@@ -75,6 +91,8 @@ public class ModItems {
     public static void populateGenericTab(CreativeModeTab.Output output) {
         // spice grinder
         output.accept(SPICE_GRINDER.get().getDefaultInstance());
+        // soil analyzer
+        output.accept(SOIL_ANALYZER.get().getDefaultInstance());
         // blockentities
         ModBlocks.DRYING_RACK_ITEMS.values().forEach(rack -> output.accept(rack.get().getDefaultInstance()));
         ModBlocks.SPICE_RACK_ITEMS.values().forEach(rack -> output.accept(rack.get().getDefaultInstance()));

@@ -8,6 +8,7 @@ import com.drunkencod.spice_road.command.SpiceRoadCommand;
 import com.drunkencod.spice_road.compat.FabricCompatRecipesCondition;
 import com.drunkencod.spice_road.config.ConfigSync;
 import com.drunkencod.spice_road.config.FabricConfigHelper;
+import com.drunkencod.spice_road.config.FabricFeatureCondition;
 import com.drunkencod.spice_road.grinder.GrinderCheatMode;
 import com.drunkencod.spice_road.grinder.GrinderIntentPayload;
 import com.drunkencod.spice_road.grinder.GrinderViewPayload;
@@ -16,7 +17,9 @@ import com.drunkencod.spice_road.loot.LootInjections;
 import com.drunkencod.spice_road.mix.MixPresetSync;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.FabricCreativeTabHelper;
+import com.drunkencod.spice_road.registry.ModItems;
 import com.drunkencod.spice_road.registry.ModVillagers;
+import com.drunkencod.spice_road.soil.SoilAnalyzerItem;
 import com.drunkencod.spice_road.spice.SpiceProfileRegistry;
 import com.drunkencod.spice_road.spice.SpiceProfileSync;
 import com.drunkencod.spice_road.spice.board.SeasoningWorld;
@@ -34,6 +37,7 @@ import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -42,6 +46,7 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -62,9 +67,19 @@ public class SpiceRoadMod implements ModInitializer {
                 ((FabricCreativeTabHelper) Services.CREATIVE_TAB).register();
                 // NeoForge registers its own condition through NeoForgeConditions.
                 ResourceConditions.register(FabricCompatRecipesCondition.TYPE);
+                ResourceConditions.register(FabricFeatureCondition.TYPE);
 
                 SpiceRoad.init();
                 SpiceRoad.commonSetup();
+
+                // NeoForge does the same through ModifyDefaultComponentsEvent.
+                DefaultItemComponentEvents.MODIFY.register(context -> {
+                        int durability = SoilAnalyzerItem.configuredDurability();
+                        if (durability > 0)
+                                context.modify(ModItems.SOIL_ANALYZER.get(), builder -> builder
+                                                .set(DataComponents.MAX_DAMAGE, durability)
+                                                .set(DataComponents.DAMAGE, 0));
+                });
 
                 registerSpiceProfileSync();
                 registerSeasoningWorld();

@@ -1,5 +1,8 @@
 package com.drunkencod.spice_road.platform.services;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+
 /**
  * Cross-loader service interface for platform and environment queries.
  */
@@ -37,4 +40,14 @@ public interface IPlatformHelper {
     default String getEnvironmentName() {
         return isDevelopmentEnvironment() ? "development" : "production";
     }
+
+    /**
+     * Asks the loader's block-break event, which protection and claim mods
+     * listen to, whether a player may break a block, without breaking it.
+     *
+     * @param player The player.
+     * @param pos    The block's position.
+     * @return Whether no listener vetoed the break.
+     */
+    boolean canBreakBlock(ServerPlayer player, BlockPos pos);
 }

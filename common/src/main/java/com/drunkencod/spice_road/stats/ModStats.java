@@ -40,6 +40,8 @@ public final class ModStats {
     public static final ResourceLocation GRINDER_MOVES = register("grinder_moves");
     /** Items that finished drying on a Drying Rack the player put them on by hand. */
     public static final ResourceLocation ITEMS_DRIED = register("items_dried");
+    /** Soil Samples taken with the Soil Analyzer. */
+    public static final ResourceLocation SOIL_SAMPLES_TAKEN = register("soil_samples_taken");
 
     private ModStats() {
     }
