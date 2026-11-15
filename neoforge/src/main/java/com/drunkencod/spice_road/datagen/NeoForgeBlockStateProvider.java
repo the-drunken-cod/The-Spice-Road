@@ -163,9 +163,10 @@ public class NeoForgeBlockStateProvider extends BlockStateProvider {
                 String modelId = age == 0 ? leavesId : leavesId + "_stage" + age;
                 stageModels[age] = leavesModel(SpiceAssetPaths.block(spice, modelId));
             }
-            getVariantBuilder(leaves).forAllStates(state -> ConfiguredModel.builder()
+            getVariantBuilder(leaves).forAllStatesExcept(state -> ConfiguredModel.builder()
                     .modelFile(stageModels[state.getValue(FruitingSpiceLeavesBlock.AGE)])
-                    .build());
+                    .build(), LeavesBlock.DISTANCE, LeavesBlock.PERSISTENT, LeavesBlock.WATERLOGGED,
+                    FruitingSpiceLeavesBlock.DECAY_CHECK);
         } else {
             simpleBlock(leaves, leavesModel(SpiceAssetPaths.block(spice, leavesId)));
         }

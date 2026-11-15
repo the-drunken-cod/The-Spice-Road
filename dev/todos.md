@@ -303,7 +303,8 @@
       C: Copper Ingot  
       M: Comparator  
       R: Lightning Rod
-- [ ] Make leaves work with tree decay mods.
+- [x] Make leaves work with tree decay mods.
+    - Fruiting leaves now go through a transient `decay_check` state (not randomly ticking) for one tick before they start decaying, so mods that detect "newly randomly ticking" leaves (Leaves Be Gone) see the transition.
 - [ ] Break replaceable blocks above soil analyzer samples instead of warning.
 
 ### Down the line

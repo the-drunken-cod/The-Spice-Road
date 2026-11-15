@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
@@ -48,6 +49,12 @@ public class FruitingSpiceLeavesBlock extends LeavesBlock {
      */
     private static final int BASE_GROWTH_TICKS_PER_STAGE = 40;
 
+    /**
+     * Transient marker for leaves that are about to start decaying: they have
+     * reached the decay distance but don't random tick yet. See {@link #tick}.
+     */
+    public static final BooleanProperty DECAY_CHECK = BooleanProperty.create("decay_check");
+
     private final SpiceTree tree;
 
     /**
@@ -58,23 +65,58 @@ public class FruitingSpiceLeavesBlock extends LeavesBlock {
     public FruitingSpiceLeavesBlock(BlockBehaviour.Properties properties, SpiceTree tree) {
         super(properties);
         this.tree = tree;
+        registerDefaultState(defaultBlockState().setValue(DECAY_CHECK, false));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(AGE);
+        builder.add(AGE, DECAY_CHECK);
+    }
+
+    // #region decay
+
+    /**
+     * Leaf decay mods (e.g. Leaves Be Gone) detect leaves that just started
+     * decaying by checking that they didn't random tick before a scheduled tick
+     * and do afterwards. Growing leaves always random tick, so that transition
+     * would never be seen. To make it visible, a growing leaf that reaches the
+     * decay distance is first parked in {@link #DECAY_CHECK} (not random
+     * ticking) and only starts decaying one tick later.
+     */
+    @Override
+    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        if (state.getValue(DECAY_CHECK)) {
+            super.tick(state.setValue(DECAY_CHECK, false), level, pos, random);
+            return;
+        }
+
+        boolean wasGrowing = isRandomlyTicking(state) && !decaying(state);
+        super.tick(state, level, pos, random);
+        if (!wasGrowing)
+            return;
+
+        BlockState updated = level.getBlockState(pos);
+        if (updated.is(this) && decaying(updated)) {
+            level.setBlock(pos, updated.setValue(DECAY_CHECK, true), Block.UPDATE_CLIENTS);
+            level.scheduleTick(pos, this, 1);
+        }
     }
 
     // #region growth
 
     @Override
     protected boolean isRandomlyTicking(BlockState state) {
+        if (state.getValue(DECAY_CHECK))
+            return false;
         return super.isRandomlyTicking(state) || (!state.getValue(PERSISTENT) && !isRipe(state));
     }
 
     @Override
     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        if (state.getValue(DECAY_CHECK))
+            return;
+
         if (decaying(state)) {
             super.randomTick(state, level, pos, random);
             return;
