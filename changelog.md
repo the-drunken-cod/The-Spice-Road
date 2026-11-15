@@ -4,7 +4,8 @@
 
 - **Changes:**
     - Spice Groves and their satellites now have about 3x as many plants (and trees) and cover a wider area by default.
-
+- **Fixes:**
+    - Fixed order in which items are inserted into a Spice Rack when shift-clicking them inside the GUI.
 
 <br>
 

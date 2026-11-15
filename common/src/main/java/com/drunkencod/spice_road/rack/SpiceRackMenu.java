@@ -64,10 +64,12 @@ public class SpiceRackMenu extends AbstractContainerMenu {
         this.rack = rack;
         this.viewer = inventory.player;
         rack.startOpen(inventory.player);
-        for (int slot = 0; slot < SpiceRackBlockEntity.SLOT_COUNT; slot++) {
-            boolean upper = slot >= SpiceRackBlockEntity.TIER_SIZE;
-            addSlot(new RackSlot(rack, slot, SLOT_X + (slot % SpiceRackBlockEntity.TIER_SIZE) * 18,
-                    upper ? UPPER_ROW_Y : LOWER_ROW_Y));
+        // Menu slots are added in the order the GUI shows them (upper row first), so shift-clicking fills them top to bottom
+        for (int tier = SpiceRackBlockEntity.TIERS - 1; tier >= 0; tier--) {
+            for (int index = 0; index < SpiceRackBlockEntity.TIER_SIZE; index++) {
+                addSlot(new RackSlot(rack, tier * SpiceRackBlockEntity.TIER_SIZE + index, SLOT_X + index * 18,
+                        tier == SpiceRackBlockEntity.TIERS - 1 ? UPPER_ROW_Y : LOWER_ROW_Y));
+            }
         }
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++)
