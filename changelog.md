@@ -1,5 +1,13 @@
 # `0.1.0`
 
+## `0.1.0-alpha.9`
+
+- **Changes:**
+    - Spice Groves and their satellites now have about 3x as many plants (and trees) and cover a wider area by default.
+
+
+<br>
+
 ## `0.1.0-alpha.8`
 
 - **Features:**

@@ -1,19 +1,19 @@
 {
   "type": "spice_road:spice_plant",
   "config": {
-    "tries": 14,
-    "xz_spread": 4,
+    "tries": 42,
+    "xz_spread": 7,
     "heart_spice_only": true,
     "trees": {
-      "default": 1,
+      "default": 3,
       "spacing": 4,
       "rules": [
         {
           "biomes": "#spice_road:dense_grove_trees",
           "count": {
             "type": "minecraft:uniform",
-            "min_inclusive": 2,
-            "max_inclusive": 3
+            "min_inclusive": 6,
+            "max_inclusive": 9
           }
         }
       ]

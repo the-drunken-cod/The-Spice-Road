@@ -303,6 +303,8 @@
       C: Copper Ingot  
       M: Comparator  
       R: Lightning Rod
+- [ ] Make leaves work with tree decay mods.
+- [ ] Break replaceable blocks above soil analyzer samples instead of warning.
 
 ### Down the line
 - [ ] Custom Sounds
