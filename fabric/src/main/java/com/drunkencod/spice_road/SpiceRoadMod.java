@@ -123,7 +123,7 @@ public class SpiceRoadMod implements ModInitializer {
         }
 
         /**
-         * Registers {@code /locate spice}/{@code spice_climate}, the
+         * Registers {@code /locate spice}/{@code spice_climate}/{@code spice_tier}, the
          * cartographer's Spice Map trades, the wandering trader's Spice offers,
          * and the loot table injections.
          * NeoForge does the same through its own events.

@@ -7,7 +7,7 @@
         {
             "type": "patchouli:text",
             "title": "Spice Profile",
-            "text": "Each $(l:basics/what_is_a_spice)spice item$() is ranked on 8 double-precision bipolar axes, which can each be negative or positive. So in essence each spice ends up with 8 of 16 total dominant flavor values, which combine to form the spice profile. In the $(l:mechanics/spice_grinder)Spice Grinder$(), these values are then consumed to apply effects."
+            "text": "Each $(l:basics/what_is_a_spice)spice$() is ranked on 8 double-precision bipolar axes, which can each be negative or positive. So in essence each spice ends up with 8 of 16 total dominant flavor values, which combine to form the spice profile. In the $(l:mechanics/spice_grinder)Spice Grinder$(), these values are then consumed to apply effects."
         },
         {
             "type": "patchouli:image",

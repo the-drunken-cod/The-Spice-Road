@@ -11,6 +11,7 @@
         - Added the "Soil Samples Taken" statistic (`spice_road:soil_samples_taken`), counting every sample
         - Added the "Soil Science" advancement for getting a reading in a region where a Spice grows, even an unknown one. This uses the new `spice_road:soil_analyzed` criterion for datapacks.
         - Recipes can be gated on the new `spice_road:feature_enabled` load condition (`neoforge:conditions` / `fabric:load_conditions`).
+    - Added `/locate spice_tier <tier>`, which finds the nearest Spice Region whose Spice is of that Tier. It uses the same search radius as `/locate spice`.
 
 <br>
 

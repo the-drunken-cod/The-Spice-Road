@@ -9,7 +9,7 @@
             "item": "spice_road:soil_analyzer",
             "title": "Soil Analyzer",
             "link_recipe": true,
-            "text": "This device dissolves soil samples in a chemical solution to determine which spice is fertile nearby. It'll usually require multiple samples of blocks tagged $(code)#minecraft:dirt$() that are spaced a few blocks apart to get an accurate average reading."
+            "text": "This device dissolves soil samples in a chemical solution to determine which kind of $(l:basics/what_is_a_spice)Spice$() is fertile nearby.$(br)It'll usually require multiple samples of blocks tagged $(code)#minecraft:dirt$() which are spaced a few blocks apart to get an accurate average reading."
         },
         {
             "type": "patchouli:crafting",

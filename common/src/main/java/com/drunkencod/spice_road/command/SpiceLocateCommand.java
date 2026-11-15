@@ -25,14 +25,16 @@ import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Climate;
 import com.drunkencod.spice_road.spice.Spice;
+import com.drunkencod.spice_road.spice.Tier;
 import com.drunkencod.spice_road.spice.dimension.SpiceDimensions;
 import com.drunkencod.spice_road.spice.region.RegionHeart;
 import com.drunkencod.spice_road.spice.region.RegionHeartSearch;
+import com.drunkencod.spice_road.tooltip.SpiceProfileTooltips;
 
 /**
- * {@code /locate spice <spice>} and {@code /locate spice_climate <climate>}:
- * finds the nearest Region Heart matching a Spice, or matching any Spice of
- * a {@link Climate}. Merged into vanilla's {@code /locate} node, so both
+ * {@code /locate spice <spice>}, {@code /locate spice_climate <climate>} and
+ * {@code /locate spice_tier <tier>}: finds the nearest Region Heart matching
+ * a Spice, or matching any Spice of a {@link Climate} or {@link Tier}. Merged into vanilla's {@code /locate} node, so both
  * share its permission level and sit next to {@code structure}, {@code biome}
  * and {@code poi}.
  */
@@ -51,6 +53,9 @@ public final class SpiceLocateCommand {
 
     private static final DynamicCommandExceptionType ERROR_CLIMATE_NOT_FOUND = new DynamicCommandExceptionType(
             name -> Component.translatableEscape("commands.spice_road.locate.spice_climate.not_found", name));
+
+    private static final DynamicCommandExceptionType ERROR_TIER_NOT_FOUND = new DynamicCommandExceptionType(
+            name -> Component.translatableEscape("commands.spice_road.locate.spice_tier.not_found", name));
 
     private SpiceLocateCommand() {
     }
@@ -74,7 +79,11 @@ public final class SpiceLocateCommand {
                 .then(Commands.literal("spice_climate")
                         .then(CommandArguments.climate("climate")
                                 .executes(context -> locateClimate(context.getSource(),
-                                        StringArgumentType.getString(context, "climate"))))));
+                                        StringArgumentType.getString(context, "climate")))))
+                .then(Commands.literal("spice_tier")
+                        .then(CommandArguments.tier("tier")
+                                .executes(context -> locateTier(context.getSource(),
+                                        CommandArguments.getTier(context, "tier"))))));
     }
 
     // #region handlers
@@ -98,14 +107,21 @@ public final class SpiceLocateCommand {
                 "commands.spice_road.locate.spice_climate.success");
     }
 
+    private static int locateTier(CommandSourceStack source, Tier tier) throws CommandSyntaxException {
+        return locateNearest(source, heart -> heart.spice().getTier() == tier,
+                SpiceProfileTooltips.tierName(tier).withStyle(tier.getRarity().color()),
+                "tier " + tier.getSerializedName(), ERROR_TIER_NOT_FOUND,
+                "commands.spice_road.locate.spice_tier.success");
+    }
+
     /**
      * Finds the nearest {@link RegionHeart} matching {@code matcher} and
-     * reports it to {@code source}, shared by both {@code /locate spice} and
-     * {@code /locate spice_climate}.
+     * reports it to {@code source}, shared by all the {@code /locate spice*}
+     * subcommands.
      *
      * @param matcher         Filters candidate Region Hearts.
-     * @param displayName     The queried Spice's or Climate's translatable
-     *                        name, interpolated into the not-found/success
+     * @param displayName     The queried Spice's, Climate's or Tier's
+     *                        translatable name, interpolated into the not-found/success
      *                        messages.
      * @param logDescription  Plain-text description of the query for the log
      *                        line, e.g. {@code "spice cinnamon"}.
