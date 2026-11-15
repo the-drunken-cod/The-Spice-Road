@@ -1,5 +1,10 @@
 # The Spice Road Documentation
 
+> [!IMPORTANT]  
+>   
+> 🚧 WIP!  
+> Please check back once the mod is released!
+
 ## Table of Contents
 - **Items**
     - [Spices](./items/spices.md)

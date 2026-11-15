@@ -44,13 +44,13 @@ Encourages local production and specialized trade and has lots of compat for oth
     - Mix up to 8 spices together in any configuration into the new Spice Mix item.
     - Comes with 12 default Spice Mix presets with a custom name and texture.
 - **Common spices may be taken back home and grown**, but a good portion of them will **only mature if produced locally.**  
-  This incentivizes exploration, as well as establishing trade routes and associations on servers. From Hanseatic League to East India Company, there's something for everyone.
-    - **Spice Plants are worldgen-reliant and finite**, so monopolizing them is a real thing players can do. Extra spice sources can always be added my modpack creators and server admins, like loot tables, villager trades, kubejs scripts, currency shops, etc.
+  This incentivizes exploration, as well as establishing trade routes and associations on servers. From Hanseatic League to West India Company, there's something for everyone.
+    - **Some Spice Plants grow region-bound**, so monopolizing them is a real thing players can do.
     - Maps can be **traded for or found as loot** to help find certain spices. Epic tier spices can only be found via maps found in treasure loot by default.
-- **New mechanic that allows spices to be mixed and matched and applied to existing foods** of any mod to **imbue them with beneficial custom effects.** Players can also create their own Spice Mixes and specialize in cultivating the rarest spice plants.
-    - **Roguelite minigame** inspired by real cooking and spice application processes. Here spice works like a currency that can be spent to nudge food effects into one or multiple of 16 effect directions. Effects are largely reproducible and knowledge to plan better routes is unlocked over time, but every run is still unique.
+- **Adds a mechanic that allows spices to be applied to existing foods** of any mod to **imbue them with beneficial custom effects.**
+    - **Roguelite minigame** inspired by real cooking and spice application processes; here spice works like a currency that can be spent to nudge food effects into one or multiple of 16 flavor directions. Effects are largely reproducible and knowledge to plan better routes is unlocked over time, but every run is still unique.
 - **Incredibly modpack-, datapack- and server friendly.**
-  - Allows for tons of configuration for any play style and player base.
+  - Allows for tons of configuration for many play styles and types of player bases.
   - Spice Profiles, Mixes and worldgen dimensions can easily be added by datapack makers. [Refer to the documentation](./docs/README.md) for more info.
   - Any mod's consumable food item can be seasoned to add compounding effects.  
     Note: some mods' crafting stations might erase Spice Profiles. In that case, please [open an issue](https://github.com/the-drunken-cod/The-Spice-Road/issues) so we can work on adding compatibility.
