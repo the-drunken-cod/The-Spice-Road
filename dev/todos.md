@@ -275,10 +275,9 @@
     - [x] Remove harvesting tool requirements completely, only leave hand-picking requirement.
     - [x] Expand hand-picking requirement to all epic tier plants.
         - Derived from `Tier.EPIC` instead of a per-Spice flag.
+- [x] Add spice seeds and leaves to compostables.
 
 ### Down the line
-- [ ] Tag Fixes
-    - [ ] Compostables
 - [ ] Custom Sounds
     - [ ] Add sound effect when finishing spice run.
         - Progressive sound effects for saturation modifier, regular run and flawless run.

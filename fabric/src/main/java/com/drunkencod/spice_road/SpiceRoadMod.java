@@ -11,6 +11,7 @@ import com.drunkencod.spice_road.config.FabricConfigHelper;
 import com.drunkencod.spice_road.grinder.GrinderCheatMode;
 import com.drunkencod.spice_road.grinder.GrinderIntentPayload;
 import com.drunkencod.spice_road.grinder.GrinderViewPayload;
+import com.drunkencod.spice_road.item.SpiceCompostables;
 import com.drunkencod.spice_road.loot.LootInjections;
 import com.drunkencod.spice_road.mix.MixPresetSync;
 import com.drunkencod.spice_road.platform.Services;
@@ -28,6 +29,7 @@ import com.drunkencod.spice_road.villager.trader.WanderingTraderListing;
 import com.drunkencod.spice_road.worldgen.village.VillageHouseInjection;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
@@ -75,6 +77,9 @@ public class SpiceRoadMod implements ModInitializer {
                 SpiceTrees.getRegistered().values().forEach(
                                 tree -> StrippableBlockRegistry.register(tree.getLog().get(),
                                                 tree.getStrippedLog().get()));
+
+                // NeoForge gets these from the datagenned neoforge:compostables data map.
+                SpiceCompostables.getAll().forEach(CompostingChanceRegistry.INSTANCE::add);
 
                 // NeoForge does the equivalent via the data-driven biome_modifier JSON
                 // (neoforge/src/main/resources/data/spice_road/neoforge/biome_modifier/);

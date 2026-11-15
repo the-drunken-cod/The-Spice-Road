@@ -183,6 +183,11 @@ public final class SpiceTree {
         return sapling;
     }
 
+    /** @return The leaves' block item. */
+    public Supplier<Item> getLeavesItem() {
+        return leavesItem;
+    }
+
     /** @return The sapling's block item. */
     public Supplier<Item> getSaplingItem() {
         return saplingItem;

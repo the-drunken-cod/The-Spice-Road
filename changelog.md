@@ -6,6 +6,7 @@
 - **Changes:**
     - Removed harvest tool requirements. Spices that needed shears or a picking tool (clove, curry, nutmeg, caper, sesame, vanilla, saffron, wasabi) are now picked by right-clicking, with any item or an empty hand. The `#spice_road:picking_tools` item tag is gone, and `#spice_road:cutting_tools` only lists items that can cut a ripe plant as an optional shortcut, for one durability point. The `spice_road:connected_player` loot condition is gone too.
     - ⚠️ **BREAKING:** All epic spices (cinnamon, clove, nutmeg, vanilla, saffron and wasabi) now have to be hand-picked by a player. Automation like Create's Deployer can't harvest them, and breaking their plants or leaves drops none. Cinnamon bark only drops when a player strips the log.
+    - Spice seeds, cuttings, saplings and leaves can now be composted, with a 30% chance per item like vanilla seeds, saplings and leaves. On NeoForge this is the `neoforge:compostables` data map, so datapacks can override it.
 - **Fixes:**
     - Breaking a fully grown bush spice (basil, caper, oregano, parsley, rosemary, sage, sumac and thyme) now drops the spice. It only dropped seeds before, because the loot tables expected a growth stage that bushes never reach.
     - Flavor tooltips now measure text with exact, unrounded widths, so their bars and values stay aligned with fonts that have fractional glyph widths (e.g. from resource packs). The count-up animation also no longer restarts every frame on low frame rates.
