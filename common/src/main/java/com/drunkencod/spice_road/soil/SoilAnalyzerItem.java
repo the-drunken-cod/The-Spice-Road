@@ -229,7 +229,8 @@ public class SoilAnalyzerItem extends Item {
 
         BlockPos abovePos = pos.above();
         BlockState above = level.getBlockState(abovePos);
-        if (!above.isAir() && !(above.getBlock() instanceof LiquidBlock)
+        boolean breaksAbove = isBrokenWithSample(above);
+        if (!above.isAir() && !(above.getBlock() instanceof LiquidBlock) && !breaksAbove
                 && !above.isFaceSturdy(level, abovePos, Direction.DOWN))
             return SoilSampleCheck.BLOCKED_ABOVE;
 
@@ -240,11 +241,28 @@ public class SoilAnalyzerItem extends Item {
             return SoilSampleCheck.of(spacing);
 
         if (!player.isCreative() && player instanceof ServerPlayer serverPlayer
-                && (!level.mayInteract(player, pos)
-                        || player.blockActionRestricted(level, pos, serverPlayer.gameMode.getGameModeForPlayer())
-                        || !Services.PLATFORM.canBreakBlock(serverPlayer, pos)))
+                && (isProtected(level, serverPlayer, pos) || (breaksAbove && isProtected(level, serverPlayer, abovePos))))
             return SoilSampleCheck.PROTECTED;
         return SoilSampleCheck.OK;
+    }
+
+    /**
+     * @param state The block above a sample.
+     * @return Whether the block is in {@code #minecraft:replaceable} and not air or
+     *         a liquid, so it gets broken like by hand when the sample is taken.
+     */
+    private static boolean isBrokenWithSample(BlockState state) {
+        return state.is(BlockTags.REPLACEABLE) && !state.isAir() && !(state.getBlock() instanceof LiquidBlock);
+    }
+
+    /**
+     * @return Whether the player isn't allowed to break the block at the position,
+     *         because of spawn protection, game mode or another mod.
+     */
+    private static boolean isProtected(Level level, ServerPlayer player, BlockPos pos) {
+        return !level.mayInteract(player, pos)
+                || player.blockActionRestricted(level, pos, player.gameMode.getGameModeForPlayer())
+                || !Services.PLATFORM.canBreakBlock(player, pos);
     }
 
     /**
@@ -263,8 +281,12 @@ public class SoilAnalyzerItem extends Item {
         SoilSamples before = stack.get(ModDataComponents.SOIL_SAMPLES.get());
         SoilSamples after = before == null ? SoilSamples.startedWith(level.dimension(), effective)
                 : before.with(effective);
-        if (!player.isCreative())
+        if (!player.isCreative()) {
+            BlockPos abovePos = pos.above();
+            if (isBrokenWithSample(level.getBlockState(abovePos)))
+                level.destroyBlock(abovePos, true, player);
             level.destroyBlock(pos, false, player);
+        }
         ModStats.award(player, ModStats.SOIL_SAMPLES_TAKEN);
 
         int required = player.isCreative() ? 1 : Services.CONFIG.getSoilAnalyzerSamplesRequired();
