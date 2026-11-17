@@ -1,6 +1,6 @@
 {
     "name": "Saturation Modifier",
-    "icon": "minecraft:golden_apple",
+    "icon": "minecraft:golden_carrot",
     "category": "spice_road:mechanics",
     "sortnum": 6,
     "pages": [
