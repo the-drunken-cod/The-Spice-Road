@@ -182,16 +182,23 @@ public final class SpiceProfileTooltips {
      * @param stack The stack being hovered.
      * @return The lines shown while Shift is held: a Spice Item's tier line
      *         (which is merged into {@link #shiftHintLine(ItemStack)} while Shift
-     *         isn't held) and flavor axes, a Spice Mix's averaged flavor axes, or
-     *         a seasoned food's Flavor Contributors.
+     *         isn't held) and flavor axes, a Spice Mix's flavor axes (unaveraged
+     *         values, bars scaled to the average), or a seasoned food's Flavor
+     *         Contributors.
      */
     private static List<Component> shiftLines(ItemStack stack) {
         List<Component> lines = new ArrayList<>();
         if (stack.is(SpiceItemTags.SPICES))
             tierOf(stack).map(tier -> tierLine(tier, lineKeyOf(stack))).ifPresent(lines::add);
-        displayProfile(stack)
-                .map(profile -> SpiceFlavorTooltips.formatFlavorAxes(profile, SPICE_ITEM_BAR_SCALE))
-                .ifPresent(lines::addAll);
+        Optional<SpiceProfile> itemProfile = SpiceProfiles.getEffective(stack);
+        if (itemProfile.isPresent()) {
+            lines.addAll(SpiceFlavorTooltips.formatFlavorAxes(itemProfile.get(), SPICE_ITEM_BAR_SCALE));
+        } else {
+            // Mix numbers are the unaveraged totals, with the bars scaled to the average
+            SpiceMixes.contentsOf(stack).ifPresent(mix -> SpiceProfiles.getEffectiveMixTotal(stack)
+                    .map(total -> SpiceFlavorTooltips.formatFlavorAxes(total, mix.total() * SPICE_ITEM_BAR_SCALE))
+                    .ifPresent(lines::addAll));
+        }
 
         Seasoning seasoning = stack.get(ModDataComponents.SEASONING.get());
         if (seasoning != null && !seasoning.contributors().isEmpty())

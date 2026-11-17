@@ -343,6 +343,15 @@ public interface IConfigHelper {
     double getFlavorMinimumAxisValue();
 
     /**
+     * Factor the weaker of the positive and negative flavor contributions on an
+     * axis is multiplied by before they are added up for a Spice Mix, so mixes
+     * with opposing components are less contradictory. {@code 1} disables it.
+     *
+     * @return The configured opposing flavor factor.
+     */
+    double getFlavorMixOpposingFactor();
+
+    /**
      * Most distinct Seasoning Effects a single food can hold; duplicates merge
      * into one effect of a higher level instead.
      *

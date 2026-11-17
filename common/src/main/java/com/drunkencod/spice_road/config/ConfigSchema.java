@@ -309,6 +309,10 @@ public final class ConfigSchema {
     public static final ConfigOption<Double> FLAVOR_MINIMUM_AXIS_VALUE = add(
             ConfigOption.ofDouble(FLAVOR, "minimumAxisValue", 0.05, 0.0, 1.0));
 
+    /** Factor the weaker of two opposing flavors on an axis is multiplied by in a Spice Mix. */
+    public static final ConfigOption<Double> FLAVOR_MIX_OPPOSING_FACTOR = add(
+            ConfigOption.ofDouble(FLAVOR, "mixOpposingFactor", 0.5, 0.0, 1.0));
+
     // #region Seasoning
 
     /** Most distinct Seasoning Effects one food can hold. */

@@ -47,21 +47,68 @@ public final class SpiceProfiles {
      * @param stack The stack to look up.
      * @return The Effective Profile of a filled Spice Mix: the average of the
      *         Default Profiles of the spices it holds, weighted by their counts,
-     *         so it reads as the character of one spoonful. Empty if
-     *         {@code stack} isn't a filled Spice Mix or none of its spices has a
-     *         non-zero Default Profile.
+     *         so it reads as the character of one spoonful. Opposing spices
+     *         are softened (see {@link #mixSum}). Empty if {@code stack} isn't a
+     *         filled Spice Mix or none of its spices has a non-zero Default
+     *         Profile.
      */
     public static Optional<SpiceProfile> getEffectiveMix(ItemStack stack) {
         SpiceMix mix = stack.get(ModDataComponents.SPICE_MIX.get());
         if (mix == null || mix.total() <= 0)
             return Optional.empty();
-        SpiceProfile sum = SpiceProfile.ZERO;
+        SpiceProfile sum = mixSum(mix);
+        return sum.isZero() ? Optional.empty() : Optional.of(effective(sum.scale(1D / mix.total())));
+    }
+
+    /**
+     * @param stack The stack to look up.
+     * @return The {@link #getEffectiveMix Effective Profile} of a filled Spice
+     *         Mix multiplied by its spice count, so its numbers aren't scaled
+     *         down by the averaging. Divide by {@code mix.total()} to get the
+     *         range the bars are scaled to. Empty under the same conditions as
+     *         {@link #getEffectiveMix}.
+     */
+    public static Optional<SpiceProfile> getEffectiveMixTotal(ItemStack stack) {
+        SpiceMix mix = stack.get(ModDataComponents.SPICE_MIX.get());
+        if (mix == null)
+            return Optional.empty();
+        return getEffectiveMix(stack).map(average -> average.scale(mix.total()));
+    }
+
+    /**
+     * Sums the Default Profiles of a Spice Mix's spices, weighted by their
+     * counts. On each axis, the weaker of the positive and negative
+     * contributions is first multiplied by the configured opposing factor, so
+     * mixes with components that oppose each other are less contradictory.
+     *
+     * @param mix The Spice Mix.
+     * @return The softened sum, not yet averaged or saturated.
+     */
+    private static SpiceProfile mixSum(SpiceMix mix) {
+        FlavorAxis[] axes = FlavorAxis.values();
+        double[] positive = new double[axes.length];
+        double[] negative = new double[axes.length];
         for (Map.Entry<Item, Integer> spice : mix.spices().entrySet()) {
             Optional<SpiceProfile> profile = SpiceProfileRegistry.getDefault(spice.getKey());
-            if (profile.isPresent())
-                sum = sum.add(profile.get().scale(spice.getValue()));
+            if (profile.isEmpty())
+                continue;
+            for (FlavorAxis axis : axes) {
+                double weighted = profile.get().get(axis) * spice.getValue();
+                if (weighted > 0D)
+                    positive[axis.ordinal()] += weighted;
+                else
+                    negative[axis.ordinal()] += weighted;
+            }
         }
-        return sum.isZero() ? Optional.empty() : Optional.of(effective(sum.scale(1D / mix.total())));
+        double factor = Services.CONFIG.getFlavorMixOpposingFactor();
+        double[] sum = new double[axes.length];
+        for (int i = 0; i < sum.length; i++) {
+            if (positive[i] > -negative[i])
+                sum[i] = positive[i] + negative[i] * factor;
+            else
+                sum[i] = positive[i] * factor + negative[i];
+        }
+        return new SpiceProfile(sum);
     }
 
     /**

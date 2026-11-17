@@ -328,6 +328,11 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public double getFlavorMixOpposingFactor() {
+        return value(ConfigSchema.FLAVOR_MIX_OPPOSING_FACTOR);
+    }
+
+    @Override
     public int getSeasoningMaxEffects() {
         return value(ConfigSchema.SEASONING_MAX_EFFECTS);
     }

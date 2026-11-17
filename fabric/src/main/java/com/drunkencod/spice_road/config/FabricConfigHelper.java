@@ -273,6 +273,11 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
+    public double getFlavorMixOpposingFactor() {
+        return value(ConfigSchema.FLAVOR_MIX_OPPOSING_FACTOR, server().flavor.mixOpposingFactor);
+    }
+
+    @Override
     public int getSeasoningMaxEffects() {
         return value(ConfigSchema.SEASONING_MAX_EFFECTS, server().seasoning.maxEffects);
     }
@@ -794,6 +799,8 @@ public class FabricConfigHelper implements IConfigHelper {
             public double softCap = ConfigSchema.FLAVOR_SOFT_CAP.getDefault();
             @ConfigEntry.Gui.Tooltip
             public double minimumAxisValue = ConfigSchema.FLAVOR_MINIMUM_AXIS_VALUE.getDefault();
+            @ConfigEntry.Gui.Tooltip
+            public double mixOpposingFactor = ConfigSchema.FLAVOR_MIX_OPPOSING_FACTOR.getDefault();
         }
 
         /** What eating seasoned food does. */

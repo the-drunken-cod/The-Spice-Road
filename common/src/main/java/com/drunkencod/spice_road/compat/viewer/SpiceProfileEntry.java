@@ -17,6 +17,7 @@ import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.compat.viewer.layout.SpiceProfileLayout;
 import com.drunkencod.spice_road.mix.MixPreset;
 import com.drunkencod.spice_road.mix.PresetSlot;
+import com.drunkencod.spice_road.mix.SpiceMix;
 import com.drunkencod.spice_road.mix.SpiceMixes;
 import com.drunkencod.spice_road.registry.ModItems;
 import com.drunkencod.spice_road.spice.SpiceProfile;
@@ -131,9 +132,10 @@ public sealed interface SpiceProfileEntry extends ViewerEntry {
             int rows = Math.max(1, (shown + offset + perRow - 1) / perRow);
             Component name = Component.translatable(SpiceMixes.presetTranslationKey(presetId))
                     .withStyle(ChatFormatting.YELLOW);
-            List<Component> axes = SpiceProfiles.getEffectiveMix(jar)
-                    .map(effective -> SpiceFlavorTooltips.formatFlavorAxes(effective, SpiceProfileLayout.BAR_SCALE,
-                            false))
+            double barScale = SpiceProfileLayout.BAR_SCALE
+                    * SpiceMixes.contentsOf(jar).map(SpiceMix::total).orElse(1);
+            List<Component> axes = SpiceProfiles.getEffectiveMixTotal(jar)
+                    .map(total -> SpiceFlavorTooltips.formatFlavorAxes(total, barScale, false))
                     .orElse(List.of());
             return addPanel(layout, width, rows * ViewerLayout.SLOT_SIZE, Optional.of(name), axes,
                     List.of(ViewerText.translatable("spice_profile.averaged")));

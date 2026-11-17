@@ -316,10 +316,16 @@
         - New `prefer_processed` field on the `spice_road:spices` trade source; the buy offers set it to `true`, so raw spices without a Processed Spice are still bought.
     - [x] Should give more emeralds for spice mixes (4).
         - New `min_value` field on the `spice_road:presets` trade source; the buy offers use 4 (scaled by `priceMultiplier`).
-- [ ] Don't scale down numeric values for spice mix tooltips. Progress bars should still be scaled to -1..1
-- [ ] When calculating the final flavor values for a spice mix specifically, for axes that oppose each other, the weaker axis should be multiplied by 0.5 before being added, to make mix components less contradictory.
+- [x] Flavor Profile:
+    - [x] Don't scale down numeric values for spice mix tooltips. Progress bars should still be scaled to -1..1
+        - `SpiceProfiles#getEffectiveMixTotal()` returns the averaged Effective Profile times the spice count; the tooltip and recipe viewer pass the spice count as bar scale.
+    - [x] When calculating the final flavor values for a spice mix specifically, for axes that oppose each other, the weakest axes should be multiplied by a constant (0.5 by default) before being summed, to make mixes with components that oppose each other less contradictory.
+        - Server config `flavor.mixOpposingFactor` (default 0.5, `1` disables it).
 
 ### Down the line
+- [ ] Rework Spice Mix to allow for multiple uses before the jar is empty (4 by default).  
+  This way the mixes get more of a reason to exist, and the required quantities of rarer and more common spices will average out better.  
+  Also rebalance the `flavor.mixOpposingFactor` config option.
 - [ ] Custom Sounds
     - [ ] Add sound effect when finishing spice run.
         - Progressive sound effects for saturation modifier, regular run and flawless run.
