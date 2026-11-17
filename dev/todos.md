@@ -323,6 +323,12 @@
         - Server config `flavor.mixOpposingFactor` (default 0.5, `1` disables it).
 
 ### Down the line
+- [ ] Add WTHIT / Jade support for blockentities:
+    - [ ] Drying Rack (e.g. `Time left (unheated): 01:35`):
+        - Drying time remaining.
+        - Heated status.
+    - [ ] Spice Grinder (e.g. `Currently Seasoning: 1x Bread`):
+        - Seasoning status.
 - [ ] Rework Spice Mix to allow for multiple uses before the jar is empty (4 by default).  
   This way the mixes get more of a reason to exist, and the required quantities of rarer and more common spices will average out better.  
   Also rebalance the `flavor.mixOpposingFactor` config option.

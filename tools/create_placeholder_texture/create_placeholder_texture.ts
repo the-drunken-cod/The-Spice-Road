@@ -20,7 +20,7 @@ import { PNG } from "pngjs";
  * Values starting with a dash need the `--option=value` syntax.
  * @example
  * ```
- * pnpm run create_placeholder_texture -- -O ./out.png -T "A1" -N 5 -B "#202020"
+ * pnpm create_placeholder_texture -O ./out.png -T "A1" -C "#aaffee" -B "#20202080"
  * ```
  */
 
