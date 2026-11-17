@@ -306,6 +306,13 @@
 - [x] Make leaves work with tree decay mods.
     - Fruiting leaves now go through a transient `decay_check` state (not randomly ticking) for one tick before they start decaying, so mods that detect "newly randomly ticking" leaves (Leaves Be Gone) see the transition.
 - [x] Break replaceable blocks above soil analyzer samples instead of warning.
+- [ ] Remove all harvest yield beyond 1 spice item, except for the luck effect. Balancing is done purely through random ticks and fruiting leaves percentage.
+- [ ] Make all spice crop plants occasionally yield 1 seeds item, chance depending on tier (common 1.0, uncommon 0.75, rare 0.5, epic 0.25).
+- [ ] Spice Traders:
+    - [ ] Shouldn't buy raw spices, only processed when available.
+    - [ ] Should give more emeralds for spice mixes (4).
+- [ ] Don't scale down numeric values for spice mixes.
+- [ ] When calculating the final flavor values for a spice mix specifically, for axes that oppose each other, the weaker axis should be multiplied by 0.5 before being added, to make mix components less contradictory.
 
 ### Down the line
 - [ ] Custom Sounds
