@@ -194,7 +194,7 @@ public class SpiceVineBlock extends VineBlock implements BonemealableBlock {
             return;
 
         ModStats.award(player, ModStats.HAND_PICKED_HARVESTS);
-        int yield = SpiceHarvesting.rollPlantYield(spice, level.getRandom(), player);
+        int yield = HarvestLuck.rollYield(level.getRandom(), player);
         if (yield > 0)
             popResourceFromFace(level, pos, hitResult.getDirection(), new ItemStack(productItem.get(), yield));
 

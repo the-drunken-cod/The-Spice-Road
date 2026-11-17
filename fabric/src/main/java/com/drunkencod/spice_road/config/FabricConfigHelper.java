@@ -232,19 +232,9 @@ public class FabricConfigHelper implements IConfigHelper {
     }
 
     @Override
-    public double getSpicePlantHarvestYieldMultiplier() {
-        return value(ConfigSchema.PLANT_HARVEST_YIELD_MULTIPLIER, server().plant.harvestYieldMultiplier);
-    }
-
-    @Override
     public double getSpicePlantGrowthSpeedMultiplier(Tier tier) {
         return value(ConfigSchema.CULTIVATION_GROWTH_SPEED_MULTIPLIER.get(tier),
                 server().cultivation.growthSpeed.of(tier));
-    }
-
-    @Override
-    public double getSpiceTreeHarvestYieldMultiplier() {
-        return value(ConfigSchema.TREE_HARVEST_YIELD_MULTIPLIER, server().tree.harvestYieldMultiplier);
     }
 
     @Override
@@ -669,8 +659,6 @@ public class FabricConfigHelper implements IConfigHelper {
         @ConfigEntry.Gui.CollapsibleObject
         public Cultivation cultivation = new Cultivation();
         @ConfigEntry.Gui.CollapsibleObject
-        public Plant plant = new Plant();
-        @ConfigEntry.Gui.CollapsibleObject
         public Tree tree = new Tree();
         @ConfigEntry.Gui.CollapsibleObject
         public Vine vine = new Vine();
@@ -778,16 +766,8 @@ public class FabricConfigHelper implements IConfigHelper {
             public PerTier growthSpeed = PerTier.of(ConfigSchema.CULTIVATION_GROWTH_SPEED_MULTIPLIER);
         }
 
-        /** Harvesting Spices that grow on the ground. */
-        public static class Plant {
-            @ConfigEntry.Gui.Tooltip
-            public double harvestYieldMultiplier = ConfigSchema.PLANT_HARVEST_YIELD_MULTIPLIER.getDefault();
-        }
-
         /** Harvesting Spices that grow on trees. */
         public static class Tree {
-            @ConfigEntry.Gui.Tooltip
-            public double harvestYieldMultiplier = ConfigSchema.TREE_HARVEST_YIELD_MULTIPLIER.getDefault();
             @ConfigEntry.Gui.CollapsibleObject
             public PerTier fruitingLeaves = PerTier.of(ConfigSchema.TREE_FRUITING_LEAVES_CHANCE);
         }

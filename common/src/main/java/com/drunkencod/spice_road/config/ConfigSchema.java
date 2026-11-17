@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.compat.CompatRecipeMod;
 import com.drunkencod.spice_road.compat.viewer.ViewerCategory;
 import com.drunkencod.spice_road.platform.Services;
@@ -62,8 +61,6 @@ public final class ConfigSchema {
     public static final ConfigSection CULTIVATION = ConfigSection.root(ConfigFile.SERVER, "cultivation");
     /** Per-tier growth pacing of planted Spices. */
     public static final ConfigSection CULTIVATION_GROWTH_SPEED = CULTIVATION.child("growthSpeed");
-    /** Harvesting Spice Plants that grow on the ground. */
-    public static final ConfigSection PLANT = ConfigSection.root(ConfigFile.SERVER, "plant");
     /** Harvesting Spice Trees. */
     public static final ConfigSection TREE = ConfigSection.root(ConfigFile.SERVER, "tree");
     /** Per-tier fruiting of Spice Tree leaves. */
@@ -278,14 +275,6 @@ public final class ConfigSchema {
 
     // #region Harvesting
 
-    /** Harvest yield multiplier for FLOWER_PATCH and CROP Spice Plants. */
-    public static final ConfigOption<Double> PLANT_HARVEST_YIELD_MULTIPLIER = add(ConfigOption.ofDouble(PLANT,
-            "harvestYieldMultiplier", Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER, 0.0, 64.0));
-
-    /** Harvest yield multiplier for Spice Trees. */
-    public static final ConfigOption<Double> TREE_HARVEST_YIELD_MULTIPLIER = add(ConfigOption.ofDouble(TREE,
-            "harvestYieldMultiplier", Constants.DEFAULT_SPICE_TREE_HARVEST_YIELD_MULTIPLIER, 0.0, 64.0));
-
     /**
      * Fraction of a fruiting Spice Tree's leaves that bear fruit, per {@link Tier}.
      */
@@ -302,7 +291,7 @@ public final class ConfigSchema {
     public static final ConfigOption<Integer> HARVEST_LUCK_MAX_LEVEL = add(
             ConfigOption.ofInt(HARVEST_LUCK, "maxLevel", 3, 0, 10));
 
-    /** Change in Spice yield per level of Luck. */
+    /** Chance of extra (or, with Bad Luck, no) Spice per level of Luck. */
     public static final ConfigOption<Double> HARVEST_LUCK_YIELD_BONUS = add(
             ConfigOption.ofDouble(HARVEST_LUCK, "yieldBonus", 0.15, 0.0, 1.0));
 

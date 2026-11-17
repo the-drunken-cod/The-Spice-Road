@@ -3,16 +3,14 @@ package com.drunkencod.spice_road.block;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
-import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.spice.Spice;
 
 /**
  * Checks shared by every block whose Spice is harvested by interacting with
- * it: the Hand-Pick Requirement and the harvest yield.
+ * it: the Hand-Pick Requirement.
  */
 public final class SpiceHarvesting {
 
@@ -53,21 +51,5 @@ public final class SpiceHarvesting {
     public static boolean isConnectedPlayer(@Nullable Entity entity) {
         return entity instanceof ServerPlayer serverPlayer
                 && serverPlayer.server.getPlayerList().getPlayer(serverPlayer.getUUID()) == serverPlayer;
-    }
-
-    /**
-     * Rolls the number of {@code spice} items a single Spice Plant or Spice
-     * Vine harvest yields: its {@link Spice#getDropAmount()} scaled by
-     * {@code IConfigHelper#getSpicePlantHarvestYieldMultiplier()} and the
-     * harvester's {@link HarvestLuck}, like the break loot tables.
-     *
-     * @param spice     The harvested Spice.
-     * @param random    The random source to roll with.
-     * @param harvester The player who harvested.
-     * @return The number of items to drop, possibly {@code 0}.
-     */
-    public static int rollPlantYield(Spice spice, RandomSource random, Player harvester) {
-        return HarvestLuck.rollYield(random, spice.getDropAmount(),
-                Services.CONFIG.getSpicePlantHarvestYieldMultiplier(), harvester);
     }
 }

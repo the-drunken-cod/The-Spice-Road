@@ -16,7 +16,7 @@ import com.drunkencod.spice_road.stats.ClientSpiceFindings;
 
 /**
  * Page type {@code spice_road:spice_info}: a Spice's planting item growing
- * into its raw item, with its tier, climate, yield, plant and harvest, as the
+ * into its raw item, with its tier, climate, plant and harvest, as the
  * Spice Origin viewer category shows it, plus whether the reader has found it.
  * <p>
  * JSON: {@code "spice": "<spice id>"}, e.g. {@code "cinnamon"}.

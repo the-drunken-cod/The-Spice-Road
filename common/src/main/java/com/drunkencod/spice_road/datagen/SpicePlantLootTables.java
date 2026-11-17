@@ -90,23 +90,21 @@ public final class SpicePlantLootTables {
                                                 .when(isMature)
                                                 .when(SpiceRegionSupportedCondition.spiceRegionSupported().invert())
                                                 .add(LootItem.lootTableItem(seedItem)))
-                                .withPool(matureHarvestPool(isMature, productItem, spice.getDropAmount()));
+                                .withPool(matureHarvestPool(isMature, productItem));
         }
 
         /**
          * @return A pool dropping {@code item} from a {@code maxAge} plant where
-         *         the Spice Region supports it, in a count scaled live from
-         *         {@code baseAmount} by the harvest yield multiplier and Harvest
-         *         Luck.
+         *         the Spice Region supports it, in a count changed live by
+         *         Harvest Luck.
          */
         private static LootPool.Builder matureHarvestPool(LootItemBlockStatePropertyCondition.Builder isMature,
-                        ItemLike item, int baseAmount) {
+                        ItemLike item) {
                 return LootPool.lootPool()
                                 .setRolls(ConstantValue.exactly(1.0F))
                                 .when(isMature)
                                 .when(SpiceRegionSupportedCondition.spiceRegionSupported())
                                 .add(LootItem.lootTableItem(item)
-                                                .apply(HarvestYieldFunction.harvestYield(baseAmount,
-                                                                HarvestYieldFunction.Source.PLANT)));
+                                                .apply(HarvestYieldFunction.harvestYield()));
         }
 }

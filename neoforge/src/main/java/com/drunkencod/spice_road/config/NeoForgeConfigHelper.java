@@ -288,18 +288,8 @@ public class NeoForgeConfigHelper implements IConfigHelper {
     }
 
     @Override
-    public double getSpicePlantHarvestYieldMultiplier() {
-        return value(ConfigSchema.PLANT_HARVEST_YIELD_MULTIPLIER);
-    }
-
-    @Override
     public double getSpicePlantGrowthSpeedMultiplier(Tier tier) {
         return value(ConfigSchema.CULTIVATION_GROWTH_SPEED_MULTIPLIER.get(tier));
-    }
-
-    @Override
-    public double getSpiceTreeHarvestYieldMultiplier() {
-        return value(ConfigSchema.TREE_HARVEST_YIELD_MULTIPLIER);
     }
 
     @Override

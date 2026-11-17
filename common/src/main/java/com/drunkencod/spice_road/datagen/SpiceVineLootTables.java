@@ -30,8 +30,8 @@ public final class SpiceVineLootTables {
      * shears drop of the vine block itself, so breaking a ripe segment with
      * anything but shears yields the Spice but no replantable vine.
      * <p>
-     * The count is scaled live by the plant harvest yield multiplier and
-     * Harvest Luck, see {@link HarvestYieldFunction}.
+     * The count is changed live by Harvest Luck, see
+     * {@link HarvestYieldFunction}.
      *
      * @param vine        The registered Spice Vine.
      * @param shearsDrops The vine's base loot table, e.g. vanilla's
@@ -51,8 +51,7 @@ public final class SpiceVineLootTables {
                         .setProperties(StatePropertiesPredicate.Builder.properties()
                                 .hasProperty(SpiceVineBlock.AGE, Constants.SPICE_VINE_GROWTH_STAGES)))
                 .add(LootItem.lootTableItem(vine.productItem().get())
-                        .apply(HarvestYieldFunction.harvestYield(spice.getDropAmount(),
-                                HarvestYieldFunction.Source.PLANT)));
+                        .apply(HarvestYieldFunction.harvestYield()));
 
         return shearsDrops.withPool(productPool);
     }

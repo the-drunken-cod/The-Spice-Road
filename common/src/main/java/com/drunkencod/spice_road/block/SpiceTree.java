@@ -124,18 +124,15 @@ public final class SpiceTree {
     }
 
     /**
-     * Rolls a single harvest of this tree's Spice: {@link Spice#getDropAmount()}
-     * scaled by {@code IConfigHelper#getSpiceTreeHarvestYieldMultiplier()} and
-     * the harvester's {@link HarvestLuck}, with a fractional result rounded up
-     * at random (weighted by its fraction).
+     * Rolls a single harvest of this tree's Spice: one item, changed by the
+     * harvester's {@link HarvestLuck}.
      *
      * @param random    The random source to roll with.
      * @param harvester The entity that harvested, if any; only a player's Luck counts.
      * @return The harvested stack; empty if the roll yields nothing.
      */
     public ItemStack rollHarvest(RandomSource random, @Nullable Entity harvester) {
-        int count = HarvestLuck.rollYield(random, spice.getDropAmount(),
-                Services.CONFIG.getSpiceTreeHarvestYieldMultiplier(), harvester);
+        int count = HarvestLuck.rollYield(random, harvester);
         return count > 0 ? new ItemStack(productItem.get(), count) : ItemStack.EMPTY;
     }
 

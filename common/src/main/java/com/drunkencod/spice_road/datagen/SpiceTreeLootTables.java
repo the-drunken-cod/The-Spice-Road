@@ -50,8 +50,8 @@ public final class SpiceTreeLootTables {
      * Spice has a Hand-Pick Requirement, in which case it can only be picked.
      * Plain (non-fruiting) leaves are returned unchanged.
      * <p>
-     * The count is scaled live by the tree harvest yield multiplier and
-     * Harvest Luck, see {@link HarvestYieldFunction}.
+     * The count is changed live by Harvest Luck, see
+     * {@link HarvestYieldFunction}.
      *
      * @param tree        The Spice Tree the leaves belong to.
      * @param leavesDrops The leaves' base loot table, e.g. vanilla's
@@ -71,8 +71,7 @@ public final class SpiceTreeLootTables {
                         .setProperties(StatePropertiesPredicate.Builder.properties()
                                 .hasProperty(FruitingSpiceLeavesBlock.AGE, Constants.SPICE_TREE_LEAF_GROWTH_STAGES)))
                 .add(LootItem.lootTableItem(tree.getProductItem().get())
-                        .apply(HarvestYieldFunction.harvestYield(spice.getDropAmount(),
-                                HarvestYieldFunction.Source.TREE)));
+                        .apply(HarvestYieldFunction.harvestYield()));
 
         return leavesDrops.withPool(productPool);
     }

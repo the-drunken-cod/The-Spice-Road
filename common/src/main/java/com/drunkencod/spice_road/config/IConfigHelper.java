@@ -264,16 +264,6 @@ public interface IConfigHelper {
     boolean isUnripeSpicePollinationAllowed();
 
     /**
-     * Harvest yield multiplier for Spice Plants and Spice Vines, applied to
-     * {@code Spice#getDropAmount()} on every harvest, whether picked or broken.
-     * Read live at harvest time. A fractional result is rounded up or down at
-     * random, weighted by its fractional part.
-     *
-     * @return The configured Spice Plant harvest yield multiplier.
-     */
-    double getSpicePlantHarvestYieldMultiplier();
-
-    /**
      * Growth-speed multiplier for {@code FLOWER_PATCH}/{@code CROP} Spice Plants
      * of the given {@link Tier} (see {@code Spice#getTier()}), applied on top of
      * vanilla's farmland/light-based growth odds - {@code 1.0} matches vanilla
@@ -284,16 +274,6 @@ public interface IConfigHelper {
      * @return The configured growth-speed multiplier for that tier.
      */
     double getSpicePlantGrowthSpeedMultiplier(Tier tier);
-
-    /**
-     * Harvest yield multiplier for Spice Trees, applied to
-     * {@code Spice#getDropAmount()} whenever bark is stripped or fruiting
-     * leaves are picked. Read live at harvest time. A fractional result is
-     * rounded up or down at random, weighted by its fractional part.
-     *
-     * @return The configured Spice Tree harvest yield multiplier.
-     */
-    double getSpiceTreeHarvestYieldMultiplier();
 
     /**
      * Fraction ({@code 0.0}-{@code 1.0}) of air-exposed, naturally grown
@@ -327,11 +307,12 @@ public interface IConfigHelper {
     int getHarvestLuckMaxLevel();
 
     /**
-     * How much each level of Harvest Luck changes the Spice yield of a
-     * harvest: the yield is multiplied by {@code 1 + bonus * luck}. {@code 0.0}
+     * Chance of Harvest Luck changing the Spice yield per level of Luck: a
+     * harvest has a chance of {@code bonus * |luck|} to yield one extra item
+     * per whole level of Luck, or, with Bad Luck, no item at all. {@code 0.0}
      * turns the effect off.
      *
-     * @return The configured yield bonus per Luck level.
+     * @return The configured yield change chance per Luck level.
      */
     double getHarvestLuckYieldBonus();
 

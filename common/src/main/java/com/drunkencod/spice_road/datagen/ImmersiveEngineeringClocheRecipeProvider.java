@@ -78,13 +78,7 @@ public class ImmersiveEngineeringClocheRecipeProvider implements DataProvider {
 
         JsonArray results = new JsonArray();
         ResourceLocation productId = BuiltInRegistries.ITEM.getKey(product);
-        double yield = PotCompatSpices.yield(spice);
-        int whole = (int) Math.floor(yield);
-        float fraction = (float) (yield - whole);
-        if (whole > 0)
-            results.add(CompatRecipeJson.itemStack(productId, whole));
-        if (fraction > 0.0F)
-            results.add(chanceResult(productId, fraction));
+        results.add(CompatRecipeJson.itemStack(productId, 1));
         results.add(chanceResult(seedId, spice.getTier().getSeedDropChance()));
         recipe.add("results", results);
         return recipe;

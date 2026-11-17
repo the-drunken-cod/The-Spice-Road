@@ -6,6 +6,8 @@
     - Spice Groves and their satellites now have about 3x as many plants (and trees) and cover a wider area by default.
     - The Soil Analyzer now breaks `#minecraft:replaceable` blocks above a sample (like grass and flowers) as if broken by hand, instead of refusing the sample.
     - Added Sable weight tags for the following blocks and block tags: `#spice_road:drying_racks`, `#spice_road:spice_racks`, `spice_road:spice_grinder`.
+    - Every harvest of a spice plant, vine, tree or leaf now yields exactly 1 spice, instead of 1-2 depending on the spice. How much spice you get is balanced through growth speed, fruiting leaves and ripening segments instead. The `plant.harvestYieldMultiplier` and `tree.harvestYieldMultiplier` server config options and the "Yield" line in the recipe viewer are gone, as are the `base` and `source` fields of the `spice_road:harvest_yield` loot function.
+    - Luck now changes the spice yield by chance instead of scaling it: a harvest has a chance (the `harvestLuck.yieldBonus` config times the Luck level) to yield one extra spice per level of Luck, so up to 4 at the default Luck cap of 3. Bad Luck gives the same chance of the harvest yielding no spice at all. The `harvestLuck.yieldBonus` default is unchanged.
 - **Fixes:**
     - Fixed order in which items are inserted into a Spice Rack when shift-clicking them inside the GUI.
     - Fixed non-fruiting Spice Tree leaves being left floating by leaf decay mods like [Leaves Be Gone.](https://modrinth.com/mod/leaves-be-gone)

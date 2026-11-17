@@ -354,8 +354,8 @@ public abstract class SpicePlantBlock extends CropBlock {
      * it regrows instead of breaking. Like the break loot table, it also
      * drops one seed with the {@link Tier#getSeedDropChance() seed drop
      * chance} of the Spice's tier, or always where the Spice Region doesn't
-     * support the Spice, so the harvest isn't empty. Both the yield
-     * and that chance are scaled by the player's {@link HarvestLuck}. The break
+     * support the Spice, so the harvest isn't empty. The player's
+     * {@link HarvestLuck} adds to the yield and scales that chance. The break
      * loot table of a Hand-Pick Spice only drops the seed, so this is the only
      * way to obtain its Spice; for every other Spice, it's a shortcut that
      * spares the plant instead of breaking it.
@@ -368,7 +368,7 @@ public abstract class SpicePlantBlock extends CropBlock {
             return;
 
         ModStats.award(player, ModStats.HAND_PICKED_HARVESTS);
-        int yield = SpiceHarvesting.rollPlantYield(spice, level.getRandom(), player);
+        int yield = HarvestLuck.rollYield(level.getRandom(), player);
         boolean supported = spice.canBeCultivatedAt(serverLevel, pos);
         if (yield > 0 && supported)
             popResourceFromFace(level, pos, hitResult.getDirection(),

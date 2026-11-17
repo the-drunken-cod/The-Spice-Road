@@ -94,7 +94,7 @@ public class BotanyPotsRecipeProvider implements DataProvider {
         recipe.addProperty("grow_time", PotCompatSpices.growTicks(spice));
 
         JsonArray items = new JsonArray();
-        addSpiceDrops(items, spice, product);
+        addSpiceDrops(items, product);
         items.add(drop(BuiltInRegistries.ITEM.getKey(seed), 1, spice.getTier().getSeedDropChance()));
         recipe.add("drops", dropProviders(items));
         return recipe;
@@ -110,7 +110,7 @@ public class BotanyPotsRecipeProvider implements DataProvider {
         recipe.add("display", treeDisplay(tree));
 
         JsonArray items = new JsonArray();
-        addSpiceDrops(items, spice, tree.getProductItem().get());
+        addSpiceDrops(items, tree.getProductItem().get());
         items.add(drop(BuiltInRegistries.BLOCK.getKey(tree.getLog().get()), TREE_LOG_DROP_COUNT,
                 TREE_LOG_DROP_CHANCE));
         items.add(drop(sapling, 1, spice.getTier().getSeedDropChance()));
@@ -179,21 +179,9 @@ public class BotanyPotsRecipeProvider implements DataProvider {
 
     // #region drops
 
-    /**
-     * Adds the Spice drops of one harvest: the whole part of the expected
-     * yield as a guaranteed stack, and any fractional part as a single extra
-     * item with that chance.
-     */
-    private static void addSpiceDrops(JsonArray items, Spice spice, Item product) {
-        ResourceLocation id = BuiltInRegistries.ITEM.getKey(product);
-        double yield = PotCompatSpices.yield(spice);
-        int whole = (int) Math.floor(yield);
-        float fraction = (float) (yield - whole);
-
-        if (whole > 0)
-            items.add(drop(id, whole, 1.0F));
-        if (fraction > 0.0F)
-            items.add(drop(id, 1, fraction));
+    /** Adds the Spice drop of one harvest: a single guaranteed item. */
+    private static void addSpiceDrops(JsonArray items, Item product) {
+        items.add(drop(BuiltInRegistries.ITEM.getKey(product), 1, 1.0F));
     }
 
     private static JsonObject drop(ResourceLocation item, int count, float chance) {

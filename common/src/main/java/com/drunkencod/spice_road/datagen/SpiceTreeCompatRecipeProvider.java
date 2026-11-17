@@ -35,8 +35,7 @@ import com.drunkencod.spice_road.block.SpiceTrees;
  * {@link DataProvider} writing raw JSON, since neither mod is a compile-time
  * dependency.
  * <p>
- * The Spice count is {@code Spice#getDropAmount()} at the default yield
- * multiplier, since recipes can't read live config.
+ * The Spice count is always 1, since recipes can't read a player's Luck.
  */
 public class SpiceTreeCompatRecipeProvider implements DataProvider {
 
@@ -56,8 +55,7 @@ public class SpiceTreeCompatRecipeProvider implements DataProvider {
                     ResourceLocation log = BuiltInRegistries.BLOCK.getKey(tree.getLog().get());
                     ResourceLocation strippedLog = BuiltInRegistries.BLOCK.getKey(tree.getStrippedLog().get());
                     Item product = tree.getProductItem().get();
-                    int count = (int) Math.floor(
-                            tree.getSpice().getDropAmount() * Constants.DEFAULT_SPICE_TREE_HARVEST_YIELD_MULTIPLIER);
+                    int count = 1;
 
                     ResourceLocation createId = ResourceLocation.fromNamespaceAndPath("create",
                             "cutting/runtime_generated/compat/" + log.getNamespace() + "/" + log.getPath() + "_to_"

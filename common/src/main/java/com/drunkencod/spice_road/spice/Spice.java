@@ -41,93 +41,93 @@ import net.minecraft.world.item.Item;
 public enum Spice implements StringRepresentable {
 
     // trees
-    ALLSPICE("allspice", SourceType.TREE, HarvestAction.PICK, Climate.TROPICAL, 2, 2, false,
+    ALLSPICE("allspice", SourceType.TREE, HarvestAction.PICK, Climate.TROPICAL, 2, false,
             Season.SUMMER),
-    CASSIA("cassia", SourceType.TREE, HarvestAction.STRIP, Climate.TROPICAL, 4, 2, false,
+    CASSIA("cassia", SourceType.TREE, HarvestAction.STRIP, Climate.TROPICAL, 4, false,
             Season.SPRING, Season.SUMMER),
     // thin tree with little foliage, so its leaves drop saplings more often
-    CINNAMON("cinnamon", SourceType.TREE, HarvestAction.STRIP, Climate.TROPICAL, 5, 1, false, 0.15F,
+    CINNAMON("cinnamon", SourceType.TREE, HarvestAction.STRIP, Climate.TROPICAL, 5, false, 0.15F,
             Season.SPRING, Season.SUMMER),
-    CLOVE("clove", SourceType.TREE, HarvestAction.PICK, Climate.TROPICAL, 5, 1, false,
+    CLOVE("clove", SourceType.TREE, HarvestAction.PICK, Climate.TROPICAL, 5, false,
             Season.SUMMER, Season.AUTUMN),
-    CURRY("curry", SourceType.TREE, HarvestAction.PICK, Climate.TROPICAL, 2, 2, false,
+    CURRY("curry", SourceType.TREE, HarvestAction.PICK, Climate.TROPICAL, 2, false,
             Season.SPRING, Season.SUMMER),
-    MASTIC("mastic", SourceType.TREE, HarvestAction.STRIP, Climate.ARID, 4, 1, false,
+    MASTIC("mastic", SourceType.TREE, HarvestAction.STRIP, Climate.ARID, 4, false,
             Season.SUMMER),
-    NUTMEG("nutmeg", SourceType.TREE, HarvestAction.PICK, Climate.TROPICAL, 5, 1, false,
+    NUTMEG("nutmeg", SourceType.TREE, HarvestAction.PICK, Climate.TROPICAL, 5, false,
             Season.SUMMER, Season.AUTUMN),
-    STAR_ANISE("star_anise", SourceType.TREE, HarvestAction.PICK, Climate.TEMPERATE, 4, 1, false,
+    STAR_ANISE("star_anise", SourceType.TREE, HarvestAction.PICK, Climate.TEMPERATE, 4, false,
             Season.SPRING, Season.AUTUMN),
-    TAMARIND("tamarind", SourceType.TREE, HarvestAction.PICK, Climate.TROPICAL, 3, 2, false,
+    TAMARIND("tamarind", SourceType.TREE, HarvestAction.PICK, Climate.TROPICAL, 3, false,
             Season.SUMMER, Season.AUTUMN),
-    TONKA("tonka", SourceType.TREE, HarvestAction.PICK, Climate.TROPICAL, 4, 1, false, Season.SUMMER),
+    TONKA("tonka", SourceType.TREE, HarvestAction.PICK, Climate.TROPICAL, 4, false, Season.SUMMER),
     // bushes
-    BASIL("basil", SourceType.BUSH, HarvestAction.PICK, Climate.TEMPERATE, 2, 2, false, Season.SPRING,
+    BASIL("basil", SourceType.BUSH, HarvestAction.PICK, Climate.TEMPERATE, 2, false, Season.SPRING,
             Season.SUMMER),
-    CAPER("caper", SourceType.BUSH, HarvestAction.PICK, Climate.ARID, 3, 2, false,
+    CAPER("caper", SourceType.BUSH, HarvestAction.PICK, Climate.ARID, 3, false,
             Season.SUMMER),
-    OREGANO("oregano", SourceType.BUSH, HarvestAction.PICK, Climate.ARID, 2, 2, false, Season.SUMMER),
-    PARSLEY("parsley", SourceType.BUSH, HarvestAction.PICK, Climate.TEMPERATE, 1, 2, false, Season.SPRING,
+    OREGANO("oregano", SourceType.BUSH, HarvestAction.PICK, Climate.ARID, 2, false, Season.SUMMER),
+    PARSLEY("parsley", SourceType.BUSH, HarvestAction.PICK, Climate.TEMPERATE, 1, false, Season.SPRING,
             Season.SUMMER),
-    ROSEMARY("rosemary", SourceType.BUSH, HarvestAction.PICK, Climate.ARID, 1, 2, false,
+    ROSEMARY("rosemary", SourceType.BUSH, HarvestAction.PICK, Climate.ARID, 1, false,
             Season.WINTER, Season.SPRING, Season.SUMMER),
-    SAGE("sage", SourceType.BUSH, HarvestAction.PICK, Climate.TEMPERATE, 1, 2, false,
+    SAGE("sage", SourceType.BUSH, HarvestAction.PICK, Climate.TEMPERATE, 1, false,
             Season.SPRING, Season.SUMMER),
-    SUMAC("sumac", SourceType.BUSH, HarvestAction.PICK, Climate.ARID, 2, 2, false,
+    SUMAC("sumac", SourceType.BUSH, HarvestAction.PICK, Climate.ARID, 2, false,
             Season.SUMMER, Season.AUTUMN),
-    THYME("thyme", SourceType.BUSH, HarvestAction.PICK, Climate.ARID, 1, 2, false,
+    THYME("thyme", SourceType.BUSH, HarvestAction.PICK, Climate.ARID, 1, false,
             Season.SPRING, Season.SUMMER),
     // vines
-    LONG_PEPPER("long_pepper", SourceType.VINE, HarvestAction.PICK, Climate.TROPICAL, 4, 1, false,
+    LONG_PEPPER("long_pepper", SourceType.VINE, HarvestAction.PICK, Climate.TROPICAL, 4, false,
             Season.SUMMER, Season.AUTUMN),
-    VANILLA("vanilla", SourceType.VINE, HarvestAction.PICK, Climate.TROPICAL, 5, 1, false,
+    VANILLA("vanilla", SourceType.VINE, HarvestAction.PICK, Climate.TROPICAL, 5, false,
             Season.SPRING, Season.SUMMER),
     // flower patches
-    LAVENDER("lavender", SourceType.FLOWER_PATCH, HarvestAction.PICK, Climate.ARID, 1, 2, false,
+    LAVENDER("lavender", SourceType.FLOWER_PATCH, HarvestAction.PICK, Climate.ARID, 1, false,
             Season.SUMMER),
-    NIGELLA("nigella", SourceType.FLOWER_PATCH, HarvestAction.BREAK, Climate.TEMPERATE, 2, 2, false,
+    NIGELLA("nigella", SourceType.FLOWER_PATCH, HarvestAction.BREAK, Climate.TEMPERATE, 2, false,
             Season.SPRING, Season.SUMMER),
-    SAFFLOWER("safflower", SourceType.FLOWER_PATCH, HarvestAction.BREAK, Climate.ARID, 2, 2, false,
+    SAFFLOWER("safflower", SourceType.FLOWER_PATCH, HarvestAction.BREAK, Climate.ARID, 2, false,
             Season.SUMMER),
-    SAFFRON("saffron", SourceType.FLOWER_PATCH, HarvestAction.PICK, Climate.ARID, 5, 1, false,
+    SAFFRON("saffron", SourceType.FLOWER_PATCH, HarvestAction.PICK, Climate.ARID, 5, false,
             Season.AUTUMN),
     // crops
-    CARAWAY("caraway", SourceType.CROP, HarvestAction.BREAK, Climate.COLD, 1, 2, false,
+    CARAWAY("caraway", SourceType.CROP, HarvestAction.BREAK, Climate.COLD, 1, false,
             Season.SPRING, Season.AUTUMN),
-    CORIANDER("coriander", SourceType.CROP, HarvestAction.BREAK, Climate.TEMPERATE, 1, 2, false,
+    CORIANDER("coriander", SourceType.CROP, HarvestAction.BREAK, Climate.TEMPERATE, 1, false,
             Season.SPRING, Season.AUTUMN),
-    CUMIN("cumin", SourceType.CROP, HarvestAction.BREAK, Climate.ARID, 2, 1, false,
+    CUMIN("cumin", SourceType.CROP, HarvestAction.BREAK, Climate.ARID, 2, false,
             Season.SPRING, Season.SUMMER),
-    DILL("dill", SourceType.CROP, HarvestAction.BREAK, Climate.COLD, 1, 2, false,
+    DILL("dill", SourceType.CROP, HarvestAction.BREAK, Climate.COLD, 1, false,
             Season.SPRING, Season.SUMMER),
-    FENNEL("fennel", SourceType.CROP, HarvestAction.BREAK, Climate.TEMPERATE, 1, 2, false,
+    FENNEL("fennel", SourceType.CROP, HarvestAction.BREAK, Climate.TEMPERATE, 1, false,
             Season.SPRING, Season.SUMMER, Season.AUTUMN),
-    FENUGREEK("fenugreek", SourceType.CROP, HarvestAction.BREAK, Climate.ARID, 2, 2, false,
+    FENUGREEK("fenugreek", SourceType.CROP, HarvestAction.BREAK, Climate.ARID, 2, false,
             Season.SPRING, Season.AUTUMN),
-    GARLIC("garlic", SourceType.CROP, HarvestAction.BREAK, Climate.TEMPERATE, 2, 2, false, Season.SUMMER,
+    GARLIC("garlic", SourceType.CROP, HarvestAction.BREAK, Climate.TEMPERATE, 2, false, Season.SUMMER,
             Season.AUTUMN),
-    HABANERO("habanero", SourceType.CROP, HarvestAction.PICK, Climate.ARID, 3, 2, false,
+    HABANERO("habanero", SourceType.CROP, HarvestAction.PICK, Climate.ARID, 3, false,
             Season.SUMMER),
-    MUSTARD("mustard", SourceType.CROP, HarvestAction.BREAK, Climate.COLD, 1, 2, false,
+    MUSTARD("mustard", SourceType.CROP, HarvestAction.BREAK, Climate.COLD, 1, false,
             Season.AUTUMN, Season.WINTER, Season.SPRING),
-    SESAME("sesame", SourceType.CROP, HarvestAction.BREAK, Climate.TROPICAL, 2, 2, false,
+    SESAME("sesame", SourceType.CROP, HarvestAction.BREAK, Climate.TROPICAL, 2, false,
             Season.SUMMER, Season.AUTUMN),
     // rhizomes
-    CARDAMOM("cardamom", SourceType.RHIZOME, HarvestAction.BREAK, Climate.TROPICAL, 4, 1, false,
+    CARDAMOM("cardamom", SourceType.RHIZOME, HarvestAction.BREAK, Climate.TROPICAL, 4, false,
             Season.SPRING, Season.SUMMER),
-    GINGER("ginger", SourceType.RHIZOME, HarvestAction.BREAK, Climate.TROPICAL, 3, 2, false,
+    GINGER("ginger", SourceType.RHIZOME, HarvestAction.BREAK, Climate.TROPICAL, 3, false,
             Season.SUMMER, Season.AUTUMN),
-    HORSERADISH("horseradish", SourceType.RHIZOME, HarvestAction.BREAK, Climate.COLD, 2, 2, false,
+    HORSERADISH("horseradish", SourceType.RHIZOME, HarvestAction.BREAK, Climate.COLD, 2, false,
             Season.AUTUMN, Season.WINTER),
-    LICORICE("licorice", SourceType.RHIZOME, HarvestAction.BREAK, Climate.TEMPERATE, 3, 2, false,
+    LICORICE("licorice", SourceType.RHIZOME, HarvestAction.BREAK, Climate.TEMPERATE, 3, false,
             Season.SPRING, Season.SUMMER, Season.AUTUMN),
-    TURMERIC("turmeric", SourceType.RHIZOME, HarvestAction.BREAK, Climate.TROPICAL, 3, 2, false,
+    TURMERIC("turmeric", SourceType.RHIZOME, HarvestAction.BREAK, Climate.TROPICAL, 3, false,
             Season.SUMMER, Season.AUTUMN),
-    SWEET_FLAG("sweet_flag", SourceType.RHIZOME, HarvestAction.BREAK, Climate.COLD, 2, 2, true,
+    SWEET_FLAG("sweet_flag", SourceType.RHIZOME, HarvestAction.BREAK, Climate.COLD, 2, true,
             Season.SPRING, Season.AUTUMN, Season.WINTER),
-    WASABI("wasabi", SourceType.RHIZOME, HarvestAction.BREAK, Climate.COLD, 5, 1, true,
+    WASABI("wasabi", SourceType.RHIZOME, HarvestAction.BREAK, Climate.COLD, 5, true,
             Season.AUTUMN, Season.WINTER, Season.SPRING),
-    WATER_PEPPER("water_pepper", SourceType.RHIZOME, HarvestAction.BREAK, Climate.TEMPERATE, 3, 2, true,
+    WATER_PEPPER("water_pepper", SourceType.RHIZOME, HarvestAction.BREAK, Climate.TEMPERATE, 3, true,
             Season.SPRING, Season.SUMMER, Season.AUTUMN);
 
     /** Sapling drop chance of a leaf block without Fortune, matching vanilla oak leaves. */
@@ -144,25 +144,23 @@ public enum Spice implements StringRepresentable {
     private final HarvestAction harvestAction;
     private final Climate climate;
     private final int harvestDifficulty;
-    private final int dropAmount;
     private final boolean aquatic;
     private final Set<Season> seasons;
     private final float saplingDropChance;
 
     Spice(String id, SourceType src, HarvestAction act, Climate climate, int rarity,
-            int drops, boolean aquatic, Season... seasons) {
-        this(id, src, act, climate, rarity, drops, aquatic, DEFAULT_SAPLING_DROP_CHANCE, seasons);
+            boolean aquatic, Season... seasons) {
+        this(id, src, act, climate, rarity, aquatic, DEFAULT_SAPLING_DROP_CHANCE, seasons);
     }
 
     Spice(String id, SourceType src, HarvestAction act, Climate climate, int rarity,
-            int drops, boolean aquatic, float saplingDropChance, Season... seasons) {
+            boolean aquatic, float saplingDropChance, Season... seasons) {
         this.saplingDropChance = saplingDropChance;
         this.id = id;
         this.sourceType = src;
         this.harvestAction = act;
         this.climate = climate;
         this.harvestDifficulty = rarity;
-        this.dropAmount = drops;
         this.aquatic = aquatic;
         this.seasons = Collections.unmodifiableSet(EnumSet.copyOf(Arrays.asList(seasons)));
     }
@@ -215,14 +213,6 @@ public enum Spice implements StringRepresentable {
      */
     public boolean requiresHandPick() {
         return getTier() == Tier.EPIC;
-    }
-
-    /**
-     * @return The base number of product items per harvest, before any
-     *         configured yield multiplier.
-     */
-    public int getDropAmount() {
-        return dropAmount;
     }
 
     /**

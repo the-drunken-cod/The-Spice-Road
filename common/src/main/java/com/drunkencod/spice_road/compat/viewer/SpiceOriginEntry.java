@@ -24,14 +24,13 @@ import com.drunkencod.spice_road.compat.viewer.layout.ViewerSprites;
 import com.drunkencod.spice_road.platform.Services;
 import com.drunkencod.spice_road.registry.ModItems;
 import com.drunkencod.spice_road.spice.Season;
-import com.drunkencod.spice_road.spice.SourceType;
 import com.drunkencod.spice_road.spice.Spice;
 import com.drunkencod.spice_road.tooltip.SpiceFlavorTooltips;
 import com.drunkencod.spice_road.tooltip.SpiceProfileTooltips;
 
 /**
  * An entry of {@link ViewerCategory#SPICE_ORIGIN}: a Spice's planting item
- * growing into its raw item, with its Tier, hardiness, Climate, yield and how
+ * growing into its raw item, with its Tier, hardiness, Climate and how
  * its plant is grown and harvested. Everything that depends on the config is
  * read when laid out.
  *
@@ -76,7 +75,6 @@ public record SpiceOriginEntry(Spice spice) implements ViewerEntry {
         lines.add(new Line(ViewerText.labeled("spice_origin.climate", spice.getClimate().getDisplayName()),
                 List.of(ViewerText.translatable("spice_origin.climate.tooltip"))));
         lines.add(growthLine());
-        lines.add(yieldLine());
         lines.add(plantLine());
         lines.add(harvestLine());
         lines.add(seasonsLine());
@@ -127,16 +125,6 @@ public record SpiceOriginEntry(Spice spice) implements ViewerEntry {
         String key = "spice_origin.growth." + growth;
         return new Line(ViewerText.labeled("spice_origin.growth", ViewerText.translatable(key)),
                 List.of(ViewerText.translatable(key + ".tooltip")));
-    }
-
-    private Line yieldLine() {
-        double multiplier = spice.getSourceType() == SourceType.TREE
-                ? Services.CONFIG.getSpiceTreeHarvestYieldMultiplier()
-                : Services.CONFIG.getSpicePlantHarvestYieldMultiplier();
-        Component amount = ViewerText.translatable("spice_origin.yield.value",
-                ViewerText.amount(spice.getDropAmount() * multiplier));
-        return new Line(ViewerText.labeled("spice_origin.yield", amount),
-                List.of(ViewerText.translatable("spice_origin.yield.tooltip")));
     }
 
     private Line plantLine() {

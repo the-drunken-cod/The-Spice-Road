@@ -10,8 +10,8 @@ import net.minecraft.world.entity.player.Player;
 import com.drunkencod.spice_road.platform.Services;
 
 /**
- * Harvest Luck: how a harvesting player's Luck scales the Spice yield and the
- * seed drop chance of a harvest. Shared by the Java harvest paths and the
+ * Harvest Luck: how a harvesting player's Luck changes the Spice yield and
+ * the seed drop chance of a harvest. Shared by the Java harvest paths and the
  * custom loot function/condition of the break loot tables, so both read the
  * same live config.
  */
@@ -34,24 +34,21 @@ public final class HarvestLuck {
     }
 
     /**
-     * Rolls the number of items a harvest yields: {@code baseAmount} scaled by
-     * {@code multiplier} and the harvester's Luck, with a fractional result
-     * rounded up or down at random, weighted by its fractional part.
+     * Rolls the number of items a harvest yields: one, unless the harvester's
+     * Luck interferes. With a chance of {@code yieldBonus * |luck|}, Luck
+     * yields one extra item per whole level, while Bad Luck yields nothing.
+     * The yield therefore never exceeds the configured Luck cap plus one.
      *
-     * @param random     The random source to roll with.
-     * @param baseAmount The Spice's unscaled drop amount.
-     * @param multiplier The harvest yield multiplier of the Spice's source.
-     * @param harvester  The entity that harvested, if any.
+     * @param random    The random source to roll with.
+     * @param harvester The entity that harvested, if any.
      * @return The number of items to drop, never negative.
      */
-    public static int rollYield(RandomSource random, int baseAmount, double multiplier, @Nullable Entity harvester) {
-        double yield = baseAmount * multiplier
-                * scale(Services.CONFIG.getHarvestLuckYieldBonus(), of(harvester));
-        int count = (int) yield;
-        if (random.nextDouble() < yield - count)
-            count++;
+    public static int rollYield(RandomSource random, @Nullable Entity harvester) {
+        float luck = of(harvester);
+        if (luck == 0.0F || random.nextDouble() >= Services.CONFIG.getHarvestLuckYieldBonus() * Math.abs(luck))
+            return 1;
 
-        return count;
+        return luck > 0.0F ? 1 + (int) luck : 0;
     }
 
     /**

@@ -1,6 +1,5 @@
 package com.drunkencod.spice_road.datagen;
 
-import com.drunkencod.spice_road.Constants;
 import com.drunkencod.spice_road.config.ConfigSchema;
 import com.drunkencod.spice_road.spice.HarvestAction;
 import com.drunkencod.spice_road.spice.SourceType;
@@ -8,8 +7,7 @@ import com.drunkencod.spice_road.spice.Spice;
 
 /**
  * Which Spices the pot-style compat recipes (Botany Pots, Immersive
- * Engineering's Garden Cloche) cover, and the timing and yield those recipes
- * bake in.
+ * Engineering's Garden Cloche) cover, and the timing those recipes bake in.
  * <p>
  * Those recipes are static, so they can't read live config nor judge the Spice
  * Region of the position they run at. They therefore only cover hardy Spices,
@@ -58,18 +56,5 @@ final class PotCompatSpices {
         double multiplier = ConfigSchema.CULTIVATION_GROWTH_SPEED_MULTIPLIER.get(spice.getTier()).getDefault();
         double factor = spice.getSourceType() == SourceType.TREE ? TREE_GROW_TIME_FACTOR : 1.0;
         return (int) Math.round(BASE_GROW_TICKS * factor / multiplier);
-    }
-
-    /**
-     * @param spice The Spice to yield.
-     * @return The expected Spice count per harvest: the Spice's drop amount
-     *         scaled by the default harvest yield multiplier of its source
-     *         type, to be split into a whole count and a fractional chance.
-     */
-    static double yield(Spice spice) {
-        double multiplier = spice.getSourceType() == SourceType.TREE
-                ? Constants.DEFAULT_SPICE_TREE_HARVEST_YIELD_MULTIPLIER
-                : Constants.DEFAULT_SPICE_PLANT_HARVEST_YIELD_MULTIPLIER;
-        return spice.getDropAmount() * multiplier;
     }
 }

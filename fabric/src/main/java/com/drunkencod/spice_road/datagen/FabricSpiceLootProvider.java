@@ -49,7 +49,7 @@ public class FabricSpiceLootProvider extends FabricBlockLootTableProvider {
 
     /**
      * Adds {@code block}'s loot table, built from {@code plant}'s seed/
-     * product items and {@code spice}'s drop amount. Called once for the
+     * product items and {@code spice}. Called once for the
      * farmed block and, for {@code CROP} Spices, again for the worldgen-only
      * {@code wild_} block, so both share the exact same loot table shape.
      */
