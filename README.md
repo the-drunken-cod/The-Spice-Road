@@ -27,11 +27,12 @@ Encourages local production and specialized trade and has lots of compat for oth
 > **GenAI Usage Notice:**
 > | **What:** | **GenAI used:** |
 > | :-- | :-- |
-> | Abstract Java Code | ✅ yes |
+> | Code | ✅ yes |
 > | Detail Work | ❌ no |
 > | Textures | ❌ no |
 > | Models | ❌ no |
 > | Sounds | ❌ no |
+> | Documentation | ❌ no |
 > 
 > [View our full GenAI usage policy here.](https://github.com/the-drunken-cod#genai-usage)
 
@@ -124,7 +125,7 @@ For an extensive in-game guide book, also install the mod [Patchouli.](https://m
 <br>
 
 ## Disclaimers:
-- **We use Generative AI** when coding to make tedious work easier and bridge knowledge gaps for this hobby project.  
+- **We use Generative AI** when coding to make tedious work easier and bridge knowledge gaps for this free hobby project.  
   That being said, **generated code is *rigorously reviewed*, and all assets and detail work will remain *fully human-made.***  
   [Our full GenAI usage policy and guidelines can be read here.](https://github.com/the-drunken-cod#genai-usage)
 - NOT AN OFFICIAL MINECRAFT PRODUCT. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT.  
