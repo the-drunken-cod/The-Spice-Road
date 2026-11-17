@@ -47,6 +47,9 @@ public class SpiceTraderProvider implements DataProvider {
     /** Chance that a stocked rack also holds a Processed Spice. */
     private static final double PROCESSED_CHANCE = 0.1;
 
+    /** Emeralds the trader pays for a Spice Mix at the least, before the price multiplier. */
+    private static final double BUY_PRESET_MIN_VALUE = 4.0;
+
     /** Villager XP per trade, by villager level. */
     private static final int[] XP_BY_LEVEL = { 2, 5, 10, 15, 20 };
 
@@ -131,9 +134,9 @@ public class SpiceTraderProvider implements DataProvider {
 
     /**
      * @return One file per villager level and direction: what the trader buys
-     *         from level 1 to 5 (the loose spices of one Tier per level, and
-     *         at all levels the Mix Presets no rarer than that Tier), and what
-     *         it sells.
+     *         from level 1 to 5 (the loose spices of one Tier per level,
+     *         raw only where a spice has no processed form, and at all levels the Mix Presets no rarer than
+     *         that Tier), and what it sells.
      */
     private static List<SpiceTrade> trades() {
         List<SpiceTrade> trades = new ArrayList<>();
@@ -143,12 +146,12 @@ public class SpiceTraderProvider implements DataProvider {
             Tier buyTier = level == 5 ? Tier.EPIC : tiers[slot];
             List<Tier> buyTiers = level == 5 ? List.of(tiers) : List.of(buyTier);
             trades.add(new SpiceTrade(level, SpiceTradeDirection.BUY, List.of(
-                    entry(slot, 2, new SpiceTradeSource.Spices(buyTiers, true)),
-                    entry(slot, 1, new SpiceTradeSource.Presets(List.of(), buyTier)))));
+                    entry(slot, 2, new SpiceTradeSource.Spices(buyTiers, true, true)),
+                    entry(slot, 1, new SpiceTradeSource.Presets(List.of(), buyTier, BUY_PRESET_MIN_VALUE)))));
         }
-        SpiceTradeSource cheapPresets = new SpiceTradeSource.Presets(CHEAP_PRESETS, Tier.EPIC);
-        SpiceTradeSource common = new SpiceTradeSource.Spices(List.of(Tier.COMMON), true);
-        SpiceTradeSource uncommon = new SpiceTradeSource.Spices(List.of(Tier.UNCOMMON), true);
+        SpiceTradeSource cheapPresets = new SpiceTradeSource.Presets(CHEAP_PRESETS, Tier.EPIC, 0.0);
+        SpiceTradeSource common = new SpiceTradeSource.Spices(List.of(Tier.COMMON), true, false);
+        SpiceTradeSource uncommon = new SpiceTradeSource.Spices(List.of(Tier.UNCOMMON), true, false);
         trades.add(new SpiceTrade(1, SpiceTradeDirection.SELL, List.of(entry(0, 1, common))));
         trades.add(new SpiceTrade(2, SpiceTradeDirection.SELL, List.of(entry(1, 1, cheapPresets))));
         trades.add(new SpiceTrade(3, SpiceTradeDirection.SELL, List.of(entry(2, 1, uncommon))));
@@ -167,7 +170,7 @@ public class SpiceTraderProvider implements DataProvider {
                 new WanderingTrade(WanderingTradePool.PLANTING_ITEMS, List.of(wanderingEntry(
                         new SpiceTradeSource.PlantingItems(List.of(Tier.COMMON, Tier.UNCOMMON))))),
                 new WanderingTrade(WanderingTradePool.MIXES, List.of(wanderingEntry(
-                        new SpiceTradeSource.Presets(CHEAP_PRESETS, Tier.EPIC)))));
+                        new SpiceTradeSource.Presets(CHEAP_PRESETS, Tier.EPIC, 0.0)))));
     }
 
     private static SpiceTradeEntry wanderingEntry(SpiceTradeSource source) {

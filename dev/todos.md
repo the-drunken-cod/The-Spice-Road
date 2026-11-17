@@ -311,10 +311,12 @@
     - Luck: chance `yieldBonus * |luck|` (default 0.15 per level) for 1 extra item per whole Luck level (4 max at the default Luck cap of 3), or for no item at all with Bad Luck.
 - [x] Make all spice crop plants occasionally yield 1 seeds item, chance depending on tier (common 0.5, uncommon 0.4, rare 0.3, epic 0.2).
     - Already implemented via `Tier#getSeedDropChance()` in the break loot tables and the interaction harvest; unchanged.
-- [ ] Spice Traders:
-    - [ ] Shouldn't buy raw spices, only processed when available.
-    - [ ] Should give more emeralds for spice mixes (4).
-- [ ] Don't scale down numeric values for spice mixes.
+- [x] Spice Traders:
+    - [x] Shouldn't buy raw spices, only processed when available.
+        - New `prefer_processed` field on the `spice_road:spices` trade source; the buy offers set it to `true`, so raw spices without a Processed Spice are still bought.
+    - [x] Should give more emeralds for spice mixes (4).
+        - New `min_value` field on the `spice_road:presets` trade source; the buy offers use 4 (scaled by `priceMultiplier`).
+- [ ] Don't scale down numeric values for spice mix tooltips. Progress bars should still be scaled to -1..1
 - [ ] When calculating the final flavor values for a spice mix specifically, for axes that oppose each other, the weaker axis should be multiplied by 0.5 before being added, to make mix components less contradictory.
 
 ### Down the line

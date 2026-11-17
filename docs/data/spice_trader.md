@@ -10,7 +10,7 @@
 <br>
 
 ## Introduction
-The Spice Trader is a villager profession (`spice_road:spice_trader`) whose workstation is any Spice Rack, of any wood and placed any way. It buys and sells loose spices (every raw spice and every Processed Spice) and Spice Mix presets for emeralds. Like every villager, it has one buy offer and one sell offer per villager level, drawn from the pools below.  
+The Spice Trader is a villager profession (`spice_road:spice_trader`) whose workstation is any Spice Rack, of any wood and placed any way. It sells loose spices (raw and processed) and Spice Mix presets for emeralds, and buys Processed Spices, raw spices that have no processed form, and Spice Mix presets from you. Like every villager, it has one buy offer and one sell offer per villager level, drawn from the pools below.  
 What it trades is data; how much it asks for is worked out from the server config.
 
 <br>
@@ -34,8 +34,8 @@ Offers are loaded from `data/<namespace>/spice_trade/<name>.json`. The name does
     - `uses` (optional, default 12): How many times the offer can be made before it locks until the villager restocks.
     - `xp` (optional, default 5): The villager XP each trade gives.
     - `source` (required): One of:
-        - `spice_road:spices`: Loose spices. `tiers` (required) lists the Tiers (`common`, `uncommon`, `rare`, `epic`) that qualify; `processed` (optional, default `true`) includes Processed Spices, which count as the Tier of the spice they are made from.
-        - `spice_road:presets`: Spice Mix presets, each as its standard batch (the first member of every tag in its proportions). `ids` (optional) limits the presets to those IDs, and `max_tier` (optional, default `epic`) leaves out presets with a rarer spice in them. A preset counts as the Tier of its rarest spice.
+        - `spice_road:spices`: Loose spices. `tiers` (required) lists the Tiers (`common`, `uncommon`, `rare`, `epic`) that qualify; `processed` (optional, default `true`) includes Processed Spices, which count as the Tier of the spice they are made from. `prefer_processed` (optional, default `false`) leaves out the raw item of every spice that has a Processed Spice (if `processed` is on), so only spices without one are traded raw.
+        - `spice_road:presets`: Spice Mix presets, each as its standard batch (the first member of every tag in its proportions). `ids` (optional) limits the presets to those IDs, and `max_tier` (optional, default `epic`) leaves out presets with a rarer spice in them. A preset counts as the Tier of its rarest spice. `min_value` (optional, default `0`) is the least a preset is worth in emeralds, whatever its spices add up to; it is also scaled by `priceMultiplier`.
         - `spice_road:planting_items`: The planting items of every spice of the listed `tiers` (required): its seeds or cuttings, its sapling and its vine segment, whichever it has. They are only ever sold, never bought, and cost what the `wanderingTrader.plantingItemPrice` config says for their Tier (see [Wandering Trader](#wandering-trader)).
 
 Only this mod's own spices are ever traded, never other mods' Spice Items, and never custom mixes. When the trader **buys** a preset, it only accepts that standard batch: a mix of the same preset made from other tag members is refused.

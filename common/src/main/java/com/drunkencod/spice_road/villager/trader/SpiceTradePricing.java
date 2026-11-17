@@ -44,6 +44,11 @@ public final class SpiceTradePricing {
         return Services.CONFIG.getSpiceTraderPriceMultiplier() / rate;
     }
 
+    /** @return The configured multiplier on every Spice Trader price. */
+    public static double priceMultiplier() {
+        return Services.CONFIG.getSpiceTraderPriceMultiplier();
+    }
+
     /**
      * @param tier A {@link Tier}.
      * @return What one Planting Item of that Tier costs at the wandering

@@ -71,15 +71,19 @@ public sealed interface SpiceTradeSource {
      * Loose spices: the raw item of every Spice and, optionally, every
      * Processed Spice, of the listed Tiers.
      *
-     * @param tiers     Which {@link Tier}s qualify.
-     * @param processed Whether Processed Spices qualify too.
+     * @param tiers             Which {@link Tier}s qualify.
+     * @param processed         Whether Processed Spices qualify too.
+     * @param preferProcessed   Whether the raw item of a Spice that has a
+     *                          Processed Spice is left out, so only Spices
+     *                          without one are traded raw.
      */
-    record Spices(List<Tier> tiers, boolean processed) implements SpiceTradeSource {
+    record Spices(List<Tier> tiers, boolean processed, boolean preferProcessed) implements SpiceTradeSource {
 
         /** Persistent (JSON) codec. */
         public static final MapCodec<Spices> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                 Tier.CODEC.listOf().fieldOf("tiers").forGetter(Spices::tiers),
-                Codec.BOOL.optionalFieldOf("processed", true).forGetter(Spices::processed))
+                Codec.BOOL.optionalFieldOf("processed", true).forGetter(Spices::processed),
+                Codec.BOOL.optionalFieldOf("prefer_processed", false).forGetter(Spices::preferProcessed))
                 .apply(instance, Spices::new));
 
         @Override
@@ -90,8 +94,11 @@ public sealed interface SpiceTradeSource {
         @Override
         public List<TradeGood> goods(SpiceTradeDirection direction) {
             List<TradeGood> goods = new ArrayList<>();
-            for (Spice spice : Spice.values())
+            for (Spice spice : Spice.values()) {
+                if (preferProcessed && processed && !ProcessedSpice.bySource(spice).isEmpty())
+                    continue;
                 add(goods, ModItems.byId(spice.getId()), spice.getTier(), direction);
+            }
             if (processed) {
                 for (ProcessedSpice spice : ProcessedSpice.values())
                     add(goods, spice.getItem(), spice.getTier(), direction);
@@ -113,13 +120,17 @@ public sealed interface SpiceTradeSource {
      * @param ids     Which presets qualify; empty means any.
      * @param maxTier The highest {@link Tier} a preset may have, where a
      *                preset's Tier is that of its rarest spice.
+     * @param minValue The least a preset is worth in emeralds, whatever its
+     *                spices add up to.
      */
-    record Presets(List<ResourceLocation> ids, Tier maxTier) implements SpiceTradeSource {
+    record Presets(List<ResourceLocation> ids, Tier maxTier, double minValue) implements SpiceTradeSource {
 
         /** Persistent (JSON) codec. */
         public static final MapCodec<Presets> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                 ResourceLocation.CODEC.listOf().optionalFieldOf("ids", List.of()).forGetter(Presets::ids),
-                Tier.CODEC.optionalFieldOf("max_tier", Tier.EPIC).forGetter(Presets::maxTier))
+                Tier.CODEC.optionalFieldOf("max_tier", Tier.EPIC).forGetter(Presets::maxTier),
+                Codec.doubleRange(0.0, Double.MAX_VALUE).optionalFieldOf("min_value", 0.0)
+                        .forGetter(Presets::minValue))
                 .apply(instance, Presets::new));
 
         @Override
@@ -145,7 +156,7 @@ public sealed interface SpiceTradeSource {
                     Tier tier = SpiceTradePricing.tierOf(spice.getKey());
                     value += spice.getValue() * SpiceTradePricing.valueOf(tier != null ? tier : Tier.COMMON, direction);
                 }
-                goods.add(new TradeGood(stack.get(), value, false));
+                goods.add(new TradeGood(stack.get(), Math.max(value, minValue * SpiceTradePricing.priceMultiplier()), false));
             }
             return goods;
         }
