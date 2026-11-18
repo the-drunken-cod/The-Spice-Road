@@ -1,0 +1,28 @@
+{
+    "name": "Mod Configuration",
+    "icon": "minecraft:comparator",
+    "category": "spice_road:mechanics",
+    "sortnum": 7,
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "title": "Mod Configuration",
+            "text": "$(code)The Spice Road$() is highly customizable via three config files:$(li) Client:$(br)    Handles tooltips, rendering, particles, etc.$(li) Server:$(br)    Contains the majority of gameplay-related settings.$(li) Common / Startup:$(br)    Handles the data- and recipe-related settings."
+        },
+        {
+            "type": "patchouli:text",
+            "title": "Client Config",
+            "text": "It can be modified by pressing $(code)Esc$(), clicking $(code)Mods$(), selecting $(code)The Spice Road$() in the list, clicking the $(code)Config$() or $(code)Configure$() button, then selecting $(code)Client Settings$().$(br)In here, you can enable the GUI dark mode, change the way blockentities and tooltips render, and the Spice Grinder GUI handling, and more."
+        },
+        {
+            "type": "patchouli:text",
+            "title": "Server Config",
+            "text": "On Singleplayer it can be modified by pressing $(code)Esc$(), clicking $(code)Mods$(), selecting $(code)The Spice Road$() in the list, clicking the $(code)Config$() or $(code)Configure$() button, then selecting $(code)Server Settings$().$(br)For Multiplayer servers, edit $(code)config/spice_road-server.toml$().$(br)If you want to modify the gameplay, this is the place to do it."
+        },
+        {
+            "type": "patchouli:text",
+            "title": "Common / Startup Config",
+            "text": "On Singleplayer it can be modified by pressing $(code)Esc$(), clicking $(code)Mods$(), selecting $(code)The Spice Road$() in the list, clicking the $(code)Config$() or $(code)Configure$() button, then selecting $(code)Common Settings$().$(br)For Multiplayer servers, edit $(code)config/spice_road-common.toml$().$(br)These settings are required prior to the game's registry. On servers, they are manually synced to the client."
+        }
+    ]
+}
