@@ -10,9 +10,12 @@ issueTrackerURL="https://github.com/the-drunken-cod/The-Spice-Road/issues" #opti
     #updateJSONURL="https://change.me.example.invalid/updates.json" #optional (see https://docs.neoforged.net/docs/misc/updatechecker/)
     #displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional (displayed in the mod UI)
     logoFile="${mod_id}.png" #optional
+    logoBlur = false
     credits="${credits}" #optional
     authors = "${mod_author}" #optional
     description = '''${description}''' #mandatory (Supports multiline text)
+    modUrl = "https://github.com/the-drunken-cod/The-Spice-Road"
+    displayURL = "https://github.com/the-drunken-cod/The-Spice-Road"
 
 [[mixins]]
     config = "${mod_id}.mixins.json"
