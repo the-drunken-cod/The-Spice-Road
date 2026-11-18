@@ -122,7 +122,7 @@ public final class ConfigSchema {
 
     /** Approximate edge length of a Spice Region cell, in blocks. */
     public static final ConfigOption<Double> REGION_CELL_SCALE = add(
-            ConfigOption.ofDouble(REGION, "cellScale", 320.0, 64.0, 1_000_000.0));
+            ConfigOption.ofDouble(REGION, "cellScale", 400.0, 64.0, 1_000_000.0));
 
     /** Salt mixed into the world seed when resolving Spice Regions. */
     public static final ConfigOption<Long> REGION_SALT = add(
@@ -135,7 +135,7 @@ public final class ConfigSchema {
 
     /** Chance of a Spice Region containing no Spices at all. */
     public static final ConfigOption<Double> REGION_SPICELESS_CHANCE = add(
-            ConfigOption.ofDouble(REGION, "spicelessChance", 0.15, 0.0, 1.0).restart(ConfigOption.Restart.WORLD));
+            ConfigOption.ofDouble(REGION, "spicelessChance", 0.1, 0.0, 1.0).restart(ConfigOption.Restart.WORLD));
 
     /**
      * Base pick weight per {@link Tier} when a Spice Region resolves its Spice,
@@ -242,7 +242,7 @@ public final class ConfigSchema {
      * none.
      */
     public static final ConfigOption<Integer> WANDERING_TRADER_MIX_ENTRIES = add(
-            ConfigOption.ofInt(WANDERING_TRADER_POOL, "mixEntries", 2, 0, 64).restart(ConfigOption.Restart.GAME));
+            ConfigOption.ofInt(WANDERING_TRADER_POOL, "mixEntries", 3, 0, 64).restart(ConfigOption.Restart.GAME));
 
     // #region Cultivation
 
@@ -271,7 +271,7 @@ public final class ConfigSchema {
 
     /** Growth-speed multiplier of planted Spices per {@link Tier}. */
     public static final Map<Tier, ConfigOption<Double>> CULTIVATION_GROWTH_SPEED_MULTIPLIER = perTier(
-            CULTIVATION_GROWTH_SPEED, 2.5, 2.0, 1.75, 1.25, 0.01, 100.0);
+            CULTIVATION_GROWTH_SPEED, 1.25, 1.05, 0.9, 0.75, 0.01, 100.0);
 
     // #region Harvesting
 
@@ -279,11 +279,11 @@ public final class ConfigSchema {
      * Fraction of a fruiting Spice Tree's leaves that bear fruit, per {@link Tier}.
      */
     public static final Map<Tier, ConfigOption<Double>> TREE_FRUITING_LEAVES_CHANCE = perTier(TREE_FRUITING_LEAVES,
-            0.35, 0.25, 0.2, 0.15, 0.0, 1.0);
+            0.4, 0.35, 0.325, 0.25, 0.0, 1.0);
 
     /** Fraction of a Spice Vine's segments that can ripen, per {@link Tier}. */
     public static final Map<Tier, ConfigOption<Double>> VINE_RIPENING_SEGMENTS_CHANCE = perTier(
-            VINE_RIPENING_SEGMENTS, 0.3, 0.2, 0.15, 0.1, 0.0, 1.0);
+            VINE_RIPENING_SEGMENTS, 0.35, 0.3, 0.25, 0.2, 0.0, 1.0);
 
     // #region Harvest Luck
 
@@ -309,7 +309,10 @@ public final class ConfigSchema {
     public static final ConfigOption<Double> FLAVOR_MINIMUM_AXIS_VALUE = add(
             ConfigOption.ofDouble(FLAVOR, "minimumAxisValue", 0.05, 0.0, 1.0));
 
-    /** Factor the weaker of two opposing flavors on an axis is multiplied by in a Spice Mix. */
+    /**
+     * Factor the weaker of two opposing flavors on an axis is multiplied by in a
+     * Spice Mix.
+     */
     public static final ConfigOption<Double> FLAVOR_MIX_OPPOSING_FACTOR = add(
             ConfigOption.ofDouble(FLAVOR, "mixOpposingFactor", 0.5, 0.0, 1.0));
 
@@ -357,7 +360,7 @@ public final class ConfigSchema {
      * spices from spice storage.
      */
     public static final ConfigOption<Integer> SEASONING_STORAGE_RADIUS = add(
-            ConfigOption.ofInt(SEASONING, "storageRadius", 8, 0, 32));
+            ConfigOption.ofInt(SEASONING, "storageRadius", 12, 0, 32));
 
     /** Most locked-in effect cells remembered per player. */
     public static final ConfigOption<Integer> SEASONING_DISCOVERY_LIMIT = add(
@@ -373,15 +376,15 @@ public final class ConfigSchema {
 
     /** Lower end of the saturation modifier of a seasoned food without effects. */
     public static final ConfigOption<Double> SEASONING_SATURATION_MODIFIER_MIN = add(
-            ConfigOption.ofDouble(SEASONING_SATURATION_MODIFIER, "minSaturation", 0.5, -20.0, 20.0));
+            ConfigOption.ofDouble(SEASONING_SATURATION_MODIFIER, "minSaturation", 1.0, -20.0, 20.0));
 
     /** Upper end of the saturation modifier of a seasoned food without effects. */
     public static final ConfigOption<Double> SEASONING_SATURATION_MODIFIER_MAX = add(
-            ConfigOption.ofDouble(SEASONING_SATURATION_MODIFIER, "maxSaturation", 4, -20.0, 20.0));
+            ConfigOption.ofDouble(SEASONING_SATURATION_MODIFIER, "maxSaturation", 5.0, -20.0, 20.0));
 
     /** Spices per food that earn the full saturation modifier. */
     public static final ConfigOption<Double> SEASONING_SATURATION_MODIFIER_FULL_DOSE = add(
-            ConfigOption.ofDouble(SEASONING_SATURATION_MODIFIER, "fullDose", 12.0, 0.1, 1000.0));
+            ConfigOption.ofDouble(SEASONING_SATURATION_MODIFIER, "fullDose", 10.0, 0.1, 1000.0));
 
     /** Whether food that could be seasoned but isn't loses saturation. */
     public static final ConfigOption<Boolean> SEASONING_UNSEASONED_ENABLED = add(
@@ -401,7 +404,7 @@ public final class ConfigSchema {
 
     /** Kinds of spice per food that earn the full diversity bonus. */
     public static final ConfigOption<Integer> SEASONING_DIVERSITY_FULL_DIVERSITY = add(
-            ConfigOption.ofInt(SEASONING_DIVERSITY, "fullDiversity", 12, 1, 100));
+            ConfigOption.ofInt(SEASONING_DIVERSITY, "fullDiversity", 10, 1, 100));
 
     // #region Spice Mix
 
@@ -510,7 +513,7 @@ public final class ConfigSchema {
 
     /** Ticks between checks of each player's inventory for newly found Spices. */
     public static final ConfigOption<Integer> STATS_FOUND_SCAN_INTERVAL_TICKS = add(
-            ConfigOption.ofInt(STATS, "foundScanIntervalTicks", 200, 0, 1200));
+            ConfigOption.ofInt(STATS, "foundScanIntervalTicks", 100, 0, 1200));
 
     // #region Commands
 
@@ -562,7 +565,7 @@ public final class ConfigSchema {
 
     /** Soil Samples one Soil Analyzer survives; {@code 0} makes it unbreakable. */
     public static final ConfigOption<Integer> SOIL_ANALYZER_DURABILITY = add(
-            ConfigOption.ofInt(SOIL_ANALYZER_ITEM, "durability", 95, 0, 4096)
+            ConfigOption.ofInt(SOIL_ANALYZER_ITEM, "durability", 65, 0, 4096)
                     .restart(ConfigOption.Restart.GAME));
 
     // #region Compat
