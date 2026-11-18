@@ -1,8 +1,10 @@
 # `0.1.0`
 
 ## `0.1.0-alpha.9`
-
+⚠️ **Contains changes that are potentially breaking.** Back up your config files and verify the `[region]` settings are the same!    
+  
 - **Changes:**
+    - ⚠️ **POTENTIALLY BREAKING:** Config values were rebalanced, which might cause them to get reset upon updating. It's recommended you back up your config files and verify the worldgen-related settings (all settings under `[region]` in `spice_road-server.toml`) are the same.
     - Spice Groves and their satellites now have about 3x as many plants (and trees) and cover a wider area by default.
     - The Soil Analyzer now breaks `#minecraft:replaceable` blocks above a sample (like grass and flowers) as if broken by hand, instead of refusing the sample.
     - Improved textures for the Curry and Za'atar Spice Mixes, and a few other items.
